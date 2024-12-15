@@ -29,7 +29,7 @@ type Props<T extends Record<string, FilterOption[]>, K extends keyof T> = {
 
 const FilterSections = <
   T extends Record<string, FilterOption[]>,
-  K extends keyof T
+  K extends keyof T,
 >({
   searchKeys,
   sections,
@@ -39,20 +39,23 @@ const FilterSections = <
     nationality: "",
   });
   const [selectedValues, setSelectedValues] = useState<Record<string, string>>(
-    {}
+    {},
   );
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
   >(
-    Object.keys(sections).reduce((acc, key) => {
-      acc[key] = true; // All sections open by default
-      return acc;
-    }, {} as Record<string, boolean>)
+    Object.keys(sections).reduce(
+      (acc, key) => {
+        acc[key] = true; // All sections open by default
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    ),
   );
 
   const handleSearchChange = (
     sectionKey: string,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSearchTerm((prev) => ({
       ...prev,
@@ -81,13 +84,13 @@ const FilterSections = <
     options:
       searchKeys.includes(key as K) && searchTerm[key]
         ? options.filter((option) =>
-            option.label.toLowerCase().includes(searchTerm[key].toLowerCase())
+            option.label.toLowerCase().includes(searchTerm[key].toLowerCase()),
           )
         : options,
   }));
 
   return (
-    <div className=" bg-white rounded-lg shadow-md">
+    <div className="rounded-lg bg-white shadow-md">
       <div className="flex items-center justify-center bg-[#DEF0EB] py-2">
         <h5 className="text-3xl font-bold">Filters</h5>
       </div>
@@ -101,7 +104,7 @@ const FilterSections = <
             >
               <Typography
                 variant="h6"
-                className="text-[16px] font-bold text-[#25324B] mb-3"
+                className="mb-3 text-[16px] font-bold text-[#25324B]"
               >
                 {section.title}
               </Typography>
@@ -125,7 +128,7 @@ const FilterSections = <
                     handleRadioChange(section.key, e.target.value)
                   }
                 >
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 gap-1 px-1">
                     {section.options.map((option) => (
                       <FormControlLabel
                         key={option.value}
@@ -135,8 +138,8 @@ const FilterSections = <
                             checkedIcon={
                               <Box
                                 sx={{
-                                  width: 22,
-                                  height: 22,
+                                  width: 20,
+                                  height: 20,
                                   borderRadius: 1,
                                   backgroundColor: "#2EAE7D", // Checked color
                                   border: "2px solid #2EAE7D",
@@ -155,18 +158,19 @@ const FilterSections = <
                             icon={
                               <Box
                                 sx={{
-                                  width: 22,
-                                  height: 22,
+                                  width: 20,
+                                  height: 20,
                                   borderRadius: 1,
                                   backgroundColor: "transparent", // Unchecked color
                                   border: "2px solid #D6DDEB",
                                 }}
                               />
                             }
+                            sx={{ padding: 0, px: 1 }}
                           />
                         }
                         label={`${option.label} (${option.count})`}
-                        className="text-[#515B6F] text-[16px] hover:bg-gray-50 rounded-md transition-colors"
+                        className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
                       />
                     ))}
                   </div>
@@ -183,7 +187,13 @@ const FilterSections = <
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleSearchChange(section.key, e)
                   }
-                  className="mb-3"
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      padding: "8px 8px", // Remove input padding
+                      paddingLeft: 0, // Add padding for the search icon
+                    },
+                  }}
+                  className="my-1 py-0"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">

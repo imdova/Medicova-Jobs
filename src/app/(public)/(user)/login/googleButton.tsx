@@ -8,7 +8,7 @@ const GoogleButton = ({ children }: { children: React.ReactNode }) => {
     <Button
       className="w-full"
       variant="outlined"
-      onClick={() => signIn("google", { callbackUrl: "/profile" })}
+      onClick={() => signIn("google", { callbackUrl: "/employer/profile" })}
     >
       <DevIconGoogle className="w-6 h-6 m-2" />
       {children}

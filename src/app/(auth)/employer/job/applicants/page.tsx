@@ -9,13 +9,13 @@ import {
   MenuItem,
   Typography,
   Pagination,
-  FormControlLabel,
-  Radio,
   Stack,
   IconButton,
+  Menu,
+  Snackbar,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
-import { useState } from "react";
+import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import StarIcon from "@mui/icons-material/Star";
@@ -65,18 +65,20 @@ type Doctor = {
   contactInfo: ContactInfo;
   experience: Experience[];
   education: Education[];
+  available: boolean;
 };
 
-const doctors: Doctor[] = [
+const doctorsBase: Doctor[] = [
   {
     id: "doc-001", // Unique ID
-    image: "https://example.com/image1.jpg",
-    name: "Dr. Sarah Johnson",
+    image: "https://randomuser.me/api/portraits/women/90.jpg",
+    name: "Sarah Johnson",
     location: "New York, USA",
     specialty: "Cardiology",
     yearsOfExperience: 15,
     consultant: true,
     field: "Cardiology",
+    available: true,
     contactInfo: {
       whatsapp: "+1 555-123-4567",
       phoneNumber: "+1 555-987-6543",
@@ -109,11 +111,12 @@ const doctors: Doctor[] = [
   },
   {
     id: "doc-002", // Unique ID
-    image: "https://example.com/image2.jpg",
-    name: "Dr. Michael Brown",
+    image: "https://randomuser.me/api/portraits/men/6.jpg",
+    name: "Michael Brown",
     location: "London, UK",
     specialty: "Cardiology",
     yearsOfExperience: 20,
+    available: false,
     consultant: true,
     field: "Cardiology",
     contactInfo: {
@@ -148,11 +151,12 @@ const doctors: Doctor[] = [
   },
   {
     id: "doc-003", // Unique ID
-    image: "https://example.com/image3.jpg",
-    name: "Dr. Aisha Khan",
+    image: "https://randomuser.me/api/portraits/women/79.jpg",
+    name: "Aisha Khan",
     location: "Dubai, UAE",
     specialty: "Cardiology",
     yearsOfExperience: 10,
+    available: false,
     consultant: true,
     field: "Cardiology",
     contactInfo: {
@@ -181,12 +185,13 @@ const doctors: Doctor[] = [
   },
   {
     id: "doc-004", // Unique ID
-    image: "https://example.com/image4.jpg",
-    name: "Dr. Ramesh Patel",
+    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "Ramesh Patel",
     location: "Mumbai, India",
     specialty: "Cardiology",
     yearsOfExperience: 12,
     consultant: true,
+    available: false,
     field: "Cardiology",
     contactInfo: {
       whatsapp: "+91 98765-43210",
@@ -214,12 +219,13 @@ const doctors: Doctor[] = [
   },
   {
     id: "doc-005", // Unique ID
-    image: "https://example.com/image5.jpg",
-    name: "Dr. Emma Wilson",
+    image: "https://randomuser.me/api/portraits/women/8.jpg",
+    name: "Emma Wilson",
     location: "Sydney, Australia",
     specialty: "Cardiology",
     yearsOfExperience: 18,
     consultant: true,
+    available: false,
     field: "Cardiology",
     contactInfo: {
       whatsapp: "+61 400-123-456",
@@ -269,11 +275,15 @@ const filterSections = {
     { label: "+10", count: 30, value: "10+" },
   ],
 };
-
+type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [doctors, setDoctors] = useState(doctorsBase);
+  const [selectedTab, setSelectedTab] = useState<TapType>("all");
   const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
-
+  const [availableApplicants, setAvailableApplicants] = useState<string[]>(
+    doctors.filter((x) => x.available).map((x) => x.id),
+  );
+  const [shortListed, setShortListed] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState({
     residency: "",
     education: "",
@@ -288,21 +298,83 @@ const ApplicantsPage: React.FC = () => {
     }
   };
 
-  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (
+    _event: React.ChangeEvent<{}>,
+    newValue: TapType,
+  ) => {
     setSelectedTab(newValue);
+    switch (newValue) {
+      case "all":
+        setDoctors(doctorsBase);
+        break;
+      case "locked":
+        const lockedDoctor = doctorsBase.filter(
+          (obj) => !availableApplicants.includes(obj.id),
+        );
+        setDoctors(lockedDoctor);
+        break;
+      case "unlocked":
+        const unLockedDoctor = doctorsBase.filter((obj) =>
+          availableApplicants.includes(obj.id),
+        );
+        setDoctors(unLockedDoctor);
+        break;
+      case "shortListed":
+        const shortListedDoctors = doctorsBase.filter((obj) =>
+          shortListed.includes(obj.id),
+        );
+        setDoctors(shortListedDoctors);
+        break;
+      default:
+        setDoctors(doctorsBase);
+        break;
+    }
   };
 
   const handleFilterChange = (key: string, value: any) => {
     setSelectedFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  // actions
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showCopyAlert, setShowCopyAlert] = useState(false);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // - // short list action
+  const removeFromShortListed = () => {
+    if (!selectedApplicants.length) return;
+    setShortListed((pv) => pv.filter((id) => !selectedApplicants.includes(id)));
+  };
+  const addToShortListed = () => {
+    if (!selectedApplicants.length) return;
+    setShortListed((pv) =>
+      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
+    );
+  };
+
+  // export
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+  const exportOpen = Boolean(exportAnchorEl);
+  const exportHandleClick = (event: any) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+  const exportHandleClose = () => {
+    setExportAnchorEl(null);
+  };
   return (
-    <Box className="flex flex-row w-full bg-white min-h-screen md:p-5 p-2">
+    <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
       <Box
         className="scroll-bar-hidden"
         sx={{
           width: "20%",
+          display: { xs: "none", md: "block" },
           position: "sticky",
           mt: "66px",
           top: "190px",
@@ -321,72 +393,68 @@ const ApplicantsPage: React.FC = () => {
       {/* Right Column: Results Section */}
       <Box
         sx={{
-          width: "80%",
-          padding: "16px",
+          width: { xs: "100%", md: "80%" },
+          padding: { xs: "8px", md: "16px" },
         }}
       >
         <div className="w-full">
-          <h2 className="font-bold text-[#185D43] text-3xl mb-5">
+          <h2 className="mb-5 text-3xl font-bold text-[#185D43]">
             Clinical Pharmacist in Damam, Saudi Arabia
           </h2>
         </div>
 
         <Box className="flex justify-between">
-          <Tabs
-            sx={{
-              marginBottom: "20px",
-              "& .MuiTabs-indicator": {
-                backgroundColor: "#185D43", // Active tab indicator color
-              },
-              "& .MuiTab-root": {
-                textTransform: "none",
-                color: "rgba(0, 0, 0, 0.5)",
-                minWidth: "125px", // Increased width for each tab
-                fontSize: "15px", // Increased font size for each tab
-              },
-              "& .Mui-selected": {
-                color: "#185D43!important",
-                fontWeight: "bold",
-              },
-            }}
-            value={selectedTab}
-            onChange={handleTabChange}
-          >
-            <Tab
-              label={
-                <span className="flex items-center normal-case">
-                  All Applicants (100)
-                </span>
-              }
-            />
-            <Tab
-              label={
-                <span className="flex items-center gap-1 normal-case">
-                  Locked (20)
-                  <LockIcon className="text-red-500 w-5 h-5 " />
-                </span>
-              }
-            />
-            <Tab
-              label={
-                <span className="flex items-center gap-1 normal-case ">
-                  Unlocked (30)
-                  <LockOpenIcon className="text-[#2EAE7D] w-5 h-5 " />
-                </span>
-              }
-            />
-            <Tab
-              label={
-                <span className="flex items-center gap-1  normal-case  ">
-                  Shortlisted (10)
-                  <StarIcon className="text-[#2EAE7D] w-5 h-5 " />
-                </span>
-              }
-            />
-          </Tabs>
+          <div className="max-w-[calc(100vw-40px)]">
+            <Tabs
+              value={selectedTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="responsive tabs example"
+              sx={{
+                overflowX: { xs: "auto", sm: "visible" }, // Horizontal scroll for small screens
+              }}
+            >
+              <Tab
+                value="all"
+                label={
+                  <span className="flex items-center normal-case">
+                    All Applicants ({doctors.length})
+                  </span>
+                }
+              />
+              <Tab
+                value="locked"
+                label={
+                  <span className="flex items-center gap-1 normal-case">
+                    Locked ({doctors.length - availableApplicants.length})
+                    <LockIcon className="h-5 w-5 text-red-500" />
+                  </span>
+                }
+              />
+              <Tab
+                value="unlocked"
+                label={
+                  <span className="flex items-center gap-1 normal-case">
+                    Unlocked ({availableApplicants.length})
+                    <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />
+                  </span>
+                }
+              />
+              <Tab
+                value="shortListed"
+                label={
+                  <span className="flex items-center gap-1 normal-case">
+                    Shortlisted ({shortListed.length})
+                    <StarIcon className="h-5 w-5 text-[#2EAE7D]" />
+                  </span>
+                }
+              />
+            </Tabs>
+          </div>
 
           <Select
-            className="h-12"
+            className="hidden h-12 md:flex"
             value="time-desc"
             onChange={(e) => console.log(e.target.value)}
           >
@@ -394,49 +462,125 @@ const ApplicantsPage: React.FC = () => {
             <MenuItem value="time-asc">Oldest</MenuItem>
           </Select>
         </Box>
-        <div className="flex justify-between mb-4 items-center">
-          <div className="flex gap-5 items-center">
+        <div className="mb-4 mt-2 flex items-center justify-between">
+          <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
               className="h-fit rounded-md bg-[#DEF0EB]"
             >
               {isAllSelect ? (
-                <DeselectIcon className="w-6 h-6 m-2" />
+                <DeselectIcon className="m-2 h-6 w-6" />
               ) : (
-                <SelectAllIcon className="w-6 h-6 m-2" />
+                <SelectAllIcon className="m-2 h-6 w-6" />
               )}
             </button>
-            <div className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4">
-              <p className="inline-block">Action</p>
-              <ExpandMoreIcon className="w-6 h-6 ml-2 inline-block" />
-            </div>
+            {selectedApplicants.length > 0 && (
+              <div>
+                <button
+                  onClick={handleClick}
+                  aria-controls={open ? "Action-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+                >
+                  <p className="inline-block">Action</p>
+                  <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
+                </button>
+                <Menu
+                  id="Action-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  className="mt-2"
+                >
+                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
+                    delete
+                  </MenuItem>
+                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
+                    edit
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      addToShortListed();
+                    }}
+                    className="hover:bg-gray-200"
+                  >
+                    Add to shortlist
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      removeFromShortListed();
+                    }}
+                    className="text-red-500 hover:bg-gray-200"
+                  >
+                    remove from shortlist
+                  </MenuItem>
+                </Menu>
+              </div>
+            )}
           </div>
-          <div className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4">
-            <p className="inline-block w-16">Export</p>
-            <ExpandMoreIcon className="w-6 h-6 ml-2 inline-block" />
+          <div>
+            <button
+              onClick={exportHandleClick}
+              aria-controls={exportOpen ? "export-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={exportOpen ? "true" : undefined}
+              className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+            >
+              <p className="inline-block w-16">Export</p>
+              <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
+            </button>
+            <Menu
+              id="export-menu"
+              anchorEl={exportAnchorEl}
+              open={exportOpen}
+              onClose={exportHandleClose}
+              className="mt-2"
+            >
+              <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
+              <MenuItem className="hover:bg-gray-200">Excel (CSV)</MenuItem>
+            </Menu>
           </div>
         </div>
         {/* Applicant Cards */}
         {doctors.map((doctor, index) => (
           <DoctorCard
             key={index}
-            {...doctor}
+            doctor={doctor}
+            shortListed={shortListed}
+            setShortListed={setShortListed}
             setSelectedApplicants={setSelectedApplicants}
+            availableApplicants={availableApplicants}
+            setAvailableApplicants={setAvailableApplicants}
             selectedApplicants={selectedApplicants}
           />
         ))}
         {/* Pagination */}
         <Pagination count={10} className="mt-4" />
       </Box>
+      <Snackbar
+        open={showCopyAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowCopyAlert(false)}
+        message="Link copied to clipboard!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Box>
   );
 };
 
 export default ApplicantsPage;
 
-interface DoctorCardProps extends Doctor {
+interface DoctorCardProps {
+  doctor: Doctor;
   selectedApplicants: string[];
+  availableApplicants: string[];
+  shortListed: string[];
+  setShortListed: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedApplicants: React.Dispatch<React.SetStateAction<string[]>>;
+  setAvailableApplicants: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 // import StarIcon from "@mui/icons-material/Star";
@@ -450,155 +594,303 @@ import EmailIcon from "@mui/icons-material/Email";
 
 import DownloadIcon from "@mui/icons-material/Download";
 
-import WorkIcon from "@mui/icons-material/Work";
+import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
+// import StarIcon from "@mui/icons-material/Star";
 
 const DoctorCard: React.FC<DoctorCardProps> = ({
-  id,
-  name,
+  doctor,
+  availableApplicants,
+  shortListed,
+  setShortListed,
+  setAvailableApplicants,
   selectedApplicants,
   setSelectedApplicants,
 }) => {
+  const isSelected = selectedApplicants.includes(doctor.id);
+  const isAvailable = availableApplicants.includes(doctor.id);
+  const isShortListed = shortListed.includes(doctor.id);
+
   const toggleSelect = () =>
-    setSelectedApplicants((prev) =>
-      prev.includes(id)
-        ? prev.filter((doctorId) => doctorId !== id)
-        : [...prev, id]
-    );
-  const isSelected = selectedApplicants.includes(id);
+    setSelectedApplicants((pv) => toggleId(pv, doctor.id));
+
+  const toggleShortListed = () =>
+    setShortListed((pv) => toggleId(pv, doctor.id));
+
+  const unlock = () => {
+    setAvailableApplicants((pv) => [...pv, doctor.id]);
+  };
   return (
-    <Box className="flex mb-4">
+    <Box className="mb-4 flex">
       <button
         onClick={toggleSelect}
         className={`${
-          isSelected ? "bg-[#2EAE7D] border-[#2EAE7D]" : "border-[#D6DDEB]"
-        } min-w-[32px] h-[32px] rounded-sm mr-2    border-2`}
+          isSelected ? "border-[#2EAE7D] bg-[#2EAE7D]" : "border-[#D6DDEB]"
+        } mr-2 h-[24px] min-w-[24px] rounded-sm border-2 md:h-[32px] md:min-w-[32px]`}
       >
-        {isSelected && <CheckIcon className="text-white w-5 h-5 m-auto" />}
+        {isSelected && <CheckIcon className="m-auto h-5 w-5 text-white" />}
       </button>
 
-      <div className="border w-full rounded-md shadow-md bg-white">
-        <div className="flex flex-col p-5">
-          <div className=" flex gap-5 justify-between w-full">
-            <div className="flex gap-5">
-              <div>
-                <Avatar
-                  src="https://randomuser.me/api/portraits/men/4.jpg"
-                  alt="Candidate"
-                  sx={{ width: 100, height: 100 }}
-                />
-                <p className="text-black/50 text-[12px] max-w-[100px] mt-2 text-center">
-                  applied 6 days ago
-                </p>
-              </div>
-              <div>
+      <div className="flex w-full flex-col rounded-md border bg-white p-2 shadow-md md:p-5">
+        <div className="flex w-full flex-wrap justify-between gap-5 sm:flex-nowrap">
+          <div className="flex gap-5">
+            <div>
+              <Avatar
+                src={
+                  doctor.image ||
+                  "https://randomuser.me/api/portraits/men/4.jpg"
+                }
+                alt={doctor.name}
+                sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
+              />
+              <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
+                applied 6 days ago
+              </p>
+            </div>
+            <div>
+              <Stack direction="row" alignItems="center" gap={1}>
                 <Typography
                   variant="h2"
-                  sx={{ color: "#185D43", fontWeight: "600", fontSize: "22px" }}
+                  sx={{
+                    color: "#185D43",
+                    fontWeight: "600",
+                    fontSize: { xs: "16px", md: "22px" },
+                  }}
                 >
-                  Jake Gyll
+                  {doctor.name}
                 </Typography>
-                <Stack
-                  direction="row"
-                  sx={{ marginY: "5px", color: "rgba(0, 0, 0, 0.7)" }}
-                  gap={2}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <LocationOnIcon color="primary" />
-                    <Typography variant="body1">
-                      Nasr City, Cairo, Egypt
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <PeopleAltIcon color="primary" />
-                    <Typography variant="body1">56 years old</Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <WorkspacePremiumIcon color="primary" />
-                    <Typography variant="body1">10 years Experience</Typography>
-                  </Box>
-                </Stack>
-                <Stack
-                  direction="row"
-                  sx={{ marginY: "5px", color: "rgba(0, 0, 0, 0.7)" }}
-                  gap={2}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <SchoolIcon color="primary" />
-                    <Typography variant="body1">Doctorate Degree</Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <PersonIcon color="primary" />
-                    <Typography variant="body1">56 years old</Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <MedicalServicesIcon color="primary" />
-                    <Typography variant="body1">10 years Experience</Typography>
-                  </Box>
-                </Stack>
-                <div className="flex gap-2 px-4 md:gap-6 justify-between items-center bg-[#F8F8FD]">
-                  <h6 className="font-semibold">Contact Info :</h6>
-                  <div>
-                    <LocalPhoneIcon className="text-[#2EAE7D]" />
-                    <span className="mx-1">201220707190 </span>
-                    <IconButton>
-                      <ContentCopyIcon />
+                {isAvailable ? (
+                  <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />
+                ) : (
+                  <LockIcon className="h-5 w-5 text-red-500" />
+                )}
+              </Stack>
+              <div className="my-1 flex max-w-[450px] flex-wrap gap-2 text-black/70">
+                <div className="flex items-center gap-2">
+                  <LocationOnIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">
+                    Nasr City, Cairo, Egypt
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PeopleAltIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">Doctors</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <WorkspacePremiumIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">10 years Experience</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <SchoolIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">Doctorate Degree</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PersonIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">Consultant</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MedicalServicesIcon
+                    color="primary"
+                    className="h-4 w-4 md:h-5 md:w-5"
+                  />
+                  <p className="text-xs md:text-base">Cardiology</p>
+                </div>
+              </div>
+              <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
+                <h6 className="text-sm font-semibold md:text-base">
+                  Contact Info :
+                </h6>
+                <div className="flex flex-wrap justify-between">
+                  <div className="mr-4 flex min-w-[80px] items-center">
+                    <LocalPhoneIcon
+                      color="primary"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                    />
+                    {isAvailable ? (
+                      <span className="mx-1 h-fit text-sm md:text-base">
+                        {doctor.contactInfo.phoneNumber}
+                      </span>
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dumy number
+                        </span>
+                      </div>
+                    )}
+
+                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
                     </IconButton>
                   </div>
-                  <div>
-                    <EmailIcon className="text-[#2EAE7D]" />
-                    <span className="mx-1">ahmedhabib@gmail.com</span>
-                    <IconButton>
-                      <ContentCopyIcon />
+                  <div className="flex items-center">
+                    <EmailIcon
+                      color="primary"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                    />
+                    {isAvailable ? (
+                      <span className="mx-1 h-fit text-sm md:text-base">
+                        {doctor.contactInfo.email}
+                      </span>
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dummy email.com
+                        </span>
+                      </div>
+                    )}
+                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
                     </IconButton>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-2 justify-between">
-                <button
-                  type="button"
-                  className=" border w-10 text-[#6A727A] h-10 border-[#D6DDEB] hover:text-[#185D43] hover:border-[#185D43]"
-                >
-                  <WhatsAppIcon className=" m-2" />
-                </button>
-                <button
-                  type="button"
-                  className=" border w-10 text-[#6A727A] h-10 border-[#D6DDEB] hover:text-[#185D43] hover:border-[#185D43]"
-                >
-                  <MessageIcon className=" m-2" />
-                </button>
-                <button
-                  type="button"
-                  className=" border w-10 text-[#6A727A] h-10 border-[#D6DDEB] hover:text-[#185D43] hover:border-[#185D43]"
-                >
-                  <StarBorderOutlinedIcon className=" m-2" />
-                </button>
-              </div>
+          </div>
+          <div className="flex w-full gap-2 sm:w-auto sm:flex-col">
+            <div className="flex justify-between gap-2">
+              <IconButton
+                disabled={!isAvailable}
+                size="small"
+                color="primary"
+                sx={{
+                  border: 1,
+                  padding: "6px",
+                  borderColor: "grey.300",
+                  borderRadius: 0,
+                  "&:hover": { border: 1, borderColor: "primary.main" },
+                }}
+              >
+                <WhatsAppIcon className="h-5 w-5 md:h-6 md:w-6" />
+              </IconButton>
+              <IconButton
+                disabled={!isAvailable}
+                size="small"
+                color="primary"
+                sx={{
+                  border: 1,
+                  padding: "6px",
+                  borderColor: "grey.300",
+                  borderRadius: 0,
+                  "&:hover": { border: 1, borderColor: "primary.main" },
+                }}
+              >
+                <MessageIcon className="h-5 w-5 md:h-6 md:w-6" />
+              </IconButton>
+              <IconButton
+                onClick={toggleShortListed}
+                size="small"
+                color="primary"
+                sx={{
+                  border: 1,
+                  padding: "6px",
+                  borderColor: "grey.300",
+                  borderRadius: 0,
+                  "&:hover": { border: 1, borderColor: "primary.main" },
+                }}
+              >
+                {isShortListed ? (
+                  <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
+                ) : (
+                  <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
+                )}
+              </IconButton>
+            </div>
+            {isAvailable ? (
               <Button
                 variant="outlined"
-                className="w-full"
-                startIcon={<DownloadIcon />}
+                className="w-full text-sm md:text-base"
+                startIcon={<DownloadIcon className="h-5 w-5 md:h-6 md:w-6" />}
               >
                 Download CV
               </Button>
-            </div>
+            ) : (
+              <Button
+                variant="contained"
+                className="w-full"
+                onClick={unlock}
+                startIcon={<VpnKeyOutlinedIcon />}
+              >
+                Unlock Profile
+              </Button>
+            )}
           </div>
-          <div className="flex flex-col h-20 p-5 bg-[#F8F8FD]">
-            {/* <div className="flex justify-between items-center">
-              <WorkIcon className="text-[#2EAE7D]" />
-              <p className="font-semibold">Cardiology Consultant</p>
-              <div className="bg-white border px-4 py-2"> EGYPT </div>
-              <p>(2020 - 2024)</p>
+        </div>
+        <div className="hidden flex-col items-center gap-2 bg-[#F8F8FD] p-5 md:flex">
+          {doctor.experience.map((exp, index) => (
+            <div
+              className="flex w-full max-w-[700px] items-center gap-4"
+              key={`${doctor.id}-exp-${index}`}
+            >
+              <div className="flex w-[65%] items-center gap-3">
+                <WorkOutlineOutlinedIcon color="primary" />
+                <p className="font-semibold">{exp.name}</p>
+              </div>
+              <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-black/80">
+                {exp.country}
+              </div>
+              <div>
+                <p className="text-sm text-black/30">
+                  ({exp.startDate} - {exp.endDate})
+                </p>
+              </div>
             </div>
-            <div className="flex">
-              <SchoolIcon /> <p>Cardiology Consultant</p>{" "}
-              <div> flag Egypt with border and white bg </div>{" "}
-              <p>(2020 - 2024)</p>{" "}
-            </div> */}
-          </div>
+          ))}
+
+          {/* Education */}
+          {doctor.education.map((edu, index) => (
+            <div
+              className="flex w-full max-w-[700px] items-center gap-4"
+              key={`${doctor.id}-edu-${index}`}
+            >
+              <div className="flex w-[65%] items-center gap-3">
+                <SchoolIcon color="primary" />
+                <div>
+                  <p className="font-semibold">{edu.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {edu.degree} in {edu.specialty}
+                  </p>
+                </div>
+              </div>
+              <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-black/80">
+                {edu.country}
+              </div>
+              <div>
+                <p className="text-sm text-black/30">
+                  ({edu.startDate} - {edu.endDate})
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </Box>
   );
 };
+
+function toggleId(ids: string[], id: string): string[] {
+  // Check if the ID already exists in the array
+  if (ids.includes(id)) {
+    // If it exists, remove it
+    return ids.filter((existingId) => existingId !== id);
+  } else {
+    // If it doesn't exist, add it
+    return [...ids, id];
+  }
+}
