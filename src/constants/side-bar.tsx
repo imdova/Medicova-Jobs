@@ -8,6 +8,13 @@ import ChatIcon from "@mui/icons-material/Chat";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import InfoIcon from "@mui/icons-material/Info";
+import SchoolIcon from "@mui/icons-material/School";
+import StarsIcon from "@mui/icons-material/Stars";
+import PsychologyIcon from "@mui/icons-material/Psychology";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { LinkType } from "@/types/side-bar";
 
 export const icons = {
@@ -21,6 +28,13 @@ export const icons = {
   chat: ChatIcon,
   settings: SettingsIcon,
   help: HelpIcon,
+  info: InfoIcon,
+  school: SchoolIcon,
+  star: StarsIcon,
+  skill: PsychologyIcon,
+  upload: CloudUploadIcon,
+  work: WorkHistoryIcon,
+  manage: WorkHistoryIcon,
 };
 
 export const employerSideBarLinks: LinkType[] = [
@@ -119,23 +133,38 @@ export const jobSeekerSideBarLinks: LinkType[] = [
     url: "/",
   },
   {
-    title: "Messages",
-    icon: "chat",
+    title: "General info",
+    icon: "info",
     url: "#",
   },
   {
-    title: "My Applications",
-    icon: "report",
+    title: "Qualification & Education",
+    icon: "school",
     url: "#",
   },
   {
-    title: "Find Jobs",
-    icon: "search",
+    title: "Experience",
+    icon: "star",
     url: "#",
   },
   {
-    title: "Browse Companies",
-    icon: "profile",
+    title: "Skills",
+    icon: "skill",
+    url: "#",
+  },
+  {
+    title: "Upload CV",
+    icon: "upload",
+    url: "#",
+  },
+  {
+    title: "Career Referance",
+    icon: "work",
+    url: "#",
+  },
+  {
+    title: "Profile Setting",
+    icon: "manage",
     url: "#",
   },
   {

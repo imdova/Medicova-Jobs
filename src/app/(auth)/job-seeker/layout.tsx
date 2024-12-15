@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "@/components/Layout/Header/Header";
+import Header from "@/components/Layout/Header/HeaderSeeker";
 import SideBar from "@/components/Layout/SideBar/SideBar";
 import {
   jobSeekerSideBarLinks,

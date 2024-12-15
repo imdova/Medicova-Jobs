@@ -18,12 +18,12 @@ import logo from "@/components/images/logo.svg";
 import Image from "next/image";
 import { HamburgerIcon } from "@/components/icons/icons";
 import ItemSelector from "@/components/UI/menu-item";
-import { employerSideBarLinks } from "@/constants/side-bar";
+import { jobSeekerSideBarLinks } from "@/constants/side-bar";
 
 const links = [
   {
     title: "Dashboard",
-    link: "/employer/dashboard",
+    link: "/dashboard",
   },
   {
     title: "My Jobs",
@@ -78,7 +78,7 @@ const Header = () => {
             <Box className=" h-full bg-[#f7f7fd] overflow-hidden max-w-[600px] text-[#7C8493CC]">
               <Box className=" overflow-y-auto py-5 max-h-full scroll-bar-hidden">
                 <List>
-                  {employerSideBarLinks.map((link, index) => (
+                  {jobSeekerSideBarLinks.map((link, index) => (
                     <ItemSelector key={index} link={link} onClick={close} />
                   ))}
                 </List>
