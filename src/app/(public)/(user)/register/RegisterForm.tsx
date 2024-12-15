@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -14,92 +14,33 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import GoogleButton from "../login/googleButton";
+import { useForm, Controller } from "react-hook-form";
 
 const RegisterForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    companyName: "",
-    phone: "",
+  const [activeLink, setActiveLink] = useState("employer");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      companyName: "",
+      phone: "",
+    },
   });
-
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    companyName: "",
-    phone: "",
-  });
-
-  const [phone, setPhone] = useState<string | undefined>(""); // Add phone state
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value ?? checked, // Handle both input types (text and checkbox)
-    });
-  };
-
-  const validateForm = () => {
-    const newErrors: any = {};
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-    // Validate First Name
-    if (!formData.firstName) {
-      newErrors.firstName = "First name is required";
-    } else if (formData.firstName.length < 3) {
-      newErrors.firstName = "First name must be at least 3 characters";
-    }
-
-    // Validate Last Name
-    if (!formData.lastName) {
-      newErrors.lastName = "Last name is required";
-    } else if (formData.lastName.length < 3) {
-      newErrors.lastName = "Last name must be at least 3 characters";
-    }
-
-    // Validate company Name
-    if (!formData.companyName) {
-      newErrors.companyName = "Company Name is required";
-    } else if (formData.companyName.length < 3) {
-      newErrors.companyName = "Company Name must be at least 3 characters";
-    }
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Enter a valid email address";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    if (!phone) {
-      newErrors.phone = "Phone number is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted:", formData);
-    }
-  };
-
-  const [activeLink, setActiveLink] = useState("jobSeeker"); // default to jobSeeker
 
   const handleLinkClick = (link: string) => {
     setActiveLink(link);
+  };
+
+  const onSubmit = (data: any) => {
+    console.log("Form submitted:", data);
   };
 
   return (
@@ -129,9 +70,9 @@ const RegisterForm: React.FC = () => {
           onClick={() => handleLinkClick("jobSeeker")}
           sx={{
             padding: "10px 20px",
-            color: activeLink === "jobSeeker" ? "#000" : "#6CC6A3",
+            color: activeLink === "jobSeeker" ? "#6CC6A3" : "#000",
             backgroundColor:
-              activeLink === "jobSeeker" ? "#E9EBFD" : "transparent",
+              activeLink === "jobSeeker" ? "transparent" : "#E9EBFD",
             transition: "all 0.3s ease",
           }}
           variant="text"
@@ -142,9 +83,9 @@ const RegisterForm: React.FC = () => {
           onClick={() => handleLinkClick("employer")}
           sx={{
             padding: "10px 20px",
-            color: activeLink === "employer" ? "#000" : "#6CC6A3",
+            color: activeLink === "employer" ? "#6CC6A3" : "#000",
             backgroundColor:
-              activeLink === "employer" ? "#E9EBFD" : "transparent",
+              activeLink === "employer" ? "transparent" : "#E9EBFD",
             transition: "all 0.3s ease",
           }}
           variant="text"
@@ -161,7 +102,7 @@ const RegisterForm: React.FC = () => {
         }}
         gutterBottom
       >
-        Signup as a recruiter on{" "}
+        Signup as a {activeLink === "jobSeeker" ? "Job Seeker" : "Recruiter"} on{" "}
         <Typography
           component="span"
           sx={{
@@ -200,7 +141,7 @@ const RegisterForm: React.FC = () => {
         <Divider sx={{ flex: 1 }} />
       </Box>
 
-      <form className="w-full" onSubmit={handleSubmit} noValidate>
+      <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box
           sx={{
             display: "flex",
@@ -215,14 +156,25 @@ const RegisterForm: React.FC = () => {
             >
               First Name
             </InputLabel>
-            <TextField
-              placeholder="Enter first name"
-              fullWidth
+            <Controller
+              control={control}
               name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              error={!!errors.firstName}
-              helperText={errors.firstName}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder="Enter first name"
+                  fullWidth
+                  error={!!errors.firstName}
+                  helperText={errors.firstName?.message}
+                />
+              )}
+              rules={{
+                required: "First name is required",
+                minLength: {
+                  value: 3,
+                  message: "First name must be at least 3 characters",
+                },
+              }}
             />
           </Box>
 
@@ -233,66 +185,115 @@ const RegisterForm: React.FC = () => {
             >
               Last Name
             </InputLabel>
-            <TextField
-              placeholder="Enter last name"
-              fullWidth
+            <Controller
+              control={control}
               name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              error={!!errors.lastName}
-              helperText={errors.lastName}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder="Enter last name"
+                  fullWidth
+                  error={!!errors.lastName}
+                  helperText={errors.lastName?.message}
+                />
+              )}
+              rules={{
+                required: "Last name is required",
+                minLength: {
+                  value: 3,
+                  message: "Last name must be at least 3 characters",
+                },
+              }}
             />
           </Box>
         </Box>
+
         <Box sx={{ mb: 2 }}>
           <InputLabel
             sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
           >
             Email Address
           </InputLabel>
-          <TextField
-            placeholder="Enter email address"
-            fullWidth
+          <Controller
+            control={control}
             name="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder="Enter email address"
+                fullWidth
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            )}
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "Enter a valid email address",
+              },
+            }}
           />
         </Box>
+
         <Box sx={{ mb: 2 }}>
           <InputLabel
             sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
           >
             Password
           </InputLabel>
-          <TextField
-            placeholder="Enter password"
-            type="password"
-            fullWidth
+          <Controller
+            control={control}
             name="password"
-            value={formData.password}
-            onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder="Enter password"
+                type="password"
+                fullWidth
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+            )}
+            rules={{
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            }}
           />
         </Box>
-        <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Company Name
-          </InputLabel>
-          <TextField
-            placeholder="Enter company name"
-            fullWidth
-            name="text"
-            value={formData.companyName}
-            onChange={handleChange}
-            error={!!errors.companyName}
-            helperText={errors.companyName}
-          />
-        </Box>
+
+        {activeLink === "employer" && (
+          <Box sx={{ mb: 2 }}>
+            <InputLabel
+              sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
+            >
+              Company Name
+            </InputLabel>
+            <Controller
+              control={control}
+              name="companyName"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder="Enter company name"
+                  fullWidth
+                  error={!!errors.companyName}
+                  helperText={errors.companyName?.message}
+                />
+              )}
+              rules={{
+                required: "Company Name is required",
+                minLength: {
+                  value: 3,
+                  message: "Company Name must be at least 3 characters",
+                },
+              }}
+            />
+          </Box>
+        )}
 
         <Box
           sx={{
@@ -341,15 +342,25 @@ const RegisterForm: React.FC = () => {
           >
             Phone Number
           </InputLabel>
-          <PhoneInput
-            defaultCountry="EG"
-            value={phone}
-            onChange={setPhone}
-            placeholder="Enter phone number"
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <PhoneInput
+                {...field}
+                defaultCountry="EG"
+                value={field.value ?? ""}
+                placeholder="Enter phone number"
+                onChange={(value) => setValue("phone", value ?? "")}
+              />
+            )}
+            rules={{
+              required: "Phone number is required",
+            }}
           />
           {errors.phone && (
             <Typography sx={{ color: "red", fontSize: "12px" }}>
-              {errors.phone}
+              {errors.phone.message}
             </Typography>
           )}
         </Box>

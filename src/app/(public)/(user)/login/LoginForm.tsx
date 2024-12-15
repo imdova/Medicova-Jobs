@@ -16,6 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import GoogleButton from "./googleButton";
 import { useRouter } from "next/navigation";
+import FacebookButton from "./facebookButton";
 
 interface FormData {
   email: string;
@@ -30,9 +31,15 @@ const user = {
   password: "123456",
 };
 
-const LoginForm: React.FC = () => {
+
+interface LoginFormProps {
+  userType: "jobSeeker" | "employer";
+  setUserType: React.Dispatch<React.SetStateAction<"jobSeeker" | "employer">>;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
   const router = useRouter();
-  const [userType, setUserType] = useState<UserType>("jobSeeker"); // default to jobSeeker
+  // const [userType, setUserType] = useState<UserType>("employer"); // default to jobSeeker
   const [error, setError] = useState("");
   const {
     handleSubmit,
@@ -87,9 +94,9 @@ const LoginForm: React.FC = () => {
           onClick={() => setUserType("jobSeeker")}
           sx={{
             padding: "10px 20px",
-            color: userType === "jobSeeker" ? "#000" : "#6CC6A3",
+            color: userType === "jobSeeker" ? "#6CC6A3" : "#000",
             backgroundColor:
-              userType === "jobSeeker" ? "#E9EBFD" : "transparent",
+              userType === "jobSeeker" ? "transparent" : "#E9EBFD",
             transition: "all 0.3s ease",
           }}
           variant="text"
@@ -100,9 +107,9 @@ const LoginForm: React.FC = () => {
           onClick={() => setUserType("employer")}
           sx={{
             padding: "10px 20px",
-            color: userType === "employer" ? "#000" : "#6CC6A3",
+            color: userType === "employer" ? "#6CC6A3" : "#000",
             backgroundColor:
-              userType === "employer" ? "#E9EBFD" : "transparent",
+              userType === "employer" ? "transparent" : "#E9EBFD",
             transition: "all 0.3s ease",
           }}
           variant="text"
@@ -139,11 +146,17 @@ const LoginForm: React.FC = () => {
           display: "flex",
           width: "100%",
           justifyContent: "center",
+          gap: 2,
         }}
       >
         <NextAuthProvider>
           <GoogleButton>Login with Google</GoogleButton>
         </NextAuthProvider>
+        {userType === "jobSeeker" && (
+          <NextAuthProvider>
+            <FacebookButton>Login with Facebook</FacebookButton>
+          </NextAuthProvider>
+        )}
       </Box>
       <Box
         sx={{

@@ -138,8 +138,8 @@ const FilterSections = <
                                   width: 22,
                                   height: 22,
                                   borderRadius: 1,
-                                  backgroundColor: "#3f51b5", // Checked color
-                                  border: "2px solid #3f51b5",
+                                  backgroundColor: "#2EAE7D", // Checked color
+                                  border: "2px solid #2EAE7D",
                                 }}
                               >
                                 <CheckIcon

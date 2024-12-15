@@ -7,9 +7,11 @@ import ReportIcon from "@mui/icons-material/Assessment";
 import ChatIcon from "@mui/icons-material/Chat";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { LinkType } from "@/types/side-bar";
 
 export const icons = {
+  home: HomeOutlinedIcon,
   dashBoard: DashboardIcon,
   profile: BusinessIcon,
   job: WorkIcon,
@@ -21,7 +23,7 @@ export const icons = {
   help: HelpIcon,
 };
 
-export const sideBarLinks: LinkType[] = [
+export const employerSideBarLinks: LinkType[] = [
   {
     title: "Dashboard",
     icon: "dashBoard",
@@ -29,7 +31,7 @@ export const sideBarLinks: LinkType[] = [
     links: [
       {
         title: "OverView",
-        url: "/dashboard",
+        url: "/employer/dashboard",
       },
       {
         title: "Analytics",
@@ -41,7 +43,7 @@ export const sideBarLinks: LinkType[] = [
   },
   {
     title: "Company Profile",
-    url: "/profile",
+    url: "/employer/profile",
     icon: "profile",
   },
   {
@@ -51,15 +53,15 @@ export const sideBarLinks: LinkType[] = [
     links: [
       {
         title: "Manage Jobs",
-        url: "/job/manage-jobs",
+        url: "/employer/job/manage-jobs",
       },
       {
         title: "Posted Jobs",
-        url: "/job/posted",
+        url: "/employer/job/posted",
       },
       {
         title: "Applicants",
-        url: "/job/applicants",
+        url: "/employer/job/applicants",
       },
       {
         title: "Job Analytics",
@@ -73,7 +75,7 @@ export const sideBarLinks: LinkType[] = [
     links: [
       {
         title: "Search Candidates",
-        url: "/cv/candidates",
+        url: "/employer/cv/candidates",
       },
       {
         title: "Saved Searches",
@@ -102,11 +104,56 @@ export const sideBarLinks: LinkType[] = [
   {
     title: "Settings",
     icon: "settings",
-    url: "/setting",
+    url: "/employer/setting",
   },
   {
     title: "Help Center",
     icon: "help",
+  },
+];
+
+export const jobSeekerSideBarLinks: LinkType[] = [
+  {
+    title: "Home page",
+    icon: "home",
+    url: "/",
+  },
+  {
+    title: "Messages",
+    icon: "chat",
+    url: "#",
+  },
+  {
+    title: "My Applications",
+    icon: "report",
+    url: "#",
+  },
+  {
+    title: "Find Jobs",
+    icon: "search",
+    url: "#",
+  },
+  {
+    title: "Browse Companies",
+    icon: "profile",
+    url: "#",
+  },
+  {
+    kind: "divider",
+  },
+  {
+    kind: "title",
+    title: "Settings",
+  },
+  {
+    title: "Settings",
+    icon: "settings",
+    url: "#",
+  },
+  {
+    title: "Help Center",
+    icon: "help",
+    url: "#",
   },
 ];
 
