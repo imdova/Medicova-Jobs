@@ -1,36 +1,40 @@
-"use client";
 import React from "react";
-import { Box, Typography, Grid, Card } from "@mui/material";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import { Typography, Grid, Card, Switch, Box } from "@mui/material";
 
 const AboutCompany: React.FC = () => {
   return (
     <Grid item xs={12}>
-      <Card sx={{ padding: "16px", textAlign: "center" }}>
-        {/* Title */}
-        <Typography variant="h6" sx={{ marginBottom: 2, textAlign: "left" }}>
-          About Company :
-        </Typography>
-
-        {/* Description */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "start",
-            color: "gray",
-          }}
-        >
-          <PendingActionsIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
+      <Card
+        sx={{
+          padding: "16px",
+          textAlign: "start",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#ECF7F3",
+        }}
+      >
+        {/* Title and Description */}
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ marginBottom: 2, textAlign: "left", fontWeight: "700" }}
+          >
+            Are you available for immediate hiring?
+          </Typography>
           <Typography
             sx={{
               fontWeight: "400",
+              color: "gray",
             }}
           >
-            A healthcare company refers to any business or organization that
-            provides products or services related to the maintenance,
-            improvement, or management of health.
+            Let companies know you can start immediately by adding the Immediate
+            start badge to your profile
           </Typography>
         </Box>
+
+        {/* Switch */}
+        <Switch color="primary" />
       </Card>
     </Grid>
   );

@@ -16,8 +16,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 const ProfileForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -81,6 +83,8 @@ const ProfileForm: React.FC = () => {
     }
   };
 
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
+
   return (
     <Grid item xs={12}>
       <Card>
@@ -93,19 +97,19 @@ const ProfileForm: React.FC = () => {
               fontSize: { xs: "20px", md: "20px" },
             }}
           >
-            Company Main Information
+            Your Personal Info
           </Typography>
           <form onSubmit={handleSubmit} noValidate>
-            {/* Company Sector and Company Type Selectors */}
+            {/* personal info */}
             <Box
               sx={{
                 display: "flex",
                 flexWrap: { xs: "wrap", md: "nowrap" },
-                gap: 1,
-                marginBottom: 2,
+                gap: 4,
+                marginY: 2,
               }}
             >
-              {/* Company Sector Selector */}
+              {/* First Name */}
               <Box sx={{ width: "100%" }}>
                 <InputLabel
                   sx={{
@@ -115,26 +119,22 @@ const ProfileForm: React.FC = () => {
                     fontSize: "14px",
                   }}
                 >
-                  Company Sector
+                  First Name *
                 </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
+                <TextField
+                  sx={{
+                    backgroundColor: "rgba(214, 221, 235, 0.18)",
+                    "& .MuiOutlinedInput-root": {
                       height: "40px",
-                      width: { xs: "100%", md: "250px" },
                       fontSize: "14px",
-                    }}
-                    defaultValue="Healthcare"
-                  >
-                    <MenuItem value="Healthcare">Healthcare</MenuItem>
-                    <MenuItem value="Technology">Technology</MenuItem>
-                    <MenuItem value="Finance">Finance</MenuItem>
-                  </Select>
-                </FormControl>
+                    },
+                  }}
+                  fullWidth
+                  placeholder="Enter your First Name"
+                />
               </Box>
 
-              {/* Company Type Selector */}
+              {/* Last Name */}
               <Box sx={{ width: "100%" }}>
                 <InputLabel
                   sx={{
@@ -144,37 +144,77 @@ const ProfileForm: React.FC = () => {
                     fontSize: "14px",
                   }}
                 >
-                  Company Type
+                  Last Name *
                 </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
+                <TextField
+                  sx={{
+                    backgroundColor: "rgba(214, 221, 235, 0.18)",
+                    "& .MuiOutlinedInput-root": {
                       height: "40px",
-                      width: { xs: "100%", md: "250px" },
                       fontSize: "14px",
+                    },
+                  }}
+                  fullWidth
+                  placeholder="Enter your Last Name"
+                />
+              </Box>
+            </Box>
+
+            {/* personal info */}
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: { xs: "wrap", md: "nowrap" },
+                marginY: 2,
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  Birthdate *
+                </InputLabel>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={selectedDate}
+                    onChange={(newValue) => setSelectedDate(newValue)}
+                    slots={{
+                      textField: TextField,
                     }}
-                    defaultValue="Hospital"
-                  >
-                    <MenuItem value="Hospital">Hospital</MenuItem>
-                    <MenuItem value="Clinic">Clinic</MenuItem>
-                  </Select>
-                </FormControl>
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        sx: {
+                          height: "40px",
+                          "& .MuiInputBase-root": {
+                            height: "40px",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </Box>
             </Box>
 
             {/* Radio Group Section */}
-            <Box sx={{ marginBottom: 2 }}>
+            <Box sx={{ marginY: 2 }}>
               {/* Title for the Radio Group */}
               <Typography
                 variant="h6"
                 sx={{
-                  marginBottom: 1,
-                  fontWeight: 500,
-                  color: "rgba(24, 93, 67, 1)",
+                  marginTop: 1,
+                  fontWeight: 600,
+                  color: "#000",
+                  fontSize: "14px",
                 }}
               >
-                Company Ownership Type
+                Gender *
               </Typography>
 
               <FormControl component="fieldset" fullWidth>
@@ -187,9 +227,9 @@ const ProfileForm: React.FC = () => {
                   }}
                 >
                   {/* First Radio Group */}
-                  <RadioGroup row defaultValue="private">
+                  <RadioGroup row defaultValue="male">
                     <FormControlLabel
-                      value="private"
+                      value="male"
                       sx={{ fontSize: "14px" }}
                       control={
                         <Radio
@@ -199,100 +239,21 @@ const ProfileForm: React.FC = () => {
                           }}
                         />
                       }
-                      label={<span style={{ fontWeight: "600" }}>Private</span>}
+                      label={<span style={{ fontWeight: "600" }}>Male</span>}
                     />
                     <FormControlLabel
-                      value="governmental"
+                      value="female"
                       control={
                         <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
                       }
-                      label={
-                        <span style={{ fontWeight: "600" }}>Governmental</span>
-                      }
-                    />
-                  </RadioGroup>
-
-                  {/* Typography with "&" */}
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    &
-                  </Typography>
-
-                  {/* Second Radio Group */}
-                  <RadioGroup row defaultValue="profit">
-                    <FormControlLabel
-                      value="profit"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>Profit Org</span>
-                      }
-                    />
-                    <FormControlLabel
-                      value="non-profit"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>
-                          Non-Profit Org
-                        </span>
-                      }
+                      label={<span style={{ fontWeight: "600" }}>Female</span>}
                     />
                   </RadioGroup>
                 </Box>
               </FormControl>
             </Box>
-
-            {/* Additional Form Fields */}
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Country
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                defaultValue="Egypt"
-              />
-            </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                City
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                defaultValue="Cairo"
-              />
-            </Box>
-
-            <Box sx={{ marginBottom: 2 }}>
+            {/* Nationality  */}
+            <Box sx={{ marginY: 2 }}>
               <Box sx={{ width: "100%" }}>
                 <InputLabel
                   sx={{
@@ -302,7 +263,7 @@ const ProfileForm: React.FC = () => {
                     fontSize: "14px",
                   }}
                 >
-                  Company Size
+                  Nationality *
                 </InputLabel>
                 <FormControl fullWidth>
                   <Select
@@ -311,143 +272,239 @@ const ProfileForm: React.FC = () => {
                       height: "40px",
                       fontSize: "14px",
                     }}
-                    defaultValue="1-10"
+                    defaultValue="egyptian"
                   >
-                    <MenuItem value="1-10">1-10 employees</MenuItem>
-                    <MenuItem value="11-50">11-50 employees</MenuItem>
-                    <MenuItem value="51-200">51-200 employees</MenuItem>
+                    <MenuItem value="egyptian">Egyptian</MenuItem>
+                    <MenuItem value="egyptian">Egyptian</MenuItem>
+                    <MenuItem value="egyptian">Egyptian</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
             </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
+            {/* Marital Status */}
+            <Box sx={{ marginY: 2 }}>
+              {/* Title for the Radio Group */}
+              <Typography
+                variant="h6"
                 sx={{
-                  marginBottom: 1,
+                  marginTop: 1,
                   fontWeight: 600,
                   color: "#000",
                   fontSize: "14px",
                 }}
               >
-                Email
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                name="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-                error={!!errors.email}
-                helperText={errors.email}
-              />
+                Marital Status
+              </Typography>
+
+              <FormControl component="fieldset" fullWidth>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  {/* First Radio Group */}
+                  <RadioGroup row defaultValue="single">
+                    <FormControlLabel
+                      value="single"
+                      sx={{ fontSize: "14px" }}
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": { color: "#2EAE7D" },
+                            fontSize: "14px",
+                          }}
+                        />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>Single</span>}
+                    />
+                    <FormControlLabel
+                      value="married"
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>Married</span>}
+                    />
+                    <FormControlLabel
+                      value="widow"
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>Widow</span>}
+                    />
+                    <FormControlLabel
+                      value="divorced"
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
+                      }
+                      label={
+                        <span style={{ fontWeight: "600" }}>Divorced</span>
+                      }
+                    />
+                  </RadioGroup>
+                </Box>
+              </FormControl>
             </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
+            {/* Driver License */}
+            <Box sx={{ marginY: 2 }}>
+              <Typography
+                variant="h6"
                 sx={{
-                  marginBottom: 1,
+                  marginTop: 1,
                   fontWeight: 600,
                   color: "#000",
                   fontSize: "14px",
                 }}
               >
-                Year Founded
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                type="number"
-                placeholder="Enter year"
-                value={year}
-                onChange={handleYearChange}
-                InputProps={{
-                  inputProps: {
-                    min: 1990,
-                    max: new Date().getFullYear(),
-                  },
-                }}
-                error={!!error} // Shows red border if there's an error
-                helperText={error} // Displays the error message below the text field
-              />
+                Do you have a driving license?
+              </Typography>
+
+              <FormControl component="fieldset" fullWidth>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  {/* First Radio Group */}
+                  <RadioGroup row defaultValue="yes">
+                    <FormControlLabel
+                      value="yes"
+                      sx={{ fontSize: "14px" }}
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": { color: "#2EAE7D" },
+                            fontSize: "14px",
+                          }}
+                        />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>Yes</span>}
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>No</span>}
+                    />
+                  </RadioGroup>
+                </Box>
+              </FormControl>
             </Box>
+            {/* Location */}
             <Box
               sx={{
-                mb: 2,
-                "& .PhoneInput": {
-                  display: "flex",
-                  paddingY: "10px",
-                  gap: "5px",
-                },
-                "& .PhoneInputInput": {
-                  border: "1px solid #ccc",
-                  padding: "15px",
-                  fontSize: "14px",
-                  height: "40px",
-                  width: "100%",
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "&::placeholder": {
-                    color: "#000", // Set placeholder color to black
-                    opacity: 0.7, // Ensure full opacity
-                  },
-                },
-                "& .PhoneInputCountrySelect": {
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "5px",
-                  fontSize: "14px",
-                  height: "35px",
-                  backgroundColor: "#f9f9f9",
-                },
-                "& .PhoneInputCountrySelect:hover": {
-                  backgroundColor: "#eaeaea",
-                },
-                "& .PhoneInputCountrySelect:focus": {
-                  outline: "none",
-                  borderColor: "#2EAE7D",
-                },
-                "& .PhoneInputCountrySelectDropdown": {
-                  maxHeight: "150px",
-                  overflowY: "auto",
-                },
-                "& .PhoneInputCountrySelectDropdownItem": {
-                  padding: "6px 10px",
-                },
+                display: "flex",
+                flexWrap: { xs: "wrap", md: "nowrap" },
+                gap: 4,
+                marginY: 2,
               }}
             >
-              <InputLabel
+              {/* First Name */}
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  Country *
+                </InputLabel>
+                <TextField
+                  sx={{
+                    backgroundColor: "rgba(214, 221, 235, 0.18)",
+                    "& .MuiOutlinedInput-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                  }}
+                  fullWidth
+                  defaultValue="Egypt"
+                />
+              </Box>
+
+              {/* Last Name */}
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  City *
+                </InputLabel>
+                <TextField
+                  sx={{
+                    backgroundColor: "rgba(214, 221, 235, 0.18)",
+                    "& .MuiOutlinedInput-root": {
+                      height: "40px",
+                      fontSize: "14px",
+                    },
+                  }}
+                  fullWidth
+                  defaultValue="Cairo"
+                />
+              </Box>
+            </Box>
+            {/* Driver License */}
+            <Box sx={{ marginY: 2 }}>
+              <Typography
+                variant="h6"
                 sx={{
+                  marginTop: 1,
                   fontWeight: 600,
                   color: "#000",
                   fontSize: "14px",
                 }}
               >
-                Phone Number
-              </InputLabel>
-              <PhoneInput
-                defaultCountry="EG"
-                value={phone}
-                onChange={setPhone}
-                placeholder="Enter phone number"
-              />
-              {errors.phone && (
-                <Typography sx={{ color: "red", fontSize: "12px" }}>
-                  {errors.phone}
-                </Typography>
-              )}
-            </Box>
+                Would you be willing to relocate to another city or country if
+                you find the right opportunity?
+              </Typography>
 
+              <FormControl component="fieldset" fullWidth>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  {/* First Radio Group */}
+                  <RadioGroup row defaultValue="yes">
+                    <FormControlLabel
+                      value="yes"
+                      sx={{ fontSize: "14px" }}
+                      control={
+                        <Radio
+                          sx={{
+                            "&.Mui-checked": { color: "#2EAE7D" },
+                            fontSize: "14px",
+                          }}
+                        />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>Yes</span>}
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
+                      }
+                      label={<span style={{ fontWeight: "600" }}>No</span>}
+                    />
+                  </RadioGroup>
+                </Box>
+              </FormControl>
+            </Box>
             {/* Centered Save Button */}
             <Box
               sx={{
