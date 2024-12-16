@@ -4,6 +4,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import { icons } from "@/constants/side-bar";
 import { LinkType } from "@/types/side-bar";
@@ -18,11 +19,7 @@ const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
   return (
     <ListItem disablePadding>
       <ListItemButton
-        sx={{
-          "&:hover": {
-            backgroundColor: "rgba(222, 240, 235, 1)", // Background color on hover
-          },
-        }}
+        className="hover:bg-[#2EAE7D]/50"
         component={Link}
         disabled={!url}
         href={url || "#"}
@@ -30,8 +27,15 @@ const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
       >
         {Icon && (
           <ListItemIcon>
-            {" "}
-            <Icon sx={{ color: "#7C8493CC", fontSize: "20px" }} />
+            <Tooltip
+              title={title}
+              // disableHoverListener={isOpen}
+              disableInteractive
+              placement="right"
+              arrow
+            >
+              <Icon sx={{ color: "white", fontSize: "20px" }} />
+            </Tooltip>
           </ListItemIcon>
         )}
         <ListItemText

@@ -75,8 +75,8 @@ const Header = () => {
             open={isMenuOpen}
             onClose={close} // Handles backdrop clicks automatically
           >
-            <Box className=" h-full bg-[#f7f7fd] overflow-hidden max-w-[600px] text-[#7C8493CC]">
-              <Box className=" overflow-y-auto py-5 max-h-full scroll-bar-hidden">
+            <Box className="h-full max-w-[600px] overflow-hidden bg-[#1b6648] text-white">
+              <Box className="scroll-bar-hidden max-h-full overflow-y-auto py-5">
                 <List>
                   {jobSeekerSideBarLinks.map((link, index) => (
                     <ItemSelector key={index} link={link} onClick={close} />
@@ -173,7 +173,7 @@ const Header = () => {
               <div className="absolute right-3 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
               <NotificationsNoneIcon sx={{ color: "#515B6F" }} />
             </IconButton>
-            <Link href="/profile" className="hover:scale-105 duration-300">
+            <Link href="/profile" className="duration-300 hover:scale-105">
               <Avatar
                 sx={{
                   display: { xs: "none", md: "flex" },

@@ -7,36 +7,37 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
+  Tooltip,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import { icons } from "@/constants/side-bar";
 import { LinkType } from "@/types/side-bar";
-const CollapseIem: React.FC<LinkType & { onClick?: () => void }> = ({
-  title,
-  links,
-  icon,
-  onClick,
-}) => {
+const CollapseItem: React.FC<
+  LinkType & { onClick?: () => void; collapseOnClick?: () => void }
+> = ({ title, links, icon, onClick, collapseOnClick }) => {
   const Icon = icon ? icons[icon] : null;
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+  const toggle = () => {
+    setIsOpen(!isOpen);
+    if (collapseOnClick) collapseOnClick();
+  };
   return (
     <div>
       <ListItem disablePadding>
-        <ListItemButton
-          sx={{
-            "&:hover": {
-              backgroundColor: "rgba(222, 240, 235, 1)", // Background color on hover
-            },
-          }}
-          onClick={toggle}
-        >
+        <ListItemButton className="hover:bg-[#2EAE7D]/50" onClick={toggle}>
           {Icon && (
             <ListItemIcon>
-              {" "}
-              <Icon sx={{ color: "#7C8493CC", fontSize: "20px" }} />
+              <Tooltip
+                title={title}
+                disableHoverListener={isOpen}
+                disableInteractive
+                placement="right"
+                arrow
+              >
+                <Icon sx={{ color: "white", fontSize: "20px" }} />
+              </Tooltip>
             </ListItemIcon>
           )}
           <ListItemText
@@ -64,10 +65,8 @@ const CollapseIem: React.FC<LinkType & { onClick?: () => void }> = ({
                   }}
                   sx={{
                     pl: 7,
-                    "&:hover": {
-                      backgroundColor: "rgba(222, 240, 235, 1)", // Background color on hover
-                    },
                   }}
+                  className="hover:bg-[#2EAE7D]/50"
                 >
                   <ListItemText primary={link.title} />
                 </ListItemButton>
@@ -79,4 +78,4 @@ const CollapseIem: React.FC<LinkType & { onClick?: () => void }> = ({
   );
 };
 
-export default CollapseIem;
+export default CollapseItem;
