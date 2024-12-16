@@ -40,27 +40,6 @@ const RightSection: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Centered Button */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: 4,
-          }}
-        >
-          <Button
-            variant="contained"
-            sx={{
-              width: "204.16px",
-              height: "46px",
-              textTransform: "capitalize",
-              borderRadius: "3px",
-              fontWeight: "600",
-            }}
-          >
-            Post a job for free
-          </Button>
-        </Box>
       </Card>
 
       <Card sx={{ padding: "16px" }}>
