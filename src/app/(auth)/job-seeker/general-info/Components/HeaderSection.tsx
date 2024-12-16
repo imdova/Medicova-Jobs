@@ -1,94 +1,143 @@
 "use client";
-import React, { useState } from "react";
-import { Box, Avatar, IconButton, Typography, Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BackupIcon from "@mui/icons-material/Backup";
+import { useEffect } from "react";
+import { Box, Avatar, Typography, Button, Grid } from "@mui/material";
+import { useRouter } from "next/navigation";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FlagIcon from "@mui/icons-material/Flag";
 
 const HeaderSection: React.FC = () => {
-  // State to hold the avatar image (either URL or undefined)
-  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
-
-  // Handle deleting the avatar image
-  const handleDeleteImage = () => {
-    setAvatarImage(undefined); // Remove the image by setting the state to undefined
-  };
-
-  // Handle selecting a new image
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file); // Create a URL for the uploaded image
-      setAvatarImage(imageUrl); // Update the avatar image state
+  const router = useRouter();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
     }
+  }, []);
+
+  const handleEditProfileClick = () => {
+    router.push("/job-seeker/profile");
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        justifyContent: { xs: "center", md: "space-between" },
-        gap: 2,
-        backgroundColor: "#fff",
-        padding: "30px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        marginBottom: "16px",
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Avatar */}
-        <Avatar
-          src={avatarImage || undefined}
+    <Grid item xs={12}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          borderRadius: "8px",
+          overflow: "hidden",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          paddingBottom: "20px",
+        }}
+      >
+        {/* Background Cover Image */}
+        <Box
+          component="div"
           sx={{
-            width: 110,
-            height: 110,
-            borderRadius: "50%",
-            boxShadow: "7px 4px 7px 4px rgba(0, 0, 0, 0.2)",
-            border: "4px solid white",
+            width: "100%",
+            height: { xs: "150px", sm: "200px" }, // Adjust height based on screen size
+            backgroundImage: "url('https://via.placeholder.com/1500x400')", // Replace with cover photo URL
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative",
           }}
-        />
-        {/* Typography and IconButton */}
-        <Box sx={{ marginLeft: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            John Doe
-          </Typography>
-          <Typography variant="body2" sx={{ color: "gray" }}>
-            You can upload a .jpg, .png, or .gif photo with max size of 5MB.
-          </Typography>
-
-          {/* IconButton for deleting image below typography */}
-          <IconButton
-            size="medium"
+        >
+          {/* Avatar Positioned on Background Image */}
+          <Avatar
+            alt="Profile"
             sx={{
-              marginTop: 1,
-              color: "#E34817",
+              position: "absolute",
+              bottom: "-50px",
+              left: "20px", // Avatar aligned to the left
+              width: { xs: 80, sm: 120 }, // Adjust avatar size based on screen size
+              height: { xs: 80, sm: 120 },
+              border: "6px solid white",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
             }}
-            onClick={handleDeleteImage}
-          >
-            <DeleteIcon sx={{ fontSize: "25px" }} />
-          </IconButton>
+          />
+        </Box>
 
-          {/* File input to upload a new avatar */}
+        {/* Profile Section */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            padding: { xs: "12px 8px", sm: "16px 15px 0 20px" }, // Adjust padding for smaller screens
+            backgroundColor: "#fff",
+            borderRadius: "0 0 8px 8px",
+            flexDirection: { xs: "column", sm: "row" }, // Stack items vertically on small screens
+            gap: { xs: 2, sm: 0 }, // Add gap between elements on smaller screens
+          }}
+        >
+          {/* Text Section centered */}
+          <Box sx={{ textAlign: "center", flexGrow: 1 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "#185D43",
+                marginBottom: "4px",
+                fontSize: { xs: "1.2rem", sm: "1.5rem" }, // Adjust font size for smaller screens
+              }}
+            >
+              Jake Gyll
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }} // Adjust font size
+            >
+              Medical Ambassador at{" "}
+              <span style={{ color: "#000" }}>PL Hospital</span>
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "#999",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 0.5,
+                marginY: "8px",
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+              }}
+            >
+              <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> Cairo,
+              Egypt
+            </Typography>
+            <Button
+              variant="text"
+              sx={{
+                fontWeight: "600",
+                color: "#00A884",
+                textTransform: "uppercase",
+                backgroundColor: "#56CDAD1A",
+                gap: 1,
+                fontSize: { xs: "0.9rem", sm: "1rem" }, // Adjust font size
+              }}
+            >
+              <FlagIcon sx={{ fontSize: { xs: 18, sm: 20 } }} /> Open for
+              Opportunities
+            </Button>
+          </Box>
+
+          {/* Edit Profile Button positioned on right */}
           <Button
             variant="contained"
-            color="primary"
-            component="label"
-            startIcon={<BackupIcon />}
-            className="m-3"
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: "600",
+              borderColor: "#00A884",
+              "&:hover": {
+                borderColor: "#00795c",
+                backgroundColor: "rgba(0, 168, 132, 0.1)",
+              },
+              fontSize: { xs: "0.9rem", sm: "1rem" }, // Adjust font size for smaller screens
+            }}
+            onClick={handleEditProfileClick}
           >
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
+            Edit Profile
           </Button>
         </Box>
       </Box>
-    </Box>
+    </Grid>
   );
 };
 
