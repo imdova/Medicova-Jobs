@@ -165,7 +165,7 @@ export const jobSeekerSideBarLinks: LinkType[] = [
   {
     title: "Profile Setting",
     icon: "manage",
-    url: "#",
+    url: "/job-seeker/profile",
   },
   {
     kind: "divider",
