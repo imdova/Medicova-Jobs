@@ -83,13 +83,13 @@ export const employerSideBarLinks: LinkType[] = [
     ],
   },
   {
-    title: "CV Search",
+    title: "Search",
     icon: "search",
     kind: "collapse",
     links: [
       {
         title: "Search Candidates",
-        url: "/employer/cv/candidates",
+        url: "/employer/search/",
       },
       {
         title: "Saved Searches",

@@ -243,3 +243,63 @@ export const filterSections = {
     { label: "+10", count: 30, value: "10+" },
   ],
 };
+export const searchFilters = {
+  "Residency (Location)": [
+    { label: "All", count: 5, value: "all" },
+    { label: "Egypt", count: 3, value: "egypt" },
+    { label: "Qatar", count: 2, value: "Qatar" },
+  ],
+  city: [
+    { label: "All", count: 5, value: "all" },
+    { label: "cairo", count: 3, value: "cairo" },
+    { label: "riyadh", count: 2, value: "riyadh" },
+  ],
+  nationality: [
+    { label: "All", count: 5, value: "all" },
+    { label: "egyptian", count: 3, value: "egyptian" },
+    { label: "saudi arabian", count: 2, value: "saudi arabian" },
+  ],
+  industry: [
+    { label: "All", count: 200, value: "all" },
+    { label: "Physicians", count: 10, value: "Physicians" },
+    { label: "Dentists", count: 100, value: "Dentists" },
+    { label: "Physiotherapists", count: 50, value: "Physiotherapists" },
+    { label: "Pharmacists", count: 30, value: "Pharmacists" },
+    { label: "Nurses", count: 10, value: "Nurses" },
+  ],
+  category: [
+    { label: "All", count: 200, value: "all" },
+    { label: "Doctor", count: 100, value: "doctor" },
+    { label: "Nurse", count: 50, value: "nurse" },
+    { label: "Pharmaceutical", count: 30, value: "pharmaceutical" },
+    { label: "physical therapy", count: 10, value: "physical therapy" },
+    { label: "Specialized", count: 10, value: "specialized" },
+  ],
+  "Education Level": [
+    { label: "All", count: 250, value: "all" },
+    { label: "Institute", count: 50, value: "institute" },
+    { label: "Bachelor's Degree", count: 100, value: "bachelor" },
+    { label: "Master's Degree", count: 100, value: "master" },
+    { label: "Doctorate Degree", count: 70, value: "doctorate" },
+    { label: "Fellowship", count: 30, value: "fellowship" },
+  ],
+  "Years Of Experience": [
+    { label: "All", count: 150, value: "all" },
+    { label: "1-3", count: 50, value: "1-3" },
+    { label: "3-5", count: 40, value: "3-5" },
+    { label: "5-10", count: 30, value: "5-10" },
+    { label: "+10", count: 30, value: "10+" },
+  ],
+  gender: [
+    { label: "All", count: 300, value: "all" },
+    { label: "Male", count: 200, value: "male" },
+    { label: "Female", count: 100, value: "female" },
+  ],
+  age: [
+    { label: "18-25", count: 40, value: "18-25" },
+    { label: "26-35", count: 50, value: "26-35" },
+    { label: "36-45", count: 30, value: "36-45" },
+    { label: "46-60", count: 20, value: "46-60" },
+    { label: "60+", count: 10, value: "60+" },
+  ],
+};

@@ -16,10 +16,10 @@ import StarIcon from "@mui/icons-material/Star";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
-import FilterDrawer from "./FilterDrawer";
 import { doctorsBase, filterSections } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
-import DoctorCard from "./DoctorCard";
+import DoctorCard from "@/components/UI/DoctorCard";
+import FilterDrawer from "@/components/UI/FilterDrawer";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -124,10 +124,10 @@ const ApplicantsPage: React.FC = () => {
         sx={{
           width: "20%",
           position: "sticky",
-          mt: "66px",
-          top: "190px",
+          top: "107px",
+          paddingTop: "80px",
           overflowY: "scroll",
-          maxHeight: "calc(100vh - 180px)",
+          maxHeight: "calc(100vh - 114px)",
           paddingBottom: "16px",
         }}
       >
@@ -317,7 +317,6 @@ const ApplicantsPage: React.FC = () => {
         message="Link copied to clipboard!"
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-      <FilterDrawer handleFilterChange={handleFilterChange} />
     </Box>
   );
 };
