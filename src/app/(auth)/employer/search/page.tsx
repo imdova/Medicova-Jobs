@@ -16,16 +16,17 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase as doctors, searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
-import DoctorCard from "@/components/UI/DoctorCard";
 import { Search } from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CandideCard from "./CandideCard";
 
 const ApplicantsPage: React.FC = () => {
-  const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [availableApplicants, setAvailableApplicants] = useState<string[]>(
     doctors.filter((x) => x.available).map((x) => x.id),
   );
-  const [shortListed, setShortListed] = useState<string[]>([]);
+  const [savedList, setSavedList] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<{
     [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"];
   }>({
@@ -42,12 +43,12 @@ const ApplicantsPage: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 
-  const isAllSelect = selectedApplicants.length === doctors.length;
+  const isAllSelect = selected.length === doctors.length;
   const toggleSelectAll = () => {
     if (isAllSelect) {
-      setSelectedApplicants([]);
+      setSelected([]);
     } else {
-      setSelectedApplicants(doctors.map((x) => x.id));
+      setSelected(doctors.map((x) => x.id));
     }
   };
 
@@ -63,27 +64,32 @@ const ApplicantsPage: React.FC = () => {
   };
 
   // - // short list action
-  const removeFromShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) => pv.filter((id) => !selectedApplicants.includes(id)));
+  const removeFromSavedList = () => {
+    if (!selected.length) return;
+    setSavedList((pv) => pv.filter((id) => !selected.includes(id)));
   };
-  const addToShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) =>
-      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
-    );
+  const saveToList = () => {
+    if (!selected.length) return;
+    setSavedList((pv) => pv.concat(selected.filter((id) => !pv.includes(id))));
   };
 
+  const toggleSelect = () => {
+    if (areArraysEqual(selected, savedList)) {
+      removeFromSavedList();
+    } else {
+      saveToList();
+    }
+  };
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
       <FilterSections
+        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[101px] lg:block"
         sections={searchFilters}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
-        searchKeys={["Residency (Location)"]}
+        searchKeys={["Residency (Location)", "nationality"]}
       />
-
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="h-[80px] w-full">
@@ -101,12 +107,14 @@ const ApplicantsPage: React.FC = () => {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "4px",
+                  borderRadius: 0,
                 },
                 minWidth: 200,
               }}
             />
-            <Button variant="contained">Search</Button>
+            <Button variant="contained" className="w-1/5">
+              Search
+            </Button>
           </div>
           <p className="mt-2 text-sm text-gray-500">Showing 2500 Results</p>
         </div>
@@ -124,10 +132,14 @@ const ApplicantsPage: React.FC = () => {
               )}
             </button>
 
-            {selectedApplicants.length > 0 && (
+            {selected.length > 0 && (
               <>
-                <IconButton size="small">
-                  <BookmarkIcon color="primary" className="h-6 w-6" />
+                <IconButton onClick={toggleSelect} size="medium">
+                  {areArraysEqual(selected, savedList) ? (
+                    <BookmarkIcon color="primary" className="h-8 w-8" />
+                  ) : (
+                    <BookmarkBorderIcon color="primary" className="h-8 w-8" />
+                  )}
                 </IconButton>
                 <div>
                   <button
@@ -167,15 +179,14 @@ const ApplicantsPage: React.FC = () => {
         </div>
         {/* Applicant Cards */}
         {doctors.map((doctor, index) => (
-          <DoctorCard
+          <CandideCard
             key={index}
             doctor={doctor}
-            shortListed={shortListed}
-            setShortListed={setShortListed}
-            setSelectedApplicants={setSelectedApplicants}
+            savedList={savedList}
+            setSavedList={setSavedList}
+            setSelected={setSelected}
             availableApplicants={availableApplicants}
-            setAvailableApplicants={setAvailableApplicants}
-            selectedApplicants={selectedApplicants}
+            selected={selected}
           />
         ))}
 
@@ -200,3 +211,7 @@ const ApplicantsPage: React.FC = () => {
 };
 
 export default ApplicantsPage;
+
+function areArraysEqual<T>(array1: T[], array2: T[]): boolean {
+  return array1.every((id) => array2.includes(id));
+}

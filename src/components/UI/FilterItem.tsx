@@ -49,7 +49,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography
           variant="h6"
-          className="mb-3 text-[16px] font-bold text-[#25324B]"
+          className="mb-3 text-[14px] font-bold text-[#25324B]"
         >
           {section.title}
         </Typography>
