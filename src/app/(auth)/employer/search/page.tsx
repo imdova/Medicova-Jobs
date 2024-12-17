@@ -1,9 +1,6 @@
 "use client";
 import {
   Box,
-  Tabs,
-  Tab,
-  Select,
   MenuItem,
   Menu,
   Snackbar,
@@ -20,7 +17,6 @@ import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase as doctors, searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
-import FilterDrawer from "@/components/UI/FilterDrawer";
 import { Search } from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
@@ -30,10 +26,18 @@ const ApplicantsPage: React.FC = () => {
     doctors.filter((x) => x.available).map((x) => x.id),
   );
   const [shortListed, setShortListed] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState({
-    residency: "",
-    education: "",
-    experience: 0,
+  const [selectedFilters, setSelectedFilters] = useState<{
+    [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"];
+  }>({
+    "Residency (Location)": "",
+    city: "",
+    nationality: "",
+    industry: "",
+    category: "",
+    "Education Level": "",
+    "Years Of Experience": "",
+    gender: "",
+    age: "",
   });
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
@@ -45,10 +49,6 @@ const ApplicantsPage: React.FC = () => {
     } else {
       setSelectedApplicants(doctors.map((x) => x.id));
     }
-  };
-
-  const handleFilterChange = (key: string, value: any) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   // actions
@@ -77,24 +77,12 @@ const ApplicantsPage: React.FC = () => {
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
-      <Box
-        className="scroll-bar-hidden hidden h-full lg:block"
-        sx={{
-          width: "20%",
-          position: "sticky",
-          top: "107px",
-          paddingTop: "101px",
-          overflowY: "scroll",
-          maxHeight: "calc(100vh - 114px)",
-          paddingBottom: "16px",
-        }}
-      >
-        <FilterSections
-          sections={searchFilters}
-          onFilterChange={handleFilterChange}
-          searchKeys={["Residency (Location)"]}
-        />
-      </Box>
+      <FilterSections
+        sections={searchFilters}
+        selectedFilters={selectedFilters}
+        setSelectedFilters={setSelectedFilters}
+        searchKeys={["Residency (Location)"]}
+      />
 
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
@@ -207,7 +195,6 @@ const ApplicantsPage: React.FC = () => {
         message="Link copied to clipboard!"
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-      <FilterDrawer handleFilterChange={handleFilterChange} />
     </Box>
   );
 };

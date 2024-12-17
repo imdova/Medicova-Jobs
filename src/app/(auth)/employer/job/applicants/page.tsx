@@ -19,7 +19,6 @@ import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase, filterSections } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
-import FilterDrawer from "@/components/UI/FilterDrawer";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -30,11 +29,14 @@ const ApplicantsPage: React.FC = () => {
     doctors.filter((x) => x.available).map((x) => x.id),
   );
   const [shortListed, setShortListed] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState({
-    residency: "",
-    education: "",
-    experience: 0,
+  const [selectedFilters, setSelectedFilters] = useState<{
+    [K in keyof typeof filterSections]: (typeof filterSections)[K][number]["value"];
+  }>({
+    "Residency (Location)": "",
+    "Education Level": "",
+    "Years Of Experience": "",
   });
+
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 
@@ -80,10 +82,6 @@ const ApplicantsPage: React.FC = () => {
     }
   };
 
-  const handleFilterChange = (key: string, value: any) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
   // actions
   const [anchorEl, setAnchorEl] = useState(null);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
@@ -119,25 +117,12 @@ const ApplicantsPage: React.FC = () => {
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
-      <Box
-        className="scroll-bar-hidden hidden lg:block"
-        sx={{
-          width: "20%",
-          position: "sticky",
-          top: "107px",
-          paddingTop: "80px",
-          overflowY: "scroll",
-          maxHeight: "calc(100vh - 114px)",
-          paddingBottom: "16px",
-        }}
-      >
-        <FilterSections
-          sections={filterSections}
-          onFilterChange={handleFilterChange}
-          searchKeys={["Residency (Location)"]}
-        />
-      </Box>
-
+      <FilterSections
+        sections={filterSections}
+        selectedFilters={selectedFilters}
+        setSelectedFilters={setSelectedFilters}
+        searchKeys={["Residency (Location)"]}
+      />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="w-full">
