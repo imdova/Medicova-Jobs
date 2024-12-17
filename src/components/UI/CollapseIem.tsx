@@ -29,15 +29,18 @@ const CollapseItem: React.FC<
         <ListItemButton className="hover:bg-[#2EAE7D]/50" onClick={toggle}>
           {Icon && (
             <ListItemIcon>
-              <Tooltip
-                title={title}
-                disableHoverListener={isOpen}
-                disableInteractive
-                placement="right"
-                arrow
-              >
+              {isOpen ? (
                 <Icon sx={{ color: "white", fontSize: "20px" }} />
-              </Tooltip>
+              ) : (
+                <Tooltip
+                  title={title}
+                  disableInteractive
+                  placement="right"
+                  arrow
+                >
+                  <Icon sx={{ color: "white", fontSize: "20px" }} />
+                </Tooltip>
+              )}
             </ListItemIcon>
           )}
           <ListItemText

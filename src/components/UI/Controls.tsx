@@ -18,8 +18,8 @@ import ShareMenu from "@/components/UI/ShareMenu";
 
 const Controls: React.FC = () => {
   return (
-    <div className="text-center flex-col flex w-full md:w-auto">
-      <div className="flex items-center justify-center gap-1 ">
+    <div className="flex w-full flex-col text-center md:w-auto">
+      <div className="flex items-center justify-center gap-1">
         <ShareMenu link="https://medicova.com" />
         <Switch color="primary" defaultChecked />
         <DropdownMenu />
@@ -27,11 +27,11 @@ const Controls: React.FC = () => {
       <LinearProgress
         variant="determinate"
         value={30}
-        className="h-2 my-2"
+        className="my-2 h-2"
         color="primary"
       />
       <p className="font-semibold">10 applicants</p>
-      <Button variant="contained" className="px-10 text-nowrap">
+      <Button variant="contained" className="text-nowrap px-10">
         View applicants
       </Button>
     </div>
@@ -70,27 +70,27 @@ const DropdownMenu = () => {
       >
         <MenuItem
           onClick={handleClose}
-          className="flex items-center gap-2 w-60"
+          className="flex w-60 items-center gap-2"
         >
           <EditIcon color="primary" fontSize="small" />
           <span>Edit</span>
         </MenuItem>
-        <Divider />
+        <Divider className="!m-0" />
         <MenuItem onClick={handleClose} className="flex items-center gap-2">
           <ContentCopyIcon color="primary" fontSize="small" />
           <span>Duplicate</span>
         </MenuItem>
-        <Divider />
+        <Divider className="!m-0" />
         <MenuItem onClick={handleClose} className="flex items-center gap-2">
           <ShareIcon color="primary" fontSize="small" />
           <span>Share</span>
         </MenuItem>
-        <Divider />
+        <Divider className="!m-0" />
         <MenuItem onClick={handleClose} className="flex items-center gap-2">
           <PauseIcon color="warning" fontSize="small" />
           <span>Close Job</span>
         </MenuItem>
-        <Divider />
+        <Divider className="!m-0" />
         <MenuItem onClick={handleClose} className="flex items-center gap-2">
           <DeleteIcon color="error" fontSize="small" />
           <span>Remove</span>

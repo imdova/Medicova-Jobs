@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Divider,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
@@ -16,10 +17,17 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase as doctors, searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
-import { Search } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  LockOpenOutlined,
+  Mail,
+  Search,
+} from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CandideCard from "./CandideCard";
+import Image from "next/image";
 
 const ApplicantsPage: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -63,6 +71,16 @@ const ApplicantsPage: React.FC = () => {
     setAnchorEl(null);
   };
 
+  // save to folder
+  const [saveAnchorEl, setSaveAnchorEl] = useState(null);
+  const saveOpen = Boolean(saveAnchorEl);
+  const handleSaveClick = (event: any) => {
+    setSaveAnchorEl(event.currentTarget);
+  };
+  const handleSaveClose = () => {
+    setSaveAnchorEl(null);
+  };
+
   // - // short list action
   const removeFromSavedList = () => {
     if (!selected.length) return;
@@ -80,6 +98,14 @@ const ApplicantsPage: React.FC = () => {
       saveToList();
     }
   };
+
+  const addToAvailable = () => {
+    if (!selected.length) return;
+    setAvailableApplicants((pv) =>
+      pv.concat(selected.filter((id) => !pv.includes(id))),
+    );
+  };
+
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
@@ -134,13 +160,50 @@ const ApplicantsPage: React.FC = () => {
 
             {selected.length > 0 && (
               <>
-                <IconButton onClick={toggleSelect} size="medium">
-                  {areArraysEqual(selected, savedList) ? (
+                <div>
+                  <IconButton
+                    onClick={handleSaveClick}
+                    aria-controls={saveOpen ? "save-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={saveOpen ? "true" : undefined}
+                    size="medium"
+                  >
                     <BookmarkIcon color="primary" className="h-8 w-8" />
-                  ) : (
-                    <BookmarkBorderIcon color="primary" className="h-8 w-8" />
-                  )}
-                </IconButton>
+                  </IconButton>
+                  <Menu
+                    id="save-menu"
+                    anchorEl={saveAnchorEl}
+                    open={saveOpen}
+                    onClose={handleSaveClose}
+                    className="mt-2"
+                  >
+                    <MenuItem
+                      onClick={handleSaveClose}
+                      className="flex items-center gap-4 hover:bg-gray-200"
+                    >
+                      <Image
+                        src={"/images/folder.png"}
+                        alt="save"
+                        width={24}
+                        height={24}
+                      />
+                      Add New Folder
+                      <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleSaveClose}
+                      className="flex items-center gap-4 hover:bg-gray-200"
+                    >
+                      <Image
+                        src={"/images/folder.png"}
+                        alt="save"
+                        width={24}
+                        height={24}
+                      />
+                      Save in existing folder
+                    </MenuItem>
+                  </Menu>
+                </div>
                 <div>
                   <button
                     onClick={handleClick}
@@ -161,15 +224,29 @@ const ApplicantsPage: React.FC = () => {
                   >
                     <MenuItem
                       onClick={handleClose}
-                      className="hover:bg-gray-200"
+                      className="flex items-center gap-2 hover:bg-gray-200"
                     >
-                      delete
+                      <Mail color="primary" className="h-5 w-5" />
+                      Invite to Apply
                     </MenuItem>
+                    <Divider className="!m-0" />
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        addToAvailable();
+                      }}
+                      className="flex items-center gap-2 hover:bg-gray-200"
+                    >
+                      <LockOpenOutlined color="primary" className="h-5 w-5" />
+                      Unlock Profile
+                    </MenuItem>
+                    <Divider className="!m-0" />
                     <MenuItem
                       onClick={handleClose}
-                      className="hover:bg-gray-200"
+                      className="flex items-center gap-2 hover:bg-gray-200"
                     >
-                      edit
+                      <Delete className="h-5 w-5" color="error" />
+                      Delete
                     </MenuItem>
                   </Menu>
                 </div>

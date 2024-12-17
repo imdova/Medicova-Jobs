@@ -14,7 +14,8 @@ import StarsIcon from "@mui/icons-material/Stars";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import PeopleIcon from "@mui/icons-material/People";
 import { LinkType } from "@/types/side-bar";
 
 export const icons = {
@@ -34,7 +35,9 @@ export const icons = {
   skill: PsychologyIcon,
   upload: CloudUploadIcon,
   work: WorkHistoryIcon,
+  workOT: WorkOutlineIcon,
   manage: WorkHistoryIcon,
+  PeopleIcon: PeopleIcon,
 };
 
 export const employerSideBarLinks: LinkType[] = [

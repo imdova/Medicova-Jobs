@@ -7,6 +7,7 @@ import {
   MenuItem,
   Menu,
   Snackbar,
+  Divider,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
@@ -19,6 +20,8 @@ import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase, filterSections } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
+import { Delete, Mail } from "@mui/icons-material";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -113,6 +116,14 @@ const ApplicantsPage: React.FC = () => {
   };
   const exportHandleClose = () => {
     setExportAnchorEl(null);
+  };
+
+  // add to available
+  const addToAvailable = () => {
+    if (!selectedApplicants.length) return;
+    setAvailableApplicants((pv) =>
+      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
+    );
   };
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
@@ -221,29 +232,56 @@ const ApplicantsPage: React.FC = () => {
                   onClose={handleClose}
                   className="mt-2"
                 >
-                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
-                    delete
+                  <MenuItem
+                    onClick={handleClose}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <Mail color="primary" className="h-5 w-5" />
+                    Invite to Apply
                   </MenuItem>
-                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
-                    edit
+                  <Divider className="!m-0" />
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      addToAvailable();
+                    }}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <LockOpenIcon color="primary" className="h-5 w-5" />
+                    Unlock Profile
                   </MenuItem>
+                  <Divider className="!m-0" />
                   <MenuItem
                     onClick={() => {
                       handleClose();
                       addToShortListed();
                     }}
-                    className="hover:bg-gray-200"
+                    className="flex items-center gap-2 hover:bg-gray-200"
                   >
-                    Add to shortlist
+                    <StarIcon color="primary" className="h-5 w-5" />
+                    Add to Shortlist
                   </MenuItem>
+                  <Divider className="!m-0" />
                   <MenuItem
                     onClick={() => {
                       handleClose();
                       removeFromShortListed();
                     }}
-                    className="text-red-500 hover:bg-gray-200"
+                    className="flex items-center gap-2 hover:bg-gray-200"
                   >
-                    remove from shortlist
+                    <StarBorderOutlinedIcon
+                      color="warning"
+                      className="h-5 w-5"
+                    />
+                    remove from Shortlist
+                  </MenuItem>
+                  <Divider className="!m-0" />
+                  <MenuItem
+                    onClick={handleClose}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <Delete className="h-5 w-5" color="error" />
+                    Delete
                   </MenuItem>
                 </Menu>
               </div>

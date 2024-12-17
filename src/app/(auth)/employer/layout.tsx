@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {/* Sidebar */}
         <SideBar links={employerSideBarLinks} />
         {/* Main Content */}
-        <main className="flex-1 ml-0 md:ml-14 lg:ml-0 p-2">{children}</main>
+        <main className="ml-0 flex-1 p-2 md:ml-14 lg:ml-0">{children}</main>
       </div>
     </div>
   );

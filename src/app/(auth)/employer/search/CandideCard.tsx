@@ -6,6 +6,8 @@ import {
   Stack,
   IconButton,
   Collapse,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
@@ -22,6 +24,8 @@ import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Doctor } from "@/types";
 import Flag from "@/components/UI/flagitem";
+import Image from "next/image";
+import { Add } from "@mui/icons-material";
 
 interface CandidateCardProps {
   doctor: Doctor;
@@ -50,6 +54,15 @@ const CandideCard: React.FC<CandidateCardProps> = ({
 
   const toggleSave = () => setSavedList((pv) => toggleId(pv, doctor.id));
 
+  // save to folder
+  const [saveAnchorEl, setSaveAnchorEl] = useState(null);
+  const saveOpen = Boolean(saveAnchorEl);
+  const handleSaveClick = (event: any) => {
+    setSaveAnchorEl(event.currentTarget);
+  };
+  const handleSaveClose = () => {
+    setSaveAnchorEl(null);
+  };
   return (
     <div className="mb-4 flex">
       <button
@@ -154,13 +167,50 @@ const CandideCard: React.FC<CandidateCardProps> = ({
             </div>
           </div>
           <div className="flex h-fit w-full justify-center gap-2 sm:w-auto">
-            <IconButton onClick={toggleSave} size="small">
-              {isSaved ? (
+            <div>
+              <IconButton
+                onClick={handleSaveClick}
+                aria-controls={saveOpen ? "save-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={saveOpen ? "true" : undefined}
+                size="medium"
+              >
                 <BookmarkIcon color="primary" className="h-8 w-8" />
-              ) : (
-                <BookmarkBorderIcon color="primary" className="h-8 w-8" />
-              )}
-            </IconButton>
+              </IconButton>
+              <Menu
+                id="save-menu"
+                anchorEl={saveAnchorEl}
+                open={saveOpen}
+                onClose={handleSaveClose}
+                className="mt-2"
+              >
+                <MenuItem
+                  onClick={handleSaveClose}
+                  className="flex items-center gap-4 hover:bg-gray-200"
+                >
+                  <Image
+                    src={"/images/folder.png"}
+                    alt="save"
+                    width={24}
+                    height={24}
+                  />
+                  Add New Folder
+                  <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
+                </MenuItem>
+                <MenuItem
+                  onClick={handleSaveClose}
+                  className="flex items-center gap-4 hover:bg-gray-200"
+                >
+                  <Image
+                    src={"/images/folder.png"}
+                    alt="save"
+                    width={24}
+                    height={24}
+                  />
+                  Save in existing folder
+                </MenuItem>
+              </Menu>
+            </div>
             <Button variant="contained" className="w-full">
               Invite To Apply
             </Button>
