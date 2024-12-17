@@ -7,6 +7,7 @@ import {
   MenuItem,
   Menu,
   Snackbar,
+  Divider,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
@@ -19,7 +20,8 @@ import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase, filterSections } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
-import FilterDrawer from "@/components/UI/FilterDrawer";
+import { Delete, Mail } from "@mui/icons-material";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -30,11 +32,14 @@ const ApplicantsPage: React.FC = () => {
     doctors.filter((x) => x.available).map((x) => x.id),
   );
   const [shortListed, setShortListed] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState({
-    residency: "",
-    education: "",
-    experience: 0,
+  const [selectedFilters, setSelectedFilters] = useState<{
+    [K in keyof typeof filterSections]: (typeof filterSections)[K][number]["value"];
+  }>({
+    "Residency (Location)": "",
+    "Education Level": "",
+    "Years Of Experience": "",
   });
+
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 
@@ -80,10 +85,6 @@ const ApplicantsPage: React.FC = () => {
     }
   };
 
-  const handleFilterChange = (key: string, value: any) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
   // actions
   const [anchorEl, setAnchorEl] = useState(null);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
@@ -116,28 +117,23 @@ const ApplicantsPage: React.FC = () => {
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
+
+  // add to available
+  const addToAvailable = () => {
+    if (!selectedApplicants.length) return;
+    setAvailableApplicants((pv) =>
+      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
+    );
+  };
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
-      <Box
-        className="scroll-bar-hidden hidden lg:block"
-        sx={{
-          width: "20%",
-          position: "sticky",
-          top: "107px",
-          paddingTop: "80px",
-          overflowY: "scroll",
-          maxHeight: "calc(100vh - 114px)",
-          paddingBottom: "16px",
-        }}
-      >
-        <FilterSections
-          sections={filterSections}
-          onFilterChange={handleFilterChange}
-          searchKeys={["Residency (Location)"]}
-        />
-      </Box>
-
+      <FilterSections
+        sections={filterSections}
+        selectedFilters={selectedFilters}
+        setSelectedFilters={setSelectedFilters}
+        searchKeys={["Residency (Location)"]}
+      />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="w-full">
@@ -236,29 +232,56 @@ const ApplicantsPage: React.FC = () => {
                   onClose={handleClose}
                   className="mt-2"
                 >
-                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
-                    delete
+                  <MenuItem
+                    onClick={handleClose}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <Mail color="primary" className="h-5 w-5" />
+                    Invite to Apply
                   </MenuItem>
-                  <MenuItem onClick={handleClose} className="hover:bg-gray-200">
-                    edit
+                  <Divider className="!m-0" />
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      addToAvailable();
+                    }}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <LockOpenIcon color="primary" className="h-5 w-5" />
+                    Unlock Profile
                   </MenuItem>
+                  <Divider className="!m-0" />
                   <MenuItem
                     onClick={() => {
                       handleClose();
                       addToShortListed();
                     }}
-                    className="hover:bg-gray-200"
+                    className="flex items-center gap-2 hover:bg-gray-200"
                   >
-                    Add to shortlist
+                    <StarIcon color="primary" className="h-5 w-5" />
+                    Add to Shortlist
                   </MenuItem>
+                  <Divider className="!m-0" />
                   <MenuItem
                     onClick={() => {
                       handleClose();
                       removeFromShortListed();
                     }}
-                    className="text-red-500 hover:bg-gray-200"
+                    className="flex items-center gap-2 hover:bg-gray-200"
                   >
-                    remove from shortlist
+                    <StarBorderOutlinedIcon
+                      color="warning"
+                      className="h-5 w-5"
+                    />
+                    remove from Shortlist
+                  </MenuItem>
+                  <Divider className="!m-0" />
+                  <MenuItem
+                    onClick={handleClose}
+                    className="flex items-center gap-2 hover:bg-gray-200"
+                  >
+                    <Delete className="h-5 w-5" color="error" />
+                    Delete
                   </MenuItem>
                 </Menu>
               </div>

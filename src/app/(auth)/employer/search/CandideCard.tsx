@@ -6,68 +6,62 @@ import {
   Stack,
   IconButton,
   Collapse,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
-
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import MessageIcon from "@mui/icons-material/Message";
-import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import EmailIcon from "@mui/icons-material/Email";
-
-import DownloadIcon from "@mui/icons-material/Download";
-
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Doctor } from "@/types";
 import Flag from "@/components/UI/flagitem";
+import Image from "next/image";
+import { Add } from "@mui/icons-material";
 
-interface DoctorCardProps {
+interface CandidateCardProps {
   doctor: Doctor;
-  selectedApplicants: string[];
+  selected: string[];
   availableApplicants: string[];
-  shortListed: string[];
-  setShortListed: React.Dispatch<React.SetStateAction<string[]>>;
-  setSelectedApplicants: React.Dispatch<React.SetStateAction<string[]>>;
-  setAvailableApplicants: React.Dispatch<React.SetStateAction<string[]>>;
+  savedList: string[];
+  setSavedList: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const DoctorCard: React.FC<DoctorCardProps> = ({
+const CandideCard: React.FC<CandidateCardProps> = ({
   doctor,
   availableApplicants,
-  shortListed,
-  setShortListed,
-  setAvailableApplicants,
-  selectedApplicants,
-  setSelectedApplicants,
+  savedList,
+  setSavedList,
+  selected,
+  setSelected,
 }) => {
   const [showMore, setShowMore] = useState(false);
 
-  const isSelected = selectedApplicants.includes(doctor.id);
+  const isSelected = selected.includes(doctor.id);
   const isAvailable = availableApplicants.includes(doctor.id);
-  const isShortListed = shortListed.includes(doctor.id);
+  const isSaved = savedList.includes(doctor.id);
 
-  const toggleSelect = () =>
-    setSelectedApplicants((pv) => toggleId(pv, doctor.id));
+  const toggleSelect = () => setSelected((pv) => toggleId(pv, doctor.id));
 
-  const toggleShortListed = () =>
-    setShortListed((pv) => toggleId(pv, doctor.id));
+  const toggleSave = () => setSavedList((pv) => toggleId(pv, doctor.id));
 
-  const unlock = () => {
-    setAvailableApplicants((pv) => [...pv, doctor.id]);
+  // save to folder
+  const [saveAnchorEl, setSaveAnchorEl] = useState(null);
+  const saveOpen = Boolean(saveAnchorEl);
+  const handleSaveClick = (event: any) => {
+    setSaveAnchorEl(event.currentTarget);
+  };
+  const handleSaveClose = () => {
+    setSaveAnchorEl(null);
   };
   return (
     <div className="mb-4 flex">
@@ -81,7 +75,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
       </button>
 
       <div className="flex w-full flex-col rounded-md border bg-white p-2 shadow-md md:p-5">
-        <div className="flex w-full flex-wrap justify-between gap-5 sm:flex-nowrap">
+        <div className="flex w-full flex-wrap items-center justify-between gap-5 sm:flex-nowrap">
           <div className="flex gap-5">
             <div>
               <Avatar
@@ -162,125 +156,64 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   <p className="text-xs md:text-base">Cardiology</p>
                 </div>
               </div>
-              <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
+              <div className="my-2 flex w-full flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
                 <h6 className="text-sm font-semibold md:text-base">
-                  Contact Info :
+                  Contact Info :{" "}
+                  <span className="text-sm font-normal text-red-500">
+                    click unlock profile to view contact information
+                  </span>
                 </h6>
-                <div className="flex flex-wrap justify-between">
-                  <div className="mr-4 flex min-w-[80px] items-center">
-                    <LocalPhoneIcon
-                      color="primary"
-                      className="h-4 w-4 md:h-5 md:w-5"
-                    />
-                    {isAvailable ? (
-                      <span className="mx-1 h-fit text-sm md:text-base">
-                        {doctor.contactInfo.phoneNumber}
-                      </span>
-                    ) : (
-                      <div className="col-span-1 row-span-1 grid h-fit">
-                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                          this is dumy number
-                        </span>
-                      </div>
-                    )}
-
-                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    </IconButton>
-                  </div>
-                  <div className="flex items-center">
-                    <EmailIcon
-                      color="primary"
-                      className="h-4 w-4 md:h-5 md:w-5"
-                    />
-                    {isAvailable ? (
-                      <span className="mx-1 h-fit break-all text-sm md:text-base">
-                        {doctor.contactInfo.email}
-                      </span>
-                    ) : (
-                      <div className="col-span-1 row-span-1 grid h-fit">
-                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                          this is dummy email.com
-                        </span>
-                      </div>
-                    )}
-                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    </IconButton>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
-          <div className="flex w-full gap-2 sm:w-auto sm:flex-col">
-            <div className="flex justify-between gap-2">
+          <div className="flex h-fit w-full justify-center gap-2 sm:w-auto">
+            <div>
               <IconButton
-                disabled={!isAvailable}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
+                onClick={handleSaveClick}
+                aria-controls={saveOpen ? "save-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={saveOpen ? "true" : undefined}
+                size="medium"
               >
-                <WhatsAppIcon className="h-5 w-5 md:h-6 md:w-6" />
+                <BookmarkIcon color="primary" className="h-8 w-8" />
               </IconButton>
-              <IconButton
-                disabled={!isAvailable}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
+              <Menu
+                id="save-menu"
+                anchorEl={saveAnchorEl}
+                open={saveOpen}
+                onClose={handleSaveClose}
+                className="mt-2"
               >
-                <MessageIcon className="h-5 w-5 md:h-6 md:w-6" />
-              </IconButton>
-              <IconButton
-                onClick={toggleShortListed}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
-              >
-                {isShortListed ? (
-                  <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
-                ) : (
-                  <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
-                )}
-              </IconButton>
+                <MenuItem
+                  onClick={handleSaveClose}
+                  className="flex items-center gap-4 hover:bg-gray-200"
+                >
+                  <Image
+                    src={"/images/folder.png"}
+                    alt="save"
+                    width={24}
+                    height={24}
+                  />
+                  Add New Folder
+                  <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
+                </MenuItem>
+                <MenuItem
+                  onClick={handleSaveClose}
+                  className="flex items-center gap-4 hover:bg-gray-200"
+                >
+                  <Image
+                    src={"/images/folder.png"}
+                    alt="save"
+                    width={24}
+                    height={24}
+                  />
+                  Save in existing folder
+                </MenuItem>
+              </Menu>
             </div>
-            {isAvailable ? (
-              <Button
-                variant="outlined"
-                className="w-full text-sm md:text-base"
-                startIcon={<DownloadIcon className="h-5 w-5 md:h-6 md:w-6" />}
-              >
-                Download CV
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                className="w-full"
-                onClick={unlock}
-                startIcon={<VpnKeyOutlinedIcon />}
-              >
-                Unlock Profile
-              </Button>
-            )}
+            <Button variant="contained" className="w-full">
+              Invite To Apply
+            </Button>
           </div>
         </div>
         <Experience
@@ -312,7 +245,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   );
 };
 
-export default DoctorCard;
+export default CandideCard;
 
 const Experience: React.FC<Doctor & { className?: string }> = ({
   id,

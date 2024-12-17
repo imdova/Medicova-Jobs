@@ -1,9 +1,6 @@
 "use client";
 import {
   Box,
-  Tabs,
-  Tab,
-  Select,
   MenuItem,
   Menu,
   Snackbar,
@@ -11,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Divider,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
@@ -19,36 +17,47 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase as doctors, searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
-import DoctorCard from "@/components/UI/DoctorCard";
-import FilterDrawer from "@/components/UI/FilterDrawer";
-import { Search } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  LockOpenOutlined,
+  Mail,
+  Search,
+} from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CandideCard from "./CandideCard";
+import Image from "next/image";
 
 const ApplicantsPage: React.FC = () => {
-  const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [availableApplicants, setAvailableApplicants] = useState<string[]>(
     doctors.filter((x) => x.available).map((x) => x.id),
   );
-  const [shortListed, setShortListed] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState({
-    residency: "",
-    education: "",
-    experience: 0,
+  const [savedList, setSavedList] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<{
+    [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"];
+  }>({
+    "Residency (Location)": "",
+    city: "",
+    nationality: "",
+    industry: "",
+    category: "",
+    "Education Level": "",
+    "Years Of Experience": "",
+    gender: "",
+    age: "",
   });
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 
-  const isAllSelect = selectedApplicants.length === doctors.length;
+  const isAllSelect = selected.length === doctors.length;
   const toggleSelectAll = () => {
     if (isAllSelect) {
-      setSelectedApplicants([]);
+      setSelected([]);
     } else {
-      setSelectedApplicants(doctors.map((x) => x.id));
+      setSelected(doctors.map((x) => x.id));
     }
-  };
-
-  const handleFilterChange = (key: string, value: any) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   // actions
@@ -62,40 +71,51 @@ const ApplicantsPage: React.FC = () => {
     setAnchorEl(null);
   };
 
-  // - // short list action
-  const removeFromShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) => pv.filter((id) => !selectedApplicants.includes(id)));
+  // save to folder
+  const [saveAnchorEl, setSaveAnchorEl] = useState(null);
+  const saveOpen = Boolean(saveAnchorEl);
+  const handleSaveClick = (event: any) => {
+    setSaveAnchorEl(event.currentTarget);
   };
-  const addToShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) =>
-      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
+  const handleSaveClose = () => {
+    setSaveAnchorEl(null);
+  };
+
+  // - // short list action
+  const removeFromSavedList = () => {
+    if (!selected.length) return;
+    setSavedList((pv) => pv.filter((id) => !selected.includes(id)));
+  };
+  const saveToList = () => {
+    if (!selected.length) return;
+    setSavedList((pv) => pv.concat(selected.filter((id) => !pv.includes(id))));
+  };
+
+  const toggleSelect = () => {
+    if (areArraysEqual(selected, savedList)) {
+      removeFromSavedList();
+    } else {
+      saveToList();
+    }
+  };
+
+  const addToAvailable = () => {
+    if (!selected.length) return;
+    setAvailableApplicants((pv) =>
+      pv.concat(selected.filter((id) => !pv.includes(id))),
     );
   };
 
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
-      <Box
-        className="scroll-bar-hidden hidden h-full lg:block"
-        sx={{
-          width: "20%",
-          position: "sticky",
-          top: "107px",
-          paddingTop: "101px",
-          overflowY: "scroll",
-          maxHeight: "calc(100vh - 114px)",
-          paddingBottom: "16px",
-        }}
-      >
-        <FilterSections
-          sections={searchFilters}
-          onFilterChange={handleFilterChange}
-          searchKeys={["Residency (Location)"]}
-        />
-      </Box>
-
+      <FilterSections
+        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[101px] lg:block"
+        sections={searchFilters}
+        selectedFilters={selectedFilters}
+        setSelectedFilters={setSelectedFilters}
+        searchKeys={["Residency (Location)", "nationality"]}
+      />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="h-[80px] w-full">
@@ -113,12 +133,14 @@ const ApplicantsPage: React.FC = () => {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "4px",
+                  borderRadius: 0,
                 },
                 minWidth: 200,
               }}
             />
-            <Button variant="contained">Search</Button>
+            <Button variant="contained" className="w-1/5">
+              Search
+            </Button>
           </div>
           <p className="mt-2 text-sm text-gray-500">Showing 2500 Results</p>
         </div>
@@ -136,11 +158,52 @@ const ApplicantsPage: React.FC = () => {
               )}
             </button>
 
-            {selectedApplicants.length > 0 && (
+            {selected.length > 0 && (
               <>
-                <IconButton size="small">
-                  <BookmarkIcon color="primary" className="h-6 w-6" />
-                </IconButton>
+                <div>
+                  <IconButton
+                    onClick={handleSaveClick}
+                    aria-controls={saveOpen ? "save-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={saveOpen ? "true" : undefined}
+                    size="medium"
+                  >
+                    <BookmarkIcon color="primary" className="h-8 w-8" />
+                  </IconButton>
+                  <Menu
+                    id="save-menu"
+                    anchorEl={saveAnchorEl}
+                    open={saveOpen}
+                    onClose={handleSaveClose}
+                    className="mt-2"
+                  >
+                    <MenuItem
+                      onClick={handleSaveClose}
+                      className="flex items-center gap-4 hover:bg-gray-200"
+                    >
+                      <Image
+                        src={"/images/folder.png"}
+                        alt="save"
+                        width={24}
+                        height={24}
+                      />
+                      Add New Folder
+                      <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleSaveClose}
+                      className="flex items-center gap-4 hover:bg-gray-200"
+                    >
+                      <Image
+                        src={"/images/folder.png"}
+                        alt="save"
+                        width={24}
+                        height={24}
+                      />
+                      Save in existing folder
+                    </MenuItem>
+                  </Menu>
+                </div>
                 <div>
                   <button
                     onClick={handleClick}
@@ -161,15 +224,29 @@ const ApplicantsPage: React.FC = () => {
                   >
                     <MenuItem
                       onClick={handleClose}
-                      className="hover:bg-gray-200"
+                      className="flex items-center gap-2 hover:bg-gray-200"
                     >
-                      delete
+                      <Mail color="primary" className="h-5 w-5" />
+                      Invite to Apply
                     </MenuItem>
+                    <Divider className="!m-0" />
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        addToAvailable();
+                      }}
+                      className="flex items-center gap-2 hover:bg-gray-200"
+                    >
+                      <LockOpenOutlined color="primary" className="h-5 w-5" />
+                      Unlock Profile
+                    </MenuItem>
+                    <Divider className="!m-0" />
                     <MenuItem
                       onClick={handleClose}
-                      className="hover:bg-gray-200"
+                      className="flex items-center gap-2 hover:bg-gray-200"
                     >
-                      edit
+                      <Delete className="h-5 w-5" color="error" />
+                      Delete
                     </MenuItem>
                   </Menu>
                 </div>
@@ -179,15 +256,14 @@ const ApplicantsPage: React.FC = () => {
         </div>
         {/* Applicant Cards */}
         {doctors.map((doctor, index) => (
-          <DoctorCard
+          <CandideCard
             key={index}
             doctor={doctor}
-            shortListed={shortListed}
-            setShortListed={setShortListed}
-            setSelectedApplicants={setSelectedApplicants}
+            savedList={savedList}
+            setSavedList={setSavedList}
+            setSelected={setSelected}
             availableApplicants={availableApplicants}
-            setAvailableApplicants={setAvailableApplicants}
-            selectedApplicants={selectedApplicants}
+            selected={selected}
           />
         ))}
 
@@ -207,9 +283,12 @@ const ApplicantsPage: React.FC = () => {
         message="Link copied to clipboard!"
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-      <FilterDrawer handleFilterChange={handleFilterChange} />
     </Box>
   );
 };
 
 export default ApplicantsPage;
+
+function areArraysEqual<T>(array1: T[], array2: T[]): boolean {
+  return array1.every((id) => array2.includes(id));
+}

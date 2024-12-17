@@ -39,3 +39,15 @@ export interface Doctor {
   education: Education[];
   available: boolean;
 }
+
+export interface FilterOption {
+  label: string;
+  count: number;
+  value: string;
+}
+
+export interface FilterSectionType {
+  key: string;
+  title: string;
+  options: FilterOption[];
+}
