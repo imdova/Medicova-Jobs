@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Grid, Card, Box, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit"; // Import Edit icon
 
-const AboutCompany: React.FC = () => {
+const AboutSeeker: React.FC = () => {
   return (
     <Grid item xs={12}>
       <Card
@@ -62,4 +62,4 @@ const AboutCompany: React.FC = () => {
   );
 };
 
-export default AboutCompany;
+export default AboutSeeker;

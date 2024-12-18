@@ -68,8 +68,24 @@ const NewUserModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
               borderRadius: "8px",
               p: 2,
               mb: 3,
+              position: "relative",
             }}
           >
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              id="upload-photo"
+              style={{
+                position: "absolute",
+                opacity: 0,
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+              }}
+              accept="image/png, image/jpeg, image/jpg"
+            />
+
+            {/* Text Content */}
             <Typography
               component="span"
               sx={{
@@ -87,6 +103,7 @@ const NewUserModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
               JPG, JPEG, PNG less than 1MB
             </Typography>
           </Box>
+
 
           {/* Input Fields */}
           <Box

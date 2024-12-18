@@ -4,8 +4,12 @@ import "react-phone-number-input/style.css";
 import HeaderSection from "./Components/HeaderSection";
 import AboutSeeker from "./Components/AboutSeeker";
 import EducationsSection from "./Components/EducationsSection";
-import ProfileForm from "./Components/ProfileForm";
+import ExperienceSection from "./Components/ExperienceSection";
 import RightSection from "./Components/RightSection";
+import SkillsSection from "./Components/SkillsSection";
+import ActivitiesSection from "./Components/ActivitiesSection";
+import AchievementsSection from "./Components/AchievementsSection";
+
 
 const GeneralInfoPage = () => {
   return (
@@ -19,8 +23,14 @@ const GeneralInfoPage = () => {
           <AboutSeeker />
           {/* Education Section */}
           <EducationsSection />
-          {/* Center Section + Profile Form */}
-          {/* <ProfileForm /> */}
+          {/* Experience Section */}
+          <ExperienceSection />
+          {/* Skills Section */}
+          <SkillsSection />
+          {/* Activities Section */}
+          <ActivitiesSection />
+          {/* Achievements Section */}
+          <AchievementsSection />
         </Grid>
         {/* Right Section */}
         <RightSection />

@@ -44,12 +44,6 @@ const educationData = [
     years: "2018 - 2022",
     photoUrl: "https://via.placeholder.com/100",
   },
-  {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    photoUrl: "https://via.placeholder.com/100",
-  },
 ];
 
 const EducationsSection: React.FC = () => {
@@ -75,6 +69,7 @@ const EducationsSection: React.FC = () => {
           padding: "16px",
           textAlign: "start",
           position: "relative",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
         <Typography

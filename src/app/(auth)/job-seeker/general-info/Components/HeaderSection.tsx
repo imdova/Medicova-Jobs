@@ -24,7 +24,7 @@ const HeaderSection: React.FC = () => {
           width: "100%",
           borderRadius: "8px",
           overflow: "hidden",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
           paddingBottom: "20px",
         }}
       >
