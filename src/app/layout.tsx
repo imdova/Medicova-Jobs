@@ -1,5 +1,12 @@
 import ThemeProviderClient from "./ThemeProviderClient";
+import { DM_Serif_Display } from "next/font/google";
 import "./globals.css";
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  variable: "--font-dmSerif",
+  weight: "400",
+});
 
 export const metadata = {
   title: "Medicova",
@@ -13,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={dmSerifDisplay.variable}>
         <ThemeProviderClient>{children}</ThemeProviderClient>
       </body>
     </html>

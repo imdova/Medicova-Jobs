@@ -22,6 +22,7 @@ import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
 import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import Image from "next/image";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -129,6 +130,7 @@ const ApplicantsPage: React.FC = () => {
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
       <FilterSections
+        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[101px] lg:block"
         sections={filterSections}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
@@ -136,10 +138,15 @@ const ApplicantsPage: React.FC = () => {
       />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
-        <div className="w-full">
-          <h2 className="mb-5 text-3xl font-bold text-[#185D43]">
-            Clinical Pharmacist in Damam, Saudi Arabia
-          </h2>
+        <div className="mb-5 flex w-full gap-3">
+          <Image
+            src={"/images/folder.png"}
+            alt="save"
+            className="object-contain"
+            width={24}
+            height={24}
+          />
+          <h2 className="text-2xl font-bold">Doctors December 2024</h2>
         </div>
 
         <Box className="flex justify-between">
@@ -158,7 +165,7 @@ const ApplicantsPage: React.FC = () => {
                 value="all"
                 label={
                   <span className="flex items-center normal-case">
-                    All Applicants ({doctorsBase.length})
+                    All CV Search ({doctorsBase.length})
                   </span>
                 }
               />

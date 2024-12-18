@@ -96,6 +96,7 @@ export const employerSideBarLinks: LinkType[] = [
       },
       {
         title: "Saved Searches",
+        url: "/employer/search/saved-search",
       },
     ],
   },
@@ -138,7 +139,7 @@ export const jobSeekerSideBarLinks: LinkType[] = [
   {
     title: "General info",
     icon: "info",
-    url: "#",
+    url: "/job-seeker/general-info",
   },
   {
     title: "Qualification & Education",
