@@ -63,6 +63,7 @@ const ActivitiesSection: React.FC = () => {
               marginBottom: 2,
               fontSize: { xs: "0.9rem", sm: "1rem" },
             }}
+            
           >
             Your volunteering and student activities.
           </Typography>
