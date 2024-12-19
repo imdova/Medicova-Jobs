@@ -9,9 +9,16 @@ import {
   Avatar,
   Divider,
   Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  Checkbox,
+  FormControlLabel,
+  TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import AddModal from "./Modals/AddModal";
 
 const educationData = [
   {
@@ -62,6 +69,198 @@ const EducationsSection: React.FC = () => {
   // Calculate how many more items are left to show
   const remainingItems = educationData.length - visibleItems;
 
+  const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [fields, setFields] = useState<JSX.Element[]>([]);
+
+  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
+    setModalTitle(title);
+    setFields(getFields());
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const getEducationFields = (): JSX.Element[] => [
+    <Box key="collageName">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        College and University name *
+      </InputLabel>
+      <TextField
+        placeholder="Faculty of Medicine, Cairo University"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="degreeLevel">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Degree Level *
+      </InputLabel>
+      <Select
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          height: "40px",
+          fontSize: "14px",
+        }}
+        required
+        defaultValue="Bachelor's Degree"
+      >
+        <MenuItem value="Bachelor's Degree">Bachelors Degree</MenuItem>
+      </Select>
+    </Box>,
+
+    <Box key="country">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Country *
+      </InputLabel>
+      <Select
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          height: "40px",
+          fontSize: "14px",
+        }}
+        required
+        defaultValue="Egypt"
+      >
+        <MenuItem value="Egypt">Egypt</MenuItem>
+      </Select>
+    </Box>,
+
+    <Box
+      key="dateYear"
+      sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
+    >
+      {/* Start Year */}
+      <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          Start Year *
+        </InputLabel>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          required
+          defaultValue="Start Year"
+        >
+          <MenuItem value="Start Year" disabled>
+            Start Year
+          </MenuItem>
+          {Array.from(
+            { length: new Date().getFullYear() - 1980 + 1 },
+            (_, index) => 1980 + index,
+          ).map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+
+      {/* End Year */}
+      <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          End Year *
+        </InputLabel>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          required
+          defaultValue="End Year"
+        >
+          <MenuItem value="End Year" disabled>
+            End Year
+          </MenuItem>
+          {Array.from(
+            { length: new Date().getFullYear() - 1980 + 1 },
+            (_, index) => 1980 + index,
+          ).map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+    </Box>,
+
+    <Box key="grade">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Grade *
+      </InputLabel>
+      <Select
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          height: "40px",
+          fontSize: "14px",
+        }}
+        required
+        defaultValue="very good"
+      >
+        <MenuItem value="very good">very good</MenuItem>
+      </Select>
+    </Box>,
+  ];
+
   return (
     <Grid item xs={12}>
       <Card
@@ -93,9 +292,16 @@ const EducationsSection: React.FC = () => {
             borderRadius: "4px",
             padding: "6px",
           }}
+          onClick={() => handleOpenModal("Add Educations", getEducationFields)}
         >
           <AddIcon />
         </IconButton>
+        <AddModal
+          open={openModal}
+          onClose={handleCloseModal}
+          modalTitle={modalTitle}
+          fields={fields}
+        />
 
         {/* Title and Description */}
         {educationData.slice(0, visibleItems).map((item, index) => (

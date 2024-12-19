@@ -1,48 +1,17 @@
 import React from "react";
-import { Box, IconButton, Typography, Grid, Card, Button } from "@mui/material";
+import { Box, IconButton, Typography, Grid, Card, Divider } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
-import Image from "next/image";
-import post from "@/components/images/post.svg";
 import AddIcon from "@mui/icons-material/Add";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
 
-const RightSection: React.FC = () => {
+const SocialMediaSection: React.FC = () => {
   return (
-    <Grid item xs={12} md={4}>
-      <Card sx={{ padding: "16px", marginBottom: 3 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          {/* Centered Image */}
-          <Image
-            src={post}
-            alt="Login Cover"
-            width={50}
-            height={50}
-            priority={true}
-          />
+    <Grid item xs={12}>
 
-          {/* Typography below the Image */}
-          <Typography
-            variant="body1"
-            sx={{ marginBottom: 2, textAlign: "center", fontWeight: "600" }}
-          >
-            To find better candidates, make your job description detailed, use
-            relevant keywords, and add screening questions to your job post.
-          </Typography>
-        </Box>
-
-      </Card>
-
-      <Card sx={{ padding: "16px" }}>
+      <Card sx={{ padding: "16px", marginY: 3 }}>
         <Box
           sx={{
             display: "flex",
@@ -110,6 +79,7 @@ const RightSection: React.FC = () => {
             </Link>
           </Typography>
 
+          <Divider sx={{ marginY: 0.1 }} />
           {/* Twitter Section */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <TwitterIcon sx={{ color: "rgba(91, 146, 250, 1)" }} />
@@ -130,6 +100,7 @@ const RightSection: React.FC = () => {
             </Link>
           </Typography>
 
+          <Divider sx={{ marginY: 0.1 }} />
           {/* website Section */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <LanguageIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
@@ -155,4 +126,4 @@ const RightSection: React.FC = () => {
   );
 };
 
-export default RightSection;
+export default SocialMediaSection;

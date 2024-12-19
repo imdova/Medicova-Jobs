@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Typography, Grid, Card, Button, Box } from "@mui/material";
 import Image from "next/image";
 import achievements from "@/components/images/achievements.png";
-import AddNewExperience from "./Modals/AddNewExperience";
+import AddNewExperience from "./Modals/AddModal";
 
 
 const AchievementsSection: React.FC = () => {

@@ -3,14 +3,8 @@ import React, { useState } from "react";
 import { Typography, Grid, Card, Button, Box } from "@mui/material";
 import Image from "next/image";
 import activities from "@/components/images/activities.png";
-import AddNewExperience from "./Modals/AddNewExperience";
-
 
 const ActivitiesSection: React.FC = () => {
-  const [openModal, setOpenModal] = useState(false);
-
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
   return (
     <Grid item xs={12}>
       <Card
@@ -63,7 +57,6 @@ const ActivitiesSection: React.FC = () => {
               marginBottom: 2,
               fontSize: { xs: "0.9rem", sm: "1rem" },
             }}
-            
           >
             Your volunteering and student activities.
           </Typography>
@@ -82,11 +75,9 @@ const ActivitiesSection: React.FC = () => {
                 backgroundColor: "#00795c",
               },
             }}
-            onClick={handleOpenModal}
           >
             Add Activities
           </Button>
-          <AddNewExperience open={openModal} onClose={handleCloseModal} />
         </Box>
       </Card>
     </Grid>

@@ -16,6 +16,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import PeopleIcon from "@mui/icons-material/People";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { LinkType } from "@/types/side-bar";
 
 export const icons = {
@@ -38,6 +39,7 @@ export const icons = {
   workOT: WorkOutlineIcon,
   manage: WorkHistoryIcon,
   PeopleIcon: PeopleIcon,
+  AccountCircleIcon: AccountCircleIcon,
 };
 
 export const employerSideBarLinks: LinkType[] = [
@@ -137,40 +139,30 @@ export const jobSeekerSideBarLinks: LinkType[] = [
     url: "/",
   },
   {
-    title: "General info",
-    icon: "info",
-    url: "/job-seeker/general-info",
+    title: "Profile ",
+    icon: "AccountCircleIcon",
+    kind: "collapse",
+    links: [
+      {
+        title: "General Info",
+        url: "/job-seeker/general-info",
+      },
+      {
+        title: "Personal Info",
+        url: "/job-seeker/profile",
+      },
+    ],
   },
-  {
-    title: "Qualification & Education",
-    icon: "school",
-    url: "#",
-  },
-  {
-    title: "Experience",
-    icon: "star",
-    url: "#",
-  },
-  {
-    title: "Skills",
-    icon: "skill",
-    url: "#",
-  },
-  {
-    title: "Upload CV",
-    icon: "upload",
-    url: "#",
-  },
-  {
-    title: "Career Referance",
-    icon: "work",
-    url: "#",
-  },
-  {
-    title: "Profile Setting",
-    icon: "manage",
-    url: "/job-seeker/profile",
-  },
+  // {
+  //   title: "General info",
+  //   icon: "info",
+  //   url: "/job-seeker/general-info",
+  // },
+  // {
+  //   title: "Profile Setting",
+  //   icon: "manage",
+  //   url: "/job-seeker/profile",
+  // },
   {
     kind: "divider",
   },
