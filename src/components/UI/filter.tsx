@@ -6,9 +6,9 @@ type Props<T extends Record<string, FilterOption[]>, K extends keyof T> = {
   className?: string;
   sections: T; // The object
   searchKeys: K[]; // A key of the object
-  selectedFilters: Record<keyof T, string>;
+  selectedFilters: Record<keyof T, string[]>;
   setSelectedFilters: React.Dispatch<
-    React.SetStateAction<Record<keyof T, string>>
+    React.SetStateAction<Record<keyof T, string[]>>
   >;
 };
 
@@ -22,7 +22,7 @@ const FilterSections = <
   selectedFilters,
   setSelectedFilters,
 }: Props<T, K>) => {
-  const handleRadioChange = (sectionKey: string, value: string) => {
+  const handleCheckChange = (sectionKey: string, value: string[]) => {
     setSelectedFilters((prev) => ({
       ...prev,
       [sectionKey]: value,
@@ -53,7 +53,7 @@ const FilterSections = <
                 key={section.key}
                 section={section}
                 value={selectedFilters[section.key] || ""}
-                handleRadioChange={handleRadioChange}
+                handleCheckChange={handleCheckChange}
                 isSearch={searchKeys.includes(section.key as K)}
               />
             ))}

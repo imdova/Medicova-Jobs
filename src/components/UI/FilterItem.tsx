@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
-  Radio,
-  RadioGroup,
+  Checkbox,
   FormControlLabel,
   FormControl,
   TextField,
@@ -19,15 +18,15 @@ import { FilterSectionType } from "@/types";
 
 interface FilterItemProps {
   section: FilterSectionType;
-  value: string;
-  handleRadioChange: (key: string, value: string) => void;
+  value: string[];
+  handleCheckChange: (key: string, value: string[]) => void;
   isSearch: boolean;
 }
 
 const FilterItem: React.FC<FilterItemProps> = ({
   section,
   value,
-  handleRadioChange,
+  handleCheckChange,
   isSearch,
 }) => {
   const [query, setQuery] = useState("");
@@ -44,6 +43,14 @@ const FilterItem: React.FC<FilterItemProps> = ({
           option.label.toLowerCase().includes(query.toLowerCase()),
         )
       : section.options;
+
+  const handleCheckboxChange = (optionValue: string) => {
+    const newValue = value.includes(optionValue)
+      ? value.filter((val) => val !== optionValue)
+      : [...value, optionValue];
+    handleCheckChange(section.key, newValue);
+  };
+
   return (
     <div className="border-b pb-4 last:border-b-0">
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -60,57 +67,59 @@ const FilterItem: React.FC<FilterItemProps> = ({
 
       <Collapse className="px-1" in={isExpanded}>
         <FormControl component="fieldset">
-          <RadioGroup
-            value={value || ""}
-            onChange={(e) => handleRadioChange(section.key, e.target.value)}
-          >
-            <div className="grid grid-cols-1 gap-1 px-1">
-              {filteredOptions.map((option) => (
-                <FormControlLabel
-                  key={option.value}
-                  value={option.value}
-                  control={
-                    <Radio
-                      checkedIcon={
-                        <Box
+          <div className="grid grid-cols-1 gap-1 px-1">
+            {filteredOptions.map((option) => (
+              <FormControlLabel
+                key={option.value}
+                control={
+                  <Checkbox
+                    checked={
+                      value.includes(option.value) ||
+                      (value.length === 0 && option.value === "all") ||
+                      (value.length === section.options.length - 1 &&
+                        !value.includes("all") &&
+                        !!section.options.find((o) => o.value === "all"))
+                    }
+                    onChange={() => handleCheckboxChange(option.value)}
+                    icon={
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 1,
+                          backgroundColor: "transparent", // Unchecked color
+                          border: "2px solid #D6DDEB",
+                        }}
+                      />
+                    }
+                    checkedIcon={
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 1,
+                          backgroundColor: "#2EAE7D", // Checked color
+                          border: "2px solid #2EAE7D",
+                        }}
+                      >
+                        <CheckIcon
                           sx={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 1,
-                            backgroundColor: "#2EAE7D", // Checked color
-                            border: "2px solid #2EAE7D",
-                          }}
-                        >
-                          <CheckIcon
-                            sx={{
-                              width: 16,
-                              height: 16,
-                              margin: "auto",
-                              color: "white", // Checked icon color
-                            }}
-                          />
-                        </Box>
-                      }
-                      icon={
-                        <Box
-                          sx={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 1,
-                            backgroundColor: "transparent", // Unchecked color
-                            border: "2px solid #D6DDEB",
+                            width: 16,
+                            height: 16,
+                            margin: "auto",
+                            color: "white", // Checked icon color
                           }}
                         />
-                      }
-                      sx={{ padding: 0, px: 1 }}
-                    />
-                  }
-                  label={`${option.label} (${option.count})`}
-                  className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
-                />
-              ))}
-            </div>
-          </RadioGroup>
+                      </Box>
+                    }
+                    sx={{ padding: 0, px: 1 }}
+                  />
+                }
+                label={`${option.label} (${option.count})`}
+                className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
+              />
+            ))}
+          </div>
         </FormControl>
         {isSearch && (
           <TextField

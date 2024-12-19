@@ -28,25 +28,33 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CandideCard from "./CandideCard";
 import Image from "next/image";
+import SearchComponent from "./search-page";
 
-const ApplicantsPage: React.FC = () => {
+const ApplicantsPage: React.FC = ({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) => {
+  const { q: query } = searchParams as {
+    [key: string]: string;
+  };
   const [selected, setSelected] = useState<string[]>([]);
   const [availableApplicants, setAvailableApplicants] = useState<string[]>(
     doctors.filter((x) => x.available).map((x) => x.id),
   );
   const [savedList, setSavedList] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<{
-    [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"];
+    [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"][];
   }>({
-    "Residency (Location)": "",
-    city: "",
-    nationality: "",
-    industry: "",
-    category: "",
-    "Education Level": "",
-    "Years Of Experience": "",
-    gender: "",
-    age: "",
+    "Residency (Location)": [],
+    city: [],
+    nationality: [],
+    industry: [],
+    category: [],
+    "Education Level": [],
+    "Years Of Experience": [],
+    gender: [],
+    age: [],
   });
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
@@ -106,7 +114,9 @@ const ApplicantsPage: React.FC = () => {
     );
   };
 
-  return (
+  return !query ? (
+    <SearchComponent />
+  ) : (
     <Box className="flex min-h-screen w-full flex-row bg-white">
       {/* Left Column: Filter Section */}
       <FilterSections
@@ -122,6 +132,7 @@ const ApplicantsPage: React.FC = () => {
           <div className="flex gap-2">
             <TextField
               fullWidth
+              value={query}
               variant="outlined"
               placeholder="Job Candidates CV's"
               InputProps={{
