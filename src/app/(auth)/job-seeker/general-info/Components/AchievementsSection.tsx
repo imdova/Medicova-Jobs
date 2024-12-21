@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Typography, Grid, Card, Button, Box } from "@mui/material";
 import Image from "next/image";
 import achievements from "@/components/images/achievements.png";
-import AddNewExperience from "./Modals/AddModal";
 
 
 const AchievementsSection: React.FC = () => {
@@ -85,7 +84,6 @@ const AchievementsSection: React.FC = () => {
           >
             Add Achievements
           </Button>
-          <AddNewExperience open={openModal} onClose={handleCloseModal} />
         </Box>
       </Card>
     </Grid>
