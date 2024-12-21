@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, IconButton, Typography, Grid, Card, Divider } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  Grid,
+  Card,
+  Divider,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,7 +17,6 @@ import LanguageIcon from "@mui/icons-material/Language";
 const SocialMediaSection: React.FC = () => {
   return (
     <Grid item xs={12}>
-
       <Card sx={{ padding: "16px", marginY: 3 }}>
         <Box
           sx={{
@@ -54,72 +60,24 @@ const SocialMediaSection: React.FC = () => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             gap: 2,
             marginTop: 2,
           }}
         >
           {/* Instagram Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <InstagramIcon sx={{ color: "rgba(241, 9, 234, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Instagram
-            </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              color: "#2EAE7D",
+            }}
+          >
+            <InstagramIcon />
+            <TwitterIcon />
+            <LanguageIcon />
           </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://www.instagram.com
-            </Link>
-          </Typography>
-
-          <Divider sx={{ marginY: 0.1 }} />
-          {/* Twitter Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <TwitterIcon sx={{ color: "rgba(91, 146, 250, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Twitter
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://www.twitter.com
-            </Link>
-          </Typography>
-
-          <Divider sx={{ marginY: 0.1 }} />
-          {/* website Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <LanguageIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Web site
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              www.imetsacademy.com
-            </Link>
-          </Typography>
         </Box>
       </Card>
     </Grid>

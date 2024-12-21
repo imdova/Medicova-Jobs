@@ -17,6 +17,7 @@ import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import PeopleIcon from "@mui/icons-material/People";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { LinkType } from "@/types/side-bar";
 
 export const icons = {
@@ -40,6 +41,7 @@ export const icons = {
   manage: WorkHistoryIcon,
   PeopleIcon: PeopleIcon,
   AccountCircleIcon: AccountCircleIcon,
+  ManageAccountsIcon: ManageAccountsIcon,
 };
 
 export const employerSideBarLinks: LinkType[] = [
@@ -144,7 +146,7 @@ export const jobSeekerSideBarLinks: LinkType[] = [
     kind: "collapse",
     links: [
       {
-        title: "General Info",
+        title: "View Profile",
         url: "/job-seeker/general-info",
       },
       {
@@ -153,16 +155,11 @@ export const jobSeekerSideBarLinks: LinkType[] = [
       },
     ],
   },
-  // {
-  //   title: "General info",
-  //   icon: "info",
-  //   url: "/job-seeker/general-info",
-  // },
-  // {
-  //   title: "Profile Setting",
-  //   icon: "manage",
-  //   url: "/job-seeker/profile",
-  // },
+  {
+    title: "Career References",
+    icon: "ManageAccountsIcon",
+    url: "/",
+  },
   {
     kind: "divider",
   },

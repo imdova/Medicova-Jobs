@@ -10,6 +10,8 @@ import {
   Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import pdf from "@/components/icons/pdf.png";
+import Image from "next/image";
 
 const Resume: React.FC = () => {
   const [fileName, setFileName] = useState<string | null>(null);
@@ -94,15 +96,13 @@ const Resume: React.FC = () => {
             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Typography
-            sx={{
-              fontWeight: "500",
-              color: "#03353C",
-              fontSize: "14px",
-            }}
-          >
-            CV
-          </Typography>
+          <Image
+            src={pdf}
+            alt="profile"
+            width={40}
+            height={40}
+            className="rounded-xl object-cover"
+          />
           <Typography
             sx={{
               fontWeight: "400",
