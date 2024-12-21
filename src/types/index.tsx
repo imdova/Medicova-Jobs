@@ -51,3 +51,15 @@ export interface FilterSectionType {
   title: string;
   options: FilterOption[];
 }
+
+export interface Folder {
+  id: number;
+  name: string;
+  candidates: number;
+  lastModified: Date;
+}
+
+export interface SortFolders {
+  key: keyof Folder;
+  direction: "asc" | "desc";
+}

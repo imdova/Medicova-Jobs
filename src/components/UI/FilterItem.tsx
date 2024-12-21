@@ -100,6 +100,9 @@ const FilterItem: React.FC<FilterItemProps> = ({
                           borderRadius: 1,
                           backgroundColor: "#2EAE7D", // Checked color
                           border: "2px solid #2EAE7D",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
                         <CheckIcon

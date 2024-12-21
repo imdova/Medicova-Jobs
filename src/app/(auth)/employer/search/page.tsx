@@ -39,9 +39,6 @@ const ApplicantsPage: React.FC = ({
     [key: string]: string;
   };
   const [selected, setSelected] = useState<string[]>([]);
-  const [availableApplicants, setAvailableApplicants] = useState<string[]>(
-    doctors.filter((x) => x.available).map((x) => x.id),
-  );
   const [savedList, setSavedList] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<{
     [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"][];
@@ -105,13 +102,6 @@ const ApplicantsPage: React.FC = ({
     } else {
       saveToList();
     }
-  };
-
-  const addToAvailable = () => {
-    if (!selected.length) return;
-    setAvailableApplicants((pv) =>
-      pv.concat(selected.filter((id) => !pv.includes(id))),
-    );
   };
 
   return !query ? (
@@ -241,16 +231,6 @@ const ApplicantsPage: React.FC = ({
                       Invite to Apply
                     </MenuItem>
                     <Divider className="!m-0" />
-                    <MenuItem
-                      onClick={() => {
-                        handleClose();
-                        addToAvailable();
-                      }}
-                      className="flex items-center gap-2 hover:bg-gray-200"
-                    >
-                      <LockOpenOutlined color="primary" className="h-5 w-5" />
-                      Unlock Profile
-                    </MenuItem>
                     <Divider className="!m-0" />
                     <MenuItem
                       onClick={handleClose}
@@ -273,7 +253,6 @@ const ApplicantsPage: React.FC = ({
             savedList={savedList}
             setSavedList={setSavedList}
             setSelected={setSelected}
-            availableApplicants={availableApplicants}
             selected={selected}
           />
         ))}
