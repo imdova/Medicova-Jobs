@@ -5,10 +5,14 @@ import HeaderSection from "./Components/HeaderSection";
 import AboutSeeker from "./Components/AboutSeeker";
 import EducationsSection from "./Components/EducationsSection";
 import ExperienceSection from "./Components/ExperienceSection";
-import RightSection from "./Components/RightSection";
+import SocialMediaSection from "./Components/SocialMediaSection";
 import SkillsSection from "./Components/SkillsSection";
 import ActivitiesSection from "./Components/ActivitiesSection";
 import AchievementsSection from "./Components/AchievementsSection";
+import PublicProfile from "./Components/PublicProfile";
+import Resume from "./Components/Resume";
+import AdditionalDetailsSection from "./Components/AdditionalDetailsSection";
+import LanguageSection from "./Components/LanguageSection";
 
 
 const GeneralInfoPage = () => {
@@ -32,8 +36,19 @@ const GeneralInfoPage = () => {
           {/* Achievements Section */}
           <AchievementsSection />
         </Grid>
-        {/* Right Section */}
-        <RightSection />
+        {/* Right Sections */}
+        <Grid item xs={12} md={4}>
+          {/* Public Profile Section */}
+          <PublicProfile />
+          {/* Resume Section */}
+          <Resume />
+          {/* Additinoal Details Section */}
+          <AdditionalDetailsSection />
+          {/* Socialmedia Section */}
+          <SocialMediaSection />
+          {/* Language Section */}
+          <LanguageSection/>
+        </Grid>
       </Grid>
     </Box>
   );

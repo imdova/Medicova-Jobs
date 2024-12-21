@@ -1,16 +1,311 @@
 "use client";
 import React, { useState } from "react";
-import { Typography, Grid, Card, Button, Box } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Card,
+  Button,
+  Box,
+  InputLabel,
+  TextField,
+  MenuItem,
+  Select,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import Image from "next/image";
 import experience from "@/components/images/experience.png";
-import AddNewExperience from "./Modals/AddNewExperience";
-
+import AddModal from "./Modals/AddModal";
 
 const ExperienceSection: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [fields, setFields] = useState<JSX.Element[]>([]);
 
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
+    setModalTitle(title);
+    setFields(getFields());
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  // Function to return experience form fields
+  const getExperienceFields = (): JSX.Element[] => [
+    <Box key="industry">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Industry *
+      </InputLabel>
+      <Select
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          height: "40px",
+          fontSize: "14px",
+        }}
+        required
+        defaultValue="Healthcare professionals"
+      >
+        <MenuItem value="Healthcare professionals">
+          Healthcare professionals
+        </MenuItem>
+      </Select>
+    </Box>,
+
+    <Box key="jobTitle">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Job Title *
+      </InputLabel>
+      <TextField
+        placeholder="Enter Job Title"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="company">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Company/Organization *
+      </InputLabel>
+      <TextField
+        placeholder="Enter Company"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box
+      key="dateMonth"
+      sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
+    >
+      <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          Start Date
+        </InputLabel>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          defaultValue="Start Month"
+        >
+          <MenuItem value="Start Month" disabled sx={{ color: "#888" }}>
+            Start Month
+          </MenuItem>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month) => (
+            <MenuItem key={month} value={month}>
+              {month}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+
+      <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          End Date
+        </InputLabel>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          defaultValue="End Month"
+        >
+          <MenuItem value="End Month" disabled sx={{ color: "#888" }}>
+            End Month
+          </MenuItem>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month) => (
+            <MenuItem key={month} value={month}>
+              {month}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+    </Box>,
+
+    <Box
+      key="dateYear"
+      sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
+    >
+      <Box>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          required
+          defaultValue="Start Year"
+        >
+          <MenuItem value="Start Year" disabled>
+            Start Year
+          </MenuItem>
+          {Array.from(
+            { length: new Date().getFullYear() - 1980 + 1 },
+            (_, index) => 1980 + index,
+          ).map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+
+      <Box>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          required
+          defaultValue="End Year"
+        >
+          <MenuItem value="End Year" disabled>
+            End Year
+          </MenuItem>
+          {Array.from(
+            { length: new Date().getFullYear() - 1980 + 1 },
+            (_, index) => 1980 + index,
+          ).map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+    </Box>,
+
+    <Box key="currentWork">
+      <FormControlLabel
+        control={
+          <Checkbox
+            sx={{
+              color: "rgba(46, 174, 125, 1)",
+              "&.Mui-checked": {
+                color: "rgba(46, 174, 125, 1)",
+              },
+              "& .MuiSvgIcon-root": {
+                fontSize: 34,
+              },
+            }}
+          />
+        }
+        label={
+          <Typography sx={{ color: "#515B6F", fontWeight: "700" }}>
+            I currently work there
+          </Typography>
+        }
+      />
+    </Box>,
+
+    <Box key="country">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Country *
+      </InputLabel>
+      <Select
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          height: "40px",
+          fontSize: "14px",
+        }}
+        required
+        defaultValue="Egypt"
+      >
+        <MenuItem value="Egypt">Egypt</MenuItem>
+      </Select>
+    </Box>,
+  ];
+  
   return (
     <Grid item xs={12}>
       <Card
@@ -82,11 +377,18 @@ const ExperienceSection: React.FC = () => {
                 backgroundColor: "#00795c",
               },
             }}
-            onClick={handleOpenModal}
+            onClick={() =>
+              handleOpenModal("Add Work Experience", getExperienceFields)
+            }
           >
             Add Work Experience
           </Button>
-          <AddNewExperience open={openModal} onClose={handleCloseModal} />
+          <AddModal
+            open={openModal}
+            onClose={handleCloseModal}
+            modalTitle={modalTitle}
+            fields={fields}
+          />
         </Box>
       </Card>
     </Grid>
