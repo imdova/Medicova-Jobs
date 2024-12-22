@@ -13,6 +13,7 @@ import PublicProfile from "./Components/PublicProfile";
 import Resume from "./Components/Resume";
 import ContactInfoSection from "./Components/ContactInfoSection";
 import LanguageSection from "./Components/LanguageSection";
+import CompleteProfile from "./Components/CompleteProfile";
 
 const GeneralInfoPage = () => {
   return (
@@ -37,6 +38,8 @@ const GeneralInfoPage = () => {
         </Grid>
         {/* Right Sections */}
         <Grid item xs={12} md={4}>
+          {/* Public Profile Section */}
+          <CompleteProfile />
           {/* Public Profile Section */}
           <PublicProfile />
           {/* Resume Section */}

@@ -34,18 +34,7 @@ const LanguageSection: React.FC = () => {
           >
             Languages
           </Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <IconButton
-              size="small"
-              sx={{
-                border: 1,
-                borderColor: "grey.300",
-                borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
-              }}
-            >
-              <AddIcon />
-            </IconButton>
+          <Box sx={{ display: "flex"}}>
             <IconButton
               size="small"
               sx={{
@@ -83,7 +72,7 @@ const LanguageSection: React.FC = () => {
                   variant="body1"
                   sx={{ fontWeight: "500", color: "#000" }}
                 >
-                  {item.language}
+                  {item.language} :
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {item.proficiency}

@@ -31,18 +31,7 @@ const SocialMediaSection: React.FC = () => {
           >
             Social Links
           </Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <IconButton
-              size="small"
-              sx={{
-                border: 1,
-                borderColor: "grey.300",
-                borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
-              }}
-            >
-              <AddIcon />
-            </IconButton>
+          <Box sx={{ display: "flex"}}>  
             <IconButton
               size="small"
               sx={{
