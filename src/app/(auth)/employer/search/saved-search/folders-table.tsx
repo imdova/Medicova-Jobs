@@ -17,6 +17,7 @@ import { Edit, Delete, Folder as FolderIcon } from "@mui/icons-material";
 import { Folder, SortFolders } from "@/types";
 import { formatDate } from "@/util";
 import CustomPagination from "@/components/UI/CustomPagination";
+import Image from "next/image";
 
 const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
   const [selected, setSelected] = useState<number[]>([]);
@@ -27,14 +28,6 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
     key: "lastModified",
     direction: "desc",
   });
-
-  console.log(
-    page,
-    rowsPerPage,
-    rowsPerPage,
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
 
   const handleSort = (key: keyof Folder) => {
     setSortConfig({
@@ -88,19 +81,8 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
-    <div className="w-full p-2">
+    <div className="w-full">
       <TableContainer component={Paper} className="border-0">
         <Table className="min-w-full">
           <TableHead className="bg-gray-50">
@@ -168,7 +150,13 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <FolderIcon className="text-gray-500" />
+                        <Image
+                          src="/images/folder.png"
+                          width={20}
+                          height={20}
+                          alt="folder icon"
+                          className="object-contain duration-300 group-hover:scale-110"
+                        />
                         {row.name}
                       </div>
                     </TableCell>
@@ -197,14 +185,6 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
         totalItems={filteredAndSortedData.length}
         setItemsPerPage={setRowsPerPage}
       />
-      {/* <TablePagination
-        component="div"
-        count={filteredAndSortedData.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
     </div>
   );
 };

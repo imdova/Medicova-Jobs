@@ -29,6 +29,7 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CandideCard from "./CandideCard";
 import Image from "next/image";
 import SearchComponent from "./search-page";
+import FolderModal from "./saved-search/folder-modal";
 
 const ApplicantsPage: React.FC = ({
   searchParams,
@@ -104,13 +105,22 @@ const ApplicantsPage: React.FC = ({
     }
   };
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+    handleSaveClose();
+  };
+  const handleCloseModal = () => setOpenModal(false);
+
   return !query ? (
     <SearchComponent />
   ) : (
-    <Box className="flex min-h-screen w-full flex-row bg-white">
+    <Box className="flex min-h-screen w-full flex-row bg-white p-2">
       {/* Left Column: Filter Section */}
+      <FolderModal open={openModal} onClose={handleCloseModal} />
       <FilterSections
-        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[101px] lg:block"
+        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[100px] lg:block"
         sections={searchFilters}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
@@ -118,7 +128,7 @@ const ApplicantsPage: React.FC = ({
       />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
-        <div className="h-[80px] w-full">
+        <div className="h-[80px] w-full pl-[39px]">
           <div className="flex gap-2">
             <TextField
               fullWidth
@@ -150,12 +160,12 @@ const ApplicantsPage: React.FC = ({
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="h-fit rounded-md bg-[#DEF0EB]"
+              className="h-[32px] w-[32px] bg-[#DEF0EB] p-[5px]"
             >
               {isAllSelect ? (
-                <DeselectIcon className="m-2 h-6 w-6" />
+                <DeselectIcon className="h-6 w-6" />
               ) : (
-                <SelectAllIcon className="m-2 h-6 w-6" />
+                <SelectAllIcon className="h-6 w-6" />
               )}
             </button>
 
@@ -168,6 +178,7 @@ const ApplicantsPage: React.FC = ({
                     aria-haspopup="true"
                     aria-expanded={saveOpen ? "true" : undefined}
                     size="medium"
+                    className="p-0"
                   >
                     <BookmarkIcon color="primary" className="h-8 w-8" />
                   </IconButton>
@@ -179,7 +190,7 @@ const ApplicantsPage: React.FC = ({
                     className="mt-2"
                   >
                     <MenuItem
-                      onClick={handleSaveClose}
+                      onClick={handleOpenModal}
                       className="flex items-center gap-4 hover:bg-gray-200"
                     >
                       <Image
@@ -211,7 +222,7 @@ const ApplicantsPage: React.FC = ({
                     aria-controls={open ? "Action-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
-                    className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+                    className="flex h-[32px] items-center rounded-md bg-[#DEF0EB] px-4 duration-300 hover:bg-[#cae0da]"
                   >
                     <p className="inline-block">Action</p>
                     <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />

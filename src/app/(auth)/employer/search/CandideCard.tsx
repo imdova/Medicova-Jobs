@@ -29,6 +29,7 @@ import Flag from "@/components/UI/flagitem";
 import Image from "next/image";
 import { Add } from "@mui/icons-material";
 import { formatName } from "@/util";
+import FolderModal from "./saved-search/folder-modal";
 
 interface CandidateCardProps {
   doctor: Doctor;
@@ -64,8 +65,17 @@ const CandideCard: React.FC<CandidateCardProps> = ({
     setSaveAnchorEl(null);
   };
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+    handleSaveClose();
+  };
+  const handleCloseModal = () => setOpenModal(false);
+
   return (
     <div className="mb-4 flex">
+      <FolderModal open={openModal} onClose={handleCloseModal} />
       <button
         onClick={toggleSelect}
         className={`${
@@ -234,7 +244,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 className="mt-2"
               >
                 <MenuItem
-                  onClick={handleSaveClose}
+                  onClick={handleOpenModal}
                   className="flex items-center gap-4 hover:bg-gray-200"
                 >
                   <Image
