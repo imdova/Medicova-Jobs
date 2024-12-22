@@ -1,4 +1,4 @@
-import { Doctor } from "@/types";
+import { Doctor, Folder } from "@/types";
 
 export const doctorsBase: Doctor[] = [
   {
@@ -10,7 +10,7 @@ export const doctorsBase: Doctor[] = [
     yearsOfExperience: 15,
     consultant: true,
     field: "Cardiology",
-    available: true,
+    available: false,
     contactInfo: {
       whatsapp: "+1 555-123-4567",
       phoneNumber: "+1 555-987-6543",
@@ -304,3 +304,66 @@ export const searchFilters = {
     { label: "60+", count: 10, value: "60+" },
   ],
 };
+
+export const folders: Folder[] = [
+  {
+    id: 1,
+    name: "Engineering Team",
+    candidates: 25,
+    lastModified: new Date("2023-11-01"),
+  },
+  {
+    id: 2,
+    name: "Marketing Team",
+    candidates: 15,
+    lastModified: new Date("2023-11-02"),
+  },
+  {
+    id: 3,
+    name: "Sales Department",
+    candidates: 30,
+    lastModified: new Date("2023-11-03"),
+  },
+  {
+    id: 4,
+    name: "HR Division",
+    candidates: 12,
+    lastModified: new Date("2023-11-04"),
+  },
+  {
+    id: 5,
+    name: "Product Team",
+    candidates: 20,
+    lastModified: new Date("2023-11-05"),
+  },
+  {
+    id: 6,
+    name: "Design Team",
+    candidates: 18,
+    lastModified: new Date("2023-11-06"),
+  },
+  {
+    id: 7,
+    name: "Customer Support",
+    candidates: 22,
+    lastModified: new Date("2023-11-07"),
+  },
+  {
+    id: 8,
+    name: "QA Team",
+    candidates: 10,
+    lastModified: new Date("2023-11-08"),
+  },
+  {
+    id: 9,
+    name: "DevOps Team",
+    candidates: 8,
+    lastModified: new Date("2023-11-09"),
+  },
+  {
+    id: 10,
+    name: "Research Team",
+    candidates: 15,
+    lastModified: new Date("2023-11-10"),
+  },
+];

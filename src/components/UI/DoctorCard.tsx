@@ -34,6 +34,7 @@ import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import { Doctor } from "@/types";
 import Flag from "./flagitem";
+import { formatName } from "@/util";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -89,7 +90,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   doctor.image ||
                   "https://randomuser.me/api/portraits/men/4.jpg"
                 }
-                alt={doctor.name}
+                alt={formatName(doctor.name)}
                 sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
               />
               <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
@@ -106,7 +107,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     fontSize: { xs: "16px", md: "22px" },
                   }}
                 >
-                  {doctor.name}
+                  {formatName(doctor.name)}
                 </Typography>
                 {isAvailable ? (
                   <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />

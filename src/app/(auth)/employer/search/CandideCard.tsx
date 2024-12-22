@@ -21,16 +21,18 @@ import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import EmailIcon from "@mui/icons-material/Email";
 import { Doctor } from "@/types";
 import Flag from "@/components/UI/flagitem";
 import Image from "next/image";
 import { Add } from "@mui/icons-material";
+import { formatName } from "@/util";
 
 interface CandidateCardProps {
   doctor: Doctor;
   selected: string[];
-  availableApplicants: string[];
   savedList: string[];
   setSavedList: React.Dispatch<React.SetStateAction<string[]>>;
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
@@ -38,7 +40,6 @@ interface CandidateCardProps {
 
 const CandideCard: React.FC<CandidateCardProps> = ({
   doctor,
-  availableApplicants,
   savedList,
   setSavedList,
   selected,
@@ -47,7 +48,6 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   const [showMore, setShowMore] = useState(false);
 
   const isSelected = selected.includes(doctor.id);
-  const isAvailable = availableApplicants.includes(doctor.id);
   const isSaved = savedList.includes(doctor.id);
 
   const toggleSelect = () => setSelected((pv) => toggleId(pv, doctor.id));
@@ -63,6 +63,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   const handleSaveClose = () => {
     setSaveAnchorEl(null);
   };
+
   return (
     <div className="mb-4 flex">
       <button
@@ -83,7 +84,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                   doctor.image ||
                   "https://randomuser.me/api/portraits/men/4.jpg"
                 }
-                alt={doctor.name}
+                alt={formatName(doctor.name)}
                 sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
               />
               <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
@@ -100,9 +101,9 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                     fontSize: { xs: "16px", md: "22px" },
                   }}
                 >
-                  {doctor.name}
+                  {formatName(doctor.name)}
                 </Typography>
-                {isAvailable ? (
+                {doctor.available ? (
                   <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />
                 ) : (
                   <LockIcon className="h-5 w-5 text-red-500" />
@@ -156,13 +157,61 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                   <p className="text-xs md:text-base">Cardiology</p>
                 </div>
               </div>
-              <div className="my-2 flex w-full flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
+              <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
                 <h6 className="text-sm font-semibold md:text-base">
-                  Contact Info :{" "}
-                  <span className="text-sm font-normal text-red-500">
-                    click unlock profile to view contact information
-                  </span>
+                  Contact Info :
                 </h6>
+                <div className="flex flex-wrap justify-between">
+                  <div className="mr-4 flex min-w-[80px] items-center">
+                    <LocalPhoneIcon
+                      color="primary"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                    />
+                    {doctor.available ? (
+                      <span className="mx-1 h-fit text-sm md:text-base">
+                        {doctor.contactInfo.phoneNumber}
+                      </span>
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dumy number
+                        </span>
+                      </div>
+                    )}
+
+                    <IconButton
+                      disabled={!doctor.available}
+                      className="p-0 md:p-2"
+                    >
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    </IconButton>
+                  </div>
+                  <div className="flex items-center">
+                    <EmailIcon
+                      color="primary"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                    />
+                    {doctor.available ? (
+                      <span className="mx-1 h-fit break-all text-sm md:text-base">
+                        {doctor.contactInfo.email}
+                      </span>
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dummy email.com
+                        </span>
+                      </div>
+                    )}
+                    <IconButton
+                      disabled={!doctor.available}
+                      className="p-0 md:p-2"
+                    >
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    </IconButton>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
