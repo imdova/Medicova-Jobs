@@ -5,17 +5,16 @@ import {
   Typography,
   Grid,
   Card,
-  LinearProgress,
   Divider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import TranslateIcon from "@mui/icons-material/Translate";
 
-// Data array for sections
+// Data array for languages and proficiency levels
 const languageData = [
-  { title: "Arabic", percentage: 100 },
-  { title: "English", percentage: 70 },
-  { title: "French", percentage: 35 },
+  { language: "Arabic", proficiency: "Native" },
+  { language: "English", proficiency: "Fluent" },
 ];
 
 const LanguageSection: React.FC = () => {
@@ -69,44 +68,26 @@ const LanguageSection: React.FC = () => {
             marginTop: 2,
           }}
         >
-          {languageData.map((language, index) => (
-            <React.Fragment key={language.title}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {languageData.map((item, index) => (
+            <React.Fragment key={item.language}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  color: "#7C8493",
+                }}
+              >
+                <TranslateIcon sx={{ color: "#2EAE7D" }} />
                 <Typography
                   variant="body1"
-                  sx={{ fontWeight: "500", color: "#03353C" }}
+                  sx={{ fontWeight: "500", color: "#000" }}
                 >
-                  {language.title}
+                  {item.language}
                 </Typography>
-                <Box
-                  sx={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Box sx={{ flex: 1 }}>
-                    <LinearProgress
-                      variant="determinate"
-                      value={language.percentage}
-                      sx={{
-                        height: 12,
-                        borderRadius: 4,
-                        backgroundColor: "rgba(214, 221, 235, 0.18)",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgba(46, 174, 125, 1)",
-                        },
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontWeight: "500", color: "#515B6F" }}
-                  >
-                    {language.percentage}%
-                  </Typography>
-                </Box>
+                <Typography variant="body2" color="textSecondary">
+                  {item.proficiency}
+                </Typography>
               </Box>
               {index < languageData.length - 1 && <Divider sx={{ marginY: 0.1 }} />}
             </React.Fragment>

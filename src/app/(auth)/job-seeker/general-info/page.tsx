@@ -11,9 +11,8 @@ import ActivitiesSection from "./Components/ActivitiesSection";
 import AchievementsSection from "./Components/AchievementsSection";
 import PublicProfile from "./Components/PublicProfile";
 import Resume from "./Components/Resume";
-import AdditionalDetailsSection from "./Components/AdditionalDetailsSection";
+import ContactInfoSection from "./Components/ContactInfoSection";
 import LanguageSection from "./Components/LanguageSection";
-
 
 const GeneralInfoPage = () => {
   return (
@@ -42,12 +41,12 @@ const GeneralInfoPage = () => {
           <PublicProfile />
           {/* Resume Section */}
           <Resume />
-          {/* Additinoal Details Section */}
-          <AdditionalDetailsSection />
+          {/* Contact Info Section */}
+          <ContactInfoSection />
           {/* Socialmedia Section */}
           <SocialMediaSection />
           {/* Language Section */}
-          <LanguageSection/>
+          <LanguageSection />
         </Grid>
       </Grid>
     </Box>
