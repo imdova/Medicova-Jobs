@@ -8,6 +8,8 @@ import {
   Menu,
   Snackbar,
   Divider,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
@@ -126,9 +128,10 @@ const ApplicantsPage: React.FC = () => {
     );
   };
   return (
-    <Box className="flex min-h-screen w-full flex-row bg-white">
+    <Box className="flex min-h-screen w-full flex-row bg-white p-2">
       {/* Left Column: Filter Section */}
       <FilterSections
+        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[120px] lg:block"
         sections={filterSections}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
@@ -136,13 +139,13 @@ const ApplicantsPage: React.FC = () => {
       />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
-        <div className="w-full">
+        <div className="w-full pl-[39px]">
           <h2 className="mb-5 text-3xl font-bold text-[#185D43]">
             Clinical Pharmacist in Damam, Saudi Arabia
           </h2>
         </div>
 
-        <Box className="flex justify-between">
+        <Box className="flex justify-between pl-[39px]">
           <div className="max-w-[calc(100vw-32px)]">
             <Tabs
               value={selectedTab}
@@ -191,26 +194,31 @@ const ApplicantsPage: React.FC = () => {
               />
             </Tabs>
           </div>
-
-          <Select
-            className="hidden h-12 md:flex"
-            value="time-desc"
-            onChange={(e) => console.log(e.target.value)}
-          >
-            <MenuItem value="time-desc">Newest</MenuItem>
-            <MenuItem value="time-asc">Oldest</MenuItem>
-          </Select>
+          <FormControl className="min-w-32">
+            <InputLabel id="sort-by-select-label">Sort by</InputLabel>
+            <Select
+              className="hidden h-12 md:flex"
+              value=""
+              label="Sort by"
+              labelId="sort-by-select-label"
+              id="sort-by-select-label"
+              onChange={(e) => console.log(e.target.value)}
+            >
+              <MenuItem value="time-desc">Newest</MenuItem>
+              <MenuItem value="time-asc">Oldest</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         <div className="mb-4 mt-2 flex items-center justify-between">
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="h-fit rounded-md bg-[#DEF0EB]"
+              className="h-[32px] w-[32px] bg-[#DEF0EB]"
             >
               {isAllSelect ? (
-                <DeselectIcon className="m-2 h-6 w-6" />
+                <DeselectIcon className="m-auto h-6 w-6" />
               ) : (
-                <SelectAllIcon className="m-2 h-6 w-6" />
+                <SelectAllIcon className="m-auto h-6 w-6" />
               )}
             </button>
             {selectedApplicants.length > 0 && (
