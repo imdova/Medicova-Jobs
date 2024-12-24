@@ -158,7 +158,7 @@ export const jobSeekerSideBarLinks: LinkType[] = [
   {
     title: "Career References",
     icon: "ManageAccountsIcon",
-    url: "/",
+    url: "/job-seeker/career-references",
   },
   {
     kind: "divider",

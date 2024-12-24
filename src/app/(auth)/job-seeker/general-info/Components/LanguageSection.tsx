@@ -8,7 +8,6 @@ import {
   Divider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 import TranslateIcon from "@mui/icons-material/Translate";
 
 // Data array for languages and proficiency levels

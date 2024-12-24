@@ -122,12 +122,11 @@ const SkillsSection: React.FC = () => {
                     fontWeight: "400",
                     color: "#185D43",
                     display: "flex",
-                    alignItems: "center", // Align text and icon
-                    gap: 1, // Space between text and icon
+                    alignItems: "center",
+                    gap: 1,
                   }}
                 >
                   {keyword}
-                  {/* Delete IconButton inside Typography */}
                   <IconButton
                     onClick={() => handleDeleteKeyword(index)}
                     sx={{

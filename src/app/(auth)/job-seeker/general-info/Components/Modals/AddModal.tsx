@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  Button,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Modal, Box, Typography, Button } from "@mui/material";
 
 interface AddModalProps {
   open: boolean;
@@ -52,15 +45,12 @@ const AddModal: React.FC<AddModalProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 3,
+            mb: 1,
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             {modalTitle}
           </Typography>
-          <IconButton onClick={onClose} sx={{ color: "rgba(227, 72, 23, 1)" }}>
-            <CloseIcon />
-          </IconButton>
         </Box>
 
         {/* Modal Content */}
@@ -72,15 +62,36 @@ const AddModal: React.FC<AddModalProps> = ({
           }}
         >
           {fields}
-          
         </Box>
 
-        {/* Add Button */}
-        <Box sx={{ textAlign: "center", mt: 4 }}>
+        {/* Buttons (Save and Close) */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start", // Align buttons to the left
+            gap: 2,
+            mt: 4,
+          }}
+        >
           <Button
+            onClick={onClose}
             sx={{
-              width: "204.16px",
-              height: "46px",
+              width: "113px",
+              height: "30px",
+              background: "#f5f5f5",
+              color: "#2EAE7D",
+              textTransform: "capitalize",
+              fontWeight: "600",
+              border: "1px solid #2EAE7D",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              width: "113px",
+              height: "30px",
               background: "linear-gradient(180deg, #2EAE7D, #134834)",
               color: "#fff",
               textTransform: "capitalize",
