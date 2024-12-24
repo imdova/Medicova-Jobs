@@ -17,15 +17,20 @@ import StarIcon from "@mui/icons-material/Star";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
-import { doctorsBase, filterSections } from "@/constants";
+import { doctorsBase, filterSections, folders } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
 import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
-const ApplicantsPage: React.FC = () => {
+const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
+  const folderId = params.slug;
+  console.log("🚀 ~ ApplicantsPage ~ folderId:", folderId);
+  const folder = folders.find((f) => f.id === parseInt(folderId));
+  console.log("🚀 ~ ApplicantsPage ~ folder:", folder);
   const [doctors, setDoctors] = useState(doctorsBase);
   const [selectedTab, setSelectedTab] = useState<TapType>("all");
   const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
@@ -126,6 +131,7 @@ const ApplicantsPage: React.FC = () => {
       pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
     );
   };
+  if (!folder) return notFound;
   return (
     <Box className="flex min-h-screen w-full flex-row bg-white p-2">
       {/* Left Column: Filter Section */}
@@ -138,7 +144,7 @@ const ApplicantsPage: React.FC = () => {
       />
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
-        <div className="mb-5 flex w-full gap-3">
+        <div className="mb-5 flex w-full gap-3 pl-[32px]">
           <Image
             src={"/images/folder.png"}
             alt="save"
@@ -146,11 +152,11 @@ const ApplicantsPage: React.FC = () => {
             width={24}
             height={24}
           />
-          <h2 className="text-2xl font-bold">Doctors December 2024</h2>
+          <h2 className="text-2xl font-bold">{folder.name}</h2>
         </div>
 
-        <Box className="flex justify-between">
-          <div className="max-w-[calc(100vw-32px)]">
+        <Box className="flex justify-between pl-[32px]">
+          <div className="max-w-[calc(100vw-64px)]">
             <Tabs
               value={selectedTab}
               onChange={handleTabChange}

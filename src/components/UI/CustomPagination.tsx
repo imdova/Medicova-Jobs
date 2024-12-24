@@ -3,6 +3,7 @@
 import { Select, MenuItem, Pagination, SelectChangeEvent } from "@mui/material";
 
 interface CustomPaginationProps {
+  fixedNumberPerPage?: number;
   itemsPerPage: number;
   setItemsPerPage: (value: number) => void;
   currentPage: number;
@@ -11,6 +12,7 @@ interface CustomPaginationProps {
 }
 
 const CustomPagination: React.FC<CustomPaginationProps> = ({
+  fixedNumberPerPage,
   itemsPerPage,
   setItemsPerPage,
   currentPage,
@@ -29,22 +31,26 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+    <div
+      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex flex-col items-center gap-2 sm:flex-row`}
+    >
       {/* Select Input for Items Per Page */}
-      <div className="flex items-center gap-2 pl-10 md:pl-12">
-        <span>View:</span>
-        <Select
-          value={itemsPerPage}
-          onChange={handleItemsPerPageChange}
-          size="small"
-          variant="outlined"
-        >
-          <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={10}>10</MenuItem>
-          <MenuItem value={20}>20</MenuItem>
-          <MenuItem value={50}>50</MenuItem>
-        </Select>
-      </div>
+      {fixedNumberPerPage ? null : (
+        <div className="flex items-center gap-2 pl-10 md:pl-12">
+          <span>View:</span>
+          <Select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            size="small"
+            variant="outlined"
+          >
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
+          </Select>
+        </div>
+      )}
 
       {/* Pagination Component */}
       <Pagination

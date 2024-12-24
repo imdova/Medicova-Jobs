@@ -30,6 +30,7 @@ import Image from "next/image";
 import { Add } from "@mui/icons-material";
 import { formatName } from "@/util";
 import FolderModal from "./saved-search/folder-modal";
+import AddToFolderModal from "./add-to-folder-modal";
 
 interface CandidateCardProps {
   doctor: Doctor;
@@ -73,9 +74,20 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   };
   const handleCloseModal = () => setOpenModal(false);
 
+  const [userToFolder, setUserToFolder] = useState<string | null>("");
+
+  const handleCloseAddToFolderModal = () => setUserToFolder(null);
+  const handelAddToFolderModal = () => {
+    setUserToFolder("folder");
+    handleSaveClose();
+  };
   return (
     <div className="mb-4 flex">
       <FolderModal open={openModal} onClose={handleCloseModal} />
+      <AddToFolderModal
+        open={!!userToFolder}
+        onClose={handleCloseAddToFolderModal}
+      />
       <button
         onClick={toggleSelect}
         className={`${
@@ -97,9 +109,6 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 alt={formatName(doctor.name)}
                 sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
               />
-              <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
-                applied 6 days ago
-              </p>
             </div>
             <div>
               <Stack direction="row" alignItems="center" gap={1}>
@@ -257,7 +266,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                   <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
                 </MenuItem>
                 <MenuItem
-                  onClick={handleSaveClose}
+                  onClick={handelAddToFolderModal}
                   className="flex items-center gap-4 hover:bg-gray-200"
                 >
                   <Image

@@ -18,6 +18,7 @@ interface NewUserModalProps {
   onClose: () => void;
   type?: "create" | "edit";
   folderName?: string;
+  onCreate?: (folderName: string) => void;
 }
 
 const FolderModal: React.FC<NewUserModalProps> = ({
@@ -25,6 +26,7 @@ const FolderModal: React.FC<NewUserModalProps> = ({
   onClose,
   type = "create",
   folderName: name,
+  onCreate,
 }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -39,16 +41,16 @@ const FolderModal: React.FC<NewUserModalProps> = ({
 
   const handleCreateFolder = () => {
     console.log("Folder Created: ", folderName);
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.delete("fname");
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl, { scroll: false });
-    onClose(); // Close the modal
-    setFolderName("");
+    onCreate && onCreate(folderName);
+    closeHandler(); // Close the modal
   };
 
   const closeHandler = () => {
     setFolderName("");
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete("fname");
+    const optionUrl = createUrl(pathname, newSearchParams);
+    router.replace(optionUrl, { scroll: false });
     onClose();
   };
   const captionText =
