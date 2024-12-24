@@ -33,8 +33,6 @@ const GeneralInfoPage = () => {
           <SkillsSection />
           {/* Activities Section */}
           <ActivitiesSection />
-          {/* Achievements Section */}
-          <AchievementsSection />
         </Grid>
         {/* Right Sections */}
         <Grid item xs={12} md={4}>

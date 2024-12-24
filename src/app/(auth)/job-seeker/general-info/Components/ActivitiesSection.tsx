@@ -1,10 +1,156 @@
 "use client";
 import React, { useState } from "react";
-import { Typography, Grid, Card, Button, Box } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Card,
+  Button,
+  Box,
+  TextField,
+  InputLabel,
+} from "@mui/material";
 import Image from "next/image";
 import activities from "@/components/images/activities.png";
+import AddModal from "./Modals/AddModal";
 
 const ActivitiesSection: React.FC = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [fields, setFields] = useState<JSX.Element[]>([]);
+
+  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
+    setModalTitle(title);
+    setFields(getFields());
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const getActivitiesAchievementsFields = (): JSX.Element[] => [
+
+    <Box key="instagram">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Instagram
+      </InputLabel>
+      <TextField
+        placeholder="Enter Instagram Link"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="facebook">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Facebook
+      </InputLabel>
+      <TextField
+        placeholder="Enter Facebook Link"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="twitter">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Twitter
+      </InputLabel>
+      <TextField
+        placeholder="Enter Twitter Link"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="linkedin">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        LinkedIn
+      </InputLabel>
+      <TextField
+        placeholder="Enter LinkedIn Link"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="youtube">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        YouTube
+      </InputLabel>
+      <TextField
+        placeholder="Enter YouTube Link"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+  ];
+
   return (
     <Grid item xs={12}>
       <Card
@@ -23,7 +169,7 @@ const ActivitiesSection: React.FC = () => {
             color: "#03353C",
           }}
         >
-          Activities
+          Activities / Achievements
         </Typography>
 
         {/* Centered Content */}
@@ -75,9 +221,21 @@ const ActivitiesSection: React.FC = () => {
                 backgroundColor: "#00795c",
               },
             }}
+            onClick={() =>
+              handleOpenModal(
+                "Activities & Achievements ",
+                getActivitiesAchievementsFields,
+              )
+            }
           >
-            Add Activities
+            Add Activities / Achievements
           </Button>
+          <AddModal
+            open={openModal}
+            onClose={handleCloseModal}
+            modalTitle={modalTitle}
+            fields={fields}
+          />
         </Box>
       </Card>
     </Grid>
