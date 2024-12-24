@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createUrl } from "../search-page";
 
 interface NewUserModalProps {
   open: boolean;
@@ -24,6 +26,9 @@ const FolderModal: React.FC<NewUserModalProps> = ({
   type = "create",
   folderName: name,
 }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
   const [folderName, setFolderName] = useState("");
 
   const handleFolderNameChange = (
@@ -33,9 +38,11 @@ const FolderModal: React.FC<NewUserModalProps> = ({
   };
 
   const handleCreateFolder = () => {
-    // Logic to create the folder
     console.log("Folder Created: ", folderName);
-    // Clear the folder name after creation
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete("fname");
+    const optionUrl = createUrl(pathname, newSearchParams);
+    router.replace(optionUrl, { scroll: false });
     onClose(); // Close the modal
     setFolderName("");
   };

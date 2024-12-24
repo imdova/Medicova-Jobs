@@ -1,23 +1,17 @@
 "use client";
 import { Add } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import CandidateTable from "./folders-table";
 import { folders } from "@/constants";
 import FolderBig from "../folder-main-card";
 import FolderModal from "./folder-modal";
-import { createUrl } from "../search-page";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const SavedSearchPage: React.FC = ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const searchPs = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
   const { fname } = searchParams as {
     [key: string]: string;
   };
@@ -27,10 +21,6 @@ const SavedSearchPage: React.FC = ({
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => {
     setOpenModal(false);
-    const newSearchParams = new URLSearchParams(searchPs.toString());
-    newSearchParams.delete("fname");
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl, { scroll: false });
   };
 
   return (
@@ -58,12 +48,14 @@ const SavedSearchPage: React.FC = ({
           <CandidateTable data={folders} />
         </div>
       </div>
-      <FolderModal
-        open={openModal || !!fname}
-        onClose={handleCloseModal}
-        type={fname ? "edit" : "create"}
-        folderName={fname}
-      />
+      <Suspense>
+        <FolderModal
+          open={openModal || !!fname}
+          type={fname ? "edit" : "create"}
+          folderName={fname}
+          onClose={handleCloseModal}
+        />
+      </Suspense>
     </div>
   );
 };
