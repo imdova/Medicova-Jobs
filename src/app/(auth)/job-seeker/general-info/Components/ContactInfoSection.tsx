@@ -10,7 +10,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import TranslateIcon from "@mui/icons-material/Translate";
 
 const ContactInfoSection: React.FC = () => {
   return (
@@ -43,7 +42,6 @@ const ContactInfoSection: React.FC = () => {
             </IconButton>
           </Box>
         </Box>
-
         <Box
           sx={{
             display: "flex",
@@ -96,5 +94,4 @@ const ContactInfoSection: React.FC = () => {
     </Grid>
   );
 };
-
 export default ContactInfoSection;
