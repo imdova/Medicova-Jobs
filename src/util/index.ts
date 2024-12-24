@@ -28,3 +28,15 @@ export function formatName(fullName: string): string {
     .toUpperCase();
   return `${firstName} .${lastNameInitial}`;
 }
+export function getLastEdit(date: Date): string {
+  const currentDate = new Date();
+  const diffTime = Math.abs(currentDate.getTime() - date.getTime());
+  const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+
+  // Check if it's within the last 15 days
+  if (diffDays <= 15) {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  }
+
+  return formatDate(date);
+}

@@ -30,6 +30,7 @@ import CandideCard from "./CandideCard";
 import Image from "next/image";
 import SearchComponent from "./search-page";
 import FolderModal from "./saved-search/folder-modal";
+import AddToFolderModal from "./add-to-folder-modal";
 
 const ApplicantsPage: React.FC = ({
   searchParams,
@@ -113,12 +114,24 @@ const ApplicantsPage: React.FC = ({
   };
   const handleCloseModal = () => setOpenModal(false);
 
+  const [userToFolder, setUserToFolder] = useState<string | null>("");
+
+  const handleCloseAddToFolderModal = () => setUserToFolder(null);
+  const handelAddToFolderModal = () => {
+    setUserToFolder("folder");
+    handleSaveClose();
+  };
+
   return !query ? (
     <SearchComponent />
   ) : (
     <Box className="flex min-h-screen w-full flex-row bg-white p-2">
       {/* Left Column: Filter Section */}
       <FolderModal open={openModal} onClose={handleCloseModal} />
+      <AddToFolderModal
+        open={!!userToFolder}
+        onClose={handleCloseAddToFolderModal}
+      />
       <FilterSections
         className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[100px] lg:block"
         sections={searchFilters}
@@ -203,7 +216,7 @@ const ApplicantsPage: React.FC = ({
                       <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
                     </MenuItem>
                     <MenuItem
-                      onClick={handleSaveClose}
+                      onClick={handelAddToFolderModal}
                       className="flex items-center gap-4 hover:bg-gray-200"
                     >
                       <Image

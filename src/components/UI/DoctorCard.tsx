@@ -90,7 +90,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   doctor.image ||
                   "https://randomuser.me/api/portraits/men/4.jpg"
                 }
-                alt={formatName(doctor.name)}
+                alt={isAvailable ? doctor.name : formatName(doctor.name)}
                 sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
               />
               <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
@@ -107,7 +107,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     fontSize: { xs: "16px", md: "22px" },
                   }}
                 >
-                  {formatName(doctor.name)}
+                  {isAvailable ? doctor.name : formatName(doctor.name)}
                 </Typography>
                 {isAvailable ? (
                   <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />

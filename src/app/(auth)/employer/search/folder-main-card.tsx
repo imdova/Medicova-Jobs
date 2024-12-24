@@ -6,12 +6,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "./search-page";
+import { Folder } from "@/types";
+import { getLastEdit } from "@/util";
 
-interface FolderBigProps {
-  isSmall?: boolean;
+interface FolderMainCardProps {
+  folder: Folder;
 }
 
-const FolderBig: React.FC<FolderBigProps> = ({ isSmall }) => {
+const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -67,29 +69,25 @@ const FolderBig: React.FC<FolderBigProps> = ({ isSmall }) => {
         </MenuItem>
       </Menu>
       <Link
-        href={`/employer/search/saved-search/Cardiology`}
-        className={`${isSmall ? "h-[80px] md:min-w-20" : "h-[100px] md:min-w-40"} group flex items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB]`}
+        href={`/employer/search/saved-search/${folder.id}`}
+        className="group flex h-[100px] items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB] md:min-w-40"
       >
         <Image
           src="/images/folder.png"
-          width={isSmall ? 30 : 40}
-          height={isSmall ? 30 : 40}
+          width={40}
+          height={40}
           alt="folder icon"
           className="object-contain duration-300 group-hover:scale-110"
         />
       </Link>
-      <h6
-        className={`${isSmall ? "text-sm md:text-base" : "text-base font-semibold md:text-lg"} mt-2 px-2`}
-      >
-        Cardiology Specialists
+      <h6 className="mt-2 px-2 text-base font-semibold md:text-lg">
+        {folder.name}
       </h6>
-      <p
-        className={`${isSmall ? "text-xs" : "text-xs md:text-sm"} mb-2 px-2 text-black/50`}
-      >
-        2days ago
+      <p className="mb-2 px-2 text-xs text-black/50 md:text-sm">
+        {getLastEdit(folder.lastModified)}
       </p>
     </div>
   );
 };
 
-export default FolderBig;
+export default FolderMainCard;

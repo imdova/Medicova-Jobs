@@ -9,17 +9,37 @@ import {
   Paper,
   Checkbox,
   IconButton,
-  TablePagination,
-  TextField,
   TableSortLabel,
 } from "@mui/material";
-import { Edit, Delete, Folder as FolderIcon } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 import { Folder, SortFolders } from "@/types";
-import { formatDate } from "@/util";
+import { getLastEdit } from "@/util";
 import CustomPagination from "@/components/UI/CustomPagination";
 import Image from "next/image";
+import Link from "next/link";
 
-const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
+interface FolderTableProps {
+  data: Folder[];
+  select?: boolean;
+  onClick?: (folder: Folder) => void;
+  onEdit?: (folder: Folder) => void;
+  onDelete?: (folder: Folder) => void;
+  size?: "small" | "medium";
+  fixedNumberPerPage?: number;
+  selectedItem?: number | string;
+}
+
+const CandidateTable: React.FC<FolderTableProps> = ({
+  data,
+  select,
+  onClick,
+  onEdit,
+  onDelete,
+  size,
+  fixedNumberPerPage,
+  selectedItem,
+}) => {
+  const isSmall = size === "small";
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -85,20 +105,29 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
     <div className="w-full">
       <TableContainer component={Paper} className="border-0">
         <Table className="min-w-full">
-          <TableHead className="bg-gray-50">
+          <TableHead className={`bg-gray-50`}>
             <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={
-                    selected.length > 0 &&
-                    selected.length < filteredAndSortedData.length
-                  }
-                  checked={selected.length === filteredAndSortedData.length}
-                  onChange={handleSelectAll}
-                />
+              {select ? (
+                <TableCell
+                  className={`${isSmall ? "p-2 text-xs" : "p-5"}`}
+                  padding="checkbox"
+                >
+                  <Checkbox
+                    indeterminate={
+                      selected.length > 0 &&
+                      selected.length < filteredAndSortedData.length
+                    }
+                    checked={selected.length === filteredAndSortedData.length}
+                    onChange={handleSelectAll}
+                  />
+                </TableCell>
+              ) : null}
+              <TableCell
+                className={`p-2 font-semibold ${isSmall ? "text-xs" : ""}`}
+              >
+                Name
               </TableCell>
-              <TableCell className="font-semibold">Name</TableCell>
-              <TableCell className="cursor-pointer font-semibold">
+              <TableCell className={`cursor-pointer p-2 font-semibold`}>
                 <TableSortLabel
                   active={sortConfig.key === "candidates"}
                   direction={
@@ -107,11 +136,12 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
                       : "asc"
                   }
                   onClick={() => handleSort("candidates")}
+                  className={`${isSmall ? "text-xs" : ""}`}
                 >
                   candidates
                 </TableSortLabel>
               </TableCell>
-              <TableCell className="cursor-pointer font-semibold">
+              <TableCell className={`cursor-pointer p-2 font-semibold`}>
                 <TableSortLabel
                   active={sortConfig.key === "lastModified"}
                   direction={
@@ -120,11 +150,18 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
                       : "asc"
                   }
                   onClick={() => handleSort("lastModified")}
+                  className={`${isSmall ? "text-xs" : ""}`}
                 >
                   last Modified
                 </TableSortLabel>
               </TableCell>
-              <TableCell className="font-semibold">Actions</TableCell>
+              {onEdit || onDelete ? (
+                <TableCell
+                  className={`p-2 font-semibold ${isSmall ? "text-xs" : ""}`}
+                >
+                  Actions
+                </TableCell>
+              ) : null}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -134,7 +171,8 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
                 (page - 1) * rowsPerPage + rowsPerPage,
               )
               .map((row) => {
-                const isItemSelected = isSelected(row.id);
+                const isItemSelected =
+                  isSelected(row.id) || row.id === selectedItem;
                 return (
                   <TableRow
                     key={row.id}
@@ -142,36 +180,67 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
                     className="hover:bg-gray-50"
                     selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isItemSelected}
-                        onChange={() => handleSelect(row.id)}
-                      />
-                    </TableCell>
-                    <TableCell>
+                    {select ? (
+                      <TableCell
+                        className={`${isSmall ? "p-2 text-xs" : "p-5"}`}
+                        padding="checkbox"
+                      >
+                        <Checkbox
+                          checked={isItemSelected}
+                          onChange={() => handleSelect(row.id)}
+                        />
+                      </TableCell>
+                    ) : null}
+                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
                       <div className="flex items-center gap-2">
                         <Image
                           src="/images/folder.png"
-                          width={20}
-                          height={20}
+                          width={isSmall ? 16 : 20}
+                          height={isSmall ? 16 : 20}
                           alt="folder icon"
                           className="object-contain duration-300 group-hover:scale-110"
                         />
-                        {row.name}
+                        {onClick ? (
+                          <button
+                            onClick={() => onClick(row)}
+                            className={`hover:underline ${isSmall ? "text-xs" : ""}`}
+                          >
+                            {row.name}
+                          </button>
+                        ) : (
+                          <Link
+                            className={`hover:underline ${isSmall ? "text-xs" : ""}`}
+                            href={`/employer/search/saved-search/${row.id}`}
+                          >
+                            {row.name}
+                          </Link>
+                        )}
                       </div>
                     </TableCell>
-                    <TableCell>{row.candidates}</TableCell>
-                    <TableCell>{formatDate(row.lastModified)}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <IconButton size="small" className="text-blue-600">
-                          <Edit />
-                        </IconButton>
-                        <IconButton size="small" className="text-red-600">
-                          <Delete />
-                        </IconButton>
-                      </div>
+                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
+                      {row.candidates}
                     </TableCell>
+                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
+                      {getLastEdit(row.lastModified)}
+                    </TableCell>
+                    {onEdit || onDelete ? (
+                      <TableCell
+                        className={`${isSmall ? "p-2 text-xs" : "p-5"}`}
+                      >
+                        <div className="flex space-x-2">
+                          {onEdit ? (
+                            <IconButton size="small" className="text-blue-600">
+                              <Edit />
+                            </IconButton>
+                          ) : null}
+                          {onDelete ? (
+                            <IconButton size="small" className="text-red-600">
+                              <Delete />
+                            </IconButton>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                    ) : null}
                   </TableRow>
                 );
               })}
@@ -179,6 +248,7 @@ const CandidateTable: React.FC<{ data: Folder[] }> = ({ data }) => {
         </Table>
       </TableContainer>
       <CustomPagination
+        fixedNumberPerPage={fixedNumberPerPage}
         currentPage={page}
         itemsPerPage={rowsPerPage}
         setCurrentPage={setPage}

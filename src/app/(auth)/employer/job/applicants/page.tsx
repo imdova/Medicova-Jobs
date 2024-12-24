@@ -146,7 +146,7 @@ const ApplicantsPage: React.FC = () => {
         </div>
 
         <Box className="flex justify-between pl-[39px]">
-          <div className="max-w-[calc(100vw-32px)]">
+          <div className="max-w-[calc(100vw-72px)]">
             <Tabs
               value={selectedTab}
               onChange={handleTabChange}
@@ -194,10 +194,10 @@ const ApplicantsPage: React.FC = () => {
               />
             </Tabs>
           </div>
-          <FormControl className="min-w-32">
+          <FormControl className="hidden min-w-32 md:block">
             <InputLabel id="sort-by-select-label">Sort by</InputLabel>
             <Select
-              className="hidden h-12 md:flex"
+              className="flex h-12"
               value=""
               label="Sort by"
               labelId="sort-by-select-label"
