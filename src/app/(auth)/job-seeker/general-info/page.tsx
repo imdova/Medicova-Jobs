@@ -7,13 +7,13 @@ import EducationsSection from "./Components/EducationsSection";
 import ExperienceSection from "./Components/ExperienceSection";
 import SocialMediaSection from "./Components/SocialMediaSection";
 import SkillsSection from "./Components/SkillsSection";
-import ActivitiesSection from "./Components/ActivitiesSection";
-import AchievementsSection from "./Components/AchievementsSection";
+import ActivitiesAchievementsSection from "./Components/ActivitiesAchievementsSection";
 import PublicProfile from "./Components/PublicProfile";
 import Resume from "./Components/Resume";
 import ContactInfoSection from "./Components/ContactInfoSection";
 import LanguageSection from "./Components/LanguageSection";
 import CompleteProfile from "./Components/CompleteProfile";
+import CoursesSection from "./Components/CoursesSection";
 
 const GeneralInfoPage = () => {
   return (
@@ -25,14 +25,16 @@ const GeneralInfoPage = () => {
           <HeaderSection />
           {/* About Section */}
           <AboutSeeker />
-          {/* Education Section */}
-          <EducationsSection />
           {/* Experience Section */}
           <ExperienceSection />
+          {/* Education Section */}
+          <EducationsSection />
+          {/* Courses Section */}
+          <CoursesSection />
           {/* Skills Section */}
           <SkillsSection />
-          {/* Activities Section */}
-          <ActivitiesSection />
+          {/* Activities / Achievements Section */}
+          <ActivitiesAchievementsSection />
         </Grid>
         {/* Right Sections */}
         <Grid item xs={12} md={4}>

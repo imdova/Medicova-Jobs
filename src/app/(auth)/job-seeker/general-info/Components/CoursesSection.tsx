@@ -4,68 +4,69 @@ import {
   Typography,
   Grid,
   Card,
-  Button,
   Box,
+  IconButton,
+  Button,
+  Select,
+  MenuItem,
   InputLabel,
   TextField,
-  MenuItem,
-  Select,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
 } from "@mui/material";
-import Image from "next/image";
-import experience from "@/components/icons/briefcase.png";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 import AddModal from "./Modals/AddModal";
+import Image from "next/image";
+import courses from "@/components/icons/courses.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-const experienceData = [
+const coursesData = [
   {
-    company: "Google",
-    position: "Senior Software Engineer",
-    years: "2015 - 2020",
-    location: "Mountain View, CA", // Company location
+    institution: "Harvard University",
+    degree: "Postgraduate degree, Applied Psychology",
+    years: "2010 - 2012",
+    location: "Cambridge, MA", // Add location
   },
   {
-    company: "Facebook",
-    position: "Frontend Developer",
-    years: "2020 - 2022",
-    location: "Menlo Park, CA", // Company location
+    institution: "Stanford University",
+    degree: "Bachelor's degree, Computer Science",
+    years: "2015 - 2019",
+    location: "Stanford, CA", // Add location
   },
   {
-    company: "Amazon",
-    position: "UX Designer",
-    years: "2012 - 2015",
-    location: "Seattle, WA", // Company location
+    institution: "MIT",
+    degree: "PhD, Biomedical Engineering",
+    years: "2018 - 2022",
+    location: "Cambridge, MA", // Add location
   },
   {
-    company: "Apple",
-    position: "iOS Developer",
-    years: "2018 - 2021",
-    location: "Cupertino, CA", // Company location
+    institution: "MIT",
+    degree: "PhD, Biomedical Engineering",
+    years: "2018 - 2022",
+    location: "Cambridge, MA", // Add location
   },
   {
-    company: "Tesla",
-    position: "Software Architect",
-    years: "2022 - Present",
-    location: "Palo Alto, CA", // Company location
+    institution: "MIT",
+    degree: "PhD, Biomedical Engineering",
+    years: "2018 - 2022",
+    location: "Cambridge, MA", // Add location
   },
 ];
 
-const ExperienceSection: React.FC = () => {
-  const [visibleItems, setVisibleItems] = useState(2);
-  const [isExpanded, setIsExpanded] = useState(false);
+const CoursesSection: React.FC = () => {
+  const [visibleItems, setVisibleItems] = useState(2); // Initially show 2 items
+  const [isExpanded, setIsExpanded] = useState(false); // Track whether the list is expanded
 
   const handleToggle = () => {
     if (isExpanded) {
-      setVisibleItems(2);
+      setVisibleItems(2); // Show only 2 items if expanded
     } else {
-      setVisibleItems(experienceData.length);
+      setVisibleItems(coursesData.length); // Show all items if collapsed
     }
-    setIsExpanded(!isExpanded);
+    setIsExpanded(!isExpanded); // Toggle expanded state
   };
+
+  // Calculate how many more items are left to show
+  const remainingItems = coursesData.length - visibleItems;
 
   const [openModal, setOpenModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -77,16 +78,12 @@ const ExperienceSection: React.FC = () => {
     setOpenModal(true);
   };
 
-  // Calculate how many more items are left to show
-  const remainingItems = experienceData.length - visibleItems;
-
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
-  // Function to return experience form fields
-  const getExperienceFields = (): JSX.Element[] => [
-    <Box key="industry">
+  const getCoursesFields = (): JSX.Element[] => [
+    <Box key="title">
       <InputLabel
         sx={{
           marginBottom: 0.2,
@@ -95,7 +92,55 @@ const ExperienceSection: React.FC = () => {
           fontSize: "14px",
         }}
       >
-        Industry *
+        Title *
+      </InputLabel>
+      <TextField
+        placeholder="Course/Certificate name e.g., Advanced Cardiac Surgery"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="organization">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Issuing organization/Provider*
+      </InputLabel>
+      <TextField
+        placeholder="e.g., American Heart Association"
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="degreeLevel">
+      <InputLabel
+        sx={{
+          marginBottom: 0.2,
+          fontWeight: 600,
+          color: "#000",
+          fontSize: "14px",
+        }}
+      >
+        Specialty/Category*
       </InputLabel>
       <Select
         fullWidth
@@ -105,64 +150,14 @@ const ExperienceSection: React.FC = () => {
           fontSize: "14px",
         }}
         required
-        defaultValue="Healthcare professionals"
+        defaultValue="Cardiology"
       >
-        <MenuItem value="Healthcare professionals">
-          Healthcare professionals
-        </MenuItem>
+        <MenuItem value="cardiology">Cardiology</MenuItem>
       </Select>
     </Box>,
 
-    <Box key="jobTitle">
-      <InputLabel
-        sx={{
-          marginBottom: 0.2,
-          fontWeight: 600,
-          color: "#000",
-          fontSize: "14px",
-        }}
-      >
-        Job Title *
-      </InputLabel>
-      <TextField
-        placeholder="Enter Job Title"
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          "& .MuiOutlinedInput-root": {
-            height: "40px",
-            fontSize: "14px",
-          },
-        }}
-      />
-    </Box>,
-
-    <Box key="company">
-      <InputLabel
-        sx={{
-          marginBottom: 0.2,
-          fontWeight: 600,
-          color: "#000",
-          fontSize: "14px",
-        }}
-      >
-        Company/Organization *
-      </InputLabel>
-      <TextField
-        placeholder="Enter Company"
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          "& .MuiOutlinedInput-root": {
-            height: "40px",
-            fontSize: "14px",
-          },
-        }}
-      />
-    </Box>,
-
     <Box
-      key="dateMonth"
+      key="IssueDate"
       sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
     >
       <Box>
@@ -174,7 +169,7 @@ const ExperienceSection: React.FC = () => {
             fontSize: "14px",
           }}
         >
-          Start Date
+          Issue date*
         </InputLabel>
         <Select
           fullWidth
@@ -183,10 +178,10 @@ const ExperienceSection: React.FC = () => {
             height: "40px",
             fontSize: "14px",
           }}
-          defaultValue="Start Month"
+          defaultValue="Month"
         >
-          <MenuItem value="Start Month" disabled sx={{ color: "#888" }}>
-            Start Month
+          <MenuItem value="Month" disabled sx={{ color: "#888" }}>
+            Month
           </MenuItem>
           {[
             "January",
@@ -218,47 +213,8 @@ const ExperienceSection: React.FC = () => {
             fontSize: "14px",
           }}
         >
-          End Date
+          Year*
         </InputLabel>
-        <Select
-          fullWidth
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            height: "40px",
-            fontSize: "14px",
-          }}
-          defaultValue="End Month"
-        >
-          <MenuItem value="End Month" disabled sx={{ color: "#888" }}>
-            End Month
-          </MenuItem>
-          {[
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ].map((month) => (
-            <MenuItem key={month} value={month}>
-              {month}
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
-    </Box>,
-
-    <Box
-      key="dateYear"
-      sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
-    >
-      <Box>
         <Select
           fullWidth
           sx={{
@@ -267,10 +223,10 @@ const ExperienceSection: React.FC = () => {
             fontSize: "14px",
           }}
           required
-          defaultValue="Start Year"
+          defaultValue="Year"
         >
           <MenuItem value="Start Year" disabled>
-            Start Year
+            Year
           </MenuItem>
           {Array.from(
             { length: new Date().getFullYear() - 1980 + 1 },
@@ -282,8 +238,67 @@ const ExperienceSection: React.FC = () => {
           ))}
         </Select>
       </Box>
+    </Box>,
+
+    <Box
+      key="CompletionDate"
+      sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
+    >
+      <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          Completion Date*
+        </InputLabel>
+        <Select
+          fullWidth
+          sx={{
+            backgroundColor: "rgba(214, 221, 235, 0.18)",
+            height: "40px",
+            fontSize: "14px",
+          }}
+          defaultValue="Month"
+        >
+          <MenuItem value="Month" disabled sx={{ color: "#888" }}>
+            Month
+          </MenuItem>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month) => (
+            <MenuItem key={month} value={month}>
+              {month}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
 
       <Box>
+        <InputLabel
+          sx={{
+            marginBottom: 0.2,
+            fontWeight: 600,
+            color: "#000",
+            fontSize: "14px",
+          }}
+        >
+          Year*
+        </InputLabel>
         <Select
           fullWidth
           sx={{
@@ -292,10 +307,10 @@ const ExperienceSection: React.FC = () => {
             fontSize: "14px",
           }}
           required
-          defaultValue="End Year"
+          defaultValue="Year"
         >
-          <MenuItem value="End Year" disabled>
-            End Year
+          <MenuItem value="Start Year" disabled>
+            Year
           </MenuItem>
           {Array.from(
             { length: new Date().getFullYear() - 1980 + 1 },
@@ -309,30 +324,7 @@ const ExperienceSection: React.FC = () => {
       </Box>
     </Box>,
 
-    <Box key="currentWork">
-      <FormControlLabel
-        control={
-          <Checkbox
-            sx={{
-              color: "rgba(46, 174, 125, 1)",
-              "&.Mui-checked": {
-                color: "rgba(46, 174, 125, 1)",
-              },
-              "& .MuiSvgIcon-root": {
-                fontSize: 34,
-              },
-            }}
-          />
-        }
-        label={
-          <Typography sx={{ color: "#515B6F", fontWeight: "700" }}>
-            I currently work there
-          </Typography>
-        }
-      />
-    </Box>,
-
-    <Box key="country">
+    <Box key="description">
       <InputLabel
         sx={{
           marginBottom: 0.2,
@@ -341,20 +333,19 @@ const ExperienceSection: React.FC = () => {
           fontSize: "14px",
         }}
       >
-        Country *
+        Description
       </InputLabel>
-      <Select
+      <TextField
+        placeholder="A brief description of the course or certificate."
         fullWidth
         sx={{
           backgroundColor: "rgba(214, 221, 235, 0.18)",
-          height: "40px",
-          fontSize: "14px",
+          "& .MuiOutlinedInput-root": {
+            height: "70px",
+            fontSize: "14px",
+          },
         }}
-        required
-        defaultValue="Egypt"
-      >
-        <MenuItem value="Egypt">Egypt</MenuItem>
-      </Select>
+      />
     </Box>,
   ];
 
@@ -376,7 +367,7 @@ const ExperienceSection: React.FC = () => {
             color: "#03353C",
           }}
         >
-          Experience
+          Courses and Certificates
         </Typography>
         {/* Add Button positioned at the top right */}
         <IconButton
@@ -389,9 +380,7 @@ const ExperienceSection: React.FC = () => {
             borderRadius: "4px",
             padding: "6px",
           }}
-          onClick={() =>
-            handleOpenModal("Add Experiences", getExperienceFields)
-          }
+          onClick={() => handleOpenModal("Add Educations", getCoursesFields)}
         >
           <AddIcon />
         </IconButton>
@@ -403,14 +392,14 @@ const ExperienceSection: React.FC = () => {
         />
 
         {/* Title and Description */}
-        {experienceData.slice(0, visibleItems).map((item, index) => (
+        {coursesData.slice(0, visibleItems).map((item, index) => (
           <Grid
             container
             key={index}
             spacing={2}
             sx={{
               justifyContent: "center",
-              marginTop: index < experienceData.length - 1 ? 2 : 0,
+              marginTop: index < coursesData.length - 1 ? 2 : 0,
             }}
           >
             {/* Wrapper for each row (2 items per row) */}
@@ -425,7 +414,7 @@ const ExperienceSection: React.FC = () => {
                 }}
               >
                 {/* First Item */}
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <Box
                     sx={{
                       padding: 2,
@@ -438,8 +427,8 @@ const ExperienceSection: React.FC = () => {
                   >
                     {/* Left Photo (Image) */}
                     <Image
-                      src={experience}
-                      alt="Experience"
+                      src={courses}
+                      alt="Courses"
                       width={70}
                       height={50}
                       priority={true}
@@ -457,10 +446,10 @@ const ExperienceSection: React.FC = () => {
                           fontSize: { xs: "14px", sm: "18px" },
                         }}
                       >
-                        {item.company}
+                        {item.institution}
                       </Typography>
                       <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
-                        {item.position}
+                        {item.degree}
                       </Typography>
                       <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
                         {item.years}
@@ -500,8 +489,8 @@ const ExperienceSection: React.FC = () => {
                 </Grid>
 
                 {/* Second Item */}
-                {experienceData[index + 1] && (
-                  <Grid item xs={12} sm={6}>
+                {coursesData[index + 1] && (
+                  <Grid item xs={12}>
                     <Box
                       sx={{
                         padding: 2,
@@ -514,8 +503,8 @@ const ExperienceSection: React.FC = () => {
                     >
                       {/* Left Photo (Avatar) */}
                       <Image
-                        src={experience}
-                        alt="Education"
+                        src={courses}
+                        alt="Courses"
                         width={70}
                         height={50}
                         priority={true}
@@ -533,17 +522,17 @@ const ExperienceSection: React.FC = () => {
                             fontSize: { xs: "14px", sm: "16px" },
                           }}
                         >
-                          {experienceData[index + 1].company}
+                          {coursesData[index + 1].institution}
                         </Typography>
                         <Typography
                           sx={{ fontWeight: "400", color: "#7C8493" }}
                         >
-                          {experienceData[index + 1].position}
+                          {coursesData[index + 1].degree}
                         </Typography>
                         <Typography
                           sx={{ fontWeight: "400", color: "#7C8493" }}
                         >
-                          {experienceData[index + 1].years}
+                          {coursesData[index + 1].years}
                         </Typography>
 
                         {/* Location Section */}
@@ -560,7 +549,7 @@ const ExperienceSection: React.FC = () => {
                           <Typography
                             sx={{ fontWeight: "400", color: "#7C8493" }}
                           >
-                            {experienceData[index + 1].location}
+                            {coursesData[index + 1].location}
                           </Typography>
                         </Box>
                       </Box>
@@ -601,8 +590,8 @@ const ExperienceSection: React.FC = () => {
             onClick={handleToggle}
           >
             {isExpanded
-              ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
-              : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
+              ? `Show less courses${remainingItems > 1 ? "s" : ""}`
+              : `Show ${remainingItems} more course${remainingItems > 1 ? "s" : ""}`}
           </Button>
         </Box>
       </Card>
@@ -610,4 +599,4 @@ const ExperienceSection: React.FC = () => {
   );
 };
 
-export default ExperienceSection;
+export default CoursesSection;
