@@ -1,8 +1,69 @@
-import React from "react";
-import { Typography, Grid, Card, Box, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit"; // Import Edit icon
+"use client";
+import React, { useState } from "react";
+import {
+  Typography,
+  Grid,
+  Card,
+  Box,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import AddModal from "./Modals/AddModal";
 
 const AboutSeeker: React.FC = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [fields, setFields] = useState<JSX.Element[]>([]);
+
+  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
+    setModalTitle(title);
+    setFields(getFields());
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const getAboutFields = (): JSX.Element[] => [
+    <Box key="aboutInfo">
+      <Typography sx={{ fontSize: "14px", color: "#7C8493", marginBottom: 2 }}>
+        Highlight your skills, experience, and commitment. Let potential
+        employers know why you are the right fit to make a difference in their
+        team!
+      </Typography>
+    </Box>,
+
+    <Box key="description">
+      <TextField
+        placeholder="E.g., 'Hi, I’m ....., a dedicated in ....... with ...... years of experience in ....."
+        fullWidth
+        sx={{
+          backgroundColor: "rgba(214, 221, 235, 0.18)",
+          "& .MuiOutlinedInput-root": {
+            height: "70px",
+            fontSize: "14px",
+          },
+        }}
+      />
+    </Box>,
+
+    <Box key="note">
+      <Typography
+        sx={{
+          fontSize: "14px",
+          backgroundColor: "#ECF7F3",
+          padding: "8px",
+          marginTop: "8px",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>Note:</strong> Please avoid sharing any contact information or external links in
+        this section.
+      </Typography>
+    </Box>,
+  ];
   return (
     <Grid item xs={12}>
       <Card
@@ -23,9 +84,18 @@ const AboutSeeker: React.FC = () => {
             borderRadius: "4px",
             padding: "6px",
           }}
+          onClick={() =>
+            handleOpenModal("Introduce Yourself to Employers", getAboutFields)
+          }
         >
           <EditIcon />
         </IconButton>
+        <AddModal
+          open={openModal}
+          onClose={handleCloseModal}
+          modalTitle={modalTitle}
+          fields={fields}
+        />
 
         {/* Title and Description */}
         <Box>

@@ -6,50 +6,49 @@ import {
   Card,
   Box,
   IconButton,
-  Avatar,
-  Divider,
   Button,
   Select,
   MenuItem,
   InputLabel,
-  Checkbox,
-  FormControlLabel,
   TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import AddModal from "./Modals/AddModal";
+import Image from "next/image";
+import education from "@/components/icons/education.png";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const educationData = [
   {
     institution: "Harvard University",
     degree: "Postgraduate degree, Applied Psychology",
     years: "2010 - 2012",
-    photoUrl: "https://via.placeholder.com/100",
+    location: "Cambridge, MA", // Add location
   },
   {
     institution: "Stanford University",
     degree: "Bachelor's degree, Computer Science",
     years: "2015 - 2019",
-    photoUrl: "https://via.placeholder.com/100",
+    location: "Stanford, CA", // Add location
   },
   {
     institution: "MIT",
     degree: "PhD, Biomedical Engineering",
     years: "2018 - 2022",
-    photoUrl: "https://via.placeholder.com/100",
+    location: "Cambridge, MA", // Add location
   },
   {
     institution: "MIT",
     degree: "PhD, Biomedical Engineering",
     years: "2018 - 2022",
-    photoUrl: "https://via.placeholder.com/100",
+    location: "Cambridge, MA", // Add location
   },
   {
     institution: "MIT",
     degree: "PhD, Biomedical Engineering",
     years: "2018 - 2022",
-    photoUrl: "https://via.placeholder.com/100",
+    location: "Cambridge, MA", // Add location
   },
 ];
 
@@ -310,86 +309,176 @@ const EducationsSection: React.FC = () => {
             key={index}
             spacing={2}
             sx={{
-              alignItems: "center",
-              justifyContent: "center", // Centers the content horizontally
-              marginBottom: index < educationData.length - 1 ? 2 : 0,
+              justifyContent: "center",
+              marginTop: index < educationData.length - 1 ? 2 : 0,
             }}
           >
-            {/* Left Photo (Avatar) centered */}
-            <Grid
-              item
-              xs={12}
-              sm="auto"
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <Avatar
-                alt="Education"
+            {/* Wrapper for each row (2 items per row) */}
+            {index % 2 === 0 && (
+              <Grid
+                container
+                spacing={2}
                 sx={{
-                  width: { xs: 80, sm: 100 }, // Adjust size for different screen sizes
-                  height: { xs: 80, sm: 100 },
-                  borderRadius: 1,
-                }}
-                src={item.photoUrl}
-              />
-            </Grid>
-
-            {/* Text Section */}
-            <Grid item xs={12} sm>
-              <Box
-                sx={{
-                  textAlign: { xs: "center", sm: "left" },
-                  padding: { xs: 1, sm: 3 },
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 2,
                 }}
               >
-                <Typography
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: "600",
-                    color: "#25324B",
-                    fontSize: { xs: "14px", sm: "16px" }, // Adjust font size for smaller screens
-                  }}
-                >
-                  {item.institution}
-                </Typography>
+                {/* First Item */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      padding: 2,
+                      border: "1px solid #D6DDEB",
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      position: "relative", // Add this line to position the button
+                    }}
+                  >
+                    {/* Left Photo (Image) */}
+                    <Image
+                      src={education}
+                      alt="Education"
+                      width={70}
+                      height={50}
+                      priority={true}
+                      style={{
+                        marginRight: "16px", // Add space between the image and the text
+                      }}
+                    />
+                    {/* Text Section */}
+                    <Box>
+                      <Typography
+                        sx={{
+                          marginBottom: 1,
+                          fontWeight: "600",
+                          color: "#020202",
+                          fontSize: { xs: "14px", sm: "18px" },
+                        }}
+                      >
+                        {item.institution}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
+                        {item.degree}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
+                        {item.years}
+                      </Typography>
 
-                <Typography
-                  sx={{
-                    fontWeight: "400",
-                    color: "#7C8493",
-                  }}
-                >
-                  {item.degree}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "400",
-                    color: "#7C8493",
-                  }}
-                >
-                  {item.years}
-                </Typography>
-              </Box>
-            </Grid>
+                      {/* Location Section */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: 1,
+                        }}
+                      >
+                        <LocationOnIcon
+                          sx={{ color: "#7C8493", marginRight: 1 }}
+                        />
+                        <Typography
+                          sx={{ fontWeight: "400", color: "#7C8493" }}
+                        >
+                          {item.location}
+                        </Typography>
+                      </Box>
+                    </Box>
 
-            {/* Edit Button at the right end */}
-            <Grid item xs="auto">
-              <IconButton
-                sx={{
-                  color: "#00A884",
-                  border: "1px solid #D6DDEB",
-                  borderRadius: "4px",
-                  padding: "6px",
-                  marginBottom: { xs: 1, sm: 4 }, // Adjust spacing for smaller screens
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-            </Grid>
+                    {/* Edit Icon Button */}
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        color: "#00000080", // Set the color of the icon
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
+                </Grid>
 
-            {/* Divider between items */}
-            {index < educationData.length - 1 && (
-              <Grid item xs={12}>
-                <Divider sx={{ marginY: 2, borderColor: "#D6DDEB" }} />
+                {/* Second Item */}
+                {educationData[index + 1] && (
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        padding: 2,
+                        border: "1px solid #D6DDEB",
+                        borderRadius: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        position: "relative", // Add this line to position the button
+                      }}
+                    >
+                      {/* Left Photo (Avatar) */}
+                      <Image
+                        src={education}
+                        alt="Education"
+                        width={70}
+                        height={50}
+                        priority={true}
+                        style={{
+                          marginRight: "16px", // Add space between the image and the text
+                        }}
+                      />
+                      {/* Text Section */}
+                      <Box>
+                        <Typography
+                          sx={{
+                            marginBottom: 1,
+                            fontWeight: "600",
+                            color: "#020202",
+                            fontSize: { xs: "14px", sm: "16px" },
+                          }}
+                        >
+                          {educationData[index + 1].institution}
+                        </Typography>
+                        <Typography
+                          sx={{ fontWeight: "400", color: "#7C8493" }}
+                        >
+                          {educationData[index + 1].degree}
+                        </Typography>
+                        <Typography
+                          sx={{ fontWeight: "400", color: "#7C8493" }}
+                        >
+                          {educationData[index + 1].years}
+                        </Typography>
+
+                        {/* Location Section */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: 1,
+                          }}
+                        >
+                          <LocationOnIcon
+                            sx={{ color: "#7C8493", marginRight: 1 }}
+                          />
+                          <Typography
+                            sx={{ fontWeight: "400", color: "#7C8493" }}
+                          >
+                            {educationData[index + 1].location}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {/* Edit Icon Button */}
+                      <IconButton
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          color: "#00000080", // Set the color of the icon
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                )}
               </Grid>
             )}
           </Grid>
