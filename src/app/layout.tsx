@@ -1,10 +1,16 @@
 import ThemeProviderClient from "./ThemeProviderClient";
-import { DM_Serif_Display } from "next/font/google";
+import { DM_Serif_Display, Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
   variable: "--font-dmSerif",
+  weight: "400",
+});
+
+const baiJamjuree = Bai_Jamjuree({
+  subsets: ["latin"],
+  variable: "--font-baiJamjuree",
   weight: "400",
 });
 
@@ -20,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={dmSerifDisplay.variable}>
+      <body className={`${dmSerifDisplay.variable} ${baiJamjuree.variable}`}>
         <ThemeProviderClient>{children}</ThemeProviderClient>
       </body>
     </html>

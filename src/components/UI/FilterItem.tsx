@@ -21,6 +21,7 @@ interface FilterItemProps {
   value: string[];
   handleCheckChange: (key: string, value: string[]) => void;
   isSearch: boolean;
+  index?: number;
 }
 
 const FilterItem: React.FC<FilterItemProps> = ({
@@ -28,9 +29,12 @@ const FilterItem: React.FC<FilterItemProps> = ({
   value,
   handleCheckChange,
   isSearch,
+  index,
 }) => {
   const [query, setQuery] = useState("");
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(
+    index ? index === 0 || index === 1 : true,
+  );
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

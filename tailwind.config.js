@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         dmSerifDisplay: ["var(--font-dmSerif)"],
+        baiJamJuree: ["var(--font-baiJamjuree)"],
       },
     },
   },
