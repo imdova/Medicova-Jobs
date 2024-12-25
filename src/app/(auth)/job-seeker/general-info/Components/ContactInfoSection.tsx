@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -10,8 +11,18 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import { useRouter } from "next/navigation";
 
 const ContactInfoSection: React.FC = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+    }
+  }, []);
+  const handleEditProfileClick = () => {
+    router.push("/job-seeker/profile");
+  };
   return (
     <Grid item xs={12}>
       <Card sx={{ padding: "16px", marginY: 3 }}>
@@ -37,6 +48,7 @@ const ContactInfoSection: React.FC = () => {
                 borderRadius: 0,
                 color: "rgba(46, 174, 125, 1)",
               }}
+              onClick={handleEditProfileClick}
             >
               <EditIcon />
             </IconButton>
@@ -59,7 +71,7 @@ const ContactInfoSection: React.FC = () => {
               color: "#7C8493",
             }}
           >
-            <EmailIcon sx={{ color: "#2EAE7D" }}/>
+            <EmailIcon sx={{ color: "#2EAE7D" }} />
             <Typography
               variant="body1"
               sx={{ fontWeight: "500", color: "#000" }}
@@ -81,13 +93,13 @@ const ContactInfoSection: React.FC = () => {
               color: "#7C8493",
             }}
           >
-            <PhoneIphoneIcon sx={{ color: "#2EAE7D" }}/>
+            <PhoneIphoneIcon sx={{ color: "#2EAE7D" }} />
             <Typography sx={{ fontWeight: "500", color: "#000" }}>
               Phone :
             </Typography>
-          <Typography variant="body2" color="textSecondary">
-            +44 1245 572 135
-          </Typography>
+            <Typography variant="body2" color="textSecondary">
+              +44 1245 572 135
+            </Typography>
           </Box>
         </Box>
       </Card>

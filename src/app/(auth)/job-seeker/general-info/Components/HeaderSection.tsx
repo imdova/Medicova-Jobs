@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Avatar,
@@ -14,6 +14,8 @@ import FlagIcon from "@mui/icons-material/Flag";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BackupIcon from "@mui/icons-material/Backup";
 
 const HeaderSection: React.FC = () => {
   const router = useRouter();
@@ -25,6 +27,22 @@ const HeaderSection: React.FC = () => {
 
   const handleEditProfileClick = () => {
     router.push("/job-seeker/profile");
+  };
+
+  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
+
+  // Handle deleting the avatar image
+  const handleDeleteImage = () => {
+    setAvatarImage(undefined);
+  };
+
+  // Handle selecting a new image
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarImage(imageUrl);
+    }
   };
 
   return (
@@ -44,8 +62,8 @@ const HeaderSection: React.FC = () => {
           component="div"
           sx={{
             width: "100%",
-            height: { xs: "150px", sm: "200px" }, // Adjust height based on screen size
-            backgroundImage: "url('https://via.placeholder.com/1500x400')", // Replace with cover photo URL
+            height: { xs: "150px", sm: "200px" },
+            backgroundImage: "url('https://via.placeholder.com/1500x400')",
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "relative",
@@ -54,16 +72,56 @@ const HeaderSection: React.FC = () => {
           {/* Avatar Positioned on Background Image */}
           <Avatar
             alt="Profile"
+            src={avatarImage || undefined}
             sx={{
               position: "absolute",
               bottom: "-50px",
-              left: "20px", // Avatar aligned to the left
-              width: { xs: 80, sm: 120 }, // Adjust avatar size based on screen size
+              left: "20px",
+              width: { xs: 80, sm: 120 },
               height: { xs: 80, sm: 120 },
               border: "6px solid white",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
             }}
           />
+
+          {/* Container for the Delete Icon and Upload Button */}
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "-50px",
+              left: "140px",
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+            }}
+          >
+            {/* Delete Icon Button */}
+            <IconButton
+              size="medium"
+              sx={{
+                color: "#E34817",
+              }}
+              onClick={handleDeleteImage}
+            >
+              <DeleteIcon sx={{ fontSize: "25px" }} />
+            </IconButton>
+
+            {/* Upload Button */}
+            <Button
+              variant="contained"
+              color="primary"
+              component="label"
+              startIcon={<BackupIcon />}
+            >
+              Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </Button>
+          </Box>
         </Box>
 
         {/* Profile Section */}
