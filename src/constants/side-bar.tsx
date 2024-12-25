@@ -170,7 +170,7 @@ export const jobSeekerSideBarLinks: LinkType[] = [
   {
     title: "Settings",
     icon: "settings",
-    url: "#",
+    url: "/job-seeker/setting",
   },
   {
     title: "Help Center",
