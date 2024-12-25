@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <input
                   type="text"
                   placeholder="Job title or keyword"
-                  className="h-[50px] w-full border-b border-gray-300 focus:border-green-400 focus:outline-none md:h-full"
+                  className="h-[50px] w-full border-b border-gray-300 bg-transparent focus:border-green-400 focus:outline-none md:h-full"
                 />
               </div>
               <div className="flex flex-1 items-center gap-2 px-2">

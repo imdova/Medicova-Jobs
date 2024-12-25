@@ -32,11 +32,11 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
 
   return (
     <div
-      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex flex-col items-center gap-2 sm:flex-row`}
+      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg`}
     >
       {/* Select Input for Items Per Page */}
       {fixedNumberPerPage ? null : (
-        <div className="flex items-center gap-2 pl-10 md:pl-12">
+        <div className="flex items-center gap-2 px-2 md:pl-12">
           <span>View:</span>
           <Select
             value={itemsPerPage}
@@ -56,8 +56,6 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
       <Pagination
         count={totalPages} // Dynamically set total pages
         page={currentPage}
-        showFirstButton
-        showLastButton
         color="primary"
         onChange={handlePageChange}
         sx={{

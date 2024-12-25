@@ -4,7 +4,7 @@ import { FilterOption } from "@/types";
 type Props<T extends Record<string, FilterOption[]>, K extends keyof T> = {
   className?: string;
   sections: T; // The object
-  searchKeys: K[]; // A key of the object
+  searchKeys?: K[]; // A key of the object
   selectedFilters: Record<keyof T, string[]>;
   setSelectedFilters: React.Dispatch<
     React.SetStateAction<Record<keyof T, string[]>>
@@ -44,7 +44,11 @@ const JobFilter = <
               section={section}
               value={selectedFilters[section.key] || ""}
               handleCheckChange={handleCheckChange}
-              isSearch={searchKeys.includes(section.key as K)}
+              isSearch={
+                searchKeys && searchKeys.includes(section.key as K)
+                  ? true
+                  : false
+              }
             />
           ))}
         </div>

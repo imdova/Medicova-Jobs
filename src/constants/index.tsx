@@ -367,3 +367,61 @@ export const folders: Folder[] = [
     lastModified: new Date("2024-12-04"),
   },
 ];
+
+export const searchJopFilters = {
+  Industry: [
+    { label: "All", count: 37, value: "all" },
+    { label: "Pharmacist", count: 3, value: "pharmacist" },
+    { label: "HealthCare", count: 5, value: "healthcare" },
+    { label: "Administrator", count: 2, value: "administrator" },
+  ],
+  "Main Speciality": [
+    { label: "All", count: 37, value: "all" },
+    { label: "Physicians", count: 3, value: "physicians" },
+    { label: "Dentists", count: 5, value: "dentists" },
+    { label: "Physiotherapists", count: 2, value: "physiotherapists" },
+    { label: "Pharmacists", count: 24, value: "pharmacists" },
+    { label: "Nurses", count: 3, value: "nurses" },
+  ],
+  "Work Time": [
+    { label: "All", count: 37, value: "all" },
+    { label: "Full-time", count: 3, value: "full_time" },
+    { label: "Part-Time", count: 5, value: "part_time" },
+  ],
+  "Work Place": [
+    { label: "All", count: 29, value: "all" },
+    { label: "Remote", count: 2, value: "remote" },
+    { label: "On site", count: 24, value: "on_site" },
+    { label: "Hybrid", count: 3, value: "hybrid" },
+  ],
+  Categories: [
+    { label: "All", count: 60, value: "all" },
+    { label: "Medical", count: 24, value: "medical" },
+    { label: "Physician/Doctor", count: 3, value: "physician_doctor" },
+    { label: "Medical Sonographer", count: 3, value: "medical_sonographer" },
+    { label: "Pharmacist", count: 3, value: "pharmacist" },
+    { label: "Clinical Healthcare", count: 6, value: "clinical_healthcare" },
+    {
+      label: "Radiologic Technologist",
+      count: 4,
+      value: "radiologic_technologist",
+    },
+    { label: "Nutritionist", count: 4, value: "nutritionist" },
+    { label: "Technology", count: 5, value: "technology" },
+  ],
+  "Job Level": [
+    { label: "All", count: 85, value: "all" },
+    { label: "General", count: 57, value: "general" },
+    { label: "Specialist", count: 3, value: "specialist" },
+    { label: "Consultant", count: 5, value: "consultant" },
+    { label: "Director", count: 12, value: "director" },
+    { label: "CEO", count: 8, value: "ceo" },
+  ],
+  "Salary Range": [
+    { label: "All", count: 24, value: "all" },
+    { label: "$700 - $1000", count: 4, value: "700_1000" },
+    { label: "$100 - $1500", count: 6, value: "100_1500" },
+    { label: "$1500 - $2000", count: 10, value: "1500_2000" },
+    { label: "$3000 or above", count: 4, value: "3000_above" },
+  ],
+};

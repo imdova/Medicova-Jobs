@@ -63,20 +63,24 @@ const JobCard: React.FC<CandidateCardProps> = ({
               </div>
               <div className="my-3 flex max-w-[450px] flex-wrap gap-2 text-gray-500">
                 <div className="flex items-center gap-1 text-xs md:text-base">
-                  <span className="h-2 w-2 rounded-full bg-gray-500"></span>
+                  <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
                   Male and Female
                 </div>
                 <div className="flex items-center gap-1 text-xs md:text-base">
-                  <span className="h-2 w-2 rounded-full bg-gray-500"></span>
+                  <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
                   Full time | Onsite
                 </div>
                 <div className="flex items-center gap-1 text-xs md:text-base">
-                  <span className="h-2 w-2 rounded-full bg-gray-500"></span>
+                  <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
                   EX (3-5)
                 </div>
                 <div className="flex items-center gap-1 text-xs text-gray-500 md:text-base">
-                  <span className="h-2 w-2 rounded-full bg-gray-500"></span>
+                  <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
                   Years Age (35-40)
+                </div>
+                <div className="flex items-center gap-1 text-xs text-gray-500 md:text-base">
+                  <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
+                  Salary (1200 - 1500) SAR
                 </div>
               </div>
             </div>
@@ -94,7 +98,7 @@ const JobCard: React.FC<CandidateCardProps> = ({
             </div>
           </div>
         </div>
-        <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col md:gap-12">
+        <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col md:gap-[77px]">
           <div className="flex">
             <IconButton onClick={toggleSave} size="medium">
               {isSaved ? (
@@ -112,7 +116,7 @@ const JobCard: React.FC<CandidateCardProps> = ({
               className="h-12 w-12 text-[#2BA149]"
             />
           </div>
-          <button className="w-full rounded-[10px] bg-[#2BA149] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white md:w-auto">
+          <button className="w-full text-nowrap rounded-[10px] bg-[#2BA149] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white md:w-auto">
             View Details
           </button>
         </div>
