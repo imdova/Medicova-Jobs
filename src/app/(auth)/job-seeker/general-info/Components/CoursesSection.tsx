@@ -22,35 +22,36 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 const coursesData = [
   {
     institution: "Harvard University",
-    degree: "Postgraduate degree, Applied Psychology",
+    course: "Postgraduate degree, Applied Psychology",
     years: "2010 - 2012",
-    location: "Cambridge, MA", // Add location
+    location: "Cambridge, MA",
   },
   {
     institution: "Stanford University",
-    degree: "Bachelor's degree, Computer Science",
+    course: "Bachelor's degree, Computer Science",
     years: "2015 - 2019",
-    location: "Stanford, CA", // Add location
+    location: "Stanford, CA",
   },
   {
     institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
+    course: "PhD, Biomedical Engineering",
     years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
+    location: "Cambridge, MA",
   },
   {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
+    institution: "Oxford University",
+    course: "Master's degree, Artificial Intelligence",
+    years: "2020 - 2022",
+    location: "Oxford, UK",
   },
   {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
+    institution: "University of California, Berkeley",
+    course: "Bachelor's degree, Data Science",
+    years: "2016 - 2020",
+    location: "Berkeley, CA",
   },
 ];
+
 
 const CoursesSection: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState(2); // Initially show 2 items
@@ -131,7 +132,7 @@ const CoursesSection: React.FC = () => {
       />
     </Box>,
 
-    <Box key="degreeLevel">
+    <Box key="courseLevel">
       <InputLabel
         sx={{
           marginBottom: 0.2,
@@ -449,7 +450,7 @@ const CoursesSection: React.FC = () => {
                         {item.institution}
                       </Typography>
                       <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
-                        {item.degree}
+                        {item.course}
                       </Typography>
                       <Typography sx={{ fontWeight: "400", color: "#7C8493" }}>
                         {item.years}
@@ -527,7 +528,7 @@ const CoursesSection: React.FC = () => {
                         <Typography
                           sx={{ fontWeight: "400", color: "#7C8493" }}
                         >
-                          {coursesData[index + 1].degree}
+                          {coursesData[index + 1].course}
                         </Typography>
                         <Typography
                           sx={{ fontWeight: "400", color: "#7C8493" }}
