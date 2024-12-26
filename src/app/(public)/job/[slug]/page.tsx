@@ -149,8 +149,8 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
         <div className="mt-8 bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
           <div className="bg-white/80 p-4 shadow-md">
-            <h2 className="text-center text-2xl font-bold text-[#2BA149] md:text-4xl">
-              <span className="text-2xl font-bold text-black md:text-4xl">
+            <h2 className="text-center text-2xl font-black text-[#2BA149] md:text-4xl">
+              <span className="text-2xl font-black text-black md:text-4xl">
                 Recent
               </span>{" "}
               Jobs

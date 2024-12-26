@@ -8,8 +8,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="bg-gradient-to-b from-[#82C341E5] to-[#2BA149E5] p-4 shadow-md">
           <Header />
           <div className="container mx-auto p-4 text-white lg:max-w-[1170px]">
-            <h2 className="text-[45px] font-bold text-white md:text-[60px]">
-              <span className="text-[45px] font-bold text-black md:text-[60px]">
+            <h2 className="text-[45px] font-black text-white md:text-[60px]">
+              <span className="text-[45px] font-black text-black md:text-[60px]">
                 Job
               </span>{" "}
               Details
