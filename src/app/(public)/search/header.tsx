@@ -14,10 +14,8 @@ const Header: React.FC = () => {
     <header>
       <div className="container mx-auto flex h-[100px] items-center justify-between gap-12 lg:max-w-[1170px]">
         {/* Logo and Brand Name */}
-        <div className="flex items-end text-white">
-          <Link href="/">
-            <LogoIcon className="h-[50px] w-[40px]" />
-          </Link>
+        <Link href="/" className="flex items-end text-white">
+          <LogoIcon className="h-[50px] w-[40px]" />
           <div className="flex h-fit flex-col text-center">
             <h1 className="font-baiJamJuree text-[30px] font-bold leading-[25px]">
               MEDICOVA
@@ -26,7 +24,7 @@ const Header: React.FC = () => {
               MEDICAL COMMUNITY
             </p>
           </div>
-        </div>
+        </Link>
 
         <Drawer
           anchor="right"
@@ -51,7 +49,7 @@ const Header: React.FC = () => {
           <ul className="flex md:gap-4 lg:gap-12">
             <li>
               <Link
-                href="/jobs"
+                href="#"
                 className="text-[16px] font-semibold hover:text-[#2BA149] focus:text-[#2BA149] focus:outline-none"
               >
                 Jobs
@@ -59,7 +57,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/boost"
+                href="#"
                 className="text-[16px] font-semibold hover:text-[#2BA149] focus:text-[#2BA149] focus:outline-none"
               >
                 Boost
@@ -67,7 +65,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/prep"
+                href="#"
                 className="text-[16px] font-semibold hover:text-[#2BA149] focus:text-[#2BA149] focus:outline-none"
               >
                 Prep
@@ -75,7 +73,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/learn"
+                href="#"
                 className="text-[16px] font-semibold hover:text-[#2BA149] focus:text-[#2BA149] focus:outline-none"
               >
                 Learn
@@ -83,7 +81,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <Link
-                href="/career-advice"
+                href="#"
                 className="text-[16px] font-semibold hover:text-[#2BA149] focus:text-[#2BA149] focus:outline-none"
               >
                 Career Advice
@@ -94,12 +92,18 @@ const Header: React.FC = () => {
 
         {/* Actions */}
         <div className="hidden gap-3 md:flex">
-          <button className="rounded-[10px] px-4 py-2 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white">
+          <Link
+            href="/register"
+            className="rounded-[10px] px-4 py-2 font-semibold uppercase text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+          >
             Sign Up
-          </button>
-          <button className="rounded-[10px] bg-[#2BA149] px-4 py-2 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white">
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-[10px] bg-[#2BA149] px-4 py-2 font-semibold uppercase text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+          >
             Login
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}

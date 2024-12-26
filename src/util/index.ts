@@ -32,6 +32,10 @@ export function getLastEdit(date: Date): string {
   const currentDate = new Date();
   const diffTime = Math.abs(currentDate.getTime() - date.getTime());
   const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+  // Check if it's today
+  if (diffDays === 0) {
+    return "today";
+  }
 
   // Check if it's within the last 15 days
   if (diffDays <= 15) {

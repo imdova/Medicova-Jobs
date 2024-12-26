@@ -1,4 +1,4 @@
-import { Doctor, Folder } from "@/types";
+import { Doctor, Folder, Job } from "@/types";
 
 export const doctorsBase: Doctor[] = [
   {
@@ -375,7 +375,7 @@ export const searchJopFilters = {
     { label: "HealthCare", count: 5, value: "healthcare" },
     { label: "Administrator", count: 2, value: "administrator" },
   ],
-  "Main Speciality": [
+  "Main Specialty": [
     { label: "All", count: 37, value: "all" },
     { label: "Physicians", count: 3, value: "physicians" },
     { label: "Dentists", count: 5, value: "dentists" },
@@ -425,3 +425,285 @@ export const searchJopFilters = {
     { label: "$3000 or above", count: 4, value: "3000_above" },
   ],
 };
+
+export const jobs: Job[] = [
+  {
+    id: "1",
+    title: "Senior Cardiologist Consultant",
+    location: "Cairo, Egypt",
+    education: "Master’s Degree in Medicine",
+    specialty: "Cardiology & Vascular Health",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (5+ years)",
+      "Age (35-45)",
+      "Salary (1300 - 1500 SAR)",
+      "Immediate Joining",
+    ],
+    timeStamps: new Date("2024-12-26T00:00:00Z"),
+    description:
+      "Seeking a senior cardiologist consultant to provide expert care in diagnosing and treating cardiovascular diseases, focusing on heart and vascular health.",
+    requirements: [
+      "At least 5 years of experience in cardiology",
+      "Master’s degree in Medicine or equivalent",
+      "Proven expertise in cardiovascular health management",
+      "Ability to work in a high-pressure environment",
+      "Strong communication and interpersonal skills",
+    ],
+    additionalDetails:
+      "This role offers an excellent salary package and benefits, including health insurance and flexible work hours.",
+    skills: [
+      "Cardiology",
+      "Cardiovascular Diseases",
+      "Patient Care",
+      "Diagnostic Imaging",
+      "Emergency Care",
+      "Heart Surgery",
+    ],
+    relatedSearch: [
+      "Cardiologist Jobs",
+      "Heart Specialist Jobs",
+      "Vascular Health Careers",
+      "Medical Consultant Jobs",
+      "Senior Cardiologist Positions",
+    ],
+    company: {
+      name: "HealthCare Excellence",
+      industry: "Healthcare",
+      website: "www.healthcareexcellence.com",
+      contact: "contact@healthcareexcellence.com",
+    },
+  },
+  {
+    id: "2",
+    title: "Consultant Cardiologist (Specialist)",
+    location: "Alexandria, Egypt",
+    education: "MD in Cardiology",
+    specialty: "Cardiovascular Diseases",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (3-7 years)",
+      "Age (30-40)",
+      "Salary (1200 - 1350 SAR)",
+      "Flexible Start Date",
+    ],
+    timeStamps: new Date("2024-12-20T00:00:00Z"),
+    description:
+      "We are looking for a specialist cardiologist to join our team, providing comprehensive care for patients with heart conditions, including diagnosis and treatment planning.",
+    requirements: [
+      "At least 3 years of experience in cardiology",
+      "MD in Cardiology or related field",
+      "Strong background in diagnosing cardiovascular diseases",
+      "Ability to work effectively in a team-oriented environment",
+      "Proficiency in medical technologies and diagnostic tools",
+    ],
+    additionalDetails:
+      "The role includes working in a state-of-the-art facility with a supportive team, offering opportunities for professional development.",
+    skills: [
+      "Cardiology",
+      "Heart Disease Treatment",
+      "Patient Diagnosis",
+      "Vascular Disease Management",
+      "Medical Consultation",
+    ],
+    relatedSearch: [
+      "Cardiologist Jobs in Alexandria",
+      "Medical Consultant Positions",
+      "Vascular Specialist Careers",
+      "Full-time Cardiologist Jobs",
+    ],
+    company: {
+      name: "MedCare Health Systems",
+      industry: "Healthcare",
+      website: "www.medcarehealth.com",
+      contact: "hr@medcarehealth.com",
+    },
+  },
+  {
+    id: "3",
+    title: "Cardiologist Consultant (Experienced)",
+    location: "Cairo, Egypt",
+    education: "Master’s Degree in Cardiology",
+    specialty: "Cardio-vascular Health",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (3-5 years)",
+      "Age (35-40)",
+      "Salary (1250 - 1400 SAR)",
+      "Monday to Friday",
+    ],
+    timeStamps: new Date("2024-12-16T00:00:00Z"),
+    description:
+      "Join our team as a cardiology consultant where you will be responsible for managing and treating patients with heart and vascular issues, providing expert guidance and care.",
+    requirements: [
+      "Experience in cardiology for at least 3-5 years",
+      "Master’s degree in Cardiology",
+      "Strong skills in patient care and diagnosis",
+      "Ability to lead and collaborate with a medical team",
+      "Excellent communication skills",
+    ],
+    additionalDetails:
+      "We offer competitive salary packages, professional growth, and a dynamic work environment focused on delivering top-tier patient care.",
+    skills: [
+      "Cardiovascular Health",
+      "Patient Management",
+      "Electrocardiography",
+      "Heart Disease Treatment",
+      "Cardiac Care",
+    ],
+    relatedSearch: [
+      "Consultant Cardiologist Cairo",
+      "Heart Disease Specialist Jobs",
+      "Cardiology Consultant Roles",
+      "Cardiovascular Jobs Cairo",
+    ],
+    company: {
+      name: "CardioCare Specialists",
+      industry: "Healthcare",
+      website: "www.cardiocarespecialists.com",
+      contact: "hr@cardiocarespecialists.com",
+    },
+  },
+  {
+    id: "4",
+    title: "Lead Cardiologist - Full Time",
+    location: "Giza, Egypt",
+    education: "PhD in Cardiovascular Medicine",
+    specialty: "Heart and Vascular Care",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (4-6 years)",
+      "Age (40-45)",
+      "Salary (1400 - 1500 SAR)",
+      "Weekend Off",
+    ],
+    timeStamps: new Date("2024-11-23T00:00:00Z"),
+    description:
+      "A lead cardiologist is needed to oversee cardiovascular care, provide leadership to the medical team, and ensure excellent patient outcomes in the treatment of heart diseases.",
+    requirements: [
+      "At least 4-6 years of cardiology experience",
+      "PhD in Cardiovascular Medicine",
+      "Leadership experience in a medical setting",
+      "Expertise in both diagnostic and therapeutic cardiovascular treatments",
+      "Ability to work with cross-functional healthcare teams",
+    ],
+    additionalDetails:
+      "This position offers an attractive salary, benefits package, and a work-life balance with weekends off.",
+    skills: [
+      "Cardiology",
+      "Leadership",
+      "Cardiac Surgery",
+      "Patient Care",
+      "Vascular Treatment",
+      "Heart Disease Prevention",
+    ],
+    relatedSearch: [
+      "Lead Cardiologist Jobs",
+      "Cardiology Leadership Roles",
+      "Full-Time Heart Specialist Jobs",
+      "Senior Cardiologist Giza",
+    ],
+    company: {
+      name: "VascularCare Hospitals",
+      industry: "Healthcare",
+      website: "www.vascularcarehospitals.com",
+      contact: "info@vascularcarehospitals.com",
+    },
+  },
+  {
+    id: "5",
+    title: "Junior Cardiologist",
+    location: "Dubai, UAE",
+    education: "Bachelor’s Degree in Medicine",
+    specialty: "Cardiology",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (1-3 years)",
+      "Age (25-35)",
+      "Salary (1000 - 1200 SAR)",
+      "Immediate Joining",
+    ],
+    timeStamps: new Date("2024-11-22T00:00:00Z"),
+    description:
+      "We are seeking a junior cardiologist to join our team, providing support in diagnosing and treating cardiovascular diseases under the supervision of senior consultants.",
+    requirements: [
+      "1-3 years of experience in cardiology",
+      "Bachelor’s degree in Medicine",
+      "Basic knowledge of cardiovascular health",
+      "Willingness to learn and adapt",
+      "Good communication skills",
+    ],
+    additionalDetails:
+      "This role offers a great opportunity for growth and learning in a supportive environment with competitive salary and benefits.",
+    skills: [
+      "Cardiology",
+      "Patient Care",
+      "Diagnostic Skills",
+      "Team Collaboration",
+      "Basic Surgical Skills",
+    ],
+    relatedSearch: [
+      "Junior Cardiologist Jobs",
+      "Entry-Level Cardiology Positions",
+      "Cardiology Jobs Dubai",
+      "Healthcare Jobs UAE",
+    ],
+    company: {
+      name: "HeartCare Clinic",
+      industry: "Healthcare",
+      website: "www.heartcareclinic.com",
+      contact: "careers@heartcareclinic.com",
+    },
+  },
+  {
+    id: "6",
+    title: "Cardiology Fellow",
+    location: "Riyadh, Saudi Arabia",
+    education: "MD in Cardiology",
+    specialty: "Cardiovascular Medicine",
+    features: [
+      "Male and Female",
+      "Full time | Onsite",
+      "EX (2-4 years)",
+      "Age (28-38)",
+      "Salary (1100 - 1300 SAR)",
+      "Flexible Start Date",
+    ],
+    timeStamps: new Date("2024-10-21T00:00:00Z"),
+    description:
+      "Looking for a cardiology fellow to join our esteemed medical team, focusing on advanced cardiovascular treatments and patient care.",
+    requirements: [
+      "2-4 years of experience in cardiology",
+      "MD in Cardiology",
+      "Strong background in cardiovascular treatments",
+      "Ability to work in a fast-paced environment",
+      "Excellent teamwork and communication skills",
+    ],
+    additionalDetails:
+      "The position offers a competitive salary, professional development opportunities, and a collaborative work environment.",
+    skills: [
+      "Cardiovascular Medicine",
+      "Patient Diagnosis",
+      "Advanced Cardiac Care",
+      "Medical Research",
+      "Team Collaboration",
+    ],
+    relatedSearch: [
+      "Cardiology Fellow Jobs",
+      "Cardiovascular Medicine Positions",
+      "Healthcare Jobs Riyadh",
+      "Medical Fellowships Saudi Arabia",
+    ],
+    company: {
+      name: "Riyadh Heart Institute",
+      industry: "Healthcare",
+      website: "www.riyadhheartinstitute.com",
+      contact: "jobs@riyadhheartinstitute.com",
+    },
+  },
+];
