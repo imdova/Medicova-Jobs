@@ -52,7 +52,6 @@ const coursesData = [
   },
 ];
 
-
 const CoursesSection: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState(2); // Initially show 2 items
   const [isExpanded, setIsExpanded] = useState(false); // Track whether the list is expanded
