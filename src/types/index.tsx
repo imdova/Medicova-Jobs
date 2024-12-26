@@ -39,6 +39,28 @@ export interface Doctor {
   education: Education[];
   available: boolean;
 }
+export interface Company {
+  name: string;
+  industry: string;
+  website: string;
+  contact: string;
+}
+
+export interface Job {
+  id: string;
+  title: string;
+  location: string;
+  education: string;
+  specialty: string;
+  features: string[];
+  timeStamps: Date;
+  description: string;
+  requirements: string[];
+  additionalDetails: string;
+  skills: string[];
+  relatedSearch: string[];
+  company: Company;
+}
 
 export interface FilterOption {
   label: string;

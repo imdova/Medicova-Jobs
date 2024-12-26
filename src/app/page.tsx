@@ -1,95 +1,95 @@
+import React, { Suspense } from "react";
+import Header from "./(public)/search/header";
 import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import SearchForm from "@/components/UI/search-form";
 
-export default function Home() {
+const HomePage = () => {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
+    <div>
+      <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
+        <div className="bg-gradient-to-b from-[#82C341E5] to-[#2BA149E5] p-4 shadow-md">
+          <Header />
+          <div className="container mx-auto flex flex-col-reverse items-center gap-6 p-4 md:flex-row lg:max-w-[1170px]">
+            <div className="col-span-4 md:col-span-3">
+              <h2 className="mb-6 text-[45px] font-black leading-none text-white md:text-[60px]">
+                <span className="text-[45px] font-black text-[#101828] md:text-[60px]">
+                  Discover
+                </span>{" "}
+                More <br />
+                Than 5000
+                <span className="text-[45px] font-black text-[#101828] md:text-[60px]">
+                  {" "}
+                  + Jobs
+                </span>{" "}
+              </h2>
+              <Suspense>
+                <SearchForm pathname="/search" />
+              </Suspense>
+              <p className="mt-4 text-gray-100">
+                {" "}
+                <span className="font-bold text-white">Popular</span> : Medical
+                Claims Officer,Dental Designer, Healthcare- Presales specialist,
+                Medical Ambassador
+              </p>
+              <div className="mt-4 flex flex-wrap gap-4 text-nowrap">
+                <Link
+                  href="/search?q=Pediatric Consultant"
+                  className="rounded-full border border-white px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+                >
+                  Pediatric Consultant
+                </Link>
+                <Link
+                  href="/search?q=ICU Nurse"
+                  className="rounded-full border border-white px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+                >
+                  ICU Nurse
+                </Link>
+                <Link
+                  href="/search?q=Obsteric Consultant Saudi Arabia"
+                  className="rounded-full border border-white px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+                >
+                  Obsteric Consultant Saudi Arabia
+                </Link>
+                <Link
+                  href="/search?q=Internal Medicine Registrar Oman"
+                  className="rounded-full border border-white px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
+                >
+                  Internal Medicine Registrar Oman
+                </Link>
+              </div>
+            </div>
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority={true}
+              src="/images/hero.png"
+              alt="search background"
+              width={400}
+              height={400}
+              className="col-span-1 w-[300px] object-contain md:w-[200px] lg:w-[400px]"
             />
-          </a>
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority={true}
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
+      <main>
+        <div className="container mx-auto min-h-screen lg:max-w-[1170px]">
+          <div className="mt-8 flex justify-center p-4">
+            <div className="rounded-full bg-[#2BA149] px-6 py-2 text-white">
+              Job Categories
+            </div>
+          </div>
+          <h2 className="mb-6 text-center text-[45px] font-bold leading-none text-[#82C341] md:text-[60px]">
+            <span className="text-[45px] font-bold text-[#101828] md:text-[60px]">
+              Explore Jobs
+            </span>{" "}
+            By Specialist
           </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
+          <p className="mx-auto max-w-[700px] text-center text-2xl text-gray-500">
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. Lorem Ipsum has been the industry&apos;s standard dummy
           </p>
-        </a>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
-}
+};
+
+export default HomePage;

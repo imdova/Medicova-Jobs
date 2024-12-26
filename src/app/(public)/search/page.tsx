@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { doctorsBase as doctors, searchJopFilters } from "@/constants";
+import { jobs, searchJopFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import JobFilter from "./filter";
 import { FormControl, IconButton, MenuItem, Select } from "@mui/material";
 import { GridViewOutlined, List } from "@mui/icons-material";
 import JobCard from "./job-card";
 
-const ApplicantsPage: React.FC = ({
+const SearchPage: React.FC = ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -20,7 +20,7 @@ const ApplicantsPage: React.FC = ({
     [K in keyof typeof searchJopFilters]: (typeof searchJopFilters)[K][number]["value"][];
   }>({
     "Job Level": [],
-    "Main Speciality": [],
+    "Main Specialty": [],
     "Salary Range": [],
     "Work Place": [],
     "Work Time": [],
@@ -72,10 +72,10 @@ const ApplicantsPage: React.FC = ({
         </div>
         {/* Applicant Cards */}
         <div className="mb-8 flex flex-col gap-4">
-          {doctors.map((doctor, index) => (
+          {jobs.map((job) => (
             <JobCard
-              key={index}
-              doctor={doctor}
+              key={job.id}
+              job={job}
               savedList={savedList}
               setSavedList={setSavedList}
             />
@@ -95,4 +95,4 @@ const ApplicantsPage: React.FC = ({
   );
 };
 
-export default ApplicantsPage;
+export default SearchPage;
