@@ -34,11 +34,12 @@ const Flag: React.FC<FlagProps> = ({
   //     const cCode = code || (await getCountryCode(name));
   //     setCountryCode(cCode.toLocaleLowerCase());
   //   };
+  // 16x12
   //   fetchCountryCode();
   // }, [code, name]);
   return (
     <Image
-      src={`https://flagcdn.com/16x12/${code}.png`}
+      src={`https://flagcdn.com/${code}.svg`}
       width={width}
       height={height}
       alt={name || "flag"}

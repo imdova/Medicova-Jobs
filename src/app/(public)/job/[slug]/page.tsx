@@ -151,7 +151,7 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
           <div className="bg-white/80 p-4 shadow-md">
             <h2 className="text-center text-2xl font-black text-[#2BA149] md:text-4xl">
               <span className="text-2xl font-black text-black md:text-4xl">
-                Recent
+                Related
               </span>{" "}
               Jobs
             </h2>
