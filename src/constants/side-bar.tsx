@@ -111,6 +111,7 @@ export const employerSideBarLinks: LinkType[] = [
   {
     title: "Billing & Subscription",
     icon: "wallet",
+    url: "/employer/subscription-plans",
   },
   {
     title: "Report",
