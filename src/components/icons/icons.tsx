@@ -209,3 +209,58 @@ export const HamburgerIcon = () => {
     </svg>
   );
 };
+
+export const Ellipse6 = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      width="224"
+      height="158"
+      viewBox="0 0 224 158"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M-44.3644 224.435C-12.2394 261.783 53.4543 248.316 109.818 220.726C165.437 193.499 219.176 147.7 222.855 93.626C226.613 38.4103 180.039 6.08262 124.786 0.767819C73.1398 -4.2001 16.1751 23.046 -19.5666 70.3072C-58.3853 121.637 -77.2269 186.23 -44.3644 224.435Z"
+        fill="#82C341"
+      />
+    </svg>
+  );
+};
+
+export const IdeaIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      width="40"
+      height="49"
+      viewBox="0 0 40 49"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M35.322 28.6812C33.7159 23.8539 30.3608 12.5231 29.7893 5.81836"
+        stroke="#FFC224"
+        stroke-width="1.66667"
+        stroke-linejoin="round"
+        stroke-dasharray="24.17 25.83"
+      />
+      <path
+        d="M23.8298 37.5892C19.0247 35.9182 7.99864 31.6672 2.33643 28.0312"
+        stroke="#FFC224"
+        stroke-width="1.66667"
+        stroke-linejoin="round"
+        stroke-dasharray="24.17 25.83"
+      />
+      <path
+        d="M28.6261 30.7947C26.0696 28.6072 20.4057 23.3679 18.2024 19.9102"
+        stroke="#FFC224"
+        stroke-width="1.66667"
+        stroke-linejoin="round"
+        stroke-dasharray="15.83 17.5"
+      />
+    </svg>
+  );
+};

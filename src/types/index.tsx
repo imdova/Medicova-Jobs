@@ -85,3 +85,19 @@ export interface SortFolders {
   key: keyof Folder;
   direction: "asc" | "desc";
 }
+
+export interface Specialty {
+  id: number | string;
+  image: string;
+  title: string;
+  jobsNumber: number;
+  link: string;
+}
+
+export interface CompanyItem {
+  id: string | number;
+  image: string;
+  title: string;
+  description: string;
+  tag: string;
+}

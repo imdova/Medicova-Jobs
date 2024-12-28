@@ -1,4 +1,4 @@
-import { Doctor, Folder, Job } from "@/types";
+import { CompanyItem, Doctor, Folder, Job, Specialty } from "@/types";
 
 export const doctorsBase: Doctor[] = [
   {
@@ -705,5 +705,107 @@ export const jobs: Job[] = [
       website: "www.riyadhheartinstitute.com",
       contact: "jobs@riyadhheartinstitute.com",
     },
+  },
+];
+
+export const specialists: Specialty[] = [
+  {
+    id: 1,
+    image: "/images/Physicians.svg",
+    title: "Physicians",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 2,
+    image: "/images/Dentists.svg",
+    title: "Dentists",
+    jobsNumber: 636,
+    link: "#",
+  },
+  {
+    id: 3,
+    image: "/images/Physiontherapists.svg",
+    title: "Physiontherapists",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 4,
+    image: "/images/Pharmacists.svg",
+    title: "Pharmacists",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 5,
+    image: "/images/Nurses.svg",
+    title: "Nurses",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 6,
+    image: "/images/Technicians.svg",
+    title: "Technicians",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 7,
+    image: "/images/Technicians.svg",
+    title: "Technicians",
+    jobsNumber: 436,
+    link: "#",
+  },
+  {
+    id: 8,
+    image: "/images/Technicians.svg",
+    title: "Technicians",
+    jobsNumber: 436,
+    link: "#",
+  },
+];
+
+export const companies: CompanyItem[] = [
+  {
+    id: 1,
+    image: "/images/Sultan-qaboos-hospital.jpg",
+    title: "Sultan Qaboos Hospital",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
+    tag: "healthcare",
+  },
+  {
+    id: 2,
+    image: "/images/Al-rumailah-hospital.jpg",
+    title: "Al rumailah hospital",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
+    tag: "healthcare",
+  },
+  {
+    id: 3,
+    image: "/images/saudi-german-hospital.jpg",
+    title: "Saudi German Hospital",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
+    tag: "healthcare",
+  },
+  {
+    id: 4,
+    image: "/images/Sultan-qaboos-hospital.jpg",
+    title: "Al rumailah hospital",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
+    tag: "healthcare",
+  },
+  {
+    id: 5,
+    image: "/images/Sultan-qaboos-hospital.jpg",
+    title: "Saudi German Hospital",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
+    tag: "healthcare",
   },
 ];
