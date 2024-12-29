@@ -6,23 +6,25 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
-        <div className="bg-gradient-to-b from-[#82C341E5] to-[#2BA149E5] p-4 shadow-md">
+        <div className="from-light-primary-transparent to-primary-transparent bg-gradient-to-b p-4 shadow-md">
           <Header />
           <div className="container mx-auto p-4 lg:max-w-[1170px]">
-            <h2 className="mb-6 text-[45px] font-black leading-none text-white md:text-[60px]">
-              <span className="text-[45px] font-black text-[#101828] md:text-[60px]">
-                Find your
-              </span>{" "}
-              dream job
+            <h2 className="text-main mb-6 text-[45px] font-black leading-none md:text-[60px]">
+              Find your{" "}
+              <span className="text-primary-foreground text-[45px] font-black md:text-[60px]">
+                dream job
+              </span>
             </h2>
             <Suspense>
               <SearchForm />
             </Suspense>
-            <p className="mt-4 text-gray-100">
+            <p className="text-primary-foreground mt-4">
               {" "}
-              <span className="font-bold text-white">Popular</span> : Medical
-              Claims Officer,Dental Designer, Healthcare- Presales specialist,
-              Medical Ambassador
+              <span className="text-primary-foreground font-bold">
+                Popular
+              </span>{" "}
+              : Medical Claims Officer,Dental Designer, Healthcare- Presales
+              specialist, Medical Ambassador
             </p>
           </div>
         </div>

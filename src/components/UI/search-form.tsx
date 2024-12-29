@@ -63,18 +63,18 @@ const SearchForm: React.FC<{
       className="flex flex-col gap-2 rounded-[20px] bg-white p-[10px] md:h-[70px] md:flex-row"
     >
       <div className="flex flex-1 items-center gap-2 px-2">
-        <Search className="h-8 w-8 text-green-400" />
+        <Search className="text-light-primary h-8 w-8" />
         <input
           type="text"
           placeholder="Job title or keyword"
           value={query}
           onChange={handleChange}
-          className="h-[50px] w-full border-b border-gray-300 bg-transparent focus:border-green-400 focus:outline-none md:h-full"
+          className="focus:border-light-primary h-[50px] w-full border-b border-gray-300 bg-transparent focus:outline-none md:h-full"
         />
       </div>
       <div className="flex flex-1 items-center gap-2 px-2">
-        <LocationOnOutlined className="h-8 w-8 text-green-400" />
-        <select className="h-[50px] w-full border-b border-gray-300 bg-transparent focus:border-green-400 focus:outline-none md:h-full">
+        <LocationOnOutlined className="text-light-primary h-8 w-8" />
+        <select className="focus:border-light-primary h-[50px] w-full border-b border-gray-300 bg-transparent focus:outline-none md:h-full">
           <option value="">Select country</option>
           <option value="us">United States</option>
           <option value="ca">Canada</option>
@@ -83,7 +83,7 @@ const SearchForm: React.FC<{
           <option value="in">India</option>
         </select>
       </div>
-      <button className="h-[50px] text-nowrap rounded-[10px] bg-[#2BA149] px-4 py-4 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white md:h-full">
+      <button className="bg-primary hover:text-primary h-[50px] text-nowrap rounded-[10px] px-4 py-4 font-semibold text-white transition-colors duration-300 hover:bg-white focus:ring-2 focus:ring-white md:h-full">
         Search my job
       </button>
     </form>

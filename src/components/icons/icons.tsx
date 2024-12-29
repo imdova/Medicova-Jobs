@@ -137,10 +137,14 @@ export const Ellipse5 = (props: React.SVGProps<SVGSVGElement>) => {
           y2="170.552"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="white" />
-          <stop offset="0.107292" stopColor="white" stopOpacity="0.892708" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
+          <stop stopColor="currentColor" />
+          <stop
+            offset="0.107292"
+            stopColor="currentColor"
+            stopOpacity="0.892708"
+          />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>
@@ -224,7 +228,7 @@ export const Ellipse6 = (props: React.SVGProps<SVGSVGElement>) => {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M-44.3644 224.435C-12.2394 261.783 53.4543 248.316 109.818 220.726C165.437 193.499 219.176 147.7 222.855 93.626C226.613 38.4103 180.039 6.08262 124.786 0.767819C73.1398 -4.2001 16.1751 23.046 -19.5666 70.3072C-58.3853 121.637 -77.2269 186.23 -44.3644 224.435Z"
-        fill="#82C341"
+        fill="currentColor"
       />
     </svg>
   );

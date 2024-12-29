@@ -152,7 +152,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
             width={24}
             height={24}
           />
-          <h2 className="text-2xl font-bold">{folder.name}</h2>
+          <h2 className="text-main text-2xl font-bold">{folder.name}</h2>
         </div>
 
         <Box className="flex justify-between pl-[32px]">
@@ -218,7 +218,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="h-fit rounded-md bg-[#DEF0EB]"
+              className="bg-primary-100 h-fit rounded-md"
             >
               {isAllSelect ? (
                 <DeselectIcon className="m-2 h-6 w-6" />
@@ -233,7 +233,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
                   aria-controls={open ? "Action-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+                  className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
                 >
                   <p className="inline-block">Action</p>
                   <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -306,7 +306,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
               aria-controls={exportOpen ? "export-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={exportOpen ? "true" : undefined}
-              className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+              className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
             >
               <p className="inline-block w-16">Export</p>
               <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />

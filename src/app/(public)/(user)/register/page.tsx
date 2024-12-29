@@ -27,44 +27,36 @@ const Register = () => {
     <Container className="flex justify-between gap-5">
       {/* Right Section: Register Form */}
       <RegisterForm />
-      <Box
-        sx={{
-          backgroundColor: "#2EAE7D",
-          display: { xs: "none", md: "flex" },
-          flexDirection: "column",
-          justifyContent: "space-between",
-          flex: 1,
-          minHeight: 500,
-          margin: 2,
-          position: "relative",
-        }}
-      >
-        <div className="mt-8 ml-12">
+      <div className="from-light-primary to-primary relative m-2 hidden min-h-[500px] flex-1 flex-col justify-between bg-gradient-to-b md:flex">
+        <div className="ml-12 mt-8">
           <h3>
-            <span className="text-[42px] font-bold text-white mr-20">
+            <span className="text-primary-foreground mr-20 text-[42px] font-bold">
               Find new pathways
             </span>
             <br />
-            <span className="text-[42px] font-bold text-white mr-2">to</span>
-            <span className=" text-[42px] font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#2EAE7D] via-[#134834] via-85% to-[#134834]">
+            <span className="text-primary-foreground mr-2 text-[42px] font-bold">
+              to
+            </span>
+            <span className="text-main text-[42px] font-bold">
               Healthcare Professionals
             </span>
             <br />
-            <span className="text-[42px] font-bold text-white">“</span>
+            <span className="text-primary-foreground text-[42px] font-bold">
+              “
+            </span>
           </h3>
-          <p className="text-2xl text-white leading-9 max-w-lg">
+          <p className="text-primary-foreground max-w-lg text-2xl leading-9">
             “Search for healthcare professionals from more than 300000 CVs. Use
             35+ robust filters and shortlist candidates faster. Hire top talent
             faster and smarter. “
           </p>
         </div>
-        <div className="bg-white relative ml-[8%] m-8 mb-24 max-w-[366px] p-6 pr-14">
-          <div className="absolute w-16 h-16 top-0 right-0 bg-[#2EAE7D]"></div>
-          <h4 className="text-2xl font-bold text-[#03353C] mb-2 ">
+        <div className="m-8 mb-24 ml-[8%] max-w-[366px] bg-white p-6 pr-14">
+          <h4 className="text-main mb-2 text-2xl font-bold">
             Trusted by 12,000 organizations, including:
           </h4>
           <div className="flex items-center">
-            <p className="flex-1 text-lg text-[#03353C]">
+            <p className="text-secondary flex-1 text-lg">
               Saudi German Hospital ,DAF Hospital Alsalam International Hospital
             </p>
 
@@ -95,7 +87,7 @@ const Register = () => {
         </div>
 
         {/* Background */}
-        <div className="absolute top-1/3 right-10 ">
+        <div className="absolute right-10 top-1/3">
           <Image
             src="/images/vector-2.svg"
             alt="background"
@@ -103,9 +95,9 @@ const Register = () => {
             height={155}
           />
         </div>
-        <div className="absolute w-20 h-20 bottom-0 left-0 bg-white"></div>
-        <div className="absolute w-20 h-20 top-0 right-0 bg-white"></div>
-      </Box>
+        <div className="absolute bottom-0 left-0 h-20 w-20 bg-white"></div>
+        <div className="absolute right-0 top-0 h-20 w-20 bg-white"></div>
+      </div>
     </Container>
   );
 };

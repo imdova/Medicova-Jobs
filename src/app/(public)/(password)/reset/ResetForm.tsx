@@ -38,14 +38,14 @@ const ResetForm: React.FC = () => {
     <Box>
       <form noValidate onSubmit={handleSubmit}>
         <Box className="w-full md:min-w-[400px]">
-          <div className="flex space-x-2 justify-center w-full max-w-[400px] my-4 px-8">
+          <div className="my-4 flex w-full max-w-[400px] justify-center space-x-2 px-8">
             <OTPInput
               length={OTP_LENGTH}
               onChange={(otp) => setOtp(otp)}
               error={!!error}
             />
           </div>
-          <Typography className="text-center text-red-500 my-1">
+          <Typography className="my-1 text-center text-red-500">
             {error}
           </Typography>
 
@@ -67,12 +67,12 @@ const ResetForm: React.FC = () => {
           </Button>
         </Box>
       </form>
-      <Typography className="text-center text-[#2EAE7D]  font-semibold mt-2">
-        Don’t receive the email ?{" "}
-        <button className="  text-[#134834] underline hover:no-underline ">
+      <p className="text-secondary mt-2 text-center font-semibold">
+        Don&apos;t receive the email ?{" "}
+        <button className="text-light-primary underline hover:no-underline">
           Click here to send again
         </button>
-      </Typography>
+      </p>
     </Box>
   );
 };

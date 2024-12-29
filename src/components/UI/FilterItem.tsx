@@ -86,38 +86,12 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     }
                     onChange={() => handleCheckboxChange(option.value)}
                     icon={
-                      <Box
-                        sx={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 1,
-                          backgroundColor: "transparent", // Unchecked color
-                          border: "2px solid #D6DDEB",
-                        }}
-                      />
+                      <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <Box
-                        sx={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 1,
-                          backgroundColor: "#2EAE7D", // Checked color
-                          border: "2px solid #2EAE7D",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <CheckIcon
-                          sx={{
-                            width: 16,
-                            height: 16,
-                            margin: "auto",
-                            color: "white", // Checked icon color
-                          }}
-                        />
-                      </Box>
+                      <div className="bg-primary border-primary flex h-5 w-5 items-center justify-center rounded-sm border-2">
+                        <CheckIcon className="text-primary-foreground m-auto h-4 w-4" />
+                      </div>
                     }
                     sx={{ padding: 0, px: 1 }}
                   />

@@ -42,15 +42,15 @@ const SearchPage: React.FC = ({
       <div className="w-full px-2 md:px-6 md:pl-9 lg:w-[80%]">
         <div className="mb-9 flex flex-wrap-reverse items-center justify-between md:flex-nowrap">
           <div>
-            <h3 className="text-[24px] font-bold">Search Results</h3>
-            <p className="text-sm text-gray-400">Showing 2500 Results</p>
+            <h3 className="text-main text-[24px] font-bold">Search Results</h3>
+            <p className="text-secondary text-sm">Showing 2500 Results</p>
           </div>
           <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-normal">
             <div className="flex items-baseline gap-1">
-              <label className="mb-1 text-gray-400">Sort by:</label>
+              <label className="text-secondary mb-1">Sort by:</label>
               <FormControl variant="standard" className="w-32">
                 <Select
-                  className="border-none bg-transparent text-gray-700 focus:outline-none"
+                  className="text-main border-none bg-transparent focus:outline-none"
                   disableUnderline
                   defaultValue="most-relevant"
                 >
@@ -61,10 +61,10 @@ const SearchPage: React.FC = ({
               </FormControl>
             </div>
             <div className="flex gap-2 border-l px-2">
-              <IconButton className="border-none bg-[#82C341] text-white">
+              <IconButton className="bg-light-primary text-primary-foreground border-none">
                 <GridViewOutlined />
               </IconButton>
-              <IconButton className="border-none bg-[#82C341] text-white">
+              <IconButton className="bg-light-primary text-primary-foreground border-none">
                 <List />
               </IconButton>
             </div>

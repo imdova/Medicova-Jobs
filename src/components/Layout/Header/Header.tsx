@@ -19,6 +19,7 @@ import Image from "next/image";
 import { HamburgerIcon } from "@/components/icons/icons";
 import ItemSelector from "@/components/UI/menu-item";
 import { employerSideBarLinks } from "@/constants/side-bar";
+import LogoIcon from "@/components/icons/logo";
 
 const links = [
   {
@@ -75,7 +76,7 @@ const Header = () => {
             open={isMenuOpen}
             onClose={close} // Handles backdrop clicks automatically
           >
-            <Box className="h-full max-w-[600px] overflow-hidden bg-[#1b6648] text-white">
+            <Box className="bg-primary text-primary-foreground h-full max-w-[600px] overflow-hidden">
               <Box className="scroll-bar-hidden max-h-full overflow-y-auto py-5">
                 <List>
                   {employerSideBarLinks.map((link, index) => (
@@ -86,24 +87,19 @@ const Header = () => {
             </Box>
           </Drawer>
           {/* Logo */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: { xs: "100%", sm: "auto" },
-            }}
-          >
-            <Image
-              src={logo}
-              alt="Company Logo"
-              style={{
-                height: "100px",
-                width: "150px",
-                marginRight: "8px",
-              }}
-            />
-          </Box>
+          <div className="flex h-[100px] items-center justify-center">
+            <Link href="/" className="text-primary my-2 flex items-center">
+              <LogoIcon className="h-[50px] w-[40px]" />
+              <div className="flex h-fit flex-col text-center">
+                <h1 className="font-baiJamJuree text-[16px] font-bold leading-none">
+                  MEDICOVA
+                </h1>
+                <p className="font-baiJamJuree text-[8px] font-medium">
+                  MEDICAL COMMUNITY
+                </p>
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop Menu */}
           <Box

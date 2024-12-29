@@ -140,7 +140,7 @@ const ApplicantsPage: React.FC = () => {
       {/* Right Column: Results Section */}
       <Box className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="w-full pl-[39px]">
-          <h2 className="mb-5 text-3xl font-bold text-[#185D43]">
+          <h2 className="text-main mb-5 text-3xl font-bold">
             Clinical Pharmacist in Damam, Saudi Arabia
           </h2>
         </div>
@@ -179,7 +179,7 @@ const ApplicantsPage: React.FC = () => {
                 label={
                   <span className="flex items-center gap-1 normal-case">
                     Unlocked ({availableApplicants.length})
-                    <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />
+                    <LockOpenIcon className="text-primary h-5 w-5" />
                   </span>
                 }
               />
@@ -188,7 +188,7 @@ const ApplicantsPage: React.FC = () => {
                 label={
                   <span className="flex items-center gap-1 normal-case">
                     Shortlisted ({shortListed.length})
-                    <StarIcon className="h-5 w-5 text-[#2EAE7D]" />
+                    <StarIcon className="text-primary h-5 w-5" />
                   </span>
                 }
               />
@@ -213,7 +213,7 @@ const ApplicantsPage: React.FC = () => {
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="h-[32px] w-[32px] bg-[#DEF0EB]"
+              className="bg-primary-100 h-[32px] w-[32px]"
             >
               {isAllSelect ? (
                 <DeselectIcon className="m-auto h-6 w-6" />
@@ -228,7 +228,7 @@ const ApplicantsPage: React.FC = () => {
                   aria-controls={open ? "Action-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+                  className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
                 >
                   <p className="inline-block">Action</p>
                   <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -301,7 +301,7 @@ const ApplicantsPage: React.FC = () => {
               aria-controls={exportOpen ? "export-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={exportOpen ? "true" : undefined}
-              className="h-fit rounded-md bg-[#DEF0EB] p-2 px-4 duration-300 hover:bg-[#cae0da]"
+              className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
             >
               <p className="inline-block w-16">Export</p>
               <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />

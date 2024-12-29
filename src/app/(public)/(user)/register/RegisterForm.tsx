@@ -17,7 +17,10 @@ import GoogleButton from "../login/googleButton";
 import { useForm, Controller } from "react-hook-form";
 
 const RegisterForm: React.FC = () => {
-  const [activeLink, setActiveLink] = useState("employer");
+  const [userType, setUserType] = useState<"jobSeeker" | "employer">(
+    "employer",
+  );
+
   const {
     control,
     handleSubmit,
@@ -34,10 +37,6 @@ const RegisterForm: React.FC = () => {
       phone: "",
     },
   });
-
-  const handleLinkClick = (link: string) => {
-    setActiveLink(link);
-  };
 
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
@@ -58,65 +57,29 @@ const RegisterForm: React.FC = () => {
         padding: 2,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          marginBottom: 3,
-        }}
-      >
+      <div className="mb-3 flex justify-center gap-2">
         <Button
-          onClick={() => handleLinkClick("jobSeeker")}
-          sx={{
-            padding: "10px 20px",
-            color: activeLink === "jobSeeker" ? "#6CC6A3" : "#000",
-            backgroundColor:
-              activeLink === "jobSeeker" ? "transparent" : "#E9EBFD",
-            transition: "all 0.3s ease",
-          }}
+          onClick={() => setUserType("jobSeeker")}
+          className={`${userType === "jobSeeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
           variant="text"
         >
           Job Seeker
         </Button>
         <Button
-          onClick={() => handleLinkClick("employer")}
-          sx={{
-            padding: "10px 20px",
-            color: activeLink === "employer" ? "#6CC6A3" : "#000",
-            backgroundColor:
-              activeLink === "employer" ? "transparent" : "#E9EBFD",
-            transition: "all 0.3s ease",
-          }}
+          onClick={() => setUserType("employer")}
+          className={`${userType === "employer" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
           variant="text"
         >
           Employer
         </Button>
-      </Box>
+      </div>
 
-      <Typography
-        sx={{
-          fontWeight: "bold",
-          color: "#03353C",
-          fontSize: "29px",
-        }}
-        gutterBottom
-      >
-        Signup as a {activeLink === "jobSeeker" ? "Job Seeker" : "Recruiter"} on{" "}
-        <Typography
-          component="span"
-          sx={{
-            display: "inline",
-            fontWeight: "bold",
-            background: "linear-gradient(180deg, #2EAE7D, #134834)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontSize: "inherit",
-          }}
-        >
+      <h4 className="text-main my-2 text-[30px] font-bold">
+        Signup as a {userType === "jobSeeker" ? "Job Seeker" : "Recruiter"} on{" "}
+        <span className="text-light-primary my-2 text-[30px] font-bold">
           Medicova
-        </Typography>
-      </Typography>
+        </span>
+      </h4>
       <NextAuthProvider>
         <GoogleButton>SignUp with Google</GoogleButton>
       </NextAuthProvider>
@@ -265,7 +228,7 @@ const RegisterForm: React.FC = () => {
           />
         </Box>
 
-        {activeLink === "employer" && (
+        {userType === "employer" && (
           <Box sx={{ mb: 2 }}>
             <InputLabel
               sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
@@ -367,7 +330,6 @@ const RegisterForm: React.FC = () => {
 
         <Button
           sx={{
-            background: "linear-gradient(180deg, #2EAE7D, #185D43)",
             height: "50px",
             fontWeight: "700",
             fontSize: "16px",
@@ -379,28 +341,15 @@ const RegisterForm: React.FC = () => {
         >
           Sign Up
         </Button>
-        <Typography
-          component="span"
-          sx={{
-            fontSize: "14px",
-            color: "#202430",
-            fontWeight: "400",
-          }}
-        >
+        <p className="text-secondary mt-1">
           Aleardy on MEDICOVA ?{" "}
-        </Typography>
-        <Link href="/login" passHref>
-          <Typography
-            component="span"
-            sx={{
-              fontSize: "16px",
-              color: "#2EAE7DBF",
-              fontWeight: "600",
-            }}
+          <Link
+            href="/login"
+            className="text-primary inline text-lg font-semibold hover:underline"
           >
             Login
-          </Typography>
-        </Link>
+          </Link>
+        </p>
       </form>
     </Box>
   );

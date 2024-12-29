@@ -31,13 +31,10 @@ const RightSection: React.FC = () => {
           />
 
           {/* Typography below the Image */}
-          <Typography
-            variant="body1"
-            sx={{ marginBottom: 2, textAlign: "center", fontWeight: "600" }}
-          >
+          <p className="text-secondary mb-2 text-center font-semibold">
             To find better candidates, make your job description detailed, use
             relevant keywords, and add screening questions to your job post.
-          </Typography>
+          </p>
         </Box>
 
         {/* Centered Button */}
@@ -71,24 +68,10 @@ const RightSection: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.8)" }}
-          >
+          <h6 className="text-main mb-2 text-2xl font-semibold">
             Social Links
-          </Typography>
+          </h6>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <IconButton
-              size="small"
-              sx={{
-                border: 1,
-                borderColor: "grey.300",
-                borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
-              }}
-            >
-              <AddIcon />
-            </IconButton>
             <IconButton
               size="small"
               sx={{
@@ -103,74 +86,17 @@ const RightSection: React.FC = () => {
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            marginTop: 2,
-          }}
-        >
-          {/* Instagram Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <div className="flex gap-4">
+          <Link href="#">
             <InstagramIcon sx={{ color: "rgba(241, 9, 234, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Instagram
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://www.instagram.com
-            </Link>
-          </Typography>
-
-          {/* Twitter Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          </Link>
+          <Link href="#">
             <TwitterIcon sx={{ color: "rgba(91, 146, 250, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Twitter
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://www.twitter.com
-            </Link>
-          </Typography>
-
-          {/* website Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          </Link>
+          <Link href="#">
             <LanguageIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "400", color: "rgba(124, 132, 147, 1)" }}
-            >
-              Web site
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="textSecondary">
-            <Link
-              href="https://www.twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              www.imetsacademy.com
-            </Link>
-          </Typography>
-        </Box>
+          </Link>
+        </div>
       </Card>
     </Grid>
   );

@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Controls from "@/components/UI/Controls";
 import Image from "next/image";
 import PaidIcon from "@mui/icons-material/Paid";
+import Flag from "./flagitem";
 
 const post = {
   image: "https://randomuser.me/api/portraits/men/1.jpg",
@@ -29,7 +30,7 @@ const JobCard = () => {
   return (
     <Grid item xs={12}>
       <Card
-        className="flex-wrap md:flex-nowrap justify-center md:justify-between"
+        className="flex-wrap justify-center md:flex-nowrap md:justify-between"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -77,63 +78,39 @@ const JobCard = () => {
                 gap: 1,
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{ color: "#25324B", fontWeight: "600", fontSize: "20px" }}
-              >
+              <h6 className="text-main text-[20px] font-semibold">
                 {post.name}
-              </Typography>
+              </h6>
+
               <IconButton size="small" aria-label="edit">
-                <EditIcon sx={{ fontSize: 18, color: "#185D43" }} />
+                <EditIcon className="text-light-primary h-5 w-5" />
               </IconButton>
             </Box>
-            <div className="flex items-center justify-center md:justify-start text-[12px] my-2 text-black/50 flex-wrap max-w-[400px]">
+            <div className="text-secondary my-2 flex max-w-[400px] flex-wrap items-center justify-center text-[12px] md:justify-start">
               {post.features.map((feature, index) => (
-                <p key={index} className="mr-3 flex items-center gap-1  ">
-                  <span className=" w-[5px] h-[5px] bg-yellow-500 rounded-full ring-1 ring-yellow-500"></span>
+                <p key={index} className="mr-3 flex items-center gap-1">
+                  <span className="bg-secondary ring-secondary h-[5px] w-[5px] rounded-full ring-1"></span>
                   <span className="text-[12px]">{feature}</span>
                 </p>
               ))}
-              <p className="mr-3 flex items-center gap-1  ">
-                <PaidIcon className="text-yellow-500 w-4 h-4" />
+              <p className="mr-3 flex items-center gap-1">
+                <PaidIcon className="text-secondary h-4 w-4" />
                 <span className="text-[12px]">{post.budget}</span>
               </p>
             </div>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: { xs: "center", sm: "flex-start" },
-                gap: 1,
-                mt: 1,
-              }}
-            >
-              <Chip
-                sx={{ color: "#185D43" }}
-                label={post.category}
-                variant="outlined"
-              />
-              <Chip
-                sx={{ color: "#185D43" }}
-                label={post.specialty}
-                variant="outlined"
-              />
-              <Chip
-                sx={{ color: "#185D43" }}
-                avatar={
-                  <Image
-                    src="/images/flag-egypt.jpg"
-                    alt="egypt flag"
-                    width={20}
-                    height={20}
-                    className="mr-2 object-contain"
-                  />
-                }
-                label={post.country}
-                variant="outlined"
-              />
-            </Box>
+            <div className="flex gap-3">
+              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
+                Healthcare
+              </button>
+              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
+                Doctors
+              </button>
+              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground flex items-center gap-2 rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
+                Egypt
+                <Flag code="eg" name="egypt" />
+              </button>
+            </div>
           </Box>
         </Box>
         {/* Actions Section */}

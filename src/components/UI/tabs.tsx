@@ -28,8 +28,8 @@ function CustomTabPanel(props: TabPanelProps) {
 
 function a11yProps(index: number) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `tab-${index}`,
+    "aria-controls": `tabpanel-${index}`,
   };
 }
 
@@ -70,68 +70,68 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Pharmacist
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Specialist doctor
         </button>
-        <button className="mr-2 rounded-[10px] border px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white">
+        <button className="text-primary hover:bg-primary hover:text-primary-foreground mr-2 rounded-[10px] border px-4 py-2">
           Healthcare
         </button>
       </CustomTabPanel>

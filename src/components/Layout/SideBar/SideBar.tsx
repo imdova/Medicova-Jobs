@@ -11,7 +11,7 @@ const SideBar: React.FC<{ links: LinkType[] }> = ({ links }) => {
   const close = () => setIsOpen(false);
   return (
     <aside
-      className={`${isOpen ? "hover:min-w-60 lg:min-w-60" : "lg:min-w-14"} fixed left-0 top-[100px] z-40 h-[calc(100vh-100px)] w-14 translate-x-[-100%] overflow-hidden bg-[#185D43] text-white shadow-2xl duration-300 ease-in-out md:block md:translate-x-0 lg:sticky`}
+      className={`${isOpen ? "hover:min-w-60 lg:min-w-60" : "lg:min-w-14"} bg-primary text-primary-foreground fixed left-0 top-[100px] z-40 h-[calc(100vh-100px)] w-14 translate-x-[-100%] overflow-hidden shadow-2xl duration-300 ease-in-out md:block md:translate-x-0 lg:sticky`}
     >
       <div className="hidden w-full justify-end pr-3 pt-5 lg:flex">
         <button

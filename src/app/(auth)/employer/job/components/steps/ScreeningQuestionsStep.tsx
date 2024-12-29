@@ -69,7 +69,7 @@ const ScreeningQuestionsStep: React.FC = () => {
         </span>
       ) : (
         part
-      )
+      ),
     );
   };
 
@@ -83,13 +83,15 @@ const ScreeningQuestionsStep: React.FC = () => {
       const predefinedKey = Object.keys(predefinedQuestions).find(
         (key) =>
           predefinedQuestions[key as keyof typeof predefinedQuestions] ===
-          originalQuestion
+          originalQuestion,
       );
 
       if (
         predefinedKey &&
         !updatedQuestions.includes(
-          predefinedQuestions[predefinedKey as keyof typeof predefinedQuestions]
+          predefinedQuestions[
+            predefinedKey as keyof typeof predefinedQuestions
+          ],
         )
       ) {
         setAddedPredefinedQuestions((prev) => ({
@@ -123,7 +125,7 @@ const ScreeningQuestionsStep: React.FC = () => {
     const predefinedKey = Object.keys(predefinedQuestions).find(
       (key) =>
         predefinedQuestions[key as keyof typeof predefinedQuestions] ===
-        questionToDelete
+        questionToDelete,
     );
     if (predefinedKey) {
       setAddedPredefinedQuestions((prev) => ({
@@ -134,7 +136,7 @@ const ScreeningQuestionsStep: React.FC = () => {
   };
 
   const handleAddPredefinedQuestion = (
-    key: keyof typeof predefinedQuestions
+    key: keyof typeof predefinedQuestions,
   ) => {
     if (!addedPredefinedQuestions[key]) {
       setQuestions([...questions, predefinedQuestions[key]]);
@@ -175,6 +177,7 @@ const ScreeningQuestionsStep: React.FC = () => {
           }}
         >
           <Box
+            className="bg-primary"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -183,10 +186,9 @@ const ScreeningQuestionsStep: React.FC = () => {
               height: 30,
               minWidth: 30,
               borderRadius: "50%",
-              backgroundColor: "rgba(46, 174, 125, 1)",
             }}
           >
-            <FormatSizeIcon sx={{ color: "white" }} />
+            <FormatSizeIcon className="text-primary-foreground" />
           </Box>
           <TextField
             fullWidth
@@ -201,10 +203,9 @@ const ScreeningQuestionsStep: React.FC = () => {
             border: "1px solid #ddd",
             borderRadius: "4px",
             padding: "5px",
-            color: "rgba(46, 174, 125, 1)",
           }}
         >
-          <AddIcon />
+          <AddIcon className="text-primary" />
         </IconButton>
         {editingIndex !== null && (
           <IconButton
@@ -216,10 +217,9 @@ const ScreeningQuestionsStep: React.FC = () => {
               border: "1px solid #ddd",
               borderRadius: "4px",
               padding: "5px",
-              color: "rgba(46, 174, 125, 1)",
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="text-primary" />
           </IconButton>
         )}
       </Box>
@@ -237,6 +237,7 @@ const ScreeningQuestionsStep: React.FC = () => {
             }}
           >
             <Box
+              className="bg-primary"
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -245,11 +246,10 @@ const ScreeningQuestionsStep: React.FC = () => {
                 height: 30,
                 minWidth: 30,
                 borderRadius: "50%",
-                backgroundColor: "rgba(46, 174, 125, 1)",
                 mr: 2,
               }}
             >
-              <FormatSizeIcon sx={{ color: "white" }} />
+              <FormatSizeIcon className="text-primary-foreground" />
             </Box>
             <ListItemText secondary={formatQuestionText(question)} />
             <ListItemSecondaryAction>
@@ -260,10 +260,9 @@ const ScreeningQuestionsStep: React.FC = () => {
                   border: "1px solid #ddd",
                   borderRadius: "4px",
                   padding: "5px",
-                  color: "rgba(46, 174, 125, 1)",
                 }}
               >
-                <EditIcon />
+                <EditIcon className="text-primary" />
               </IconButton>
 
               <IconButton
@@ -281,16 +280,9 @@ const ScreeningQuestionsStep: React.FC = () => {
           </ListItem>
         ))}
 
-        <Typography
-          sx={{
-            mb: 2,
-            fontWeight: "700",
-            color: "rgba(24, 93, 67, 1)",
-            fontSize: "23px",
-          }}
-        >
+        <h6 className="text-main mb-2 text-2xl font-semibold">
           Ready Questions
-        </Typography>
+        </h6>
         <Box
           sx={{
             display: "flex",
@@ -308,16 +300,7 @@ const ScreeningQuestionsStep: React.FC = () => {
               variant="outlined"
               onClick={() => handleAddPredefinedQuestion(key)}
               disabled={addedPredefinedQuestions[key]}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                padding: "8px",
-                fontWeight: "600",
-                fontSize: "14px",
-                borderColor: "#2EAE7D",
-                color: addedPredefinedQuestions[key] ? "#ccc" : "#2EAE7D",
-                textTransform: "none",
-              }}
+              className={`${addedPredefinedQuestions[key] ? "text-secondary" : "text-primary"} border-primary flex items-center p-2 normal-case`}
             >
               {predefinedQuestionLabels[key] ||
                 key.charAt(0).toUpperCase() + key.slice(1)}
@@ -327,16 +310,8 @@ const ScreeningQuestionsStep: React.FC = () => {
       </List>
 
       {/* Job Options */}
-      <Typography
-        sx={{
-          mb: 2,
-          fontWeight: "700",
-          color: "rgba(24, 93, 67, 1)",
-          fontSize: "23px",
-        }}
-      >
-        Job Options
-      </Typography>
+
+      <h6 className="text-main mb-2 text-2xl font-semibold">Job Options</h6>
       <Box
         sx={{
           display: "flex",
@@ -357,18 +332,13 @@ const ScreeningQuestionsStep: React.FC = () => {
         >
           <Checkbox
             sx={{
-              color: "rgba(46, 174, 125, 1)",
-              "&.Mui-checked": {
-                color: "rgba(46, 174, 125, 1)",
-              },
+              color: "var(--primary)",
               "& .MuiSvgIcon-root": {
                 fontSize: 34,
               },
             }}
           />
-          <Typography sx={{ color: "#515B6F", fontWeight: "700" }}>
-            Keep Company Confidential
-          </Typography>
+          <p className="text-secondary font-bold">Keep Company Confidential</p>
         </Box>
 
         <Box
@@ -388,9 +358,9 @@ const ScreeningQuestionsStep: React.FC = () => {
               control={
                 <Radio
                   sx={{
-                    color: "rgba(46, 174, 125, 1)",
+                    color: "var(--primary)",
                     "&.Mui-checked": {
-                      color: "rgba(46, 174, 125, 1)", // Set the color when checked
+                      color: "var(--primary)", // Set the color when checked
                     },
                   }}
                 />
@@ -402,9 +372,9 @@ const ScreeningQuestionsStep: React.FC = () => {
               control={
                 <Radio
                   sx={{
-                    color: "rgba(46, 174, 125, 1)",
+                    color: "var(--primary)",
                     "&.Mui-checked": {
-                      color: "rgba(46, 174, 125, 1)", // Set the color when checked
+                      color: "var(--primary)", // Set the color when checked
                     },
                   }}
                 />

@@ -1,42 +1,28 @@
 import React from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
-import logo from "@/components/images/logo.svg"; // Adjust the import path based on your project structure
-import Image from "next/image";
+import { Button } from "@mui/material";
 import Link from "next/link";
+import LogoIcon from "../icons/logo";
 
 const Header = () => {
   return (
-    <Container
-      sx={{
-        height: "80px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 24px",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          src={logo}
-          alt="Company Logo"
-          style={{
-            height: "100px",
-            width: "139px",
-            marginRight: "8px",
-          }}
-        />
-      </Box>
+    <div className="container mx-auto flex items-center justify-between p-2 lg:max-w-[1170px]">
+      <Link href="/" className="text-primary flex items-center">
+        <LogoIcon className="h-[50px] w-[40px]" />
+        <div className="flex h-fit flex-col text-center">
+          <h1 className="font-baiJamJuree text-[16px] font-bold leading-none">
+            MEDICOVA
+          </h1>
+          <p className="font-baiJamJuree text-[8px] font-medium">
+            MEDICAL COMMUNITY
+          </p>
+        </div>
+      </Link>
       <Link href="/register">
-        <Button className="bg-[#E9EBFD] py-2 px-3  font-semibold text-[#03353C] normal-case">
+        <Button className="bg-secondary text-primary-foreground px-3 py-2 font-semibold normal-case">
           Create an account
         </Button>
       </Link>
-    </Container>
+    </div>
   );
 };
 

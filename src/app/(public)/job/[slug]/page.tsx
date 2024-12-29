@@ -2,20 +2,10 @@ import { jobs } from "@/constants";
 import JobCard from "../../search/job-card";
 import VerticalTabs from "./vertical-tabs";
 import { notFound } from "next/navigation";
-import {
-  AccessTimeOutlined,
-  AccountBalanceWalletOutlined,
-  ArrowForward,
-  CheckCircleOutline,
-  FmdGoodOutlined,
-  PaidOutlined,
-  PersonOutlineOutlined,
-  SchoolOutlined,
-  StarsOutlined,
-  WorkOutlineOutlined,
-} from "@mui/icons-material";
+import { ArrowForward, CheckCircleOutline } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
+import JobOverview from "@/components/UI/JobOverview";
 
 const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
   const job = jobs.find((job) => job.id === slug);
@@ -37,14 +27,19 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
         <div className="mt-10 flex flex-col sm:flex-row sm:gap-8">
           <div className="flex-1">
             {/* Job Description */}
-            <h3 className="text-2xl font-bold">Job Description</h3>
-            <p className="mt-2 font-medium text-gray-500">{job.description}</p>
+            <h3 className="text-main text-2xl font-bold">Job Description</h3>
+            <p className="text-secondary mt-2 font-medium">{job.description}</p>
             {/* Job Overview only on mobile */}
-            <JobOverview className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden" />
+            <JobOverview
+              key={1}
+              className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden"
+            />
 
             {/* Job Responsibilities */}
-            <h3 className="mt-8 text-2xl font-bold">Job Requirements</h3>
-            <ul className="mt-2 font-medium text-gray-500">
+            <h3 className="text-main mt-8 text-2xl font-bold">
+              Job Requirements
+            </h3>
+            <ul className="text-secondary mt-2 font-medium">
               {job.requirements.map((item, i) => (
                 <li key={i}>
                   <CheckCircleOutline className="mb-2 mr-2 h-5 w-5 text-[#82C341]" />
@@ -54,21 +49,23 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
             </ul>
 
             {/* Additional Details */}
-            <h3 className="mt-8 text-2xl font-bold">Additional Details</h3>
-            <p className="mt-2 font-medium text-gray-500">
+            <h3 className="text-main mt-8 text-2xl font-bold">
+              Additional Details
+            </h3>
+            <p className="text-secondary mt-2 font-medium">
               {job.additionalDetails}
             </p>
 
             {/* Skills related to the job post */}
             <div className="mt-8 rounded-[10px] bg-green-50 p-4">
-              <h3 className="text-2xl font-semibold">
+              <h3 className="text-main text-2xl font-semibold">
                 Skills related to the job post{" "}
               </h3>
               <div className="mt-2 flex flex-wrap">
                 {job.skills.map((skill, i) => (
                   <button
                     key={i}
-                    className="mr-2 mt-2 rounded-[5px] bg-[#2BA149] px-4 py-2 text-white hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-[#2BA149] md:mr-4"
+                    className="text-secondary hover:bg-primary hover:text-primary-foreground border-primary focus:ring-primary mr-2 mt-2 rounded-[5px] border px-4 py-2 focus:ring-2 md:mr-4"
                   >
                     {skill}
                   </button>
@@ -78,12 +75,14 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
             {/* Related Search */}
             <div className="mt-8 rounded-[10px] bg-green-50 p-4">
-              <h3 className="text-2xl font-semibold">Related Search</h3>
+              <h3 className="text-main text-2xl font-semibold">
+                Related Search
+              </h3>
               <div className="mt-2 flex flex-wrap">
                 {job.relatedSearch.map((keyWord, i) => (
                   <button
                     key={i}
-                    className="mr-4 mt-2 rounded-[5px] bg-[#2BA149] px-4 py-2 text-white hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-[#2BA149]"
+                    className="text-secondary hover:bg-primary hover:text-primary-foreground border-primary focus:ring-primary mr-2 mt-2 rounded-[5px] border px-4 py-2 focus:ring-2 md:mr-4"
                   >
                     {keyWord}
                   </button>
@@ -103,13 +102,13 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
                     height={100}
                   />
                   <Link href="#" className="group flex items-center gap-2">
-                    <h3 className="text-lg font-bold group-hover:underline">
+                    <h3 className="text-main text-lg font-bold group-hover:underline">
                       {job.company.name}
                     </h3>
-                    <ArrowForward className="text-[#2BA149] transition-transform duration-300 group-hover:translate-x-4" />
+                    <ArrowForward className="text-primary transition-transform duration-300 group-hover:translate-x-4" />
                   </Link>
                 </div>
-                <p className="mt-2 text-gray-500">
+                <p className="text-secondary mt-2">
                   Stripe is a technology company that builds economic
                   infrastructure for the internet. Businesses of every size—from
                   new startups to public companies—use our software to accept
@@ -143,53 +142,72 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
             </div>
           </div>
           {/* Job Overview only on desktop */}
-          <JobOverview className="sticky top-4 hidden h-fit w-72 rounded-[10px] bg-green-50 p-4 md:block" />
+          <JobOverview
+            key={2}
+            className="bg-primary-100 sticky top-4 hidden h-fit w-72 rounded-[10px] p-4 md:block"
+          />
         </div>
         {/* recent jobs */}
 
-        <div className="mt-8 bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
-          <div className="bg-white/80 p-4 shadow-md">
-            <h2 className="text-center text-2xl font-black text-[#2BA149] md:text-4xl">
-              <span className="text-2xl font-black text-black md:text-4xl">
-                Related
-              </span>{" "}
-              Jobs
-            </h2>
-            <p className="mx-auto mt-2 max-w-[700px] px-4 text-center text-gray-500 md:text-lg">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&apos;s standard dummy
-            </p>
+        <div className="bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
+          <div className="bg-white/80 shadow-md">
+            <div className="container mx-auto p-4 lg:max-w-[1170px]">
+              <h2 className="text-light-primary my-6 text-center text-[45px] font-bold leading-none md:text-[60px]">
+                <span className="text-main text-[45px] font-bold md:text-[60px]">
+                  Related
+                </span>{" "}
+                Jobs
+              </h2>
+              <p className="text-secondary mx-auto mb-8 max-w-[700px] text-center text-2xl">
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry&apos;s standard
+                dummy
+              </p>
 
-            <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-3">
-              {/* card  */}
-              {[1, 2, 3, 1, 2, 3].map((_, i) => (
-                <button
-                  key={i}
-                  className="flex items-center gap-4 rounded-[10px] border border-gray-100 bg-white p-2 px-4 shadow-xl transition-all duration-300 hover:scale-105 hover:border-[#2BA149] hover:shadow-2xl focus:ring-2 focus:ring-[#2BA149]"
+              <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {/* card  */}
+                {[1, 2, 3, 1, 2, 3, 1, 2, 3].map((_, i) => (
+                  <button
+                    key={i}
+                    className="hover:border-primary focus:ring-primary flex gap-4 rounded-[10px] border border-gray-100 bg-white p-4 shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:ring-2"
+                  >
+                    <Image
+                      src="/images/company-logo.jpg"
+                      alt="company logo"
+                      width={70}
+                      height={90}
+                      className="h-[90px] rounded-md object-contain"
+                    />
+                    <div>
+                      <h6 className="text-main my-1 text-left font-semibold">
+                        Physical therapist
+                      </h6>
+                      <p className="text-secondary text-left text-sm font-medium">
+                        Nomad Paris, France
+                      </p>
+                      <div className="mt-1 flex flex-wrap gap-2">
+                        <span className="text-main rounded-md border border-gray-200 bg-gray-50 p-1 px-2 text-xs">
+                          Full-Time
+                        </span>
+                        <span className="border-light-primary text-light-primary rounded-md border p-1 px-2 text-xs">
+                          Full-Time
+                        </span>
+                        <span className="border-light-primary text-light-primary rounded-md border p-1 px-2 text-xs">
+                          Full-Time
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-8 flex justify-center">
+                <Link
+                  href="#"
+                  className="text-primary-foreground bg-primary hover:text-primary hover:bg-primary-foreground rounded-[8px] px-6 py-3 font-semibold uppercase transition-colors duration-300 focus:ring-2 focus:ring-white"
                 >
-                  <Image
-                    src="/images/company-logo.jpg"
-                    alt="company logo"
-                    width={70}
-                    height={70}
-                    className="rounded-md"
-                  />
-                  <div>
-                    <h6 className="font-semibold">Physical therapist</h6>
-                    <p className="text-sm font-medium text-gray-500">
-                      Nomad Paris, France
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 flex justify-center">
-              <Link
-                href="#"
-                className="rounded-[8px] bg-[#2BA149] px-6 py-3 font-semibold uppercase text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white"
-              >
-                Explore All
-              </Link>
+                  Explore All
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -199,72 +217,3 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
 };
 
 export default ApplicantsPage;
-
-const JobOverview: React.FC<{ className: string }> = ({ className }) => {
-  return (
-    <div className={className}>
-      <h4 className="mb-4 text-lg font-semibold">Job Overview</h4>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-3">
-          <PersonOutlineOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Career Level </h5>
-            <p className="text-black/50"> Consultant </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <AccessTimeOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Job Type </h5>
-            <p className="text-black/50"> Full Time Onsite </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <WorkOutlineOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Category </h5>
-            <p className="text-black/50"> Doctors </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <StarsOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Experience </h5>
-            <p className="text-black/50"> (3-5) Years </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <SchoolOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Degree </h5>
-            <p className="text-black/50"> Master’s Degree </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <AccountBalanceWalletOutlined
-            fontSize="medium"
-            sx={{ color: "#2EAE7D" }}
-          />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Required Age </h5>
-            <p className="text-black/50"> (45-50) Years </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <PaidOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Offered Salary </h5>
-            <p className="text-black/50"> $40000-$42000 </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <FmdGoodOutlined fontSize="medium" sx={{ color: "#2EAE7D" }} />
-          <div className="flex flex-col">
-            <h5 className="font-semibold"> Location </h5>
-            <p className="text-black/50"> Geddah, Saudi Arabia </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

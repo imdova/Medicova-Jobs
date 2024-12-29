@@ -24,8 +24,8 @@ const SavedSearchPage: React.FC = ({
   };
 
   return (
-    <div className="p-5">
-      <div className="p- mb-4 flex items-center justify-between">
+    <div className="p-2 md:p-5">
+      <div className="mb-4 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Folders</h1>
         <IconButton
           onClick={handleOpenModal}
@@ -36,7 +36,7 @@ const SavedSearchPage: React.FC = ({
       </div>
       <div className="p-2">
         <h2 className="mb-4 text-2xl font-semibold">Recently Used</h2>
-        <div className="grid grid-cols-2 flex-wrap gap-2 sm:grid-cols-3 md:flex md:gap-5">
+        <div className="grid grid-cols-2 flex-wrap gap-2 md:grid-cols-3 lg:grid-cols-5">
           {folders.slice(0, 5).map((folder, index) => (
             <FolderMainCard key={index} folder={folder} />
           ))}

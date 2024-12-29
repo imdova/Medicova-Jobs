@@ -45,7 +45,7 @@ const Carousel = <T extends { id: string | number }>({
   defaultItemsToShow = 3,
   className = "relative w-full overflow-hidden",
   cardClassName = "rounded-[10px] bg-white p-[15px]",
-  navigationButtonClassName = "m-2 md:m-4 h-fit rounded-full bg-[#82C341] p-3 md:p-6 text-white duration-300 hover:bg-green-600",
+  navigationButtonClassName = "m-2 md:m-4 h-fit rounded-full bg-light-primary p-3 md:p-6 text-white duration-300 hover:bg-primary",
   CustomCard,
 }: CarouselProps<T>) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -190,7 +190,7 @@ export const SpecialtyCard: React.FC<{ item: Specialty }> = ({ item }) => {
   const { image, jobsNumber, link, title } = item;
   return (
     <div className="mx-auto flex w-36 flex-col items-center justify-center text-center">
-      <div className="block h-fit w-fit rounded-full bg-[#2BA149] p-6 text-white">
+      <div className="bg-primary text-primary-foreground block h-fit w-fit rounded-full p-6">
         <Image
           src={image}
           width={80}
@@ -200,10 +200,10 @@ export const SpecialtyCard: React.FC<{ item: Specialty }> = ({ item }) => {
         />
       </div>
       <h6 className="my-1 text-xl font-bold">{title}</h6>
-      <p className="text-sm text-[#2EAE7D]">{jobsNumber} jobs available</p>
-      <Link href={link} className="group text-gray-500 hover:underline">
+      <p className="text-light-primary text-sm">{jobsNumber} jobs available</p>
+      <Link href={link} className="text-secondary group hover:underline">
         View all{" "}
-        <ArrowForward className="text-[#2EAE7D] transition-transform duration-300 group-hover:translate-x-2" />
+        <ArrowForward className="text-light-primary transition-transform duration-300 group-hover:translate-x-2" />
       </Link>
     </div>
   );
@@ -221,10 +221,10 @@ export const CompanyCard = ({ item }: { item: CompanyItem }) => {
           className="aspect-[350/240] w-full rounded-[5px] border border-gray-100 object-cover shadow-lg"
         />
       )}
-      <h6 className="my-3 text-2xl font-semibold">{item.title}</h6>
-      <p className="mb-4 text-gray-500">{item.description}</p>
+      <h6 className="text-main my-3 text-2xl font-semibold">{item.title}</h6>
+      <p className="text-secondary mb-4">{item.description}</p>
       <div className="mb-4">
-        <span className="rounded-full border border-green-600 px-4 py-2 text-green-600">
+        <span className="border-light-primary text-light-primary rounded-full border px-4 py-2">
           {item.tag}
         </span>
       </div>

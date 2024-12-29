@@ -43,12 +43,12 @@ import { useState } from "react";
 function a11yProps(index: number) {
   return {
     className:
-      "duration-300 transition-color ease-in-out mx-4 rounded-[10px] h-[45px] min-h-[40px] flex flex-row justify-start text-gray-500 my-1",
+      "duration-300 transition-color ease-in-out mx-4 rounded-[10px] h-[45px] min-h-[40px] flex flex-row justify-start text-secondary my-1",
     id: `vertical-tab-${index}`,
     "aria-controls": `vertical-tabpanel-${index}`,
     sx: {
       "&.Mui-selected": {
-        backgroundColor: "#82C341", // Add hover effect
+        backgroundColor: "var(--light-primary)", // Add hover effect
         color: "white",
       },
     },
@@ -70,7 +70,7 @@ export default function VerticalTabs() {
       aria-label="Vertical tabs example"
       TabIndicatorProps={{
         sx: {
-          backgroundColor: "#82C341", // Set the color of the indicator
+          backgroundColor: "var(--light-primary)", // Set the color of the indicator
           left: 0, // Move the indicator to the left
           width: 4, // Adjust the thickness of the indicator
           maxHeight: "30px", // Center the indicator vertically relative to the tab height
@@ -93,7 +93,7 @@ export default function VerticalTabs() {
               <MessageOutlined /> <span>Messages</span>
             </div>
             <div
-              className={`${value === 1 ? "bg-white text-[#82C341]" : "bg-gray-500 text-white"} aspect-square rounded-full p-1 px-2 text-xs`}
+              className={`${value === 1 ? "text-light-primary bg-primary-foreground" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
             >
               3
             </div>
@@ -127,7 +127,7 @@ export default function VerticalTabs() {
         {...a11yProps(5)}
       />
       <Divider className="mt-2" />
-      <p className="p-4 text-sm uppercase text-gray-500">Settings</p>
+      <p className="text-secondary p-4 text-sm uppercase">Settings</p>
 
       <Tab
         icon={<SettingsOutlined />}

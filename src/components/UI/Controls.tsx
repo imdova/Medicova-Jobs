@@ -54,7 +54,7 @@ const DropdownMenu = () => {
     <React.Fragment>
       <IconButton
         size="medium"
-        className="text-[#185D43]"
+        className="text-primary"
         onClick={handleClick}
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
