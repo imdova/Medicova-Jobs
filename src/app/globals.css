@@ -4,6 +4,21 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap");
 
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --primary: #2ba149;
+  --primary-100: #ecf7f3;
+  --primary-foreground: #ffffff;
+  --light-primary: #82c341;
+  --light-primary-transparent: #82c341e5;
+  --primary-transparent: #2ba149e5;
+  --text-main: #161439;
+  --text-secondary: #6d6c80;
+}
+
 /* Apply global font family */
 body,
 html,

@@ -31,7 +31,6 @@ const user = {
   password: "123456",
 };
 
-
 interface LoginFormProps {
   userType: "jobSeeker" | "employer";
   setUserType: React.Dispatch<React.SetStateAction<"jobSeeker" | "employer">>;
@@ -82,65 +81,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
         mx: "auto",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          marginBottom: 3,
-        }}
-      >
+      <div className="mb-3 flex justify-center gap-2">
         <Button
           onClick={() => setUserType("jobSeeker")}
-          sx={{
-            padding: "10px 20px",
-            color: userType === "jobSeeker" ? "#6CC6A3" : "#000",
-            backgroundColor:
-              userType === "jobSeeker" ? "transparent" : "#E9EBFD",
-            transition: "all 0.3s ease",
-          }}
+          className={`${userType === "jobSeeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
           variant="text"
         >
           Job Seeker
         </Button>
         <Button
           onClick={() => setUserType("employer")}
-          sx={{
-            padding: "10px 20px",
-            color: userType === "employer" ? "#6CC6A3" : "#000",
-            backgroundColor:
-              userType === "employer" ? "transparent" : "#E9EBFD",
-            transition: "all 0.3s ease",
-          }}
+          className={`${userType === "employer" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
           variant="text"
         >
           Employer
         </Button>
-      </Box>
+      </div>
 
-      <Typography
-        sx={{
-          fontWeight: "bold",
-          color: "#03353C",
-        }}
-        variant="h4"
-        gutterBottom
-      >
+      <h4 className="text-main my-2 text-3xl font-bold">
         Welcome Back, in{" "}
-        <Typography
-          component="span"
-          sx={{
-            display: "inline",
-            fontWeight: "bold",
-            background: "linear-gradient(180deg, #2EAE7D, #134834)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontSize: "inherit",
-          }}
-        >
+        <span className="text-light-primary my-2 text-3xl font-bold">
           Medicova
-        </Typography>
-      </Typography>
+        </span>
+      </h4>
       <Box
         sx={{
           display: "flex",
@@ -252,37 +215,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
                     checked={field.value}
                     sx={{
                       "&.Mui-checked": {
-                        color: "#2EAE7D",
+                        color: "var(--primary)",
                       },
                     }}
                   />
                 }
-                label={
-                  <Typography sx={{ color: "#515B6F", fontWeight: "400" }}>
-                    Remember me
-                  </Typography>
-                }
+                label={<p className="text-secondary">Remember me</p>}
               />
             )}
           />
-          <Link href="/forget" passHref>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                color: "#515B6F",
-                fontWeight: "600",
-              }}
-            >
-              Forgot Password?
-            </Typography>
+          <Link
+            href="/forget"
+            className="text-secondary font-semibold hover:underline"
+          >
+            Forgot Password?
           </Link>
         </Box>
-        <Typography className=" text-red-500 my-1">{error}</Typography>
+        <Typography className="my-1 text-red-500">{error}</Typography>
 
         {/* Submit Button */}
         <Button
           sx={{
-            background: "linear-gradient(180deg, #2EAE7D, #185D43)",
             height: "50px",
             fontWeight: "700",
             fontSize: "16px",
@@ -297,34 +250,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
         </Button>
 
         {/* Sign Up Link */}
-        <Typography
-          component="span"
-          sx={{
-            fontSize: "14px",
-            color: "#202430",
-            fontWeight: "400",
-          }}
-        >
-          Don’t have an account?{" "}
-        </Typography>
-        <Typography
-          component="span"
-          sx={{ fontSize: "14px", color: "#515B6F" }}
-        >
-          {error}{" "}
-        </Typography>
-        <Link href="/register" passHref>
-          <Typography
-            component="span"
-            sx={{
-              fontSize: "16px",
-              color: "#2EAE7DBF",
-              fontWeight: "600",
-            }}
+        <p className="text-secondary mt-1">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-primary inline text-lg font-semibold hover:underline"
           >
             Sign Up
-          </Typography>
-        </Link>
+          </Link>
+        </p>
       </form>
     </Box>
   );

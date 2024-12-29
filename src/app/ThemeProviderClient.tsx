@@ -28,7 +28,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#2EAE7D", // Focused border color
+            borderColor: "var(--light-primary)", // Focused border color
           },
           "&.Mui-error .MuiOutlinedInput-notchedOutline": {
             borderColor: "red", // Error border color
@@ -39,19 +39,17 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         containedPrimary: {
-          background:
-            "linear-gradient(191.67deg, #2EAE7D 8.56%, #134834 91.44%)",
-          color: "white",
+          background: "var(--primary)",
+          color: "var(--primary-foreground)",
           fontWeight: "bold",
           textTransform: "none",
           borderRadius: "0",
           "&:hover": {
-            background:
-              "linear-gradient(191.67deg, #134834 8.56%, #2EAE7D 91.44%)",
+            background: "var(--light-primary)",
           },
           "&:disabled": {
             opacity: 0.6,
-            color: "white",
+            color: "var(--primary-foreground)",
           },
         },
         root: {
@@ -66,19 +64,15 @@ const theme = createTheme({
           },
         },
         outlined: {
-          borderColor: "#D6DDEB",
+          borderColor: "var(--text-secondary)",
           borderRadius: "0",
-          color: "#2EAE7D",
+          color: "var(--primary)",
           "&:hover": {
-            borderColor: "#2EAE7D",
-            backgroundColor: "#2EAE7D", // Custom hover border color
-            color: "white",
+            borderColor: "var(--primary)",
+            backgroundColor: "var(--primary)",
+            color: "var(--primary-foreground)",
           },
         },
-        // text: {
-        //   fontSize: "20px",
-        //   fontWeight: "bold",
-        // },
       },
     },
   },

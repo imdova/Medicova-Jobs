@@ -5,11 +5,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
-        <div className="bg-gradient-to-b from-[#82C341E5] to-[#2BA149E5] p-4 shadow-md">
+        <div className="from-light-primary-transparent to-primary-transparent bg-gradient-to-b p-4 shadow-md">
           <Header />
-          <div className="container mx-auto p-4 text-white lg:max-w-[1170px]">
-            <h2 className="text-[45px] font-black text-white md:text-[60px]">
-              <span className="text-[45px] font-black text-black md:text-[60px]">
+          <div className="text-primary-foreground container mx-auto p-4 lg:max-w-[1170px]">
+            <h2 className="text-[45px] font-black md:text-[60px]">
+              <span className="text-main text-[45px] font-black md:text-[60px]">
                 Job
               </span>{" "}
               Details

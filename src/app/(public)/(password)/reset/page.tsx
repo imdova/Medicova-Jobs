@@ -10,16 +10,16 @@ const user = { email: "alaahassan@gmail.com" };
 const Set = () => {
   return (
     <React.Fragment>
-      <div className="absolute inset-0 bg-[url('/images/background.png')]  bg-cover bg-center opacity-20 z-[-1]"></div>
-      <Box className="min-h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col">
-        <Box className="w-full flex justify-center items-center flex-col bg-[#f8faff] max-w-[600px] shadow-md">
+      <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
+      <Box className="flex min-h-[calc(100vh-80px)] w-full flex-col items-center justify-center">
+        <Box className="flex w-full max-w-[600px] flex-col items-center justify-center bg-[#f8faff] shadow-md">
           {/* Lock Icon */}
           <Image
             src="/images/reset-password.jpg"
             width={200}
             height={170}
             alt="reset password"
-            className="mt-5 mix-blend-multiply object-contain"
+            className="mt-5 object-contain mix-blend-multiply"
           />
 
           {/* Title */}
@@ -34,10 +34,10 @@ const Set = () => {
           {/* Subtitle */}
           <Typography
             variant="body1"
-            className="font-semibold t text-black/50 text-lg mb-1 text-center"
+            className="t mb-1 text-center text-lg font-semibold text-black/50"
           >
             We send a Code to{" "}
-            <span className="text-[#2EAE7D94]">{user.email}</span>
+            <span className="text-light-primary">{user.email}</span>
           </Typography>
 
           {/* Email Input */}
@@ -48,7 +48,7 @@ const Set = () => {
             href="/login"
             replace
             passHref
-            className="text-[#93D3BD] flex items-center gap-2 my-4"
+            className="text-secondary my-4 flex items-center gap-2 hover:underline"
           >
             <ArrowBackIcon
               sx={{
@@ -67,10 +67,10 @@ const Set = () => {
           </Link>
         </Box>
         {/* Stages */}
-        <div className="flex gap-5 max-w-[600px] px-10 my-10 justify-center w-full items-center h-1">
-          <div className="flex-1 h-full bg-[#CDD3D1] rounded"></div>
-          <div className="flex-1 h-full bg-[#2EAE7DBF] rounded"></div>
-          <div className="flex-1 h-full bg-[#CDD3D1] rounded"></div>
+        <div className="my-10 flex h-1 w-full max-w-[600px] items-center justify-center gap-5 px-10">
+          <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
+          <div className="bg-light-primary h-full flex-1 rounded"></div>
+          <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>
       </Box>
     </React.Fragment>

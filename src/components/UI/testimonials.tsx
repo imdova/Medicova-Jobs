@@ -16,7 +16,7 @@ const Testimonials = () => {
           <button
             key={i}
             onClick={() => setActiveTab(i)}
-            className={`${i === activeTab ? "w-8 bg-white" : "w-3 bg-gray-700"} h-3 rounded-full duration-300`}
+            className={`${i === activeTab ? "bg-primary-foreground w-8" : "w-3 bg-gray-700"} h-3 rounded-full duration-300`}
           ></button>
         ))}
       </div>
@@ -31,7 +31,7 @@ const ReviewCard = ({ className }: { className?: string }) => {
     <div
       className={`card relative flex w-full overflow-hidden rounded-[16px] bg-white md:h-[215px] md:w-[570px] ${className}`}
     >
-      <Ellipse6 className="absolute -bottom-5 -left-5 z-0 h-20 w-32 md:h-auto md:w-auto" />
+      <Ellipse6 className="text-light-primary absolute -bottom-5 -left-5 z-0 h-20 w-32 md:h-auto md:w-auto" />
       <IdeaIcon className="absolute left-3 top-0 z-0 md:left-9 md:top-3" />
       <Image
         src="/images/doc.png"
@@ -41,9 +41,9 @@ const ReviewCard = ({ className }: { className?: string }) => {
         className="z-[1] w-1/3 object-cover md:w-auto"
       />
       <div className="px-4 py-6">
-        <h6 className="text-2xl font-semibold">Dr, Adam mark</h6>
-        <p className="text-400 text-lg font-semibold">Specialist</p>
-        <p className="my-6 text-gray-500">
+        <h6 className="text-main text-2xl font-semibold">Dr, Adam mark</h6>
+        <p className="text-secondary text-lg font-semibold">Specialist</p>
+        <p className="text-secondary my-6">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry&apos;s standard dummy
         </p>

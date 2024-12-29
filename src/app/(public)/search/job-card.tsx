@@ -39,54 +39,54 @@ const JobCard: React.FC<CandidateCardProps> = ({
             alt={job.title}
             sx={{ width: 76, height: 76 }}
           />
-          <p className="mt-4 text-center text-sm text-[#2BA149]">
+          <p className="text-primary mt-4 text-center text-sm">
             {getLastEdit(job.timeStamps)}
           </p>
         </div>
         <div>
           {isApply ? (
-            <h6 className="text-lg font-semibold">{job.title}</h6>
+            <h6 className="text-main text-lg font-semibold">{job.title}</h6>
           ) : (
             <Link
               href={`/job/${job.id}`}
-              className="text-lg font-semibold hover:underline"
+              className="text-main text-lg font-semibold hover:underline"
             >
               {job.title}
             </Link>
           )}
-          <div className="my-3 flex flex-wrap gap-2 text-gray-500">
+          <div className="text-secondary my-3 flex flex-wrap gap-2">
             <div className="flex items-center gap-1">
-              <LocationOnOutlined className="h-4 w-4 text-[#46AC60] md:h-5 md:w-5" />
+              <LocationOnOutlined className="text-light-primary h-4 w-4 md:h-5 md:w-5" />
               <p className="text-xs md:text-base">{job.location}</p>
             </div>
             <div className="flex items-center gap-1">
-              <SchoolOutlined className="h-4 w-4 text-[#46AC60] md:h-5 md:w-5" />
+              <SchoolOutlined className="text-light-primary h-4 w-4 md:h-5 md:w-5" />
               <p className="text-xs md:text-base">{job.education}</p>
             </div>
             <div className="flex items-center gap-1">
-              <MedicalServicesOutlined className="h-4 w-4 text-[#46AC60] md:h-5 md:w-5" />
+              <MedicalServicesOutlined className="text-light-primary h-4 w-4 md:h-5 md:w-5" />
               <p className="text-xs md:text-base">{job.specialty}</p>
             </div>
           </div>
-          <div className="my-3 flex flex-wrap gap-2 text-gray-500">
+          <div className="text-secondary my-3 flex flex-wrap gap-2">
             {job.features.map((feature, index) => (
               <div
                 key={index}
                 className="flex items-center gap-1 text-xs md:text-base"
               >
-                <span className="m-[6px] h-2 w-2 rounded-full bg-gray-500"></span>
+                <span className="bg-secondary m-[6px] h-2 w-2 rounded-full"></span>
                 {feature}
               </div>
             ))}
           </div>
           <div className="flex gap-3">
-            <button className="rounded-[10px] border border-[#82C341] px-4 py-2 text-xs font-semibold text-gray-500 transition-colors duration-300 hover:bg-[#2BA149] hover:text-white focus:ring-2 focus:ring-white md:text-base">
+            <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
               Healthcare
             </button>
-            <button className="rounded-[10px] border border-[#82C341] px-4 py-2 text-xs font-semibold text-gray-500 transition-colors duration-300 hover:bg-[#2BA149] hover:text-white focus:ring-2 focus:ring-white md:text-base">
+            <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
               Doctors
             </button>
-            <button className="flex items-center gap-2 rounded-[10px] border border-[#82C341] px-4 py-2 text-xs font-semibold text-gray-500 transition-colors duration-300 hover:bg-[#2BA149] hover:text-white focus:ring-2 focus:ring-white md:text-base">
+            <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground flex items-center gap-2 rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
               Egypt
               <Flag code="eg" name="egypt" />
             </button>
@@ -97,28 +97,28 @@ const JobCard: React.FC<CandidateCardProps> = ({
         <div className="flex justify-end">
           <IconButton onClick={toggleSave} size="medium">
             {isSaved ? (
-              <Bookmark color="primary" className="h-8 w-8 text-[#2BA149]" />
+              <Bookmark color="primary" className="text-primary h-8 w-8" />
             ) : (
               <BookmarkBorder
                 color="primary"
-                className="h-8 w-8 text-[#2BA149]"
+                className="text-primary h-8 w-8"
               />
             )}
           </IconButton>
           <ShareMenu
             link={`https://www.example.com/job/${job.id}`}
             color="primary"
-            className="h-12 w-12 text-[#2BA149]"
+            className="text-primary h-12 w-12"
           />
         </div>
         {isApply ? (
-          <button className="w-full text-nowrap rounded-[10px] bg-[#2BA149] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white md:w-fit">
+          <button className="bg-primary hover:text-primary w-full text-nowrap rounded-[10px] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white focus:ring-2 focus:ring-white md:w-fit">
             Apply Now
           </button>
         ) : (
           <Link
             href={`/job/${job.id}`}
-            className="w-full text-nowrap rounded-[10px] bg-[#2BA149] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#2BA149] focus:ring-2 focus:ring-white md:w-fit"
+            className="bg-primary hover:text-primary w-full text-nowrap rounded-[10px] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white focus:ring-2 focus:ring-white md:w-fit"
           >
             View Details
           </Link>
