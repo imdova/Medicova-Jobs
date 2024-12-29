@@ -9,6 +9,7 @@ import { icons } from "@/constants/side-bar";
 import FolderMainCard from "../search/folder-main-card";
 import { folders } from "@/constants";
 import Link from "next/link";
+import { Suspense } from "react";
 
 interface Card {
   title: string;
@@ -141,9 +142,11 @@ const page = () => {
         </h2>
 
         <div className="grid grid-cols-2 gap-2 p-2 md:grid-cols-3 lg:grid-cols-6">
-          {folders.slice(0, 6).map((folder, index) => (
-            <FolderMainCard key={index} folder={folder} />
-          ))}
+          <Suspense>
+            {folders.slice(0, 6).map((folder, index) => (
+              <FolderMainCard key={index} folder={folder} />
+            ))}
+          </Suspense>
         </div>
         <div className="flex w-full justify-center">
           <Link

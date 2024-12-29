@@ -2,20 +2,10 @@ import { jobs } from "@/constants";
 import JobCard from "../../search/job-card";
 import VerticalTabs from "./vertical-tabs";
 import { notFound } from "next/navigation";
-import {
-  AccessTimeOutlined,
-  AccountBalanceWalletOutlined,
-  ArrowForward,
-  CheckCircleOutline,
-  FmdGoodOutlined,
-  PaidOutlined,
-  PersonOutlineOutlined,
-  SchoolOutlined,
-  StarsOutlined,
-  WorkOutlineOutlined,
-} from "@mui/icons-material";
+import { ArrowForward, CheckCircleOutline } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
+import JobOverview from "@/components/UI/JobOverview";
 
 const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
   const job = jobs.find((job) => job.id === slug);
@@ -40,7 +30,10 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
             <h3 className="text-main text-2xl font-bold">Job Description</h3>
             <p className="text-secondary mt-2 font-medium">{job.description}</p>
             {/* Job Overview only on mobile */}
-            <JobOverview className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden" />
+            <JobOverview
+              key={1}
+              className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden"
+            />
 
             {/* Job Responsibilities */}
             <h3 className="text-main mt-8 text-2xl font-bold">
@@ -149,7 +142,10 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
             </div>
           </div>
           {/* Job Overview only on desktop */}
-          <JobOverview className="bg-primary-100 sticky top-4 hidden h-fit w-72 rounded-[10px] p-4 md:block" />
+          <JobOverview
+            key={2}
+            className="bg-primary-100 sticky top-4 hidden h-fit w-72 rounded-[10px] p-4 md:block"
+          />
         </div>
         {/* recent jobs */}
 
@@ -221,72 +217,3 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
 };
 
 export default ApplicantsPage;
-
-export const JobOverview: React.FC<{ className: string }> = ({ className }) => {
-  return (
-    <div className={className}>
-      <h4 className="text-main mb-4 text-lg font-semibold">Job Overview</h4>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-3">
-          <PersonOutlineOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Career Level </h5>
-            <p className="text-secondary"> Consultant </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <AccessTimeOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Job Type </h5>
-            <p className="text-secondary"> Full Time Onsite </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <WorkOutlineOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Category </h5>
-            <p className="text-secondary"> Doctors </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <StarsOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Experience </h5>
-            <p className="text-secondary"> (3-5) Years </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <SchoolOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Degree </h5>
-            <p className="text-secondary"> Master’s Degree </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <AccountBalanceWalletOutlined
-            fontSize="medium"
-            className="text-primary"
-          />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Required Age </h5>
-            <p className="text-secondary"> (45-50) Years </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <PaidOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Offered Salary </h5>
-            <p className="text-secondary"> $40000-$42000 </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <FmdGoodOutlined fontSize="medium" className="text-primary" />
-          <div className="flex flex-col">
-            <h5 className="text-main font-semibold"> Location </h5>
-            <p className="text-secondary"> Geddah, Saudi Arabia </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

@@ -1,11 +1,9 @@
 import React from "react";
-import Image from "next/image";
 import { jobs } from "@/constants";
 import JobCard from "@/app/(public)/search/job-card";
-import { JobOverview } from "@/app/(public)/job/[slug]/page";
-import { ArrowForward, CheckCircleOutline, Close } from "@mui/icons-material";
-import Link from "next/link";
 import { IconButton } from "@mui/material";
+import JobOverview from "@/components/UI/JobOverview";
+import { CheckCircleOutline, Close } from "@mui/icons-material";
 
 const job = jobs[0];
 
@@ -20,7 +18,10 @@ const ReviewPublishStep: React.FC = () => (
         <h3 className="text-main text-2xl font-bold">Job Description</h3>
         <p className="text-secondary mt-2 font-medium">{job.description}</p>
         {/* Job Overview only on mobile */}
-        <JobOverview className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden" />
+        <JobOverview
+          key={1}
+          className="mt-8 block rounded-[10px] bg-green-50 p-4 md:hidden"
+        />
 
         {/* Job Responsibilities */}
         <h3 className="text-main mt-8 text-2xl font-bold">Job Requirements</h3>
@@ -80,7 +81,10 @@ const ReviewPublishStep: React.FC = () => (
         </div>
       </div>
       {/* Job Overview only on desktop */}
-      <JobOverview className="bg-primary-100 sticky top-[110px] hidden h-fit w-72 rounded-[10px] p-4 md:block" />
+      <JobOverview
+        key={2}
+        className="bg-primary-100 sticky top-[110px] hidden h-fit w-72 rounded-[10px] p-4 md:block"
+      />
     </div>
   </div>
 );
