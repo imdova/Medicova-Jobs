@@ -7,6 +7,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  IconButton,
   InputLabel,
   Tab,
   Tabs,
@@ -46,7 +47,6 @@ const SettingsPage = () => {
           mb: 4,
           borderBottom: "1px solid #ddd",
           "& .MuiTabs-indicator": {
-            backgroundColor: "rgba(24, 93, 67, 1)",
             height: "4px",
             borderRadius: "5px",
           },
@@ -54,23 +54,15 @@ const SettingsPage = () => {
       >
         <Tab
           sx={{
-            color: "rgba(124, 132, 147, 1)", // Inactive tab text color
             fontWeight: "600",
             fontSize: "14px",
-            "&.Mui-selected": {
-              color: "rgba(37, 50, 75, 1)", // Active tab text color
-            },
           }}
           label="Login Details"
         />
         <Tab
           sx={{
-            color: "rgba(124, 132, 147, 1)", // Inactive tab text color
             fontWeight: "600",
             fontSize: "14px",
-            "&.Mui-selected": {
-              color: "rgba(37, 50, 75, 1)", // Active tab text color
-            },
           }}
           label="Users"
         />
@@ -81,12 +73,12 @@ const SettingsPage = () => {
           {/* Update Email Section */}
           <Card sx={{ mb: 4 }}>
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
+              <h6 className="text-main mb-1 text-xl font-bold">
                 Basic Information
-              </Typography>
-              <Typography sx={{ color: "rgba(81, 91, 111, 1)" }}>
+              </h6>
+              <p className="text-secondary mb-2">
                 This is login information that you can update anytime.
-              </Typography>
+              </p>
             </CardContent>
             <Divider sx={{ my: 2, width: "90%", mx: "auto" }} />{" "}
             {/* Centered Divider */}
@@ -102,19 +94,12 @@ const SettingsPage = () => {
               >
                 {/* Left Section */}
                 <Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="text-main mb-1 text-lg font-bold">
                     Update Email
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(81, 91, 111, 1)" }}>
+                  </h6>
+                  <p className="text-secondary mb-2">
                     Update your email address to make sure it is safe
-                  </Typography>
+                  </p>
                 </Box>
 
                 {/* Right Section */}
@@ -126,19 +111,13 @@ const SettingsPage = () => {
                     minWidth: "250px",
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="text-main mb-1 text-lg font-bold">
                     jakegyll@email.com
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(124, 132, 147, 1)" }}>
+                  </h6>
+                  <p className="text-secondary mb-2">
                     Your email address is verified.
-                  </Typography>
+                  </p>
+
                   <InputLabel
                     sx={{
                       marginBottom: 1,
@@ -163,12 +142,11 @@ const SettingsPage = () => {
                     placeholder="Enter your new email"
                   />
                   <Button
+                    variant="contained"
                     sx={{
                       width: "155px",
                       marginTop: 2,
                       height: "46px",
-                      background: "linear-gradient(180deg, #2EAE7D, #134834)",
-                      color: "#fff",
                       textTransform: "capitalize",
                       fontWeight: "600",
                     }}
@@ -194,19 +172,12 @@ const SettingsPage = () => {
               >
                 {/* Left Section */}
                 <Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="text-main mb-1 text-lg font-bold">
                     New Password
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(81, 91, 111, 1)" }}>
+                  </h6>
+                  <p className="text-secondary mb-2">
                     Manage your password to make sure it is safe
-                  </Typography>
+                  </p>
                 </Box>
 
                 {/* Right Section */}
@@ -267,11 +238,11 @@ const SettingsPage = () => {
                     placeholder="Enter your new password"
                   />
                   <Button
+                    variant="contained"
                     sx={{
                       width: "155px",
                       marginTop: 2,
                       height: "46px",
-                      background: "linear-gradient(180deg, #2EAE7D, #134834)",
                       color: "#fff",
                       textTransform: "capitalize",
                       fontWeight: "600",
@@ -300,21 +271,20 @@ const SettingsPage = () => {
               }}
             >
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                <h6 className="text-main mb-1 text-xl font-bold">
                   Basic Information
-                </Typography>
-                <Typography sx={{ mt: 1, color: "rgba(81, 91, 111, 1)" }}>
+                </h6>
+                <p className="text-secondary mb-2">
                   This is User page that you can update anytime and Add New
                   user.
-                </Typography>
+                </p>
               </Box>
               <Button
                 onClick={handleOpenModal}
+                variant="contained"
                 sx={{
                   width: "155px",
                   height: "46px",
-                  background: "linear-gradient(180deg, #2EAE7D, #134834)",
-                  color: "#fff",
                   textTransform: "capitalize",
                   fontWeight: "600",
                 }}
@@ -326,19 +296,8 @@ const SettingsPage = () => {
             {/* Divider */}
             <Divider sx={{ my: 4 }} /> {/* Users Section */}
             <Box sx={{ mt: 2 }}>
-              <Typography
-                sx={{
-                  mb: 1,
-                  fontWeight: "600",
-                  color: "rgba(32, 36, 48, 1)",
-                  fontSize: "18px",
-                }}
-              >
-                All Users
-              </Typography>
-              <Typography sx={{ mb: 2, color: "rgba(81, 91, 111, 1)" }}>
-                Can Delete or Edit any user
-              </Typography>
+              <h6 className="text-main mb-1 text-lg font-bold">All Users</h6>
+              <p className="text-secondary mb-2">Can Delete or Edit any user</p>
             </Box>
           </Box>
 
@@ -406,39 +365,40 @@ const SettingsPage = () => {
                       }}
                     >
                       <Button
+                        variant="outlined"
                         sx={{
                           fontSize: "12px",
                           fontWeight: "bold",
                           textTransform: "capitalize",
-                          color: "#2EAE7D",
-                          borderColor: "#2EAE7D",
-                          border: "1px solid", // Add border for button
                         }}
                       >
                         Full Control
                       </Button>
                       <Box>
-                        <Button
+                        <IconButton
+                          color="primary"
                           sx={{
                             minWidth: 0,
                             padding: "2px",
+                            borderRadius: "1px",
                             border: "1px solid rgba(214, 221, 235, 1)",
-                            color: "rgba(46, 174, 125, 1)",
                             mr: 1,
                           }}
                         >
                           <EditIcon />
-                        </Button>
-                        <Button
+                        </IconButton>
+                        <IconButton
+                          color="error"
                           sx={{
                             minWidth: 0,
                             padding: "2px",
+                            borderRadius: "1px",
                             border: "1px solid rgba(214, 221, 235, 1)",
-                            color: "rgba(227, 72, 23, 1)",
+                            mr: 1,
                           }}
                         >
                           <DeleteIcon />
-                        </Button>
+                        </IconButton>
                       </Box>
                     </Box>
                     {/* Action Icons */}

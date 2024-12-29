@@ -137,10 +137,14 @@ export const Ellipse5 = (props: React.SVGProps<SVGSVGElement>) => {
           y2="170.552"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="white" />
-          <stop offset="0.107292" stopColor="white" stopOpacity="0.892708" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
+          <stop stopColor="currentColor" />
+          <stop
+            offset="0.107292"
+            stopColor="currentColor"
+            stopOpacity="0.892708"
+          />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>

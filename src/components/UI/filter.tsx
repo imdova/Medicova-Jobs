@@ -44,7 +44,7 @@ const FilterSections = <
         }
       >
         <div className="rounded-lg bg-white shadow-md">
-          <div className="flex items-center justify-center bg-[#DEF0EB] py-2">
+          <div className="bg-primary-100 flex items-center justify-center py-2">
             <h5 className="text-3xl font-bold">Filters</h5>
           </div>
           <div className="space-y-6 p-4">

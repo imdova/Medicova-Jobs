@@ -85,13 +85,19 @@ const SubscriptionPlansPage: React.FC = () => {
   return (
     <Box sx={{ p: 2 }}>
       {/* Heading */}
-      <Typography variant="h4" textAlign="center" fontWeight={600} mb={2}>
+      <Typography
+        variant="h4"
+        textAlign="center"
+        className="text-main"
+        fontWeight={600}
+        mb={2}
+      >
         Ready to get started?
       </Typography>
       <Typography
         variant="subtitle1"
         textAlign="center"
-        color="text.secondary"
+        className="text-secondary"
         mb={4}
       >
         14 days unlimited free trial. No contract or credit card required.
@@ -99,13 +105,13 @@ const SubscriptionPlansPage: React.FC = () => {
 
       {/* Access Buttons */}
       <Box
+        className="bg-primary-100"
         sx={{
           display: "flex",
           justifyContent: "center", // Centers horizontally
           alignItems: "center", // Centers vertically
           gap: 2,
           padding: 1,
-          backgroundColor: "#B4E1BF",
           width: "60%",
           margin: "0 auto",
           borderRadius: 5,
@@ -124,12 +130,13 @@ const SubscriptionPlansPage: React.FC = () => {
               px: 2,
               py: 1,
               borderRadius: 2,
-              backgroundColor: selectedAccess === access ? "white" : "#B4E1BF",
+              backgroundColor:
+                selectedAccess === access ? "white" : "transparent",
               color: selectedAccess === access ? "#000" : "#333",
-              border: "1px solid #B4E1BF",
               fontWeight: 600,
               "&:hover": {
-                backgroundColor: "#A6D7B5",
+                backgroundColor: "var(--primary)",
+                color: "var(--primary-foreground)",
               },
             }}
           >
@@ -189,7 +196,7 @@ const SubscriptionPlansPage: React.FC = () => {
                     position: "absolute",
                     top: 0,
                     right: 0,
-                    background: "#2BA149", // Background color for "Simple Pack"
+                    background: "var(--primary)", // Background color for "Simple Pack"
                     color: "white",
                     px: 2,
                     py: 1,
@@ -324,17 +331,17 @@ const SubscriptionPlansPage: React.FC = () => {
                         ? "#000" // First card: black button
                         : index === 3
                           ? "white" // Last card: white button
-                          : "#2BA149", // Second and third cards: green button
-                    color: index === 3 ? "#2EAE7D" : "white", // Text color for last card
+                          : "var(--primary)", // Second and third cards: green button
+                    color: index === 3 ? "var(--primary)" : "white", // Text color for last card
                     borderRadius: 3,
-                    border: index === 3 ? "2px solid #2EAE7D" : "none", // Border for last card
+                    border: index === 3 ? "2px solid var(--primary)" : "none", // Border for last card
                     "&:hover": {
                       backgroundColor:
                         index === 0
                           ? "#000" // First card: no hover effect (keeps black button)
                           : index === 3
                             ? "white" // Last card: no hover effect (keeps white button)
-                            : "#2BA149", // Second and third cards: no hover effect (keeps green button)
+                            : "var(--primary)", // Second and third cards: no hover effect (keeps green button)
                       boxShadow: "none", // Remove hover shadow effect
                     },
                   }}

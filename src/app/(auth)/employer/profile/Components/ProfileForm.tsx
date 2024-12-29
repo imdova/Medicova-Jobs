@@ -85,16 +85,9 @@ const ProfileForm: React.FC = () => {
     <Grid item xs={12}>
       <Card>
         <CardContent>
-          <Typography
-            sx={{
-              marginBottom: 2,
-              color: "rgba(24, 93, 67, 1)",
-              fontWeight: "500",
-              fontSize: { xs: "20px", md: "20px" },
-            }}
-          >
+          <h5 className="text-main mb-2 text-2xl font-semibold">
             Company Main Information
-          </Typography>
+          </h5>
           <form onSubmit={handleSubmit} noValidate>
             {/* Company Sector and Company Type Selectors */}
             <Box
@@ -166,16 +159,10 @@ const ProfileForm: React.FC = () => {
             {/* Radio Group Section */}
             <Box sx={{ marginBottom: 2 }}>
               {/* Title for the Radio Group */}
-              <Typography
-                variant="h6"
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 500,
-                  color: "rgba(24, 93, 67, 1)",
-                }}
-              >
+
+              <h5 className="text-main mb-2 text-2xl font-semibold">
                 Company Ownership Type
-              </Typography>
+              </h5>
 
               <FormControl component="fieldset" fullWidth>
                 <Box

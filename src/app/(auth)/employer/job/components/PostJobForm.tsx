@@ -50,12 +50,12 @@ const PostJobForm: React.FC = () => {
     >
       {/* Header */}
       <Typography
+        className="text-main"
         variant="h4"
         sx={{
           textAlign: "center",
           fontWeight: "bold",
           mb: 4,
-          color: "rgba(24, 93, 67, 1)",
         }}
       >
         Post Job Now
@@ -72,16 +72,16 @@ const PostJobForm: React.FC = () => {
               activeStep > 0 ? "rgba(46, 174, 125, 1)" : theme.palette.divider,
           },
           "& .MuiStepIcon-root": {
-            color: "rgba(0, 0, 0, 0.5)",
+            color: "var(--text-secondary)",
           },
           "& .MuiStepIcon-text": {
-            fill: "rgba(255, 255, 255, 1)", // Example: White text
+            fill: "var(--primary-foreground)", // Example: White text
           },
           "& .MuiStepIcon-root.Mui-active": {
-            color: "rgba(24, 93, 67, 1)",
+            color: "var(--primary)",
           },
           "& .MuiStepIcon-root.Mui-completed": {
-            color: "rgba(24, 93, 67, 1)",
+            color: "var(--primary)",
           },
         }}
       >
@@ -128,15 +128,13 @@ const PostJobForm: React.FC = () => {
           >
             Back
           </Button>
-          <Button className="px-2 md:px-6 text-sm bg-[#FFAE35] text-[#464748] rounded-none hover:bg-[#e19e39]">
+          <Button className="rounded-none bg-[#FFAE35] px-2 text-sm text-[#464748] hover:bg-[#e19e39] md:px-6">
             Save and Publish Later
           </Button>
           <Button
             variant="contained"
             sx={{
               px: { sx: 2, md: 6 },
-              backgroundColor: "rgba(46, 174, 125, 1)",
-              "&:hover": { backgroundColor: "rgba(36, 144, 103, 1)" },
             }}
             onClick={handleNext}
           >

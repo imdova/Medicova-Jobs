@@ -173,7 +173,7 @@ const ApplicantsPage: React.FC = ({
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="h-[32px] w-[32px] bg-[#DEF0EB] p-[5px]"
+              className="bg-primary-100 h-[32px] w-[32px] p-[5px]"
             >
               {isAllSelect ? (
                 <DeselectIcon className="h-6 w-6" />
@@ -235,7 +235,7 @@ const ApplicantsPage: React.FC = ({
                     aria-controls={open ? "Action-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
-                    className="flex h-[32px] items-center rounded-md bg-[#DEF0EB] px-4 duration-300 hover:bg-[#cae0da]"
+                    className="bg-primary-100 hover:bg-primary hover:text-primary-foreground flex h-[32px] items-center rounded-md px-4 duration-300"
                   >
                     <p className="inline-block">Action</p>
                     <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />

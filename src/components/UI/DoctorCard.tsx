@@ -75,10 +75,12 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
       <button
         onClick={toggleSelect}
         className={`${
-          isSelected ? "border-[#2EAE7D] bg-[#2EAE7D]" : "border-[#D6DDEB]"
+          isSelected ? "border-primary bg-primary" : "border-[#D6DDEB]"
         } mr-2 h-[24px] min-w-[24px] rounded-sm border-2 md:h-[32px] md:min-w-[32px]`}
       >
-        {isSelected && <CheckIcon className="m-auto h-5 w-5 text-white" />}
+        {isSelected && (
+          <CheckIcon className="text-primary-foreground m-auto h-5 w-5" />
+        )}
       </button>
 
       <div className="flex w-full flex-col rounded-md border bg-white p-2 shadow-md md:p-5">
@@ -93,7 +95,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                 alt={isAvailable ? doctor.name : formatName(doctor.name)}
                 sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
               />
-              <p className="mt-2 max-w-[100px] text-center text-xs text-black/50">
+              <p className="text-secondary mt-2 max-w-[100px] text-center text-xs">
                 applied 6 days ago
               </p>
             </div>
@@ -101,8 +103,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
               <Stack direction="row" alignItems="center" gap={1}>
                 <Typography
                   variant="h2"
+                  className="text-main"
                   sx={{
-                    color: "#185D43",
                     fontWeight: "600",
                     fontSize: { xs: "16px", md: "22px" },
                   }}
@@ -110,12 +112,12 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   {isAvailable ? doctor.name : formatName(doctor.name)}
                 </Typography>
                 {isAvailable ? (
-                  <LockOpenIcon className="h-5 w-5 text-[#2EAE7D]" />
+                  <LockOpenIcon className="text-primary h-5 w-5" />
                 ) : (
                   <LockIcon className="h-5 w-5 text-red-500" />
                 )}
               </Stack>
-              <div className="my-1 flex max-w-[450px] flex-wrap gap-2 text-black/70">
+              <div className="text-secondary my-1 flex max-w-[450px] flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <LocationOnIcon
                     color="primary"
@@ -164,7 +166,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                 </div>
               </div>
               <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
-                <h6 className="text-sm font-semibold md:text-base">
+                <h6 className="text-main text-sm font-semibold md:text-base">
                   Contact Info :
                 </h6>
                 <div className="flex flex-wrap justify-between">
@@ -174,7 +176,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                       className="h-4 w-4 md:h-5 md:w-5"
                     />
                     {isAvailable ? (
-                      <span className="mx-1 h-fit text-sm md:text-base">
+                      <span className="text-main mx-1 h-fit text-sm md:text-base">
                         {doctor.contactInfo.phoneNumber}
                       </span>
                     ) : (
@@ -196,7 +198,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                       className="h-4 w-4 md:h-5 md:w-5"
                     />
                     {isAvailable ? (
-                      <span className="mx-1 h-fit break-all text-sm md:text-base">
+                      <span className="text-main mx-1 h-fit break-all text-sm md:text-base">
                         {doctor.contactInfo.email}
                       </span>
                     ) : (
@@ -302,7 +304,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
 
         <button
           onClick={() => setShowMore((pv) => !pv)}
-          className="w-full px-2 pt-3 text-[#2EAE7D] md:hidden"
+          className="text-primary w-full px-2 pt-3 md:hidden"
         >
           {showMore
             ? "Hide Experience & Education"
@@ -330,13 +332,15 @@ const Experience: React.FC<Doctor & { className?: string }> = ({
         >
           <div className="flex w-[65%] items-center gap-3">
             <WorkOutlineOutlinedIcon color="primary" />
-            <p className="text-sm font-semibold md:text-base">{exp.name}</p>
+            <p className="text-main text-sm font-semibold md:text-base">
+              {exp.name}
+            </p>
           </div>
-          <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-black/80">
+          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
             <Flag {...exp.country} /> {exp.country.name}
           </div>
           <div>
-            <p className="text-xs text-black/30 md:text-sm">
+            <p className="text-secondary text-xs md:text-sm">
               ({exp.startDate} - {exp.endDate})
             </p>
           </div>
@@ -351,17 +355,19 @@ const Experience: React.FC<Doctor & { className?: string }> = ({
           <div className="flex w-[65%] items-center gap-3">
             <SchoolIcon color="primary" />
             <div>
-              <p className="text-sm font-semibold md:text-base">{edu.name}</p>
-              <p className="text-xs text-gray-500 md:text-sm">
+              <p className="text-main text-sm font-semibold md:text-base">
+                {edu.name}
+              </p>
+              <p className="text-secondary text-xs md:text-sm">
                 {edu.degree} in {edu.specialty}
               </p>
             </div>
           </div>
-          <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-black/80">
+          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
             <Flag {...edu.country} /> {edu.country.name}
           </div>
           <div>
-            <p className="text-xs text-black/30 md:text-sm">
+            <p className="text-secondary text-xs md:text-sm">
               ({edu.startDate} - {edu.endDate})
             </p>
           </div>

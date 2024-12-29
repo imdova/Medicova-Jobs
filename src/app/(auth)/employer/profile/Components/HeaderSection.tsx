@@ -48,10 +48,7 @@ const HeaderSection: React.FC = () => {
             },
           }}
         >
-          <ChangeCircleIcon
-            sx={{ color: "rgba(46, 174, 125, 1)" }}
-            fontSize="large"
-          />
+          <ChangeCircleIcon color="primary" fontSize="large" />
         </IconButton>
       </Box>
       <Box
@@ -71,12 +68,13 @@ const HeaderSection: React.FC = () => {
             color: "rgba(0, 0, 0, 0.8)",
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          <h6 className="text-main text-xl font-bold">
             Modicova Medical Community
-          </Typography>
-          <Typography variant="body2" sx={{ color: "rgba(0, 0, 0, 0.5)" }}>
+          </h6>
+          <p className="text-secondary">
             Healthcare: Medical Services and Education healthcare
-          </Typography>
+          </p>
+
           <Box
             sx={{
               display: "flex",
@@ -87,19 +85,19 @@ const HeaderSection: React.FC = () => {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <LocalHospitalIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
+              <LocalHospitalIcon className="text-primary" />
               <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                 Hospital
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <PlaceIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
+              <PlaceIcon className="text-primary" />
               <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                 Egypt, Cairo
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <GroupsIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
+              <GroupsIcon className="text-primary" />
               <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                 11-50 employees
               </Typography>

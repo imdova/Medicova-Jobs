@@ -36,16 +36,7 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
   }
 
   return (
-    <div className="relative">
-      <IconButton
-        onClick={handleClick}
-        aria-controls={open ? "save-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-black/50"
-      >
-        <MoreHoriz />
-      </IconButton>
+    <div>
       <Menu
         id="Action-menu"
         anchorEl={anchorEl}
@@ -68,18 +59,33 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
           Delete
         </MenuItem>
       </Menu>
-      <Link
-        href={`/employer/search/saved-search/${folder.id}`}
-        className="group flex h-[100px] items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB] md:min-w-40"
-      >
-        <Image
-          src="/images/folder.png"
-          width={40}
-          height={40}
-          alt="folder icon"
-          className="object-contain duration-300 group-hover:scale-110"
-        />
-      </Link>
+      <div className="relative">
+        <Link
+          href={`/employer/search/saved-search/${folder.id}`}
+          className="group relative flex h-[100px] items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB] md:min-w-40"
+        >
+          <Image
+            src="/images/folder.png"
+            width={40}
+            height={40}
+            alt="folder icon"
+            className="object-contain duration-300 group-hover:scale-110"
+          />
+        </Link>
+        <IconButton
+          onClick={handleClick}
+          aria-controls={open ? "save-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          className="text-secondary absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white"
+        >
+          <MoreHoriz />
+        </IconButton>
+        <div className="text-primary absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white">
+          <span>{folder.candidates}</span>
+        </div>
+      </div>
+
       <h6 className="mt-2 px-2 text-base font-semibold md:text-lg">
         {folder.name}
       </h6>

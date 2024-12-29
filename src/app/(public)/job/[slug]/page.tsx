@@ -222,7 +222,7 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
 export default ApplicantsPage;
 
-const JobOverview: React.FC<{ className: string }> = ({ className }) => {
+export const JobOverview: React.FC<{ className: string }> = ({ className }) => {
   return (
     <div className={className}>
       <h4 className="text-main mb-4 text-lg font-semibold">Job Overview</h4>

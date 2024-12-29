@@ -66,8 +66,8 @@ const ManageJobs: React.FC = () => {
             variant="outlined"
           />
           {/* Filter Button with Background Color and Border Radius */}
-          <button className="h-14 bg-[#eee] p-2 rounded-full w-14 md:w-auto flex md:gap-1 items-center justify-center md:px-6">
-            <TuneIcon sx={{ color: "#2EAE7D" }} />
+          <button className="flex h-14 w-14 items-center justify-center rounded-full bg-[#eee] p-2 md:w-auto md:gap-1 md:px-6">
+            <TuneIcon className="text-primary" />
             <p className="hidden md:block">Filter</p>
           </button>
         </Box>
@@ -81,17 +81,12 @@ const ManageJobs: React.FC = () => {
           variant="scrollable"
           sx={{
             marginBottom: "20px",
-            "& .MuiTabs-indicator": {
-              backgroundColor: "#185D43", // Active tab indicator color
-            },
             "& .MuiTab-root": {
               textTransform: "none",
-              color: "rgba(0, 0, 0, 0.5)",
               minWidth: "125px", // Increased width for each tab
               fontSize: "15px", // Increased font size for each tab
             },
             "& .Mui-selected": {
-              color: "#185D43!important",
               fontWeight: "bold",
             },
           }}
