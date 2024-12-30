@@ -5,7 +5,7 @@ import Link from "next/link";
 import SearchForm from "@/components/UI/search-form";
 import Flag from "@/components/UI/flagitem";
 import Carousel, { CompanyCard, SpecialtyCard } from "@/components/UI/Carousel";
-import { companies, specialists } from "@/constants";
+import { companies, jobs, specialists } from "@/constants";
 import BasicTabs from "@/components/UI/tabs";
 import Testimonials from "@/components/UI/testimonials";
 import MinJobCard from "@/components/UI/job-card-min";
@@ -256,8 +256,8 @@ const HomePage = () => {
 
               <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {/* card  */}
-                {[1, 2, 3, 1, 2, 3, 1, 2, 3].map((_, i) => (
-                  <MinJobCard key={i} />
+                {jobs.map((job, i) => (
+                  <MinJobCard key={i} job={job} />
                 ))}
               </div>
               <div className="mt-8 flex justify-center">

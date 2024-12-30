@@ -1,126 +1,161 @@
-import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import Controls from "@/components/UI/Controls";
-import Image from "next/image";
-import PaidIcon from "@mui/icons-material/Paid";
-import Flag from "./flagitem";
+"use client";
+import { Avatar, IconButton, Switch } from "@mui/material";
+import { Job } from "@/types";
+import {
+  Bookmark,
+  BookmarkBorder,
+  Edit,
+  LocationOnOutlined,
+  MedicalServicesOutlined,
+  SchoolOutlined,
+} from "@mui/icons-material";
+import Flag from "@/components/UI/flagitem";
+import ShareMenu from "@/components/UI/ShareMenu";
+import Link from "next/link";
+import { getLastEdit } from "@/util";
+import { DropdownMenu } from "./Controls";
 
-const post = {
-  image: "https://randomuser.me/api/portraits/men/1.jpg",
-  date: "since 6 days",
-  name: "Consultant Cardiology",
-  features: [
-    "Full Time",
-    "Onsite",
-    "Master’s Degree",
-    "Cardio-vascular",
-    "Male and Female",
-    "Consultant",
-    "EX (3-5) Years",
-  ],
-  budget: "20000 EGP",
-  country: "Egypt",
-  category: "Cardiology",
-  specialty: "doctors",
-  applicant: "10",
-  maxApplicant: "50",
-};
+interface JobCardProps {
+  job: Job;
+  savedList?: string[];
+  setSavedList?: React.Dispatch<React.SetStateAction<string[]>>;
+  isApply?: boolean;
+  isEdit?: boolean;
+}
 
-const JobCard = () => {
+const JobCard: React.FC<JobCardProps> = ({
+  job,
+  savedList,
+  setSavedList,
+  isApply,
+  isEdit,
+}) => {
+  const isSaved = savedList?.includes(job.id);
+  const toggleSave = () =>
+    setSavedList && setSavedList((pv) => toggleId(pv, job.id));
+
   return (
-    <Grid item xs={12}>
-      <Card
-        className="flex-wrap justify-center md:flex-nowrap md:justify-between"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          padding: "10px 20px",
-        }}
-      >
-        {/* Main Content Area */}
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: { xs: "wrap", sm: "nowrap" },
-            gap: 2,
-            alignItems: { xs: "center", sm: "flex-start" },
-            justifyContent: { xs: "center", sm: "space-between" },
-          }}
-        >
-          {/* Image Section */}
-          <Box sx={{ textAlign: "center" }}>
-            <Box
-              component="img"
-              src="/images/logo.png"
-              alt="Consultant"
-              sx={{
-                width: 100,
-                height: 100,
-                borderRadius: 2,
-                objectFit: "cover",
-              }}
-            />
-            <Typography
-              variant="body2"
-              sx={{ marginTop: 1, color: "#00000080" }}
-            >
-              {post.date}
-            </Typography>
-          </Box>
-
-          {/* Info Section */}
-          <Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: { xs: "center", sm: "flex-start" },
-                gap: 1,
-              }}
-            >
-              <h6 className="text-main text-[20px] font-semibold">
-                {post.name}
-              </h6>
-
+    <div className="grid w-full grid-cols-1 flex-wrap justify-between gap-5 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg sm:flex-nowrap md:grid-cols-4 md:p-5">
+      <div className="flex justify-center gap-5 md:col-span-3 md:flex-nowrap md:justify-normal">
+        <div>
+          <Avatar
+            src={"/images/company-logo.jpg"}
+            alt={job.title}
+            sx={{ width: 76, height: 76 }}
+          />
+          <p className="mt-4 text-center text-xs text-secondary">
+            {getLastEdit(job.timeStamps)}
+          </p>
+        </div>
+        <div>
+          {isApply ? (
+            <h6 className="text-lg font-semibold text-main">{job.title}</h6>
+          ) : isEdit ? (
+            <div className="flex items-center gap-2">
+              <h6 className="text-lg font-semibold text-main">{job.title}</h6>
               <IconButton size="small" aria-label="edit">
-                <EditIcon className="text-light-primary h-5 w-5" />
+                <Edit className="h-5 w-5 hover:text-light-primary" />
               </IconButton>
-            </Box>
-            <div className="text-secondary my-2 flex max-w-[400px] flex-wrap items-center justify-center text-[12px] md:justify-start">
-              {post.features.map((feature, index) => (
-                <p key={index} className="mr-3 flex items-center gap-1">
-                  <span className="bg-secondary ring-secondary h-[5px] w-[5px] rounded-full ring-1"></span>
-                  <span className="text-[12px]">{feature}</span>
-                </p>
-              ))}
-              <p className="mr-3 flex items-center gap-1">
-                <PaidIcon className="text-secondary h-4 w-4" />
-                <span className="text-[12px]">{post.budget}</span>
-              </p>
             </div>
-
-            <div className="flex gap-3">
-              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
-                Healthcare
-              </button>
-              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
-                Doctors
-              </button>
-              <button className="hover:bg-primary border-light-primary text-main hover:text-primary-foreground flex items-center gap-2 rounded-[10px] border px-4 py-2 text-xs font-semibold transition-colors duration-300 focus:ring-2 focus:ring-white md:text-base">
-                Egypt
-                <Flag code="eg" name="egypt" />
-              </button>
+          ) : (
+            <Link
+              href={`/job/${job.id}`}
+              className="text-lg font-semibold text-main hover:underline"
+            >
+              {job.title}
+            </Link>
+          )}
+          <div className="mt-2 flex flex-wrap text-secondary">
+            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+              <LocationOnOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+              <p className="text-xs md:text-base">{job.location}</p>
             </div>
-          </Box>
-        </Box>
-        {/* Actions Section */}
+            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+              <SchoolOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+              <p className="text-xs md:text-base">{job.education}</p>
+            </div>
+            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+              <MedicalServicesOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+              <p className="text-xs md:text-base">{job.specialty}</p>
+            </div>
+          </div>
+          <div className="mb-2 flex flex-wrap text-secondary">
+            {job.features.map((feature, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-1 text-xs md:text-base"
+              >
+                <span className="mx-1 mr-1 h-2 w-2 rounded-full bg-secondary md:mb-0 md:ml-[12px]"></span>
+                {feature}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-3">
+            <button className="rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
+              Healthcare
+            </button>
+            <button className="rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
+              Doctors
+            </button>
+            <button className="flex items-center gap-2 rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
+              Egypt
+              <Flag code="eg" name="egypt" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col">
+        {isEdit ? (
+          <div className="flex justify-end">
+            <Switch defaultChecked />
+            <ShareMenu
+              link={`https://www.example.com/job/${job.id}`}
+              className="h-12 w-12"
+            />
+            <DropdownMenu />
+          </div>
+        ) : (
+          <div className="flex justify-end">
+            <IconButton onClick={toggleSave} size="medium">
+              {isSaved ? (
+                <Bookmark color="primary" className="h-8 w-8" />
+              ) : (
+                <BookmarkBorder className="h-8 w-8" />
+              )}
+            </IconButton>
+            <ShareMenu
+              link={`https://www.example.com/job/${job.id}`}
+              className="h-12 w-12"
+            />
+          </div>
+        )}
 
-        {/* Switch and Icon Buttons Row */}
-
-        <Controls />
-      </Card>
-    </Grid>
+        {isApply ? (
+          <button className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white md:w-fit">
+            Apply Now
+          </button>
+        ) : (
+          <Link
+            href={`/job/${job.id}`}
+            className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white md:w-fit"
+          >
+            View Details
+          </Link>
+        )}
+      </div>
+    </div>
   );
 };
 
 export default JobCard;
+
+function toggleId(ids: string[], id: string): string[] {
+  // Check if the ID already exists in the array
+  if (ids.includes(id)) {
+    // If it exists, remove it
+    return ids.filter((existingId) => existingId !== id);
+  } else {
+    // If it doesn't exist, add it
+    return [...ids, id];
+  }
+}

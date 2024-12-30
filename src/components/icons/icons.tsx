@@ -247,23 +247,23 @@ export const IdeaIcon = (props: React.SVGProps<SVGSVGElement>) => {
       <path
         d="M35.322 28.6812C33.7159 23.8539 30.3608 12.5231 29.7893 5.81836"
         stroke="#FFC224"
-        stroke-width="1.66667"
-        stroke-linejoin="round"
-        stroke-dasharray="24.17 25.83"
+        strokeWidth="1.66667"
+        strokeLinejoin="round"
+        strokeDasharray="24.17 25.83"
       />
       <path
         d="M23.8298 37.5892C19.0247 35.9182 7.99864 31.6672 2.33643 28.0312"
         stroke="#FFC224"
-        stroke-width="1.66667"
-        stroke-linejoin="round"
-        stroke-dasharray="24.17 25.83"
+        strokeWidth="1.66667"
+        strokeLinejoin="round"
+        strokeDasharray="24.17 25.83"
       />
       <path
         d="M28.6261 30.7947C26.0696 28.6072 20.4057 23.3679 18.2024 19.9102"
         stroke="#FFC224"
-        stroke-width="1.66667"
-        stroke-linejoin="round"
-        stroke-dasharray="15.83 17.5"
+        strokeWidth="1.66667"
+        strokeLinejoin="round"
+        strokeDasharray="15.83 17.5"
       />
     </svg>
   );
