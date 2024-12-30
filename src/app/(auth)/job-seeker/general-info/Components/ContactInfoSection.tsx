@@ -33,12 +33,7 @@ const ContactInfoSection: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.8)" }}
-          >
-            Contact Info
-          </Typography>
+          <h5 className="mb-2 text-xl font-bold text-main">Contact Info</h5>
           <Box sx={{ display: "flex", gap: 2 }}>
             <IconButton
               size="small"
@@ -46,7 +41,6 @@ const ContactInfoSection: React.FC = () => {
                 border: 1,
                 borderColor: "grey.300",
                 borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
               }}
               onClick={handleEditProfileClick}
             >
@@ -71,7 +65,7 @@ const ContactInfoSection: React.FC = () => {
               color: "#7C8493",
             }}
           >
-            <EmailIcon sx={{ color: "#2EAE7D" }} />
+            <EmailIcon color="primary" />
             <Typography
               variant="body1"
               sx={{ fontWeight: "500", color: "#000" }}
@@ -93,7 +87,7 @@ const ContactInfoSection: React.FC = () => {
               color: "#7C8493",
             }}
           >
-            <PhoneIphoneIcon sx={{ color: "#2EAE7D" }} />
+            <PhoneIphoneIcon color="primary" />
             <Typography sx={{ fontWeight: "500", color: "#000" }}>
               Phone :
             </Typography>

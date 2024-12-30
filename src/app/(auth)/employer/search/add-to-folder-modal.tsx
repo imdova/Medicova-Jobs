@@ -64,7 +64,7 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
             alignItems: "center",
           }}
         >
-          <h2 className="text-2xl font-bold">Select Folder</h2>
+          <h6 className="text-2xl font-bold">Select Folder</h6>
           <IconButton onClick={onClose}>
             <Close />
           </IconButton>

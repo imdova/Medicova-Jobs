@@ -63,17 +63,7 @@ const Resume: React.FC = () => {
       >
         {/* Title */}
         <Box>
-          <Typography
-            variant="h3"
-            sx={{
-              marginBottom: 2,
-              textAlign: "left",
-              fontWeight: "700",
-              color: "#03353C",
-            }}
-          >
-            Resume
-          </Typography>
+          <h5 className="mb-2 text-xl font-bold text-main">Resume</h5>
         </Box>
 
         {/* Alert */}
@@ -134,7 +124,6 @@ const Resume: React.FC = () => {
             sx={{
               textTransform: "none",
               fontWeight: "500",
-              color: "#03353C",
               borderColor: "#03353C",
               flex: 1,
             }}
@@ -150,12 +139,7 @@ const Resume: React.FC = () => {
             sx={{
               textTransform: "none",
               fontWeight: "500",
-              backgroundColor: "#185D43",
-              color: "#fff",
               flex: 1,
-              "&:hover": {
-                backgroundColor: "#154C37",
-              },
             }}
           >
             Upload CV

@@ -27,7 +27,7 @@ const languageData = [
 const LanguageSection: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  
+
   const [languageFields, setLanguageFields] = useState<JSX.Element[]>([
     <Box
       key={0}
@@ -108,7 +108,10 @@ const LanguageSection: React.FC = () => {
       </Box>
 
       {/* Delete Icon */}
-      <IconButton sx={{ justifySelf: "center" }} onClick={() => handleDeleteField(0)}>
+      <IconButton
+        sx={{ justifySelf: "center" }}
+        onClick={() => handleDeleteField(0)}
+      >
         <DeleteIcon sx={{ color: "#FF3B30" }} />
       </IconButton>
     </Box>,
@@ -202,7 +205,10 @@ const LanguageSection: React.FC = () => {
           </Select>
         </Box>
 
-        <IconButton sx={{ justifySelf: "center" }} onClick={() => handleDeleteField(prevFields.length)}>
+        <IconButton
+          sx={{ justifySelf: "center" }}
+          onClick={() => handleDeleteField(prevFields.length)}
+        >
           <DeleteIcon sx={{ color: "#FF3B30" }} />
         </IconButton>
       </Box>,
@@ -223,12 +229,8 @@ const LanguageSection: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.8)" }}
-          >
-            Languages
-          </Typography>
+          <h5 className="mb-2 text-xl font-bold text-main">Languages</h5>
+
           <Box sx={{ display: "flex" }}>
             <IconButton
               size="small"
@@ -236,7 +238,6 @@ const LanguageSection: React.FC = () => {
                 border: 1,
                 borderColor: "grey.300",
                 borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
               }}
               onClick={() => handleOpenModal("Select Your Languages")}
             >

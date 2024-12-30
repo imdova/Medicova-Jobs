@@ -19,6 +19,7 @@ import Image from "next/image";
 import { HamburgerIcon } from "@/components/icons/icons";
 import ItemSelector from "@/components/UI/menu-item";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
+import LogoIcon from "@/components/icons/logo";
 
 const links = [
   {
@@ -86,24 +87,19 @@ const Header = () => {
             </Box>
           </Drawer>
           {/* Logo */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: { xs: "100%", sm: "auto" },
-            }}
-          >
-            <Image
-              src={logo}
-              alt="Company Logo"
-              style={{
-                height: "100px",
-                width: "150px",
-                marginRight: "8px",
-              }}
-            />
-          </Box>
+          <div className="flex h-[100px] items-center justify-center">
+            <Link href="/" className="my-2 flex items-center text-primary">
+              <LogoIcon className="h-[50px] w-[40px]" />
+              <div className="flex h-fit flex-col text-center">
+                <h1 className="font-baiJamJuree text-[16px] font-bold leading-none">
+                  MEDICOVA
+                </h1>
+                <p className="font-baiJamJuree text-[8px] font-medium">
+                  MEDICAL COMMUNITY
+                </p>
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop Menu */}
           <Box

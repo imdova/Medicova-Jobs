@@ -103,17 +103,10 @@ const ProfileForm: React.FC = () => {
     <Grid item xs={12}>
       <Card>
         <CardContent>
-          <Typography
-            sx={{
-              marginBottom: 2,
-              color: "#000",
-              fontWeight: "600",
-              fontSize: { xs: "14px", md: "14px" },
-            }}
-          >
+          <p className="mb-2 font-semibold text-main">
             Specify your job preference setting accurately to help reach the
             right opportunity
-          </Typography>
+          </p>
           <form onSubmit={handleSubmit} noValidate>
             {/* personal info */}
             <Box
@@ -139,18 +132,18 @@ const ProfileForm: React.FC = () => {
                       flex: 1,
                       borderColor:
                         selectedButton === label
-                          ? "rgba(46, 174, 125, 1)" // Active button border color
-                          : "rgba(214, 221, 235, 1)", // Inactive button border color
+                          ? "var(--primary)" // Active button border color
+                          : "var(--text-secondary)", // Inactive button border color
                       backgroundColor:
                         selectedButton === label
-                          ? "#fff" // Active button border color
-                          : "rgba(214, 221, 235, 0.18)", // Inactive button border color
+                          ? "var(--primary)" // Active button text color
+                          : "rgba(214, 221, 235, 0.18)", // Inactive button text color
                       color:
                         selectedButton === label
-                          ? "rgba(46, 174, 125, 1)" // Active button text color
+                          ? "var(--primary-foreground)" // Active button text color
                           : "inherit", // Default text color
                       "&:hover": {
-                        borderColor: "rgba(46, 174, 125, 1)", // Maintain hover border color
+                        borderColor: "var(--primary)", // Maintain hover border color
                       },
                     }}
                   >
@@ -434,10 +427,11 @@ const ProfileForm: React.FC = () => {
                   fontWeight: 600,
                   color: "#000",
                   fontSize: "14px",
-                  maxWidth:"50%"
+                  maxWidth: "50%",
                 }}
               >
-                Would you be willing to relocate to another city or country if you find the right opportunity?
+                Would you be willing to relocate to another city or country if
+                you find the right opportunity?
               </Typography>
 
               <FormControl component="fieldset" fullWidth>
@@ -476,7 +470,7 @@ const ProfileForm: React.FC = () => {
               </FormControl>
             </Box>
             {/* Nationality  */}
-            
+
             {/* Centered Save Button */}
             <Box
               sx={{

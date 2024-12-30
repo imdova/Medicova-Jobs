@@ -179,12 +179,9 @@ const BrowseCompaniesPage = () => {
         <Button
           variant="contained"
           sx={{
-            bgcolor: "green",
-            color: "white",
             textTransform: "none",
             fontWeight: "bold",
             px: 4,
-            borderRadius: "8px",
             width: { xs: "100%", md: "50%" },
           }}
         >
@@ -192,16 +189,14 @@ const BrowseCompaniesPage = () => {
         </Button>
       </Box>
 
-      <Typography variant="body1" sx={{ mb: 2, color: "#515B6F" }}>
+      <p className="mb-3 text-secondary">
         Popular : Twitter, Microsoft, Apple, Facebook
-      </Typography>
+      </p>
 
       {/* Results Header */}
       <Box>
         {/* Title Section */}
-        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
-          All Companies
-        </Typography>
+        <h4 className="mb-1 text-[30px] font-bold text-main">All Companies</h4>
 
         {/* Showing Results and Sort Options */}
         <Box
@@ -212,13 +207,15 @@ const BrowseCompaniesPage = () => {
             mb: 2,
           }}
         >
-          <Typography variant="body1" sx={{ color: "text.secondary" }}>
+          <p className="text-secondary">
             Showing {companiesData.length} results
-          </Typography>
-
+          </p>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="body2" sx={{ mr: 1 }}>
+              <Typography
+                variant="body2"
+                sx={{ mr: 1, color: "var(--text-main)" }}
+              >
                 Sort by:
               </Typography>
               <Select size="small" defaultValue="most" sx={{ minWidth: 120 }}>
@@ -238,7 +235,7 @@ const BrowseCompaniesPage = () => {
               sx={{
                 display: "flex", // Enable flexbox to make sure all cards have the same height
                 flexDirection: "column", // Ensure content is stacked vertically
-                border: "1px solid #4CAF50",
+                border: "1px solid var(--primary)",
                 borderRadius: "8px",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 height: "100%", // Make card fill available space
@@ -257,7 +254,7 @@ const BrowseCompaniesPage = () => {
                   <Avatar
                     variant="square"
                     sx={{
-                      bgcolor: "primary.main",
+                      bgcolor: "var(--primary)",
                       color: "white",
                       width: 80,
                       height: 80,
@@ -267,17 +264,23 @@ const BrowseCompaniesPage = () => {
                     {company.logo}
                   </Avatar>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", color: "var(--text-main)" }}
+                    >
                       {company.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "var(--text-secondary)" }}
+                    >
                       {company.employees}
                     </Typography>
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "#4CAF50",
-                        backgroundColor: "#E8F5E9",
+                        color: "var(--primary)",
+                        backgroundColor: "var(--primary-100)",
                         padding: "4px",
                         maxWidth: "fit-content",
                       }}
@@ -297,14 +300,24 @@ const BrowseCompaniesPage = () => {
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <LocationOnIcon sx={{ color: "#000", fontSize: 16 }} />
-                    <Typography variant="body2" color="#000">
+                    <LocationOnIcon
+                      sx={{ color: "var(--text-secondary)", fontSize: 16 }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "var(--text-secondary)" }}
+                    >
                       {company.location}
                     </Typography>
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <MedicalServicesIcon sx={{ color: "#000", fontSize: 16 }} />
-                    <Typography variant="body2" color="#000">
+                    <MedicalServicesIcon
+                      sx={{ color: "var(--text-secondary)", fontSize: 16 }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "var(--text-secondary)" }}
+                    >
                       {company.type}
                     </Typography>
                   </Box>
@@ -312,7 +325,10 @@ const BrowseCompaniesPage = () => {
 
                 {/* Description */}
                 <Box sx={{ maxWidth: "fit-content", my: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "var(--text-secondary)" }}
+                  >
                     {company.description}
                   </Typography>
                 </Box>
@@ -323,7 +339,7 @@ const BrowseCompaniesPage = () => {
                     href={`/job-seeker/browse-companies/${company.id}`}
                     style={{
                       fontWeight: "bold",
-                      color: "#2BA149",
+                      color: "var(--primary)",
                       textDecoration: "underline",
                     }}
                   >

@@ -270,23 +270,14 @@ const EducationsSection: React.FC = () => {
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Typography
-          variant="h3"
-          sx={{
-            marginBottom: 1,
-            fontWeight: "700",
-            color: "#03353C",
-          }}
-        >
-          Educations
-        </Typography>
+        <h3 className="mb-2 text-2xl font-bold text-main">Educations</h3>
+
         {/* Add Button positioned at the top right */}
         <IconButton
           sx={{
             position: "absolute",
             top: 8,
             right: 8,
-            color: "#00A884",
             border: "1px solid #D6DDEB",
             borderRadius: "4px",
             padding: "6px",
@@ -495,7 +486,6 @@ const EducationsSection: React.FC = () => {
           <Button
             variant="outlined"
             sx={{
-              color: "#00A884",
               border: "1px solid #D6DDEB",
             }}
             onClick={handleToggle}

@@ -45,7 +45,7 @@ const theme = createTheme({
           textTransform: "none",
           borderRadius: "0",
           "&:hover": {
-            background: "var(--light-primary)",
+            background: "var(--primary-900)",
           },
           "&:disabled": {
             opacity: 0.6,

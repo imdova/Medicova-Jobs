@@ -28,40 +28,36 @@ const AboutSeeker: React.FC = () => {
 
   const getAboutFields = (): JSX.Element[] => [
     <Box key="aboutInfo">
-      <Typography sx={{ fontSize: "14px", color: "#7C8493", marginBottom: 2 }}>
+      <p className="mb-2 text-secondary">
         Highlight your skills, experience, and commitment. Let potential
         employers know why you are the right fit to make a difference in their
         team!
-      </Typography>
+      </p>
     </Box>,
 
     <Box key="description">
       <TextField
         placeholder="E.g., 'Hi, I’m ....., a dedicated in ....... with ...... years of experience in ....."
         fullWidth
+        multiline
+        minRows={3}
+        maxRows={4}
         sx={{
           backgroundColor: "rgba(214, 221, 235, 0.18)",
           "& .MuiOutlinedInput-root": {
-            height: "70px",
             fontSize: "14px",
+            maxHeight: "120px",
+            overflow: "auto",
           },
         }}
       />
     </Box>,
 
     <Box key="note">
-      <Typography
-        sx={{
-          fontSize: "14px",
-          backgroundColor: "#ECF7F3",
-          padding: "8px",
-          marginTop: "8px",
-          borderRadius: "4px",
-        }}
-      >
-        <strong>Note:</strong> Please avoid sharing any contact information or external links in
-        this section.
-      </Typography>
+      <p className="mt-2 rounded bg-primary-100 p-2 text-main">
+        <strong>Note:</strong> Please avoid sharing any contact information or
+        external links in this section.
+      </p>
     </Box>,
   ];
   return (
@@ -79,7 +75,6 @@ const AboutSeeker: React.FC = () => {
             position: "absolute",
             top: 8,
             right: 8,
-            color: "#00A884",
             border: "1px solid #D6DDEB",
             borderRadius: "4px",
             padding: "6px",
@@ -99,24 +94,8 @@ const AboutSeeker: React.FC = () => {
 
         {/* Title and Description */}
         <Box>
-          <Typography
-            variant="h3"
-            sx={{
-              marginBottom: 2,
-              textAlign: "left",
-              fontWeight: "700",
-              color: "#03353C",
-            }}
-          >
-            About Me
-          </Typography>
-          <Typography
-            sx={{
-              fontWeight: "400",
-              color: "#185D43",
-              maxWidth: "90%",
-            }}
-          >
+          <h3 className="mb-2 text-2xl font-bold text-main">About Me</h3>
+          <p className="max-w-[90%] text-secondary">
             I’m a Medical Ambassador + I am dedicated to transforming healthcare
             access and education in underserved communities. My passion for
             promoting health equity drives me to bridge the gap between medical
@@ -125,7 +104,7 @@ const AboutSeeker: React.FC = () => {
             knowledge and resources they require for better health outcomes.
             Together, we can build a future where quality healthcare is a right,
             not a privilege.
-          </Typography>
+          </p>
         </Box>
       </Card>
     </Grid>
