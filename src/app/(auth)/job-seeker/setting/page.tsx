@@ -39,32 +39,19 @@ const SettingsPage = () => {
         sx={{
           mb: 4,
           borderBottom: "1px solid #ddd",
-          "& .MuiTabs-indicator": {
-            backgroundColor: "rgba(24, 93, 67, 1)",
-            height: "4px",
-            borderRadius: "5px",
-          },
         }}
       >
         <Tab
           sx={{
-            color: "rgba(124, 132, 147, 1)", // Inactive tab text color
             fontWeight: "600",
             fontSize: "14px",
-            "&.Mui-selected": {
-              color: "rgba(37, 50, 75, 1)", // Active tab text color
-            },
           }}
           label="Login Details"
         />
         <Tab
           sx={{
-            color: "rgba(124, 132, 147, 1)", // Inactive tab text color
             fontWeight: "600",
             fontSize: "14px",
-            "&.Mui-selected": {
-              color: "rgba(37, 50, 75, 1)", // Active tab text color
-            },
           }}
           label="Notifications"
         />
@@ -75,12 +62,12 @@ const SettingsPage = () => {
           {/* Update Email Section */}
           <Card sx={{ mb: 4 }}>
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
+              <h6 className="mb-1 text-xl font-bold text-main">
                 Basic Information
-              </Typography>
-              <Typography sx={{ color: "rgba(81, 91, 111, 1)" }}>
+              </h6>
+              <p className="text-secondary">
                 This is login information that you can update anytime.
-              </Typography>
+              </p>
             </CardContent>
             <Divider sx={{ my: 2, width: "90%", mx: "auto" }} />{" "}
             {/* Centered Divider */}
@@ -96,19 +83,12 @@ const SettingsPage = () => {
               >
                 {/* Left Section */}
                 <Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="mb-1 text-xl font-bold text-main">
                     Update Email
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(81, 91, 111, 1)" }}>
+                  </h6>
+                  <p className="text-secondary">
                     Update your email address to make sure it is safe
-                  </Typography>
+                  </p>
                 </Box>
 
                 {/* Right Section */}
@@ -120,19 +100,12 @@ const SettingsPage = () => {
                     minWidth: "250px",
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="mb-1 text-xl font-bold text-main">
                     jakegyll@email.com
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(124, 132, 147, 1)" }}>
+                  </h6>
+                  <p className="mb-2 text-secondary">
                     Your email address is verified.
-                  </Typography>
+                  </p>
                   <InputLabel
                     sx={{
                       marginBottom: 1,
@@ -157,12 +130,11 @@ const SettingsPage = () => {
                     placeholder="Enter your new email"
                   />
                   <Button
+                    variant="contained"
                     sx={{
                       width: "155px",
                       marginTop: 2,
                       height: "46px",
-                      background: "linear-gradient(180deg, #2EAE7D, #134834)",
-                      color: "#fff",
                       textTransform: "capitalize",
                       fontWeight: "600",
                     }}
@@ -188,19 +160,12 @@ const SettingsPage = () => {
               >
                 {/* Left Section */}
                 <Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 1,
-                      fontWeight: "bold",
-                      color: "rgba(37, 50, 75, 1)",
-                    }}
-                  >
+                  <h6 className="mb-1 text-xl font-bold text-main">
                     New Password
-                  </Typography>
-                  <Typography sx={{ mb: 2, color: "rgba(81, 91, 111, 1)" }}>
+                  </h6>
+                  <p className="text-secondary">
                     Manage your password to make sure it is safe
-                  </Typography>
+                  </p>
                 </Box>
 
                 {/* Right Section */}
@@ -261,12 +226,11 @@ const SettingsPage = () => {
                     placeholder="Enter your new password"
                   />
                   <Button
+                    variant="contained"
                     sx={{
                       width: "155px",
                       marginTop: 2,
                       height: "46px",
-                      background: "linear-gradient(180deg, #2EAE7D, #134834)",
-                      color: "#fff",
                       textTransform: "capitalize",
                       fontWeight: "600",
                     }}
@@ -294,20 +258,19 @@ const SettingsPage = () => {
               }}
             >
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                <h6 className="mb-1 text-xl font-bold text-main">
                   Basic Information
-                </Typography>
-                <Typography sx={{ mt: 1, color: "rgba(81, 91, 111, 1)" }}>
+                </h6>
+                <p className="text-secondary">
                   This is User page that you can update anytime and Add New
                   user.
-                </Typography>
+                </p>
               </Box>
               <Button
+                variant="contained"
                 sx={{
                   width: "155px",
                   height: "46px",
-                  background: "linear-gradient(180deg, #2EAE7D, #134834)",
-                  color: "#fff",
                   textTransform: "capitalize",
                   fontWeight: "600",
                 }}
@@ -316,7 +279,6 @@ const SettingsPage = () => {
               </Button>
             </Box>
           </Box>
-
         </Box>
       )}
       {/* Close Account */}

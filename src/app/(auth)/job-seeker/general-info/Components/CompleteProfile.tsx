@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  Typography,
-  Grid,
-  Card,
-  Box,
-  CircularProgress,
-} from "@mui/material";
+import { Typography, Grid, Card, Box, CircularProgress } from "@mui/material";
 
 const CompleteProfile: React.FC = () => {
   const value = 80;
 
   // Function to determine color based on value
   const getProgressColor = (progress: number): string => {
-    if (progress >= 80) return "#2EAE7D";
+    if (progress >= 80) return "var(--primary)";
     if (progress >= 50) return "#ff6600";
     return "#ff0000";
   };
@@ -33,27 +27,12 @@ const CompleteProfile: React.FC = () => {
       >
         {/* Title and Description */}
         <Box>
-          <Typography
-            variant="h3"
-            sx={{
-              marginBottom: 1,
-              textAlign: "left",
-              fontWeight: "700",
-              color: "#2EAE7D",
-            }}
-          >
+          <h3 className="mb-2 text-2xl font-bold text-primary">
             Complete Your Profile!
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              textAlign: "left",
-              color: "#515B6F",
-              maxWidth: "250px",
-            }}
-          >
+          </h3>
+          <p className="max-w-60 text-secondary">
             You are almost there—lets finish setting things up!
-          </Typography>
+          </p>
         </Box>
         {/* Circular Progress with Value */}
         <Box

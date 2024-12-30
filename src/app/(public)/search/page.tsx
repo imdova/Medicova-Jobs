@@ -5,7 +5,8 @@ import CustomPagination from "@/components/UI/CustomPagination";
 import JobFilter from "./filter";
 import { FormControl, IconButton, MenuItem, Select } from "@mui/material";
 import { GridViewOutlined, List } from "@mui/icons-material";
-import JobCard from "./job-card";
+import MinJobCard from "@/components/UI/job-card-min";
+import JobCard from "@/components/UI/job-card";
 
 const SearchPage: React.FC = ({
   searchParams,
@@ -15,6 +16,7 @@ const SearchPage: React.FC = ({
   const { q: query } = searchParams as {
     [key: string]: string;
   };
+  const [view, setView] = useState<"grid" | "list">("list");
   const [savedList, setSavedList] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<{
     [K in keyof typeof searchJopFilters]: (typeof searchJopFilters)[K][number]["value"][];
@@ -42,15 +44,15 @@ const SearchPage: React.FC = ({
       <div className="w-full px-2 md:px-6 md:pl-9 lg:w-[80%]">
         <div className="mb-9 flex flex-wrap-reverse items-center justify-between md:flex-nowrap">
           <div>
-            <h3 className="text-main text-[24px] font-bold">Search Results</h3>
-            <p className="text-secondary text-sm">Showing 2500 Results</p>
+            <h3 className="text-[24px] font-bold text-main">Search Results</h3>
+            <p className="text-sm text-secondary">Showing 2500 Results</p>
           </div>
           <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-normal">
             <div className="flex items-baseline gap-1">
-              <label className="text-secondary mb-1">Sort by:</label>
+              <label className="mb-1 text-secondary">Sort by:</label>
               <FormControl variant="standard" className="w-32">
                 <Select
-                  className="text-main border-none bg-transparent focus:outline-none"
+                  className="border-none bg-transparent text-main focus:outline-none"
                   disableUnderline
                   defaultValue="most-relevant"
                 >
@@ -61,26 +63,45 @@ const SearchPage: React.FC = ({
               </FormControl>
             </div>
             <div className="flex gap-2 border-l px-2">
-              <IconButton className="bg-light-primary text-primary-foreground border-none">
+              <IconButton
+                onClick={() => setView("grid")}
+                className={`${view === "grid" ? "bg-light-primary text-primary-foreground" : "text-secondary"} border-none focus:text-primary focus:outline-primary`}
+              >
                 <GridViewOutlined />
               </IconButton>
-              <IconButton className="bg-light-primary text-primary-foreground border-none">
+              <IconButton
+                onClick={() => setView("list")}
+                className={`${view === "list" ? "bg-light-primary text-primary-foreground" : "text-secondary"} border-none focus:text-primary focus:outline-primary`}
+              >
                 <List />
               </IconButton>
             </div>
           </div>
         </div>
         {/* Applicant Cards */}
-        <div className="mb-8 flex flex-col gap-4">
-          {jobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              savedList={savedList}
-              setSavedList={setSavedList}
-            />
-          ))}
-        </div>
+
+        {view === "list" ? (
+          <div className="mb-8 flex flex-col gap-4">
+            {jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                savedList={savedList}
+                setSavedList={setSavedList}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+            {jobs.map((job) => (
+              <MinJobCard
+                key={job.id}
+                job={job}
+                className="flex-wrap justify-center md:flex-nowrap"
+              />
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         <CustomPagination

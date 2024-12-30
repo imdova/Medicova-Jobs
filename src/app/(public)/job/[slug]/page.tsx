@@ -1,5 +1,4 @@
 import { jobs } from "@/constants";
-import JobCard from "../../search/job-card";
 import VerticalTabs from "./vertical-tabs";
 import { notFound } from "next/navigation";
 import { ArrowForward, CheckCircleOutline } from "@mui/icons-material";
@@ -7,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import JobOverview from "@/components/UI/JobOverview";
 import MinJobCard from "@/components/UI/job-card-min";
+import JobCard from "@/components/UI/job-card";
 
 const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
   const job = jobs.find((job) => job.id === slug);

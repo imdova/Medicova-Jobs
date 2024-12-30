@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         primary: "var(--primary)",
         "primary-100": "var(--primary-100)",
+        "primary-900": "var(--primary-900)",
         "primary-foreground": "var(--primary-foreground)",
         "primary-transparent": "var(--primary-transparent)",
         "light-primary": "var(--light-primary)",

@@ -168,12 +168,8 @@ const SocialMediaSection: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 600, color: "rgba(0, 0, 0, 0.8)" }}
-          >
-            Social Links
-          </Typography>
+          <h5 className="mb-2 text-xl font-bold text-main">Social Links</h5>
+
           <Box sx={{ display: "flex" }}>
             <IconButton
               size="small"
@@ -181,7 +177,6 @@ const SocialMediaSection: React.FC = () => {
                 border: 1,
                 borderColor: "grey.300",
                 borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
               }}
               onClick={() =>
                 handleOpenModal("Add Social Media", getSocialMediaFields)
@@ -212,12 +207,11 @@ const SocialMediaSection: React.FC = () => {
               display: "flex",
               alignItems: "center",
               gap: 3,
-              color: "#2EAE7D",
             }}
           >
-            <InstagramIcon />
-            <TwitterIcon />
-            <LanguageIcon />
+            <InstagramIcon color="primary" />
+            <TwitterIcon color="primary" />
+            <LanguageIcon color="primary" />
           </Box>
         </Box>
       </Card>

@@ -20,7 +20,8 @@ const SkillsSection: React.FC = () => {
   ]);
   const [newKeyword, setNewKeyword] = useState<string>("");
 
-  const handleAddKeyword = () => {
+  const handleAddKeyword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (newKeyword.trim() && keywords.length < 12) {
       setKeywords((prevKeywords) => [...prevKeywords, newKeyword]);
       setNewKeyword(""); // Reset the input field after adding
@@ -42,63 +43,58 @@ const SkillsSection: React.FC = () => {
       >
         {/* Title and Description */}
         <Box>
-          <Typography
-            variant="h3"
-            sx={{
-              marginBottom: 2,
-              textAlign: "left",
-              fontWeight: "700",
-              color: "#03353C",
-            }}
-          >
-            Skills
-          </Typography>
+          <h3 className="mb-2 text-2xl font-bold text-main">Skills</h3>
 
           {/* TextField and Add Skill Button in the same row */}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              alignItems: "center",
-              marginBottom: 2,
-            }}
-          >
-            {/* TextField for adding new keyword */}
-            <TextField
-              value={newKeyword}
-              onChange={(e) => setNewKeyword(e.target.value)}
-              variant="outlined"
-              placeholder={keywords.length >= 12 ? "Maximum Entry 12 skills" : "Enter Skills"}
-              disabled={keywords.length >= 12} // Disable if 12 keywords are reached
+          <form onSubmit={handleAddKeyword}>
+            <Box
               sx={{
-                width: "250px",
-                height: "40px",
-                border: "none",
-                backgroundColor: "#F8F8FD",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    border: "none",
-                  },
-                  "& input": {
-                    padding: "10px 10px", // Vertically center the text inside
-                  },
-                },
+                display: "flex",
+                gap: 2,
+                alignItems: "center",
+                marginBottom: 2,
               }}
-            />
-            {/* Add IconButton */}
-            <IconButton
-              sx={{
-                color: "#185D43",
-                border: "1px solid #D6DDEB",
-                borderRadius: "4px",
-                padding: "6px",
-              }}
-              onClick={handleAddKeyword}
-              disabled={keywords.length >= 12} // Disable if 12 keywords are reached
             >
-              <AddIcon />
-            </IconButton>
-          </Box>
+              {/* TextField for adding new keyword */}
+              <TextField
+                value={newKeyword}
+                onChange={(e) => setNewKeyword(e.target.value)}
+                variant="outlined"
+                placeholder={
+                  keywords.length >= 12
+                    ? "Maximum Entry 12 skills"
+                    : "Enter Skills"
+                }
+                disabled={keywords.length >= 12} // Disable if 12 keywords are reached
+                sx={{
+                  width: "250px",
+                  height: "40px",
+                  border: "none",
+                  backgroundColor: "#F8F8FD",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "& input": {
+                      padding: "10px 10px", // Vertically center the text inside
+                    },
+                  },
+                }}
+              />
+              {/* Add IconButton */}
+              <IconButton
+                sx={{
+                  border: "1px solid #D6DDEB",
+                  borderRadius: "4px",
+                  padding: "6px",
+                }}
+                type="submit"
+                disabled={keywords.length >= 12} // Disable if 12 keywords are reached
+              >
+                <AddIcon />
+              </IconButton>
+            </Box>
+          </form>
 
           {/* Display Keywords */}
           <Box

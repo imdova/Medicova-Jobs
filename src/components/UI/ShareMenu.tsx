@@ -33,14 +33,14 @@ const ShareMenu: React.FC<
   const shareUrls = {
     whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(link)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-      link
+      link,
     )}`,
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      link
+      link,
     )}`,
     instagram: `https://www.instagram.com/share?url=${encodeURIComponent(
-      link
+      link,
     )}`,
   };
 
@@ -56,7 +56,6 @@ const ShareMenu: React.FC<
         aria-controls={open ? "share-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        color="primary"
         {...props}
       >
         <ShareIcon />

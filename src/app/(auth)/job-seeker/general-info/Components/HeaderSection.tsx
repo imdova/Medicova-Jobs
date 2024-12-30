@@ -149,8 +149,8 @@ const HeaderSection: React.FC = () => {
                 >
                   Jake Gyll
                   <CheckCircleIcon
+                    color="primary"
                     sx={{
-                      color: "#00A884",
                       fontSize: { xs: 20, sm: 24 },
                       marginLeft: "8px", // Adds space between the text and the icon
                     }}
@@ -189,14 +189,16 @@ const HeaderSection: React.FC = () => {
                   variant="text"
                   sx={{
                     fontWeight: "600",
-                    color: "#00A884",
                     textTransform: "uppercase",
-                    backgroundColor: "#56CDAD1A",
+                    backgroundColor: "var(--primary-100)",
                     gap: 1,
                     fontSize: { xs: "0.9rem", sm: "1rem" },
                   }}
                 >
-                  <FlagIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
+                  <FlagIcon
+                    color="primary"
+                    sx={{ fontSize: { xs: 18, sm: 20 } }}
+                  />
                   Open For Opportunities
                 </Button>
               </Box>
@@ -215,21 +217,12 @@ const HeaderSection: React.FC = () => {
                 }}
               >
                 {/* Edit Button */}
-                <IconButton
-                  sx={{
-                    color: "#00795c",
-                  }}
-                  onClick={handleEditProfileClick}
-                >
+                <IconButton onClick={handleEditProfileClick}>
                   <EditIcon />
                 </IconButton>
 
                 {/* Share Button */}
-                <IconButton
-                  sx={{
-                    color: "#00795c",
-                  }}
-                >
+                <IconButton>
                   <ShareIcon />
                 </IconButton>
               </Box>

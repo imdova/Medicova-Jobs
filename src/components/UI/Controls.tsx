@@ -38,7 +38,7 @@ const Controls: React.FC = () => {
   );
 };
 
-const DropdownMenu = () => {
+export const DropdownMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -54,13 +54,12 @@ const DropdownMenu = () => {
     <React.Fragment>
       <IconButton
         size="medium"
-        className="text-primary"
         onClick={handleClick}
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       >
-        <MoreVertIcon />
+        <MoreVertIcon className="h-7 w-7" />
       </IconButton>
       <Menu
         anchorEl={anchorEl}

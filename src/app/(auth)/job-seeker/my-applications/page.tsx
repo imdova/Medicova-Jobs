@@ -1,10 +1,26 @@
 "use client";
 import React, { useState } from "react";
 import {
-  Box, Typography, IconButton, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Chip, Avatar, Paper,
-  Button, Menu, MenuItem, InputAdornment, TextField, Tabs,
-  Tab, ListItemIcon
+  Box,
+  Typography,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  Avatar,
+  Paper,
+  Button,
+  Menu,
+  MenuItem,
+  InputAdornment,
+  TextField,
+  Tabs,
+  Tab,
+  ListItemIcon,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -23,7 +39,13 @@ interface Application {
   companyLogo: string;
   role: string;
   dateApplied: string;
-  status: "Review" | "Viewed" | "Shortlisted" | "Interviewed" | "Accepted" | "Rejected";
+  status:
+    | "Review"
+    | "Viewed"
+    | "Shortlisted"
+    | "Interviewed"
+    | "Accepted"
+    | "Rejected";
 }
 
 interface TabOption {
@@ -38,7 +60,7 @@ const STATUS_COLORS = {
   Shortlisted: { text: "#6554C0", bg: "#EAE6FF" },
   Interviewed: { text: "#9747FF", bg: "#F3E8FF" },
   Accepted: { text: "#36B37E", bg: "#E3FCEF" },
-  Rejected: { text: "#FF5630", bg: "#FFE9E5" }
+  Rejected: { text: "#FF5630", bg: "#FFE9E5" },
 };
 
 const applications: Application[] = [
@@ -48,7 +70,7 @@ const applications: Application[] = [
     companyLogo: "N",
     role: "Medical Assistant",
     dateApplied: "24 July 2021",
-    status: "Review"
+    status: "Review",
   },
   {
     id: 2,
@@ -56,7 +78,7 @@ const applications: Application[] = [
     companyLogo: "U",
     role: "Medical Assistant",
     dateApplied: "20 July 2021",
-    status: "Viewed"
+    status: "Viewed",
   },
   {
     id: 3,
@@ -64,7 +86,7 @@ const applications: Application[] = [
     companyLogo: "P",
     role: "Medical Assistant",
     dateApplied: "16 July 2021",
-    status: "Shortlisted"
+    status: "Shortlisted",
   },
   {
     id: 4,
@@ -72,7 +94,7 @@ const applications: Application[] = [
     companyLogo: "D",
     role: "Medical Assistant",
     dateApplied: "14 July 2021",
-    status: "Interviewed"
+    status: "Interviewed",
   },
   {
     id: 5,
@@ -80,7 +102,7 @@ const applications: Application[] = [
     companyLogo: "D",
     role: "Medical Assistant",
     dateApplied: "10 July 2021",
-    status: "Accepted"
+    status: "Accepted",
   },
   {
     id: 6,
@@ -88,8 +110,8 @@ const applications: Application[] = [
     companyLogo: "D",
     role: "Medical Assistant",
     dateApplied: "10 July 2021",
-    status: "Rejected"
-  }
+    status: "Rejected",
+  },
 ];
 
 const tabOptions: TabOption[] = [
@@ -99,24 +121,29 @@ const tabOptions: TabOption[] = [
   { label: "Shortlisted", count: 5, value: "shortlisted" },
   { label: "Interviewed", count: 2, value: "interviewed" },
   { label: "Accepted", count: 1, value: "accepted" },
-  { label: "Rejected", count: 1, value: "rejected" }
+  { label: "Rejected", count: 1, value: "rejected" },
 ];
 
 const MyApplicationsPage = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
+    null,
+  );
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([null, null]);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
+    null,
+    null,
+  ]);
 
   const filteredApplications = applications.filter(
-    app => selectedTab === "all" || app.status.toLowerCase() === selectedTab
+    (app) => selectedTab === "all" || app.status.toLowerCase() === selectedTab,
   );
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentPageApplications = filteredApplications.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
@@ -124,32 +151,34 @@ const MyApplicationsPage = () => {
   };
 
   const handleDateChange = (newValue: Dayjs | null) => {
-    setDateRange(prev => !prev[0] ? [newValue, null] : [prev[0], newValue]);
+    setDateRange((prev) => (!prev[0] ? [newValue, null] : [prev[0], newValue]));
   };
 
   const HeaderSection = () => (
     <Box sx={{ mb: 4, p: 1 }}>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+      <h5 className="mb-2 text-2xl font-semibold text-main">
         Keep it up, Jake
-      </Typography>
-      <Box sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 2
-      }}>
+      </h5>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <CalendarTodayIcon sx={{ fontSize: 14, color: "text.secondary" }} />
-          <Typography variant="body2" color="text.secondary">
-            Here is job applications status from
-          </Typography>
+          <p className="text-secondary">Here is job applications status from</p>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker value={dateRange[0]} onChange={handleDateChange} />
             {dateRange[0] && dateRange[1] && (
               <Typography variant="body2" color="text.secondary">
-                {dateRange[0]?.format("MMM D, YYYY")} - {dateRange[1]?.format("MMM D, YYYY")}
+                {dateRange[0]?.format("MMM D, YYYY")} -{" "}
+                {dateRange[1]?.format("MMM D, YYYY")}
               </Typography>
             )}
           </LocalizationProvider>
@@ -158,11 +187,13 @@ const MyApplicationsPage = () => {
     </Box>
   );
 
+
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <HeaderSection />
-      
+
       <Box sx={{ my: 2, backgroundColor: "#F9F9F9", p: 3, borderRadius: 2 }}>
+
         <Box sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -211,17 +242,17 @@ const MyApplicationsPage = () => {
               "& .MuiTab-root": {
                 minHeight: "48px",
                 textTransform: "none",
-                fontSize: "14px"
-              }
+                fontSize: "14px",
+              },
             }}
           >
-            {tabOptions.map(tab => (
+            {tabOptions.map((tab) => (
               <Tab
                 key={tab.value}
                 label={
                   <Box sx={{ display: "flex", gap: 0.5 }}>
                     <span>{tab.label}</span>
-                    <span style={{ color: "#666" }}>({tab.count})</span>
+                    <span>({tab.count})</span>
                   </Box>
                 }
                 value={tab.value}
@@ -315,10 +346,18 @@ const MyApplicationsPage = () => {
         open={Boolean(filterAnchorEl)}
         onClose={() => setFilterAnchorEl(null)}
       >
-        <MenuItem onClick={() => setFilterAnchorEl(null)}>Date: Newest First</MenuItem>
-        <MenuItem onClick={() => setFilterAnchorEl(null)}>Date: Oldest First</MenuItem>
-        <MenuItem onClick={() => setFilterAnchorEl(null)}>Status: Active</MenuItem>
-        <MenuItem onClick={() => setFilterAnchorEl(null)}>Status: Closed</MenuItem>
+        <MenuItem onClick={() => setFilterAnchorEl(null)}>
+          Date: Newest First
+        </MenuItem>
+        <MenuItem onClick={() => setFilterAnchorEl(null)}>
+          Date: Oldest First
+        </MenuItem>
+        <MenuItem onClick={() => setFilterAnchorEl(null)}>
+          Status: Active
+        </MenuItem>
+        <MenuItem onClick={() => setFilterAnchorEl(null)}>
+          Status: Closed
+        </MenuItem>
       </Menu>
     </Box>
   );

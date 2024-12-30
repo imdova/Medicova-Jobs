@@ -307,16 +307,9 @@ const ActivitiesAchievementsSection: React.FC = () => {
         }}
       >
         {/* Title aligned to the start */}
-        <Typography
-          variant="h3"
-          sx={{
-            marginBottom: 1,
-            fontWeight: "700",
-            color: "#03353C",
-          }}
-        >
+        <h3 className="mb-2 text-2xl font-bold text-main">
           Activities / Achievements
-        </Typography>
+        </h3>
 
         {/* Centered Content */}
         <Box
@@ -341,31 +334,18 @@ const ActivitiesAchievementsSection: React.FC = () => {
           />
 
           {/* Description */}
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: "400",
-              color: "#185D43",
-              marginBottom: 2,
-              fontSize: { xs: "0.9rem", sm: "1rem" },
-            }}
-          >
+          <p className="mb-2 text-secondary">
             Your volunteering and student activities.
-          </Typography>
+          </p>
 
           {/* Button */}
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "#00A884",
               fontWeight: "600",
-              color: "#fff",
               paddingX: 4,
               paddingY: 1.2,
               fontSize: { xs: "0.8rem", sm: "1rem" },
-              "&:hover": {
-                backgroundColor: "#00795c",
-              },
             }}
             onClick={() =>
               handleOpenModal(

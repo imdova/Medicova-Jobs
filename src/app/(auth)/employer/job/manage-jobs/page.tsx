@@ -12,6 +12,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import JobCard from "@/components/UI/job-card";
+import { jobs } from "@/constants";
 
 const ManageJobs: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState(0);
@@ -100,11 +101,11 @@ const ManageJobs: React.FC = () => {
       </div>
 
       {/* Job Listings */}
-      <Grid container spacing={2}>
-        {Array.from({ length: 4 }).map((_, index) => (
-          <JobCard key={index} />
+      <div className="flex flex-col gap-4 p-2">
+        {jobs.slice(0, 4).map((job) => (
+          <JobCard key={job.id} job={job} isEdit={true} />
         ))}
-      </Grid>
+      </div>
     </Box>
   );
 };

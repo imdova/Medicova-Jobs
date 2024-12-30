@@ -48,9 +48,7 @@ const AddModal: React.FC<AddModalProps> = ({
             mb: 1,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            {modalTitle}
-          </Typography>
+          <h6 className="text-2xl font-bold text-main">{modalTitle}</h6>
         </Box>
 
         {/* Modal Content */}
@@ -78,11 +76,9 @@ const AddModal: React.FC<AddModalProps> = ({
             sx={{
               width: "113px",
               height: "30px",
-              background: "#f5f5f5",
-              color: "#2EAE7D",
               textTransform: "capitalize",
               fontWeight: "600",
-              border: "1px solid #2EAE7D",
+              border: "1px solid var(--primary)",
             }}
           >
             Cancel
@@ -92,8 +88,6 @@ const AddModal: React.FC<AddModalProps> = ({
             sx={{
               width: "113px",
               height: "30px",
-              background: "linear-gradient(180deg, #2EAE7D, #134834)",
-              color: "#fff",
               textTransform: "capitalize",
               fontWeight: "600",
             }}

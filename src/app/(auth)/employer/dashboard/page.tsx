@@ -7,7 +7,7 @@ import JobCard from "@/components/UI/job-card";
 import { Search } from "@mui/icons-material";
 import { icons } from "@/constants/side-bar";
 import FolderMainCard from "../search/folder-main-card";
-import { folders } from "@/constants";
+import { folders, jobs } from "@/constants";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -53,28 +53,30 @@ const page = () => {
             </Button>
           </div>
           {/* recent jobs */}
-          <h2 className="text-main mx-3 mb-5 mt-10 text-3xl font-semibold">
+          <h2 className="mx-3 mb-5 mt-10 text-3xl font-semibold text-main">
             Recent{" "}
-            <span className="text-light-primary mt-5 text-3xl font-semibold">
+            <span className="mt-5 text-3xl font-semibold text-light-primary">
               Jobs
             </span>
           </h2>
 
-          <Grid container spacing={2}>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <JobCard key={index} />
-            ))}
+          <div>
+            <div className="flex flex-col gap-4 p-2 md:p-4">
+              {jobs.slice(0, 4).map((job) => (
+                <JobCard key={job.id} job={job} isEdit={true} />
+              ))}
+            </div>
 
             <div className="flex w-full justify-center">
               <Link
                 href="#"
-                className="text-primary group my-2 mt-5 text-xl hover:underline"
+                className="group my-2 mt-5 text-xl text-primary hover:underline"
               >
                 All Jobs
                 <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
               </Link>
             </div>
-          </Grid>
+          </div>
         </div>
         <div className="lg:max-w-[250px]">
           <div className="flex w-full flex-col gap-2 bg-[#F7F7FD] p-4">
@@ -86,12 +88,12 @@ const page = () => {
               Edit company page
             </Button>
           </div>
-          <h3 className="text-main my-3 mb-6 text-lg font-semibold">
+          <h3 className="my-3 mb-6 text-lg font-semibold text-main">
             You are now a{" "}
             <span className="text-light-primary">Silver Plan</span>{" "}
           </h3>
-          <div className="bg-primary relative overflow-hidden rounded-3xl p-10">
-            <Ellipse5 className="text-primary-100 absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4" />
+          <div className="relative overflow-hidden rounded-3xl bg-primary p-10">
+            <Ellipse5 className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 text-primary-100" />
             <GridIcon className="absolute right-4 top-4" />
             <h4 className="mb-2 text-lg font-bold text-white">
               Upgrade your Account to Get more applicants
@@ -134,9 +136,9 @@ const page = () => {
       </div>
       {/* CV Search Folders */}
       <div className="p-2 md:p-5">
-        <h2 className="text-main mx-3 mb-5 mt-10 text-3xl font-semibold">
+        <h2 className="mx-3 mb-5 mt-10 text-3xl font-semibold text-main">
           CV Search{" "}
-          <span className="text-light-primary mt-5 text-3xl font-semibold">
+          <span className="mt-5 text-3xl font-semibold text-light-primary">
             Folders
           </span>
         </h2>
@@ -151,7 +153,7 @@ const page = () => {
         <div className="flex w-full justify-center">
           <Link
             href="employer/search/saved-search"
-            className="text-primary group my-2 mt-5 text-xl hover:underline"
+            className="group my-2 mt-5 text-xl text-primary hover:underline"
           >
             All Folders
             <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
@@ -171,17 +173,17 @@ const StatusCard: React.FC<{ lastOne: boolean; card: Card }> = ({
   const Icon = icons[card.icon];
   return (
     <div
-      className={`${lastOne ? "col-span-2 md:col-span-1" : ""} border-light-primary text-secondary flex justify-center gap-2 text-nowrap rounded-lg border bg-white p-4 pb-1 shadow`}
+      className={`${lastOne ? "col-span-2 md:col-span-1" : ""} flex justify-center gap-2 text-nowrap rounded-lg border border-light-primary bg-white p-4 pb-1 text-secondary shadow`}
     >
-      <Icon className="text-primary h-[30px] w-[30px]" />
+      <Icon className="h-[30px] w-[30px] text-primary" />
       <div>
-        <p className="text-secondary text-[16px] font-medium md:text-[22px]">
+        <p className="text-[16px] font-medium text-secondary md:text-[22px]">
           {card.title}
         </p>
-        <p className="text-main inline text-[24px] font-bold md:text-[40px]">
+        <p className="inline text-[24px] font-bold text-main md:text-[40px]">
           {card.content}
         </p>
-        <button className="bg-primary-100 text-primary ml-4 inline rounded-full px-3 py-[2px] text-xs md:text-base">
+        <button className="ml-4 inline rounded-full bg-primary-100 px-3 py-[2px] text-xs text-primary md:text-base">
           View
         </button>
       </div>
