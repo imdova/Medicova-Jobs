@@ -9,12 +9,10 @@ import ProfileForm from "./Components/ProfileForm";
 const ProfilePage = () => {
   return (
     <Box sx={{ p: 2 }}>
-      {/* Header Section */}
-      <HeaderSection />
-
       <Grid container spacing={3}>
-        {/* Left + Center Sections */}
         <Grid container item xs={12} md={8} spacing={3}>
+          {/* Header Section */}
+          <HeaderSection />
           {/* Left Section */}
           <AboutCompany />
           {/* Center Section + Profile Form */}
