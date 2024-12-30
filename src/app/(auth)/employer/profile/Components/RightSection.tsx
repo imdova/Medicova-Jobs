@@ -11,7 +11,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 
 const RightSection: React.FC = () => {
   return (
-    <Grid item xs={12} md={4}>
+    <Grid item xs={12}>
       <Card sx={{ padding: "16px", marginBottom: 3 }}>
         <Box
           sx={{
