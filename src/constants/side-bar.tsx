@@ -120,6 +120,7 @@ export const employerSideBarLinks: LinkType[] = [
   {
     title: "Chat",
     icon: "chat",
+    url: "/chat",
   },
   {
     kind: "divider",
@@ -174,6 +175,11 @@ export const jobSeekerSideBarLinks: LinkType[] = [
     title: "My Applications",
     icon: "DescriptionIcon",
     url: "/job-seeker/my-applications",
+  },
+  {
+    title: "Chat",
+    icon: "chat",
+    url: "/chat",
   },
   {
     kind: "divider",
