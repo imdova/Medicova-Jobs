@@ -16,6 +16,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BackupIcon from "@mui/icons-material/Backup";
+import bannerImage from "@/components/images/cover.png";
 
 const HeaderSection: React.FC = () => {
   const router = useRouter();
@@ -63,7 +64,7 @@ const HeaderSection: React.FC = () => {
           sx={{
             width: "100%",
             height: { xs: "150px", sm: "200px" },
-            backgroundImage: "url('https://via.placeholder.com/1500x400')",
+            backgroundImage: `url(/images/cover.png)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "relative",

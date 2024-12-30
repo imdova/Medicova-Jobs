@@ -17,7 +17,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import CustomPagination from "@/components/UI/CustomPagination";
 
-// Types
 interface Application {
   id: number;
   companyName: string;
@@ -33,7 +32,6 @@ interface TabOption {
   value: string;
 }
 
-// Constants
 const STATUS_COLORS = {
   Review: { text: "#FFB800", bg: "#FFF5DD" },
   Viewed: { text: "#00B8D9", bg: "#E6FCFF" },
@@ -105,7 +103,6 @@ const tabOptions: TabOption[] = [
 ];
 
 const MyApplicationsPage = () => {
-  // State
   const [selectedTab, setSelectedTab] = useState("all");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
@@ -113,7 +110,6 @@ const MyApplicationsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([null, null]);
 
-  // Derived state
   const filteredApplications = applications.filter(
     app => selectedTab === "all" || app.status.toLowerCase() === selectedTab
   );
@@ -123,7 +119,6 @@ const MyApplicationsPage = () => {
     startIndex + itemsPerPage
   );
 
-  // Handlers
   const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
     setSelectedTab(newValue);
   };
@@ -132,7 +127,6 @@ const MyApplicationsPage = () => {
     setDateRange(prev => !prev[0] ? [newValue, null] : [prev[0], newValue]);
   };
 
-  // Components
   const HeaderSection = () => (
     <Box sx={{ mb: 4, p: 1 }}>
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
@@ -164,105 +158,46 @@ const MyApplicationsPage = () => {
     </Box>
   );
 
-  const SearchAndFilterSection = () => (
-    <Box sx={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      mb: 2,
-      flexDirection: { xs: "column", sm: "row" },
-      gap: 2
-    }}>
-      <Typography variant="h6">Applications History</Typography>
-      <Box sx={{
-        display: "flex",
-        gap: 2,
-        width: { xs: "100%", sm: "auto" }
-      }}>
-        <TextField
-          size="small"
-          placeholder="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ minWidth: 200 }}
-        />
-        <Button
-          variant="outlined"
-          startIcon={<FilterListIcon />}
-          onClick={e => setFilterAnchorEl(e.currentTarget)}
-        >
-          Filter
-        </Button>
-      </Box>
-    </Box>
-  );
-
-  const ApplicationsTable = () => (
-    <TableContainer component={Paper} elevation={0} sx={{ 
-      border: "1px solid #E0E0E0",
-      backgroundColor: "#F9F9F9"
-    }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Company Name</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Date Applied</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {currentPageApplications.map(app => (
-            <TableRow key={app.id} sx={{
-              "&:hover": { backgroundColor: "#ffffff" },
-              transition: "background-color 0.2s ease"
-            }}>
-              <TableCell>{app.id}</TableCell>
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Avatar sx={{ width: 40, height: 40 }}>{app.companyLogo}</Avatar>
-                  {app.companyName}
-                </Box>
-              </TableCell>
-              <TableCell>{app.role}</TableCell>
-              <TableCell>{app.dateApplied}</TableCell>
-              <TableCell>
-                <Chip
-                  label={app.status}
-                  sx={{
-                    color: STATUS_COLORS[app.status].text,
-                    bgcolor: STATUS_COLORS[app.status].bg,
-                    border: "none",
-                    borderRadius: "16px",
-                    "& .MuiChip-label": { px: 2 }
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <IconButton onClick={e => setAnchorEl(e.currentTarget)}>
-                  <MoreVertIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       <HeaderSection />
       
       <Box sx={{ my: 2, backgroundColor: "#F9F9F9", p: 3, borderRadius: 2 }}>
-        <SearchAndFilterSection />
+        <Box sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 2
+        }}>
+          <Typography variant="h6">Applications History</Typography>
+          <Box sx={{
+            display: "flex",
+            gap: 2,
+            width: { xs: "100%", sm: "auto" }
+          }}>
+            <TextField
+              size="small"
+              placeholder="Search"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ minWidth: 200 }}
+            />
+            <Button
+              variant="outlined"
+              startIcon={<FilterListIcon />}
+              onClick={e => setFilterAnchorEl(e.currentTarget)}
+            >
+              Filter
+            </Button>
+          </Box>
+        </Box>
         
         <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
           <Tabs
@@ -295,7 +230,58 @@ const MyApplicationsPage = () => {
           </Tabs>
         </Box>
 
-        <ApplicationsTable />
+        <TableContainer component={Paper} elevation={0} sx={{ 
+          border: "1px solid #E0E0E0",
+          backgroundColor: "#F9F9F9"
+        }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Company Name</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Date Applied</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentPageApplications.map(app => (
+                <TableRow key={app.id} sx={{
+                  "&:hover": { backgroundColor: "#ffffff" },
+                  transition: "background-color 0.2s ease"
+                }}>
+                  <TableCell>{app.id}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                      <Avatar sx={{ width: 40, height: 40 }}>{app.companyLogo}</Avatar>
+                      {app.companyName}
+                    </Box>
+                  </TableCell>
+                  <TableCell>{app.role}</TableCell>
+                  <TableCell>{app.dateApplied}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={app.status}
+                      sx={{
+                        color: STATUS_COLORS[app.status].text,
+                        bgcolor: STATUS_COLORS[app.status].bg,
+                        border: "none",
+                        borderRadius: "16px",
+                        "& .MuiChip-label": { px: 2 }
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={e => setAnchorEl(e.currentTarget)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <CustomPagination
           itemsPerPage={itemsPerPage}
@@ -305,7 +291,6 @@ const MyApplicationsPage = () => {
           totalItems={filteredApplications.length}
         />
       </Box>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

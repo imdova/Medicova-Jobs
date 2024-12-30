@@ -170,20 +170,6 @@ const HeaderSection: React.FC = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Button
-                variant="text"
-                sx={{
-                  fontWeight: "600",
-                  color: "#00A884",
-                  textTransform: "uppercase",
-                  backgroundColor: "#56CDAD1A",
-                  gap: 1,
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
-                }}
-              >
-                <FlagIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
-                Open For Opportunities
-              </Button>
             </Box>
           </Grid>
 
