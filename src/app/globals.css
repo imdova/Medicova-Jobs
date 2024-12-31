@@ -88,9 +88,9 @@ html,
 
 .ProseMirror {
   padding: 10px;
-  height: 150px;
-  max-height: 150px;
-  overflow: scroll;
+  /* height: 150px; */
+  min-height: 150px;
+  /* overflow: scroll; */
   outline: none;
   border: 1px solid transparent;
 }

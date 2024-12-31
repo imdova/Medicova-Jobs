@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Close, Search } from "@mui/icons-material";
 import { jobs } from "@/constants";
+import { formatDate } from "@/util";
 
 interface NewUserModalProps {
   open: boolean;
@@ -76,10 +77,16 @@ const InviteModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
               onClick={() => setSelected(job.id)}
               className={`${selected === job.id ? "scale-[1.01] border-primary shadow-lg" : "border-gray-200"} rounded-md border bg-white p-2 text-left duration-150 hover:scale-[1.01] hover:border-primary hover:shadow-lg`}
             >
-              <h6 className="font-semibold text-main">{job.title}</h6>
-              <p className="text-sm text-secondary">
+              <h6 className="font-semibold text-main">
+                {job.title}{" "}
+                <span className="text-xs text-secondary">
+                  {" | "}
+                  {job.location} | {formatDate(job.timeStamps)}
+                </span>
+              </h6>
+              {/* <p className="text-sm text-secondary">
                 {job.location} | {job.education} | {job.specialty}
-              </p>
+              </p> */}
             </button>
           ))}
         </div>
