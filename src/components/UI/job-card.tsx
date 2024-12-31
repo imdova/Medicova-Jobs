@@ -79,7 +79,7 @@ const JobCard: React.FC<JobCardProps> = ({
               <p className="text-xs md:text-base">{job.specialty}</p>
             </div>
           </div>
-          <div className="mb-2 flex flex-wrap text-secondary">
+          <div className="mb-2 flex max-w-[500px] flex-wrap text-secondary">
             {job.features.map((feature, index) => (
               <div
                 key={index}

@@ -17,20 +17,14 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase as doctors, searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
-import {
-  Add,
-  Delete,
-  LockOpenOutlined,
-  Mail,
-  Search,
-} from "@mui/icons-material";
+import { Add, Delete, Mail, Search } from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CandideCard from "./CandideCard";
 import Image from "next/image";
 import SearchComponent from "./search-page";
 import FolderModal from "./saved-search/folder-modal";
 import AddToFolderModal from "./add-to-folder-modal";
+import InviteModal from "./invite-to-apply-modal";
 
 const ApplicantsPage: React.FC = ({
   searchParams,
@@ -42,6 +36,8 @@ const ApplicantsPage: React.FC = ({
   };
   const [selected, setSelected] = useState<string[]>([]);
   const [savedList, setSavedList] = useState<string[]>([]);
+  const [inviteUser, setInviteUser] = useState("");
+
   const [selectedFilters, setSelectedFilters] = useState<{
     [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"][];
   }>({
@@ -113,6 +109,7 @@ const ApplicantsPage: React.FC = ({
     handleSaveClose();
   };
   const handleCloseModal = () => setOpenModal(false);
+  const handleCloseInviteModal = () => setInviteUser("");
 
   const [userToFolder, setUserToFolder] = useState<string | null>("");
 
@@ -127,6 +124,7 @@ const ApplicantsPage: React.FC = ({
   ) : (
     <Box className="flex min-h-screen w-full flex-row bg-white p-2">
       {/* Left Column: Filter Section */}
+      <InviteModal open={!!inviteUser} onClose={handleCloseInviteModal} />
       <FolderModal open={openModal} onClose={handleCloseModal} />
       <AddToFolderModal
         open={!!userToFolder}
@@ -173,7 +171,7 @@ const ApplicantsPage: React.FC = ({
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="bg-primary-100 h-[32px] w-[32px] p-[5px]"
+              className="h-[32px] w-[32px] bg-primary-100 p-[5px]"
             >
               {isAllSelect ? (
                 <DeselectIcon className="h-6 w-6" />
@@ -235,7 +233,7 @@ const ApplicantsPage: React.FC = ({
                     aria-controls={open ? "Action-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
-                    className="bg-primary-100 hover:bg-primary hover:text-primary-foreground flex h-[32px] items-center rounded-md px-4 duration-300"
+                    className="flex h-[32px] items-center rounded-md bg-primary-100 px-4 duration-300 hover:bg-primary hover:text-primary-foreground"
                   >
                     <p className="inline-block">Action</p>
                     <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -278,6 +276,7 @@ const ApplicantsPage: React.FC = ({
             setSavedList={setSavedList}
             setSelected={setSelected}
             selected={selected}
+            setInviteUser={setInviteUser}
           />
         ))}
 

@@ -44,6 +44,23 @@ html,
     scrollbar-width: none;
     /* Firefox */
   }
+  .scroll-bar-minimal::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
 }
 
 @layer base {
