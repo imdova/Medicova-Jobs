@@ -148,14 +148,14 @@ const HomePage = () => {
             {countries.map((country, i) => (
               <div
                 key={i}
-                className="my-4 flex items-center gap-4 rounded-[10px] border border-gray-200 bg-white shadow-xl duration-300 hover:scale-105 hover:border-light-primary hover:shadow-2xl"
+                className="my-4 flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white shadow-xl duration-300 hover:scale-105 hover:border-light-primary hover:shadow-2xl"
               >
                 <Flag
                   code={country.code.toLocaleLowerCase()}
                   name={country.name}
-                  className="m-5 h-[35px] w-[50px] rounded-lg object-cover"
+                  className="my-4 ml-4 mr-2 h-[35px] w-[50px] rounded-lg object-cover"
                 />
-                <h6 className="text-xl font-semibold">{country.name}</h6>
+                <h6 className="font-semibold md:text-xl">{country.name}</h6>
               </div>
             ))}
           </div>

@@ -57,3 +57,40 @@ html,
     -webkit-text-stroke: 4px #2eae7d;
   }
 }
+
+.prose li {
+  list-style-type: disc; /* Apply bullet style */
+  margin-left: 20px; /* Add padding to align bullets */
+}
+.prose p {
+  margin: 0 5px;
+}
+.prose ul {
+  margin: 0 5px;
+}
+
+.ProseMirror {
+  padding: 10px;
+  height: 150px;
+  max-height: 150px;
+  overflow: scroll;
+  outline: none;
+  border: 1px solid transparent;
+}
+
+.ProseMirror:focus {
+  /* outline: 2px solid var(--primary); */
+  border: 1px solid var(--primary);
+}
+
+.ProseMirror::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.ProseMirror {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}

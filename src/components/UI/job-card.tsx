@@ -85,7 +85,7 @@ const JobCard: React.FC<JobCardProps> = ({
                 key={index}
                 className="flex items-center gap-1 text-xs md:text-base"
               >
-                <span className="mx-1 mr-1 h-2 w-2 rounded-full bg-secondary md:mb-0 md:ml-[12px]"></span>
+                <span className="mx-[4px] h-2 w-2 rounded-full bg-secondary md:mx-[5px]"></span>
                 {feature}
               </div>
             ))}
@@ -131,13 +131,20 @@ const JobCard: React.FC<JobCardProps> = ({
         )}
 
         {isApply ? (
-          <button className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white md:w-fit">
+          <button className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit">
             Apply Now
           </button>
+        ) : isEdit ? (
+          <Link
+            href={`/job/${job.id}`}
+            className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit"
+          >
+            View Applicants ({job.skills.length})
+          </Link>
         ) : (
           <Link
             href={`/job/${job.id}`}
-            className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white md:w-fit"
+            className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit"
           >
             View Details
           </Link>
