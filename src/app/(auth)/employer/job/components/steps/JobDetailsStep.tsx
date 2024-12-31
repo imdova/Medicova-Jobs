@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,15 +9,17 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Stepper,
-  Step,
-  StepLabel,
   Checkbox,
   FormControlLabel,
+  IconButton,
+  Divider,
 } from "@mui/material";
+import TextEditor from "@/components/editor/editor";
+import { jobs } from "@/constants";
+import { Close } from "@mui/icons-material";
 
 const steps = ["Job Details", "Screening Questions", "Review & Publish"];
-
+const job = jobs[0];
 const JobDetailsStep: React.FC = () => {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
@@ -25,6 +27,10 @@ const JobDetailsStep: React.FC = () => {
 
   const increment = () => setCount(count + 1); // Increase count
   const decrement = () => setCount(count > 1 ? count - 1 : 1);
+
+  const handelJobDescription = (e: string) => {
+    console.log(e);
+  };
 
   const handleClick = (label: string) => {
     setSelectedButton(label);
@@ -464,6 +470,7 @@ const JobDetailsStep: React.FC = () => {
           }
         />
       </Box>
+
       {/* Additional Salary Details */}
       <Box
         sx={{
@@ -533,6 +540,61 @@ const JobDetailsStep: React.FC = () => {
           </Button>
         </Box>
       </Box>
+      <Divider className="my-2" />
+      <h5 className="mb-2 text-3xl font-bold text-main">About The Job</h5>
+      <div className="w-full">
+        <h6 className="mb-2 text-xl font-bold text-main">Job Description</h6>
+        <TextEditor
+          value={"<p>replace your text with this ...</p>"}
+          onChange={handelJobDescription}
+        />
+      </div>
+      <div className="w-full">
+        <h6 className="mb-2 text-xl font-bold text-main">Job Requirements</h6>
+        <TextEditor
+          value={"<p>replace your text with this ... </p>"}
+          onChange={handelJobDescription}
+        />
+      </div>
+      <div className="mt-8 rounded-[10px] bg-green-50 p-4">
+        <h6 className="text-xl font-semibold text-main">
+          Skills related to the job post{" "}
+        </h6>
+        <div className="mt-2 flex flex-wrap">
+          {job.skills.map((skill, i) => (
+            <div
+              key={i}
+              className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
+            >
+              {skill}
+              <IconButton size="small" color="error">
+                <Close />
+              </IconButton>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-8 rounded-[10px] bg-green-50 p-4">
+        <h6 className="text-xl font-semibold text-main">Keywords</h6>
+        <p className="text-secondary">
+          Enter keywords including any related job titles, technologies, or
+          keywords the candidate should have in his CV.
+        </p>
+        <div className="mt-2 flex flex-wrap">
+          {job.relatedSearch.map((keyWord, i) => (
+            <div
+              key={i}
+              className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
+            >
+              {keyWord}
+              <IconButton size="small" color="error">
+                <Close />
+              </IconButton>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* //////////////////////// */}
     </Box>
   );

@@ -14,7 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CheckIcon from "@mui/icons-material/Check";
-import { FilterSectionType } from "@/types";
+import { FilterOption, FilterSectionType } from "@/types";
 
 interface FilterItemProps {
   section: FilterSectionType;
@@ -22,6 +22,10 @@ interface FilterItemProps {
   handleCheckChange: (key: string, value: string[]) => void;
   isSearch: boolean;
   index?: number;
+}
+
+function getTotalCount(items: FilterOption[]) {
+  return items.reduce((sum, item) => sum + (item.count || 0), 0);
 }
 
 const FilterItem: React.FC<FilterItemProps> = ({
@@ -48,10 +52,21 @@ const FilterItem: React.FC<FilterItemProps> = ({
         )
       : section.options;
 
+  const isAllSelected = value.length === section.options.length;
+  const isNoneSelected = value.length === 0;
+
+  const handleAllChange = () => {
+    const newValue = isAllSelected
+      ? [] // Deselect all if "All" is checked
+      : section.options.map((option) => option.value); // Select all
+    handleCheckChange(section.key, newValue);
+  };
+
   const handleCheckboxChange = (optionValue: string) => {
     const newValue = value.includes(optionValue)
       ? value.filter((val) => val !== optionValue)
       : [...value, optionValue];
+
     handleCheckChange(section.key, newValue);
   };
 
@@ -71,26 +86,42 @@ const FilterItem: React.FC<FilterItemProps> = ({
 
       <Collapse className="px-1" in={isExpanded}>
         <FormControl component="fieldset">
+          {/* All Checkbox */}
+
           <div className="grid grid-cols-1 gap-1 px-1">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isAllSelected}
+                  onChange={handleAllChange}
+                  // indeterminate={!isNoneSelected && !isAllSelected}
+                  icon={
+                    <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
+                  }
+                  checkedIcon={
+                    <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                      <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
+                    </div>
+                  }
+                  sx={{ padding: 0, px: 1 }}
+                />
+              }
+              label={`All (${getTotalCount(filteredOptions)})`}
+              className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
+            />
             {filteredOptions.map((option) => (
               <FormControlLabel
                 key={option.value}
                 control={
                   <Checkbox
-                    checked={
-                      value.includes(option.value) ||
-                      (value.length === 0 && option.value === "all") ||
-                      (value.length === section.options.length - 1 &&
-                        !value.includes("all") &&
-                        !!section.options.find((o) => o.value === "all"))
-                    }
+                    checked={value.includes(option.value)}
                     onChange={() => handleCheckboxChange(option.value)}
                     icon={
                       <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="bg-primary border-primary flex h-5 w-5 items-center justify-center rounded-sm border-2">
-                        <CheckIcon className="text-primary-foreground m-auto h-4 w-4" />
+                      <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                        <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
                       </div>
                     }
                     sx={{ padding: 0, px: 1 }}
@@ -111,8 +142,8 @@ const FilterItem: React.FC<FilterItemProps> = ({
             onChange={searchHandler}
             sx={{
               "& .MuiInputBase-input": {
-                padding: "8px 8px", // Remove input padding
-                paddingLeft: 0, // Add padding for the search icon
+                padding: "8px 8px",
+                paddingLeft: 0,
               },
             }}
             className="my-1 py-0"

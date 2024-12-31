@@ -38,6 +38,7 @@ interface CandidateCardProps {
   savedList: string[];
   setSavedList: React.Dispatch<React.SetStateAction<string[]>>;
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  setInviteUser: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CandideCard: React.FC<CandidateCardProps> = ({
@@ -46,6 +47,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   setSavedList,
   selected,
   setSelected,
+  setInviteUser,
 }) => {
   const [showMore, setShowMore] = useState(false);
 
@@ -112,17 +114,17 @@ const CandideCard: React.FC<CandidateCardProps> = ({
             </div>
             <div>
               <Stack direction="row" alignItems="center" gap={1}>
-                <h2 className="text-main text-lg font-semibold md:text-2xl">
+                <h2 className="text-lg font-semibold text-main md:text-2xl">
                   {formatName(doctor.name)}
                 </h2>
 
                 {doctor.available ? (
-                  <LockOpenIcon className="text-primary h-5 w-5" />
+                  <LockOpenIcon className="h-5 w-5 text-primary" />
                 ) : (
                   <LockIcon className="h-5 w-5 text-red-500" />
                 )}
               </Stack>
-              <div className="text-main my-1 flex max-w-[450px] flex-wrap gap-2">
+              <div className="my-1 flex max-w-[450px] flex-wrap gap-2 text-main">
                 <div className="flex items-center gap-2">
                   <LocationOnIcon
                     color="primary"
@@ -171,7 +173,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 </div>
               </div>
               <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
-                <h6 className="text-main text-sm font-semibold md:text-base">
+                <h6 className="text-sm font-semibold text-main md:text-base">
                   Contact Info :
                 </h6>
                 <div className="flex flex-wrap justify-between">
@@ -181,7 +183,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                       className="h-4 w-4 md:h-5 md:w-5"
                     />
                     {doctor.available ? (
-                      <span className="text-main mx-1 h-fit text-sm md:text-base">
+                      <span className="mx-1 h-fit text-sm text-main md:text-base">
                         {doctor.contactInfo.phoneNumber}
                       </span>
                     ) : (
@@ -206,7 +208,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                       className="h-4 w-4 md:h-5 md:w-5"
                     />
                     {doctor.available ? (
-                      <span className="text-main mx-1 h-fit break-all text-sm md:text-base">
+                      <span className="mx-1 h-fit break-all text-sm text-main md:text-base">
                         {doctor.contactInfo.email}
                       </span>
                     ) : (
@@ -273,7 +275,11 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 </MenuItem>
               </Menu>
             </div>
-            <Button variant="contained" className="w-full">
+            <Button
+              onClick={() => setInviteUser("id")}
+              variant="contained"
+              className="w-full"
+            >
               Invite To Apply
             </Button>
           </div>
@@ -296,7 +302,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
 
         <button
           onClick={() => setShowMore((pv) => !pv)}
-          className="text-primary w-full px-2 pt-3 md:hidden"
+          className="w-full px-2 pt-3 text-primary md:hidden"
         >
           {showMore
             ? "Hide Experience & Education"
@@ -324,15 +330,15 @@ const Experience: React.FC<Doctor & { className?: string }> = ({
         >
           <div className="flex w-[65%] items-center gap-3">
             <WorkOutlineOutlinedIcon color="primary" />
-            <p className="text-main text-sm font-semibold md:text-base">
+            <p className="text-sm font-semibold text-main md:text-base">
               {exp.name}
             </p>
           </div>
-          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
+          <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-main">
             <Flag {...exp.country} /> {exp.country.name}
           </div>
           <div>
-            <p className="text-secondary text-xs md:text-sm">
+            <p className="text-xs text-secondary md:text-sm">
               ({exp.startDate} - {exp.endDate})
             </p>
           </div>
@@ -347,19 +353,19 @@ const Experience: React.FC<Doctor & { className?: string }> = ({
           <div className="flex w-[65%] items-center gap-3">
             <SchoolIcon color="primary" />
             <div>
-              <p className="text-main text-sm font-semibold md:text-base">
+              <p className="text-sm font-semibold text-main md:text-base">
                 {edu.name}
               </p>
-              <p className="text-secondary text-xs md:text-sm">
+              <p className="text-xs text-secondary md:text-sm">
                 {edu.degree} in {edu.specialty}
               </p>
             </div>
           </div>
-          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
+          <div className="w-fit rounded-md bg-white px-4 py-2 text-xs text-main">
             <Flag {...edu.country} /> {edu.country.name}
           </div>
           <div>
-            <p className="text-secondary text-xs md:text-sm">
+            <p className="text-xs text-secondary md:text-sm">
               ({edu.startDate} - {edu.endDate})
             </p>
           </div>

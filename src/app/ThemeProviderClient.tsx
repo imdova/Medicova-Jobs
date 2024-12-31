@@ -64,7 +64,7 @@ const theme = createTheme({
           },
         },
         outlined: {
-          borderColor: "var(--text-secondary)",
+          borderColor: "var(--primary)",
           borderRadius: "0",
           color: "var(--primary)",
           "&:hover": {

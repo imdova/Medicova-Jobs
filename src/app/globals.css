@@ -44,6 +44,23 @@ html,
     scrollbar-width: none;
     /* Firefox */
   }
+  .scroll-bar-minimal::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+  }
+
+  .scroll-bar-minimal::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
 }
 
 @layer base {
@@ -56,4 +73,41 @@ html,
   .font-outline-4 {
     -webkit-text-stroke: 4px #2eae7d;
   }
+}
+
+.prose li {
+  list-style-type: disc; /* Apply bullet style */
+  margin-left: 20px; /* Add padding to align bullets */
+}
+.prose p {
+  margin: 0 5px;
+}
+.prose ul {
+  margin: 0 5px;
+}
+
+.ProseMirror {
+  padding: 10px;
+  /* height: 150px; */
+  min-height: 150px;
+  /* overflow: scroll; */
+  outline: none;
+  border: 1px solid transparent;
+}
+
+.ProseMirror:focus {
+  /* outline: 2px solid var(--primary); */
+  border: 1px solid var(--primary);
+}
+
+.ProseMirror::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.ProseMirror {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }

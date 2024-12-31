@@ -224,19 +224,16 @@ export const doctorsBase: Doctor[] = [
 
 export const filterSections = {
   "Residency (Location)": [
-    { label: "All", count: 5, value: "all" },
     { label: "Egypt", count: 3, value: "egypt" },
     { label: "Qatar", count: 2, value: "Qatar" },
   ],
   "Education Level": [
-    { label: "All", count: 250, value: "all" },
     { label: "Technical Institute", count: 50, value: "institute" },
     { label: "Bachelor's Degree", count: 100, value: "bachelor" },
     { label: "Doctorate Degree", count: 70, value: "doctorate" },
     { label: "Fellowship", count: 30, value: "fellowship" },
   ],
   "Years Of Experience": [
-    { label: "All", count: 150, value: "all" },
     { label: "1-3", count: 50, value: "1-3" },
     { label: "3-5", count: 40, value: "3-5" },
     { label: "5-10", count: 30, value: "5-10" },
@@ -245,22 +242,18 @@ export const filterSections = {
 };
 export const searchFilters = {
   "Residency (Location)": [
-    { label: "All", count: 5, value: "all" },
     { label: "Egypt", count: 3, value: "egypt" },
     { label: "Qatar", count: 2, value: "Qatar" },
   ],
   city: [
-    { label: "All", count: 5, value: "all" },
     { label: "cairo", count: 3, value: "cairo" },
     { label: "riyadh", count: 2, value: "riyadh" },
   ],
   nationality: [
-    { label: "All", count: 5, value: "all" },
     { label: "egyptian", count: 3, value: "egyptian" },
     { label: "saudi arabian", count: 2, value: "saudi arabian" },
   ],
   industry: [
-    { label: "All", count: 200, value: "all" },
     { label: "Physicians", count: 10, value: "Physicians" },
     { label: "Dentists", count: 100, value: "Dentists" },
     { label: "Physiotherapists", count: 50, value: "Physiotherapists" },
@@ -268,7 +261,6 @@ export const searchFilters = {
     { label: "Nurses", count: 10, value: "Nurses" },
   ],
   category: [
-    { label: "All", count: 200, value: "all" },
     { label: "Doctor", count: 100, value: "doctor" },
     { label: "Nurse", count: 50, value: "nurse" },
     { label: "Pharmaceutical", count: 30, value: "pharmaceutical" },
@@ -276,7 +268,6 @@ export const searchFilters = {
     { label: "Specialized", count: 10, value: "specialized" },
   ],
   "Education Level": [
-    { label: "All", count: 250, value: "all" },
     { label: "Institute", count: 50, value: "institute" },
     { label: "Bachelor's Degree", count: 100, value: "bachelor" },
     { label: "Master's Degree", count: 100, value: "master" },
@@ -284,19 +275,16 @@ export const searchFilters = {
     { label: "Fellowship", count: 30, value: "fellowship" },
   ],
   "Years Of Experience": [
-    { label: "All", count: 150, value: "all" },
     { label: "1-3", count: 50, value: "1-3" },
     { label: "3-5", count: 40, value: "3-5" },
     { label: "5-10", count: 30, value: "5-10" },
     { label: "+10", count: 30, value: "10+" },
   ],
   gender: [
-    { label: "All", count: 300, value: "all" },
     { label: "Male", count: 200, value: "male" },
     { label: "Female", count: 100, value: "female" },
   ],
   age: [
-    { label: "All", count: 40, value: "all" },
     { label: "18-25", count: 40, value: "18-25" },
     { label: "26-35", count: 50, value: "26-35" },
     { label: "36-45", count: 30, value: "36-45" },
@@ -370,13 +358,11 @@ export const folders: Folder[] = [
 
 export const searchJopFilters = {
   Industry: [
-    { label: "All", count: 37, value: "all" },
     { label: "Pharmacist", count: 3, value: "pharmacist" },
     { label: "HealthCare", count: 5, value: "healthcare" },
     { label: "Administrator", count: 2, value: "administrator" },
   ],
   "Main Specialty": [
-    { label: "All", count: 37, value: "all" },
     { label: "Physicians", count: 3, value: "physicians" },
     { label: "Dentists", count: 5, value: "dentists" },
     { label: "Physiotherapists", count: 2, value: "physiotherapists" },
@@ -384,18 +370,15 @@ export const searchJopFilters = {
     { label: "Nurses", count: 3, value: "nurses" },
   ],
   "Work Time": [
-    { label: "All", count: 37, value: "all" },
     { label: "Full-time", count: 3, value: "full_time" },
     { label: "Part-Time", count: 5, value: "part_time" },
   ],
   "Work Place": [
-    { label: "All", count: 29, value: "all" },
     { label: "Remote", count: 2, value: "remote" },
     { label: "On site", count: 24, value: "on_site" },
     { label: "Hybrid", count: 3, value: "hybrid" },
   ],
   Categories: [
-    { label: "All", count: 60, value: "all" },
     { label: "Medical", count: 24, value: "medical" },
     { label: "Physician/Doctor", count: 3, value: "physician_doctor" },
     { label: "Medical Sonographer", count: 3, value: "medical_sonographer" },
@@ -410,7 +393,6 @@ export const searchJopFilters = {
     { label: "Technology", count: 5, value: "technology" },
   ],
   "Job Level": [
-    { label: "All", count: 85, value: "all" },
     { label: "General", count: 57, value: "general" },
     { label: "Specialist", count: 3, value: "specialist" },
     { label: "Consultant", count: 5, value: "consultant" },
@@ -418,7 +400,6 @@ export const searchJopFilters = {
     { label: "CEO", count: 8, value: "ceo" },
   ],
   "Salary Range": [
-    { label: "All", count: 24, value: "all" },
     { label: "$700 - $1000", count: 4, value: "700_1000" },
     { label: "$100 - $1500", count: 6, value: "100_1500" },
     { label: "$1500 - $2000", count: 10, value: "1500_2000" },
