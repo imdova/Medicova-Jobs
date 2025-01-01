@@ -92,13 +92,9 @@ const SearchPage: React.FC = ({
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-3">
             {jobs.map((job) => (
-              <MinJobCard
-                key={job.id}
-                job={job}
-                className="flex-wrap justify-center md:flex-nowrap"
-              />
+              <MinJobCard key={job.id} job={job} />
             ))}
           </div>
         )}

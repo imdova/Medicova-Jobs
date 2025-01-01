@@ -1,10 +1,7 @@
 import React from "react";
 import Header from "@/components/Layout/Header/Header";
 import SideBar from "@/components/Layout/SideBar/SideBar";
-import {
-  employerSideBarLinks,
-  jobSeekerSideBarLinks,
-} from "@/constants/side-bar";
+import { employerSideBarLinks } from "@/constants/side-bar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

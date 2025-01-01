@@ -3,6 +3,14 @@ interface Country {
   code: string;
 }
 
+export interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: string;
+  timestamp: string;
+}
+
 export interface Experience {
   name: string;
   country: Country;

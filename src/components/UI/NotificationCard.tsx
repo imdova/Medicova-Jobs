@@ -1,16 +1,9 @@
+import { Notification } from "@/types";
 import React from "react";
 
-type Notification = {
-  id: number;
-  title: string;
-  message: string;
-  type: "info" | "success" | "warning" | "error";
-  timestamp: string;
-};
-
-type NotificationCardProps = {
+interface NotificationCardProps {
   notification: Notification;
-};
+}
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   notification,
