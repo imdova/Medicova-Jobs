@@ -8,7 +8,7 @@ import JobOverview from "@/components/UI/JobOverview";
 import MinJobCard from "@/components/UI/job-card-min";
 import JobCard from "@/components/UI/job-card";
 
-const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
+const JobDetailPage = ({ params: { slug } }: { params: { slug: string } }) => {
   const job = jobs.find((job) => job.id === slug);
 
   if (!job) return notFound();
@@ -150,7 +150,7 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
         </div>
         {/* recent jobs */}
 
-        <div className="bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
+        <div className="mt-4 bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
           <div className="bg-white/80 shadow-md">
             <div className="container mx-auto p-4 lg:max-w-[1170px]">
               <h2 className="my-6 text-center text-[45px] font-bold leading-none text-light-primary md:text-[60px]">
@@ -165,7 +165,7 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 dummy
               </p>
 
-              <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
                 {/* card  */}
                 {[1, 2, 3, 1, 2, 3, 1, 2, 3].map((_, i) => (
                   <MinJobCard key={i} />
@@ -187,4 +187,4 @@ const ApplicantsPage = ({ params: { slug } }: { params: { slug: string } }) => {
   );
 };
 
-export default ApplicantsPage;
+export default JobDetailPage;

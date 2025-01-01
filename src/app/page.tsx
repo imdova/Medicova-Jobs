@@ -1,5 +1,4 @@
 import React, { Suspense } from "react";
-import Header from "./(public)/search/header";
 import Image from "next/image";
 import Link from "next/link";
 import SearchForm from "@/components/UI/search-form";
@@ -9,6 +8,7 @@ import { companies, jobs, specialists } from "@/constants";
 import BasicTabs from "@/components/UI/tabs";
 import Testimonials from "@/components/UI/testimonials";
 import MinJobCard from "@/components/UI/job-card-min";
+import MainHeader from "@/components/Layout/Header/Main-header";
 
 const countries = [
   { name: "Saudi Arabia", code: "SA" },
@@ -28,7 +28,7 @@ const HomePage = () => {
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
         <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-4 shadow-md">
-          <Header />
+          <MainHeader />
           <div className="container mx-auto flex flex-col-reverse items-center gap-6 p-4 md:flex-row lg:max-w-[1170px]">
             <div className="col-span-4 md:col-span-3">
               <h2 className="mb-6 text-[45px] font-black leading-none text-primary-foreground md:text-[60px]">
@@ -254,7 +254,7 @@ const HomePage = () => {
                 dummy
               </p>
 
-              <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mg:gap-5 mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
                 {/* card  */}
                 {jobs.map((job, i) => (
                   <MinJobCard key={i} job={job} />

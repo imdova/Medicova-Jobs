@@ -1,15 +1,15 @@
+import MainHeader from "@/components/Layout/Header/Main-header";
 import React from "react";
-import Header from "../../search/header";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
-        <div className="from-light-primary-transparent to-primary-transparent bg-gradient-to-b p-4 shadow-md">
-          <Header />
-          <div className="text-primary-foreground container mx-auto p-4 lg:max-w-[1170px]">
+        <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-4 shadow-md">
+          <MainHeader />
+          <div className="container mx-auto p-4 text-primary-foreground lg:max-w-[1170px]">
             <h2 className="text-[45px] font-black md:text-[60px]">
-              <span className="text-main text-[45px] font-black md:text-[60px]">
+              <span className="text-[45px] font-black text-main md:text-[60px]">
                 Job
               </span>{" "}
               Details

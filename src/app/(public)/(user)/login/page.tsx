@@ -10,14 +10,14 @@ import LoginForm from "./LoginForm";
 
 const Login = () => {
   const [userType, setUserType] = useState<"jobSeeker" | "employer">(
-    "employer"
+    "employer",
   );
 
   // Conditional image rendering
   const coverImage = userType === "jobSeeker" ? doctor : login;
 
   return (
-    <Box className="min-h-[calc(100vh-100px)] px-5 w-full flex justify-center items-center flex-col">
+    <Box className="flex min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center px-5">
       {/* Main Content */}
       <Container
         sx={{
@@ -29,13 +29,13 @@ const Login = () => {
         }}
       >
         {/* Left Section: Photo */}
-        <Box className="hidden md:flex flex-col justify-center items-center relative flex-1 px-2">
+        <Box className="relative hidden flex-1 flex-col items-center justify-center px-2 md:flex">
           {/* Main Background Image */}
           <Image
             src={coverImage}
             alt="Login Cover"
-            style={{ objectFit: "cover", width: "100%", height: "100%" }}
             priority={true}
+            className="max-h-[80vh] w-full object-cover p-4"
           />
 
           {/* Overlaid Text */}
