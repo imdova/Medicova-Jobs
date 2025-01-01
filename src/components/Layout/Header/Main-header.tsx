@@ -2,21 +2,44 @@
 import LogoIcon from "@/components/icons/logo";
 import ItemSelector from "@/components/UI/menu-item";
 import NotificationModal from "@/components/UI/Notification-modal";
-import NotificationCard from "@/components/UI/NotificationCard";
-import { dummyNotifications } from "@/constants/notifications";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import { Close, NotificationsNone } from "@mui/icons-material";
-import { Avatar, Drawer, IconButton, List } from "@mui/material";
+import { LinkType } from "@/types/side-bar";
+import { NotificationsActive, NotificationsNone } from "@mui/icons-material";
+import { Drawer, IconButton, List } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+const homeLinks: LinkType[] = [
+  {
+    title: "Jobs",
+    url: "/search",
+  },
+  {
+    title: "Boost",
+    url: "#",
+  },
+  {
+    title: "Prep",
+    url: "#",
+  },
+  {
+    title: "Learn",
+    url: "#",
+  },
+  {
+    title: "Career Advice",
+    url: "#",
+  },
+];
+
 const Header: React.FC = () => {
   const { data: session } = useSession();
   const pathname = usePathname(); // Get the current path
+  const currentPage = pathname.split("/")[1];
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const close = () => setIsMenuOpen(false);
@@ -64,46 +87,9 @@ const Header: React.FC = () => {
           aria-label="Main navigation"
         >
           <ul className="flex md:gap-4 lg:gap-12">
-            <li>
-              <Link
-                href="#"
-                className="text-[16px] font-semibold hover:text-primary focus:text-primary focus:outline-none"
-              >
-                Jobs
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="text-[16px] font-semibold hover:text-primary focus:text-primary focus:outline-none"
-              >
-                Boost
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="text-[16px] font-semibold hover:text-primary focus:text-primary focus:outline-none"
-              >
-                Prep
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="text-[16px] font-semibold hover:text-primary focus:text-primary focus:outline-none"
-              >
-                Learn
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="text-[16px] font-semibold hover:text-primary focus:text-primary focus:outline-none"
-              >
-                Career Advice
-              </Link>
-            </li>
+            {homeLinks.map((link, i) => (
+              <HeaderItem key={i} {...link} currentPage={currentPage} />
+            ))}
           </ul>
         </nav>
         {/* notification */}
@@ -114,14 +100,22 @@ const Header: React.FC = () => {
         {/* Actions */}
         {session?.user?.email ? (
           <div className="hidden gap-3 md:flex">
-            <IconButton
-              onClick={toggleNotification}
-              className="relative h-12 w-12"
-              size="medium"
-            >
-              <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
-              <NotificationsNone className="h-6 w-6 text-white" />
-            </IconButton>
+            <Link href="/notifications">
+              <IconButton
+                // onClick={toggleNotification}
+                className="relative h-12 w-12"
+                size="medium"
+              >
+                {currentPage !== "notifications" && (
+                  <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
+                )}
+                {currentPage === "notifications" ? (
+                  <NotificationsActive className="h-6 w-6 text-white" />
+                ) : (
+                  <NotificationsNone className="h-6 w-6 text-white" />
+                )}
+              </IconButton>
+            </Link>
             <Link href="/job-seeker/profile">
               {session?.user?.image ? (
                 <Image
@@ -180,6 +174,31 @@ const Header: React.FC = () => {
     </header>
   );
 };
+
+const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
+  title,
+  url,
+  currentPage,
+}) => {
+  const route = getLastSegment(url);
+  const isActive = currentPage == route;
+  return (
+    <li>
+      <Link
+        href={url || "#"}
+        className={`${isActive ? "font-black text-white" : "font-semibold text-gray-200"} text-[16px] hover:text-white focus:outline-none`}
+      >
+        {title}
+      </Link>
+    </li>
+  );
+};
+
+function getLastSegment(url?: string) {
+  if (!url) return null; // Handle empty or undefined URLs
+  const segments = url.split("/").filter((segment) => segment); // Split and remove empty segments
+  return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
+}
 
 const MainHeader: React.FC = () => {
   return (
