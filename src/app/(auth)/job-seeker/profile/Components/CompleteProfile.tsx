@@ -18,7 +18,6 @@ const CompleteProfile: React.FC = () => {
       <Card
         sx={{
           padding: "16px",
-          marginTop: 3,
           backgroundColor: "#F8F8FD99",
           display: "flex",
           alignItems: "center",

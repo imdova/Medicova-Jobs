@@ -85,7 +85,7 @@ const HomePage = () => {
               alt="search background"
               width={400}
               height={400}
-              className="col-span-1 w-[300px] object-contain md:w-[200px] lg:w-[400px]"
+              className="col-span-1 h-auto w-[300px] object-contain md:w-[200px] lg:w-[400px]"
             />
           </div>
         </div>
@@ -153,6 +153,8 @@ const HomePage = () => {
                 <Flag
                   code={country.code.toLocaleLowerCase()}
                   name={country.name}
+                  height={35}
+                  width={50}
                   className="my-4 ml-4 mr-2 h-[35px] w-[50px] rounded-lg object-cover"
                 />
                 <h6 className="font-semibold md:text-xl">{country.name}</h6>

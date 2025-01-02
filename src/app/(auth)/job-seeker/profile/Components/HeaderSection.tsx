@@ -1,94 +1,236 @@
 "use client";
-import React, { useState } from "react";
-import { Box, Avatar, IconButton, Typography, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Avatar,
+  Typography,
+  Button,
+  Grid,
+  IconButton,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FlagIcon from "@mui/icons-material/Flag";
+import EditIcon from "@mui/icons-material/Edit";
+import ShareIcon from "@mui/icons-material/Share";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BackupIcon from "@mui/icons-material/Backup";
+import bannerImage from "@/components/images/cover.png";
 
 const HeaderSection: React.FC = () => {
-  // State to hold the avatar image (either URL or undefined)
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+    }
+  }, []);
+
+  const handleEditProfileClick = () => {
+    router.push("/job-seeker/profile");
+  };
+
   const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
 
   // Handle deleting the avatar image
   const handleDeleteImage = () => {
-    setAvatarImage(undefined); // Remove the image by setting the state to undefined
+    setAvatarImage(undefined);
   };
 
   // Handle selecting a new image
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file); // Create a URL for the uploaded image
-      setAvatarImage(imageUrl); // Update the avatar image state
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarImage(imageUrl);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        justifyContent: { xs: "center", md: "space-between" },
-        gap: 2,
-        backgroundColor: "#fff",
-        padding: "30px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        marginBottom: "16px",
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Avatar */}
-        <Avatar
-          src={avatarImage || undefined}
+    <Grid item xs={12}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          borderRadius: "8px",
+          overflow: "hidden",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          paddingBottom: "20px",
+        }}
+      >
+        {/* Background Cover Image */}
+        <Box
+          component="div"
           sx={{
-            width: 110,
-            height: 110,
-            borderRadius: "50%",
-            boxShadow: "7px 4px 7px 4px rgba(0, 0, 0, 0.2)",
-            border: "4px solid white",
+            width: "100%",
+            height: { xs: "150px", sm: "200px" },
+            backgroundImage: `url(/images/cover.png)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative",
           }}
-        />
-        {/* Typography and IconButton */}
-        <Box sx={{ marginLeft: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            John Doe
-          </Typography>
-          <Typography variant="body2" sx={{ color: "gray" }}>
-            You can upload a .jpg, .png, or .gif photo with max size of 5MB.
-          </Typography>
-
-          {/* IconButton for deleting image below typography */}
-          <IconButton
-            size="medium"
+        >
+          {/* Avatar Positioned on Background Image */}
+          <Avatar
+            alt="Profile"
+            src={avatarImage || undefined}
             sx={{
-              marginTop: 1,
-              color: "#E34817",
+              position: "absolute",
+              bottom: "-50px",
+              left: "20px",
+              width: { xs: 80, sm: 120 },
+              height: { xs: 80, sm: 120 },
+              border: "6px solid white",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
             }}
-            onClick={handleDeleteImage}
-          >
-            <DeleteIcon sx={{ fontSize: "25px" }} />
-          </IconButton>
+          />
 
-          {/* File input to upload a new avatar */}
-          <Button
-            variant="contained"
-            color="primary"
-            component="label"
-            startIcon={<BackupIcon />}
-            className="m-3"
+          {/* Container for the Delete Icon and Upload Button */}
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "-50px",
+              left: "140px",
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+            }}
           >
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </Button>
+            {/* Delete Icon Button */}
+            <IconButton
+              size="medium"
+              sx={{
+                color: "#E34817",
+              }}
+              onClick={handleDeleteImage}
+            >
+              <DeleteIcon sx={{ fontSize: "25px" }} />
+            </IconButton>
+
+            {/* Upload Button */}
+            <Button
+              variant="contained"
+              color="primary"
+              component="label"
+              startIcon={<BackupIcon />}
+            >
+              Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Profile Section */}
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            padding: "20px",
+            borderRadius: "0 0 8px 8px",
+            marginTop: "45px",
+          }}
+        >
+          <Grid container alignItems="start">
+            {/* Text Section */}
+            <Grid item xs={12} sm={9}>
+              <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#000",
+                    marginBottom: "4px",
+                    fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                  }}
+                >
+                  Jake Gyll
+                  <CheckCircleIcon
+                    color="primary"
+                    sx={{
+                      fontSize: { xs: 20, sm: 24 },
+                      marginLeft: "8px", // Adds space between the text and the icon
+                    }}
+                  />
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                >
+                  Cardiology Consultant at{" "}
+                  <span style={{ color: "#000" }}>Saudi German Hospital</span>
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                >
+                  35 years old - Egyptian - Married - Cardiology - 10 years
+                  Experience
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#999",
+                    display: "flex",
+                    justifyContent: { xs: "center", sm: "flex-start" },
+                    alignItems: "center",
+                    gap: 0.5,
+                    marginY: "8px",
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                  }}
+                >
+                  <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />{" "}
+                  Cairo, Egypt
+                </Typography>
+                <Button
+                  variant="text"
+                  sx={{
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    backgroundColor: "var(--primary-100)",
+                    gap: 1,
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                  }}
+                >
+                  <FlagIcon
+                    color="primary"
+                    sx={{ fontSize: { xs: 18, sm: 20 } }}
+                  />
+                  Open For Opportunities
+                </Button>
+              </Box>
+            </Grid>
+
+            {/* Edit Profile Button */}
+            <Grid item xs={12} sm={3}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: { xs: "center", sm: "flex-end" },
+                  height: "100%",
+                  gap: 1,
+                }}
+              >
+                {/* Edit Button */}
+                <IconButton onClick={handleEditProfileClick}>
+                  <EditIcon />
+                </IconButton>
+
+                {/* Share Button */}
+                <IconButton>
+                  <ShareIcon />
+                </IconButton>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
-    </Box>
+    </Grid>
   );
 };
 

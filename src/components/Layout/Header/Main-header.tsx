@@ -5,6 +5,7 @@ import NotificationModal from "@/components/UI/Notification-modal";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { LinkType } from "@/types/side-bar";
+import { getLastSegment } from "@/util";
 import { NotificationsActive, NotificationsNone } from "@mui/icons-material";
 import { Drawer, IconButton, List } from "@mui/material";
 import { useSession } from "next-auth/react";
@@ -116,7 +117,7 @@ const Header: React.FC = () => {
                 )}
               </IconButton>
             </Link>
-            <Link href="/job-seeker/profile">
+            <Link href={`/me/${session?.user?.name || "1"}`}>
               {session?.user?.image ? (
                 <Image
                   src={session?.user?.image}
@@ -186,19 +187,13 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
     <li>
       <Link
         href={url || "#"}
-        className={`${isActive ? "font-black text-white" : "font-semibold text-gray-200"} text-[16px] hover:text-white focus:outline-none`}
+        className={`${isActive ? "font-black" : "font-semibold"} text-[16px] text-white focus:outline-none`}
       >
         {title}
       </Link>
     </li>
   );
 };
-
-function getLastSegment(url?: string) {
-  if (!url) return null; // Handle empty or undefined URLs
-  const segments = url.split("/").filter((segment) => segment); // Split and remove empty segments
-  return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
-}
 
 const MainHeader: React.FC = () => {
   return (

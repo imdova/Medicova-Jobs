@@ -7,38 +7,83 @@ import {
   HelpOutline,
   HomeOutlined,
   MessageOutlined,
-  PersonOffOutlined,
+  NotificationsActiveOutlined,
+  Person,
   Search,
   SettingsOutlined,
 } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getLastSegment } from "@/util";
 
-// interface TabPanelProps {
-//   children?: React.ReactNode;
-//   index: number;
-//   value: number;
-// }
+type NavItem = {
+  icon?: React.ElementType;
+  label?: string;
+  path?: string;
+  notifications?: number;
+  section?: string; // Optional section header
+  type?: "divider" | "text";
+};
 
-// function TabPanel(props: TabPanelProps) {
-//   const { children, value, index, ...other } = props;
+const navigationItems: NavItem[] = [
+  {
+    icon: HomeOutlined,
+    label: "Home",
+    path: "/",
+  },
+  {
+    icon: Person,
+    label: "My Profile",
+    path: "/me/1",
+  },
+  {
+    icon: MessageOutlined,
+    label: "Messages",
+    path: "/chat",
+    notifications: 3,
+  },
+  {
+    icon: DescriptionOutlined,
+    label: "My Applications",
+    path: "/job-seeker/my-applications",
+  },
+  {
+    icon: Search,
+    label: "Find Jobs",
+    path: "/search",
+  },
+  {
+    icon: BusinessOutlined,
+    label: "Browse Companies",
+    path: "/job-seeker/browse-companies",
+  },
 
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`vertical-tabpanel-${index}`}
-//       aria-labelledby={`vertical-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box sx={{ p: 3 }}>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
+  {
+    icon: NotificationsActiveOutlined,
+    label: "Notifications",
+    path: "/notifications",
+    notifications: 4,
+  },
+  {
+    type: "divider",
+  },
+  {
+    section: "Settings",
+    type: "text",
+  },
+  {
+    icon: SettingsOutlined,
+    label: "Settings",
+    path: "/job-seeker/settings",
+  },
+  {
+    icon: HelpOutline,
+    label: "Help Center",
+    path: "#",
+  },
+];
 
 function a11yProps(index: number) {
   return {
@@ -56,7 +101,14 @@ function a11yProps(index: number) {
 }
 
 export default function VerticalTabs() {
-  const [value, setValue] = useState(3);
+  const pathname = usePathname(); // Get the current path
+  const currentPage = pathname.split("/")[1];
+  const activeTabIndex = navigationItems.findIndex(
+    (link) => getLastSegment(link.path) === currentPage,
+  );
+  const [value, setValue] = useState(
+    activeTabIndex > 0 ? activeTabIndex : null,
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -67,7 +119,8 @@ export default function VerticalTabs() {
       orientation="vertical"
       value={value}
       onChange={handleChange}
-      aria-label="Vertical tabs example"
+      aria-label="nav tabs example"
+      role="navigation"
       TabIndicatorProps={{
         sx: {
           backgroundColor: "var(--light-primary)", // Set the color of the indicator
@@ -79,68 +132,43 @@ export default function VerticalTabs() {
         },
       }}
     >
-      <Tab
-        icon={<HomeOutlined />}
-        label="Home"
-        iconPosition="start"
-        {...a11yProps(0)}
-      />
-      <Tab
-        // icon={<Message />}
-        label={
-          <div className="flex w-full flex-row items-center justify-between">
-            <div className="flex flex-row items-center gap-2">
-              <MessageOutlined /> <span>Messages</span>
-            </div>
-            <div
-              className={`${value === 1 ? "text-light-primary bg-primary-foreground" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
-            >
-              3
-            </div>
-          </div>
+      {navigationItems.map((item, index) => {
+        const IconComponent = item.icon;
+        if (item.type === "divider") {
+          return <Divider key={index} className="mt-2" />;
+        } else if (item.type === "text") {
+          return (
+            <p key={index} className="p-4 text-sm uppercase text-secondary">
+              {item.section}
+            </p>
+          );
         }
-        // iconPosition="start"
-        {...a11yProps(1)}
-      />
-      <Tab
-        icon={<DescriptionOutlined />}
-        label="My Applications"
-        iconPosition="start"
-        {...a11yProps(2)}
-      />
-      <Tab
-        icon={<Search />}
-        iconPosition="start"
-        label="Find Jobs"
-        {...a11yProps(3)}
-      />
-      <Tab
-        icon={<BusinessOutlined />}
-        iconPosition="start"
-        label="Browse Companies"
-        {...a11yProps(4)}
-      />
-      <Tab
-        icon={<PersonOffOutlined />}
-        iconPosition="start"
-        label="My Public Profile"
-        {...a11yProps(5)}
-      />
-      <Divider className="mt-2" />
-      <p className="text-secondary p-4 text-sm uppercase">Settings</p>
-
-      <Tab
-        icon={<SettingsOutlined />}
-        iconPosition="start"
-        label="settings"
-        {...a11yProps(6)}
-      />
-      <Tab
-        icon={<HelpOutline />}
-        iconPosition="start"
-        label="Help Center"
-        {...a11yProps(7)}
-      />
+        return (
+          <Tab
+            key={index}
+            // icon={<IconComponent />}
+            // label={item.label}
+            label={
+              <div className="flex w-full flex-row items-center justify-between gap-2">
+                <div className="flex flex-row items-center gap-2 text-left">
+                  {IconComponent && <IconComponent />} <span>{item.label}</span>
+                </div>
+                {item.notifications && (
+                  <div
+                    className={`${value === index ? "bg-primary-foreground text-light-primary" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
+                  >
+                    {item.notifications}
+                  </div>
+                )}
+              </div>
+            }
+            // iconPosition="start"
+            component={Link}
+            href={item.path || "#"}
+            {...a11yProps(index)}
+          />
+        );
+      })}
     </Tabs>
   );
 }
