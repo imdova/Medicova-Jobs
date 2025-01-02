@@ -18,6 +18,12 @@ module.exports = {
         main: "var(--text-main)",
         secondary: "var(--text-secondary)",
       },
+      scale: {
+        102: "1.02",
+      },
+      borderRadius: {
+        base: "10px",
+      },
     },
   },
   plugins: [],

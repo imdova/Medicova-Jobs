@@ -44,3 +44,31 @@ export function getLastEdit(date: Date): string {
 
   return formatDate(date);
 }
+export function getFullLastEdit(date: Date): string {
+  const currentDate = new Date();
+  const diffTime = Math.abs(currentDate.getTime() - date.getTime());
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+  const diffDays = Math.floor(diffMinutes / (60 * 24));
+
+  // Check if it's today
+  if (diffDays === 0) {
+    if (diffMinutes === 0) {
+      return "now";
+    }
+
+    const diffHours = Math.floor(diffMinutes / 60);
+
+    if (diffHours === 0) {
+      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+    }
+
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  }
+
+  // Check if it's within the last 15 days
+  if (diffDays <= 15) {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  }
+
+  return formatDate(date);
+}

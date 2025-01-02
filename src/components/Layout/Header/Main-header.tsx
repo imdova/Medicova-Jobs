@@ -186,7 +186,7 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
     <li>
       <Link
         href={url || "#"}
-        className={`${isActive ? "font-black text-white" : "font-semibold text-gray-200"} text-[16px] hover:text-white focus:outline-none`}
+        className={`${isActive ? "font-black" : "font-semibold"} text-[16px] text-white focus:outline-none`}
       >
         {title}
       </Link>
