@@ -5,10 +5,10 @@ import HeaderSection from "./Components/HeaderSection";
 import AboutCompany from "./Components/AboutCompany";
 import ProfileForm from "./Components/ProfileForm";
 import JobCard from "./Components/JobCard";
-import CompleteProfile from "../../job-seeker/general-info/Components/CompleteProfile";
-import PublicProfile from "../../job-seeker/general-info/Components/PublicProfile";
-import ContactInfoSection from "../../job-seeker/general-info/Components/ContactInfoSection";
-import SocialMediaSection from "../../job-seeker/general-info/Components/SocialMediaSection";
+import CompleteProfile from "../../job-seeker/profile/Components/CompleteProfile";
+import PublicProfile from "../../job-seeker/profile/Components/PublicProfile";
+import ContactInfoSection from "../../job-seeker/profile/Components/ContactInfoSection";
+import SocialMediaSection from "../../job-seeker/profile/Components/SocialMediaSection";
 
 const ProfilePage = () => {
   return (

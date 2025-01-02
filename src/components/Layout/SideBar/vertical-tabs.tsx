@@ -16,6 +16,7 @@ import { Divider } from "@mui/material";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getLastSegment } from "@/util";
 
 type NavItem = {
   icon?: React.ElementType;
@@ -31,6 +32,11 @@ const navigationItems: NavItem[] = [
     icon: HomeOutlined,
     label: "Home",
     path: "/",
+  },
+  {
+    icon: Person,
+    label: "My Profile",
+    path: "/me/1",
   },
   {
     icon: MessageOutlined,
@@ -53,11 +59,7 @@ const navigationItems: NavItem[] = [
     label: "Browse Companies",
     path: "/job-seeker/browse-companies",
   },
-  {
-    icon: Person,
-    label: "My Profile",
-    path: "/job-seeker/profile",
-  },
+
   {
     icon: NotificationsActiveOutlined,
     label: "Notifications",
@@ -102,9 +104,11 @@ export default function VerticalTabs() {
   const pathname = usePathname(); // Get the current path
   const currentPage = pathname.split("/")[1];
   const activeTabIndex = navigationItems.findIndex(
-    (link) => link.path === `/${currentPage}`,
+    (link) => getLastSegment(link.path) === currentPage,
   );
-  const [value, setValue] = useState(activeTabIndex);
+  const [value, setValue] = useState(
+    activeTabIndex > 0 ? activeTabIndex : null,
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

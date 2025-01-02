@@ -72,3 +72,10 @@ export function getFullLastEdit(date: Date): string {
 
   return formatDate(date);
 }
+
+export function getLastSegment(url?: string) {
+  if (!url) return null; // Handle empty or undefined URLs
+  const segments = url.split("/").filter((segment) => segment); // Split and remove empty segments
+  if (segments.find((s) => s === "me")) return "me";
+  return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
+}

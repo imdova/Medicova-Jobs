@@ -40,6 +40,8 @@ interface NotificationItem {
   description: string;
   tags: { status: "normal" | "warning" | "error" | "success"; text: string }[];
   timeStamp: Date;
+  isRead: boolean;
+  readTime: Date | null;
   category: string;
   image: string;
 }
@@ -60,10 +62,12 @@ const notifications: NotificationItem[] = [
       { status: "normal", text: "Remote" },
     ],
     timeStamp: now,
+    isRead: false,
     category: "Job Recommendations",
     icon: Search,
     image:
       "https://www.gravatar.com/avatar/fd2db016ceeecd9303e31266a502d7ab?s=128&d=identicon&r=PG",
+    readTime: null,
   },
   {
     title: "Application Submitted to XYZ Hospital.",
@@ -74,9 +78,11 @@ const notifications: NotificationItem[] = [
       { status: "normal", text: "Full-Time" },
     ],
     timeStamp: twoHoursAgo,
+    isRead: false,
     category: "Application Updates",
     icon: CheckCircleOutline,
     image: "https://media.vanguardcommunications.net/Hospital-exterior.jpg",
+    readTime: null,
   },
   {
     title: "ABC Healthcare Viewed Your Profile.",
@@ -84,9 +90,11 @@ const notifications: NotificationItem[] = [
       "An employer has viewed your profile. Make sure your profile is complete to increase your chances.",
     tags: [{ status: "warning", text: "Urgent" }],
     timeStamp: twentyHoursAgo,
+    isRead: true,
     category: "Profile Updates",
     icon: Edit,
     image: "https://media.vanguardcommunications.net/Hospital-exterior.jpg",
+    readTime: twentyHoursAgo,
   },
   {
     title: "Your Profile is 80% Complete.",
@@ -97,9 +105,11 @@ const notifications: NotificationItem[] = [
       { status: "normal", text: "Action Required" },
     ],
     timeStamp: twoDaysAgo,
+    isRead: true,
     category: "Reminders",
     icon: Build,
     image: "https://media.vanguardcommunications.net/Hospital-exterior.jpg",
+    readTime: twoDaysAgo,
   },
   {
     title: "3 Steps to Improve Your Resume.",
@@ -110,10 +120,12 @@ const notifications: NotificationItem[] = [
       { status: "normal", text: "Resource" },
     ],
     timeStamp: november11th2024,
+    isRead: true,
     category: "Tips & Resources",
     icon: Book,
     image:
       "https://i.iheart.com/v3/re/new_assets/66844a33690c77c14847c03c?ops=contain(1480,0)",
+    readTime: november11th2024,
   },
 ];
 
@@ -143,8 +155,8 @@ const NotificationsPage = () => {
           </Button>
         </div>
 
-        <div className="mt-4 grid grid-flow-row rounded-[10px] border border-gray-100 bg-white px-2 shadow-lg">
-          <div className="flex items-center justify-between gap-3 overflow-hidden border-b border-gray-100 p-3">
+        <div className="mt-4 grid grid-flow-row rounded-[10px] border border-gray-100 bg-white shadow-lg">
+          <div className="flex items-center justify-between gap-3 overflow-hidden border-b border-gray-100 p-3 px-5">
             <Tabs
               value={value}
               onChange={handleChange}
@@ -169,7 +181,7 @@ const NotificationsPage = () => {
                 />
               ))}
               <span className="mx-4 block h-10 w-1 self-center border-l border-gray-300"></span>
-              <Tab label={<p className="text-gray-400">Archive</p>} />
+              <Tab label={<p className="text-sm text-gray-400">Archive</p>} />
             </Tabs>
             <IconButton size="medium">
               <Settings />
@@ -180,7 +192,7 @@ const NotificationsPage = () => {
             return (
               <div
                 key={index}
-                className="flex justify-between gap-3 border-b border-gray-100 p-3"
+                className={` ${item.isRead ? "" : "bg-neutral-50"} flex justify-between gap-3 border-b border-gray-100 p-3 px-5`}
               >
                 <div className="grid grid-cols-1 grid-rows-1">
                   <Image
