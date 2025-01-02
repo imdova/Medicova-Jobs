@@ -160,68 +160,6 @@ const ProfileForm: React.FC = () => {
               </Box>
             </Box>
 
-            {/* contact info */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", md: "nowrap" },
-                gap: 4,
-                marginY: 2,
-              }}
-            >
-              {/* Phone Number */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Phone Number *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  placeholder="Enter your Phone Number"
-                  type="tel"
-                />
-              </Box>
-
-              {/* Whatsapp nymber */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  WhatsApp Number *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  placeholder="Enter your WhatsApp Number"
-                  type="tel"
-                />
-              </Box>
-            </Box>
-
             {/* personal info */}
             <Box
               sx={{
@@ -230,7 +168,7 @@ const ProfileForm: React.FC = () => {
                 marginY: 2,
               }}
             >
-              <Box sx={{ width: "50%" }}>
+              <Box sx={{ width: "100%" }}>
                 <InputLabel
                   sx={{
                     marginBottom: 1,
@@ -316,7 +254,7 @@ const ProfileForm: React.FC = () => {
             </Box>
             {/* Nationality  */}
             <Box sx={{ marginY: 2 }}>
-              <Box sx={{ width: "50%" }}>
+              <Box sx={{ width: "100%" }}>
                 <InputLabel
                   sx={{
                     marginBottom: 1,
