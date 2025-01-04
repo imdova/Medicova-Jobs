@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Grid } from "@mui/material";
+import { Button } from "@mui/material";
 import Image from "next/image";
 import { Ellipse5, GridIcon } from "@/components/icons/icons";
 import EastIcon from "@mui/icons-material/East";
@@ -26,138 +26,112 @@ const cards: Card[] = [
 
 const page = () => {
   return (
-    <div>
-      <div className="flex flex-col gap-8 p-2 md:p-5 lg:flex-row">
-        <div className="flex-1">
-          {/* cards */}
-          <div className="grid w-full grid-cols-2 justify-between gap-2 sm:gap-5 md:grid-cols-3 md:gap-8 lg:gap-10">
-            {cards.map((card, index) => (
-              <StatusCard
-                key={index}
-                card={card}
-                lastOne={index === cards.length - 1}
-              />
-            ))}
-          </div>
-          {/* search */}
-          <div className="flex gap-2 pt-5 lg:hidden">
-            <div className="flex w-full items-center gap-2">
-              <Search color="primary" />
-              <input
-                className="block w-full min-w-40 appearance-none border-b-2 border-gray-300 px-3 py-2 focus:border-[#2EAE7D] focus:outline-none"
-                placeholder="search by title eg: doctor"
-              />
-            </div>
-            <Button variant="contained" className="text-nowrap px-5">
-              CV Search
-            </Button>
-          </div>
-          {/* recent jobs */}
-          <h2 className="mx-3 mb-5 mt-10 text-3xl font-semibold text-main">
-            Recent{" "}
-            <span className="mt-5 text-3xl font-semibold text-light-primary">
-              Jobs
-            </span>
-          </h2>
-
-          <div>
-            <div className="flex flex-col gap-4 p-2 md:p-4">
-              {jobs.slice(0, 4).map((job) => (
-                <JobCard key={job.id} job={job} isEdit={true} />
-              ))}
-            </div>
-
-            <div className="flex w-full justify-center">
-              <Link
-                href="#"
-                className="group my-2 mt-5 text-xl text-primary hover:underline"
-              >
-                All Jobs
-                <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
-              </Link>
-            </div>
-          </div>
+    <div className="flex flex-col gap-8 lg:flex-row">
+      <div className="flex-1">
+        {/* cards */}
+        <div className="grid w-full grid-cols-2 justify-between gap-5 md:grid-cols-3">
+          {cards.map((card, index) => (
+            <StatusCard
+              key={index}
+              card={card}
+              lastOne={index === cards.length - 1}
+            />
+          ))}
         </div>
-        <div className="lg:max-w-[250px]">
-          <div className="flex w-full flex-col gap-2 bg-[#F7F7FD] p-4">
-            <h3 className="text-center text-lg">ELsalam Hospital</h3>
-            <Button variant="contained" sx={{ py: 2 }}>
-              View profile page
-            </Button>
-            <Button variant="outlined" sx={{ py: 2 }}>
-              Edit company page
-            </Button>
+        {/* search */}
+        <div className="flex gap-2 pt-5 lg:hidden">
+          <div className="flex w-full items-center gap-2">
+            <Search color="primary" />
+            <input
+              className="block w-full min-w-40 appearance-none border-b-2 border-gray-300 px-3 py-2 focus:border-[#2EAE7D] focus:outline-none"
+              placeholder="search by title eg: doctor"
+            />
           </div>
-          <h3 className="my-3 mb-6 text-lg font-semibold text-main">
-            You are now a{" "}
-            <span className="text-light-primary">Silver Plan</span>{" "}
-          </h3>
-          <div className="relative overflow-hidden rounded-3xl bg-primary p-10">
-            <Ellipse5 className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 text-primary-100" />
-            <GridIcon className="absolute right-4 top-4" />
-            <h4 className="mb-2 text-lg font-bold text-white">
-              Upgrade your Account to Get more applicants
-            </h4>
-            <button className="rounded-xl bg-white px-4 py-2 text-black shadow-xl transition-colors duration-300 hover:bg-black hover:text-white">
-              Upgrade
-            </button>
-          </div>
-          <div className="mt-5 hidden flex-col gap-2 p-2 lg:flex">
-            {/* <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Job Candidates CV's"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="primary" />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 0,
-                },
-                minWidth: 200,
-              }}
-            /> */}
-            <div className="flex items-center gap-2">
-              <Search color="primary" />
-              <input
-                className="block w-full min-w-52 appearance-none border-b-2 border-gray-300 px-3 py-2 focus:border-[#2EAE7D] focus:outline-none"
-                placeholder="search by title eg: doctor"
-              />
-            </div>
-            <Button variant="contained" className="text-xl">
-              Search
-            </Button>
-          </div>
+          <Button variant="contained" className="text-nowrap px-5">
+            CV Search
+          </Button>
         </div>
-      </div>
-      {/* CV Search Folders */}
-      <div className="p-2 md:p-5">
-        <h2 className="mx-3 mb-5 mt-10 text-3xl font-semibold text-main">
-          CV Search{" "}
+        {/* recent jobs */}
+        <h2 className="mb-5 mt-10 text-3xl font-semibold text-main">
+          Recent{" "}
           <span className="mt-5 text-3xl font-semibold text-light-primary">
-            Folders
+            Jobs
           </span>
         </h2>
 
-        <div className="grid grid-cols-2 gap-2 p-2 md:grid-cols-3 lg:grid-cols-6">
-          <Suspense>
-            {folders.slice(0, 6).map((folder, index) => (
-              <FolderMainCard key={index} folder={folder} />
+        <div>
+          <div className="flex flex-col gap-4">
+            {jobs.slice(0, 4).map((job) => (
+              <JobCard key={job.id} job={job} isEdit={true} />
             ))}
-          </Suspense>
+          </div>
+
+          <div className="flex w-full justify-center">
+            <Link
+              href="/employer/job/manage-jobs"
+              className="group my-2 mt-5 text-xl text-primary hover:underline"
+            >
+              All Jobs
+              <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
+            </Link>
+          </div>
         </div>
-        <div className="flex w-full justify-center">
-          <Link
-            href="employer/search/saved-search"
-            className="group my-2 mt-5 text-xl text-primary hover:underline"
-          >
-            All Folders
-            <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
-          </Link>
+        <div>
+          <h2 className="mb-5 mt-10 text-3xl font-semibold text-main">
+            CV Search{" "}
+            <span className="mt-5 text-3xl font-semibold text-light-primary">
+              Folders
+            </span>
+          </h2>
+
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+            <Suspense>
+              {folders.slice(0, 6).map((folder, index) => (
+                <FolderMainCard key={index} folder={folder} />
+              ))}
+            </Suspense>
+          </div>
+          <div className="flex w-full justify-center">
+            <Link
+              href="/employer/search/saved-search"
+              className="group my-2 mt-5 text-xl text-primary hover:underline"
+            >
+              All Folders
+              <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div className="lg:max-w-[250px]">
+        <div className="flex w-full flex-col gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-xl">
+          <h6 className="text-center text-lg">ELsalam Hospital</h6>
+          <Button variant="contained">View profile page</Button>
+          <Button variant="outlined">Edit company page</Button>
+        </div>
+        <h6 className="mt-4 text-lg font-semibold text-main">
+          You are now a <span className="text-light-primary">Silver Plan</span>{" "}
+        </h6>
+        <div className="relative mt-2 overflow-hidden rounded-base bg-primary p-10">
+          <Ellipse5 className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 text-primary-100" />
+          <GridIcon className="absolute right-4 top-4" />
+          <h4 className="mb-2 text-lg font-bold text-white">
+            Upgrade your Account to Get more applicants
+          </h4>
+          <button className="rounded-xl bg-white px-4 py-2 text-black shadow-xl transition-colors duration-300 hover:bg-black hover:text-white">
+            Upgrade
+          </button>
+        </div>
+        <div className="mt-5 hidden flex-col gap-2 p-2 lg:flex">
+          <div className="flex items-center gap-2">
+            <Search color="primary" />
+            <input
+              className="block w-full min-w-52 appearance-none border-b-2 border-gray-300 px-3 py-2 focus:border-[#2EAE7D] focus:outline-none"
+              placeholder="search by title eg: doctor"
+            />
+          </div>
+          <Button variant="contained" className="text-xl">
+            Search
+          </Button>
         </div>
       </div>
     </div>
@@ -173,7 +147,7 @@ const StatusCard: React.FC<{ lastOne: boolean; card: Card }> = ({
   const Icon = icons[card.icon];
   return (
     <div
-      className={`${lastOne ? "col-span-2 md:col-span-1" : ""} flex justify-center gap-2 text-nowrap rounded-lg border border-light-primary bg-white p-4 pb-1 text-secondary shadow`}
+      className={`${lastOne ? "col-span-2 md:col-span-1" : ""} flex justify-center gap-2 text-nowrap rounded-base border border-gray-100 bg-white p-4 pb-1 text-secondary shadow-xl`}
     >
       <Icon className="h-[30px] w-[30px] text-primary" />
       <div>

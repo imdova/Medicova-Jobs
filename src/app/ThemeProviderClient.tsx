@@ -43,7 +43,7 @@ const theme = createTheme({
           color: "var(--primary-foreground)",
           fontWeight: "bold",
           textTransform: "none",
-          borderRadius: "0",
+          borderRadius: "10px",
           "&:hover": {
             background: "var(--primary-900)",
           },
@@ -56,6 +56,7 @@ const theme = createTheme({
           textTransform: "none", // Disable uppercase text
           fontWeight: "bold", // Bold text
           padding: "8px 16px", // Custom padding
+          borderRadius: "10px", // Add border radius
         },
         contained: {
           boxShadow: "none", // Remove shadow from contained buttons
@@ -65,7 +66,7 @@ const theme = createTheme({
         },
         outlined: {
           borderColor: "var(--primary)",
-          borderRadius: "0",
+          borderRadius: "10px",
           color: "var(--primary)",
           "&:hover": {
             borderColor: "var(--primary)",

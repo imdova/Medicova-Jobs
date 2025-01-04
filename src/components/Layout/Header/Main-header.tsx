@@ -14,6 +14,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+type HeaderType = "home" | "employer" | "job-seeker";
+
+interface MainHeaderProps {
+  headerType?: HeaderType;
+}
 const homeLinks: LinkType[] = [
   {
     title: "Jobs",
@@ -36,8 +41,30 @@ const homeLinks: LinkType[] = [
     url: "#",
   },
 ];
+const employerLinks: LinkType[] = [
+  {
+    title: "Dashboard",
+    url: "/employer/dashboard",
+  },
+  {
+    title: "My Jobs",
+    url: "/employer/job/manage-jobs",
+  },
+  {
+    title: "CV Search",
+    url: "/cv-search",
+  },
+  {
+    title: "Report",
+    url: "/report",
+  },
+  {
+    title: "Billing",
+    url: "/billing",
+  },
+];
 
-const Header: React.FC = () => {
+const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
   const { data: session } = useSession();
   const pathname = usePathname(); // Get the current path
   const currentPage = pathname.split("/")[1];
@@ -49,6 +76,13 @@ const Header: React.FC = () => {
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const toggleNotification = () => setNotificationOpen(!isNotificationOpen);
   const closeNotification = () => setNotificationOpen(false);
+
+  const links =
+    headerType === "job-seeker"
+      ? homeLinks
+      : headerType === "employer"
+        ? employerLinks
+        : homeLinks;
 
   return (
     <header>
@@ -88,7 +122,7 @@ const Header: React.FC = () => {
           aria-label="Main navigation"
         >
           <ul className="flex md:gap-4 lg:gap-12">
-            {homeLinks.map((link, i) => (
+            {links.map((link, i) => (
               <HeaderItem key={i} {...link} currentPage={currentPage} />
             ))}
           </ul>
@@ -195,10 +229,10 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
   );
 };
 
-const MainHeader: React.FC = () => {
+const MainHeader: React.FC<MainHeaderProps> = ({ headerType }) => {
   return (
     <NextAuthProvider>
-      <Header />
+      <Header headerType={headerType} />
     </NextAuthProvider>
   );
 };

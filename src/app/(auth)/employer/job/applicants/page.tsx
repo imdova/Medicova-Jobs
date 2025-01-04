@@ -24,6 +24,7 @@ import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
 import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import JobFilter from "@/app/(public)/search/filter";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage: React.FC = () => {
@@ -128,24 +129,23 @@ const ApplicantsPage: React.FC = () => {
     );
   };
   return (
-    <Box className="flex min-h-screen w-full flex-row bg-white p-2">
+    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1170px]">
       {/* Left Column: Filter Section */}
-      <FilterSections
-        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[120px] lg:block"
+      <JobFilter
         sections={filterSections}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
         searchKeys={["Residency (Location)"]}
       />
       {/* Right Column: Results Section */}
-      <Box className="w-full p-2 md:p-4 lg:w-[80%]">
+      <div className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="w-full pl-[39px]">
-          <h2 className="text-main mb-5 text-3xl font-bold">
+          <h2 className="mb-5 text-3xl font-bold text-main">
             Clinical Pharmacist in Damam, Saudi Arabia
           </h2>
         </div>
 
-        <Box className="flex justify-between pl-[39px]">
+        <div className="flex justify-between pl-[39px]">
           <div className="max-w-[calc(100vw-72px)]">
             <Tabs
               value={selectedTab}
@@ -179,7 +179,7 @@ const ApplicantsPage: React.FC = () => {
                 label={
                   <span className="flex items-center gap-1 normal-case">
                     Unlocked ({availableApplicants.length})
-                    <LockOpenIcon className="text-primary h-5 w-5" />
+                    <LockOpenIcon className="h-5 w-5 text-primary" />
                   </span>
                 }
               />
@@ -188,7 +188,7 @@ const ApplicantsPage: React.FC = () => {
                 label={
                   <span className="flex items-center gap-1 normal-case">
                     Shortlisted ({shortListed.length})
-                    <StarIcon className="text-primary h-5 w-5" />
+                    <StarIcon className="h-5 w-5 text-primary" />
                   </span>
                 }
               />
@@ -208,12 +208,12 @@ const ApplicantsPage: React.FC = () => {
               <MenuItem value="time-asc">Oldest</MenuItem>
             </Select>
           </FormControl>
-        </Box>
+        </div>
         <div className="mb-4 mt-2 flex items-center justify-between">
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="bg-primary-100 h-[32px] w-[32px]"
+              className="h-[32px] w-[32px] bg-primary-100"
             >
               {isAllSelect ? (
                 <DeselectIcon className="m-auto h-6 w-6" />
@@ -228,7 +228,7 @@ const ApplicantsPage: React.FC = () => {
                   aria-controls={open ? "Action-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
+                  className="h-fit rounded-md bg-primary-100 p-2 px-4 duration-300 hover:bg-primary hover:text-primary-foreground"
                 >
                   <p className="inline-block">Action</p>
                   <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -301,7 +301,7 @@ const ApplicantsPage: React.FC = () => {
               aria-controls={exportOpen ? "export-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={exportOpen ? "true" : undefined}
-              className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
+              className="h-fit rounded-md bg-primary-100 p-2 px-4 duration-300 hover:bg-primary hover:text-primary-foreground"
             >
               <p className="inline-block w-16">Export</p>
               <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -340,7 +340,7 @@ const ApplicantsPage: React.FC = () => {
           setCurrentPage={setCurrentPage}
           totalItems={doctors.length} // Pass the total items count
         />
-      </Box>
+      </div>
       <Snackbar
         open={showCopyAlert}
         autoHideDuration={3000}
@@ -348,7 +348,7 @@ const ApplicantsPage: React.FC = () => {
         message="Link copied to clipboard!"
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-    </Box>
+    </div>
   );
 };
 
