@@ -35,6 +35,7 @@ import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import { Doctor } from "@/types";
 import Flag from "./flagitem";
 import { formatName } from "@/util";
+import { KeyOutlined } from "@mui/icons-material";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -71,311 +72,212 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
     setAvailableApplicants((pv) => [...pv, doctor.id]);
   };
   return (
-    <div className="mb-4 flex">
+    <div className="flex flex-col md:flex-row">
       <button
         onClick={toggleSelect}
         className={`${
-          isSelected ? "border-primary bg-primary" : "border-[#D6DDEB]"
-        } mr-2 h-[24px] min-w-[24px] rounded-sm border-2 md:h-[32px] md:min-w-[32px]`}
+          isSelected ? "border-primary bg-primary" : "border-gray-100 bg-white"
+        } mr-1 h-[28px] w-[28px] rounded-base rounded-bl-none border-2 shadow-lg md:rounded-bl-base md:rounded-tr-none`}
       >
-        {isSelected && (
-          <CheckIcon className="text-primary-foreground m-auto h-5 w-5" />
-        )}
+        {isSelected && <CheckIcon className="m-auto h-5 w-5 text-white" />}
       </button>
-
-      <div className="flex w-full flex-col rounded-md border bg-white p-2 shadow-md md:p-5">
-        <div className="flex w-full flex-wrap justify-between gap-5 sm:flex-nowrap">
-          <div className="flex gap-5">
-            <div>
+      <div className="mb-2 flex w-full flex-col rounded-base rounded-tl-none border border-gray-100 bg-white p-2 shadow-xl md:p-5">
+        <div className="w-full">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2">
               <Avatar
-                src={
-                  doctor.image ||
-                  "https://randomuser.me/api/portraits/men/4.jpg"
-                }
+                src={doctor.image}
                 alt={isAvailable ? doctor.name : formatName(doctor.name)}
-                sx={{ width: { xs: 50, md: 100 }, height: { xs: 50, md: 100 } }}
+                sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
               />
-              <p className="text-secondary mt-2 max-w-[100px] text-center text-xs">
-                applied 6 days ago
-              </p>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h6 className="font-semibold text-main md:text-xl">
+                    {isAvailable ? doctor.name : formatName(doctor.name)}
+                  </h6>
+                  {isAvailable ? (
+                    <LockOpenIcon className="h-5 w-5 text-primary" />
+                  ) : (
+                    <LockIcon className="h-5 w-5 text-red-500" />
+                  )}
+                  <p className="text-xs text-secondary md:text-sm">3d ago</p>
+                </div>
+                <p className="text-secondary">
+                  Cardiology Consultant at{" "}
+                  <strong className="text-main">Saudi German Hospital</strong>
+                </p>
+              </div>
             </div>
-            <div>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <Typography
-                  variant="h2"
-                  className="text-main"
-                  sx={{
-                    fontWeight: "600",
-                    fontSize: { xs: "16px", md: "22px" },
-                  }}
-                >
-                  {isAvailable ? doctor.name : formatName(doctor.name)}
-                </Typography>
-                {isAvailable ? (
-                  <LockOpenIcon className="text-primary h-5 w-5" />
-                ) : (
-                  <LockIcon className="h-5 w-5 text-red-500" />
-                )}
-              </Stack>
-              <div className="text-secondary my-1 flex max-w-[450px] flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <LocationOnIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+            {/* <IconButton
+              onClick={handleSaveClick}
+              aria-controls={saveOpen ? "save-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={saveOpen ? "true" : undefined}
+              size="medium"
+            >
+              <BookmarkBorderOutlined className="h-8 w-8 text-secondary" />
+            </IconButton> */}
+          </div>
+          <div className="flex flex-col items-end md:flex-row">
+            <div className="flex-1">
+              <div className="mt-1 flex flex-wrap items-center gap-2 md:flex-nowrap">
+                <h6 className="mr-2 hidden rounded-base bg-primary-100 px-2 py-1 text-main md:block">
+                  Contact Info :
+                </h6>
+                {/* <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <LocalPhoneIcon className="h-4 w-4 md:h-5 md:w-5" />
+                  <p className="text-xs md:text-base">{doctor.location}</p>
+                </div> */}
+                <div className="flex min-w-[80px] items-center rounded-base bg-primary-100 px-2 py-1 text-main">
+                  <LocalPhoneIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+                  {isAvailable ? (
+                    <span className="text-xs md:text-base">
+                      {doctor.contactInfo.phoneNumber}
+                    </span>
+                  ) : (
+                    <div className="col-span-1 row-span-1 grid h-fit">
+                      <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                      <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                        this is dumy number
+                      </span>
+                    </div>
+                  )}
+                  <IconButton
+                    disabled={!doctor.available}
+                    className="p-0 md:ml-2"
+                  >
+                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                  </IconButton>
+                </div>
+                <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
+                  <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+                  {isAvailable ? (
+                    <span className="h-fit text-sm text-main md:text-base">
+                      {doctor.contactInfo.email}
+                    </span>
+                  ) : (
+                    <div className="col-span-1 row-span-1 grid h-fit">
+                      <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                      <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                        this is dumy number
+                      </span>
+                    </div>
+                  )}
+                  <IconButton
+                    disabled={!doctor.available}
+                    className="p-0 md:ml-2"
+                  >
+                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                  </IconButton>
+                </div>
+              </div>
+              <div className="my-1 flex flex-wrap gap-2 text-main">
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">{doctor.location}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <PeopleAltIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <PeopleAltIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Doctors</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <WorkspacePremiumIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
                     {doctor.yearsOfExperience} years Experience
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <SchoolIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <SchoolIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
                     {doctor.education[0].degree} Degree
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <PersonIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Consultant</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MedicalServicesIcon
-                    color="primary"
-                    className="h-4 w-4 md:h-5 md:w-5"
-                  />
+                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                  <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Cardiology</p>
                 </div>
               </div>
-              <div className="my-2 flex flex-wrap items-center rounded bg-[#ECF7F3] p-1 py-2 md:mb-4 md:flex-nowrap md:px-4">
-                <h6 className="text-main text-sm font-semibold md:text-base">
-                  Contact Info :
-                </h6>
-                <div className="flex flex-wrap justify-between">
-                  <div className="mr-4 flex min-w-[80px] items-center">
-                    <LocalPhoneIcon
-                      color="primary"
-                      className="h-4 w-4 md:h-5 md:w-5"
-                    />
-                    {isAvailable ? (
-                      <span className="text-main mx-1 h-fit text-sm md:text-base">
-                        {doctor.contactInfo.phoneNumber}
-                      </span>
-                    ) : (
-                      <div className="col-span-1 row-span-1 grid h-fit">
-                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                          this is dumy number
-                        </span>
-                      </div>
-                    )}
-
-                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    </IconButton>
-                  </div>
-                  <div className="flex items-center">
-                    <EmailIcon
-                      color="primary"
-                      className="h-4 w-4 md:h-5 md:w-5"
-                    />
-                    {isAvailable ? (
-                      <span className="text-main mx-1 h-fit break-all text-sm md:text-base">
-                        {doctor.contactInfo.email}
-                      </span>
-                    ) : (
-                      <div className="col-span-1 row-span-1 grid h-fit">
-                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                          this is dummy email.com
-                        </span>
-                      </div>
-                    )}
-                    <IconButton disabled={!isAvailable} className="p-0 md:p-2">
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    </IconButton>
-                  </div>
-                </div>
+            </div>
+            <div className="mt-2 flex w-full flex-row gap-2 md:w-auto md:flex-col">
+              <div className="flex justify-between gap-2">
+                <IconButton
+                  disabled={!isAvailable}
+                  size="small"
+                  color="primary"
+                  sx={{
+                    border: 1,
+                    padding: "6px",
+                    borderColor: "grey.300",
+                    borderRadius: 0,
+                    "&:hover": { border: 1, borderColor: "primary.main" },
+                  }}
+                >
+                  <WhatsAppIcon className="h-5 w-5 md:h-6 md:w-6" />
+                </IconButton>
+                <IconButton
+                  disabled={!isAvailable}
+                  size="small"
+                  color="primary"
+                  sx={{
+                    border: 1,
+                    padding: "6px",
+                    borderColor: "grey.300",
+                    borderRadius: 0,
+                    "&:hover": { border: 1, borderColor: "primary.main" },
+                  }}
+                >
+                  <MessageIcon className="h-5 w-5 md:h-6 md:w-6" />
+                </IconButton>
+                <IconButton
+                  onClick={toggleShortListed}
+                  size="small"
+                  color="primary"
+                  sx={{
+                    border: 1,
+                    padding: "6px",
+                    borderColor: "grey.300",
+                    borderRadius: 0,
+                    "&:hover": { border: 1, borderColor: "primary.main" },
+                  }}
+                >
+                  {isShortListed ? (
+                    <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
+                  ) : (
+                    <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
+                  )}
+                </IconButton>
               </div>
+              {isAvailable ? (
+                <Button
+                  variant="outlined"
+                  className="w-full text-sm md:text-base"
+                  startIcon={<DownloadIcon className="h-5 w-5 md:h-6 md:w-6" />}
+                >
+                  Download CV
+                </Button>
+              ) : (
+                <Button
+                  startIcon={<KeyOutlined />}
+                  className="flex-1 text-nowrap"
+                  onClick={unlock}
+                  variant="contained"
+                >
+                  Unlock Profile
+                </Button>
+              )}
             </div>
-          </div>
-          <div className="flex w-full gap-2 sm:w-auto sm:flex-col">
-            <div className="flex justify-between gap-2">
-              <IconButton
-                disabled={!isAvailable}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
-              >
-                <WhatsAppIcon className="h-5 w-5 md:h-6 md:w-6" />
-              </IconButton>
-              <IconButton
-                disabled={!isAvailable}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
-              >
-                <MessageIcon className="h-5 w-5 md:h-6 md:w-6" />
-              </IconButton>
-              <IconButton
-                onClick={toggleShortListed}
-                size="small"
-                color="primary"
-                sx={{
-                  border: 1,
-                  padding: "6px",
-                  borderColor: "grey.300",
-                  borderRadius: 0,
-                  "&:hover": { border: 1, borderColor: "primary.main" },
-                }}
-              >
-                {isShortListed ? (
-                  <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
-                ) : (
-                  <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
-                )}
-              </IconButton>
-            </div>
-            {isAvailable ? (
-              <Button
-                variant="outlined"
-                className="w-full text-sm md:text-base"
-                startIcon={<DownloadIcon className="h-5 w-5 md:h-6 md:w-6" />}
-              >
-                Download CV
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                className="w-full"
-                onClick={unlock}
-                startIcon={<VpnKeyOutlinedIcon />}
-              >
-                Unlock Profile
-              </Button>
-            )}
           </div>
         </div>
-        <Experience
-          className="hidden flex-col items-center gap-2 bg-[#F8F8FD] p-5 md:flex"
-          {...doctor}
-        />
-        <Collapse
-          className="block md:hidden"
-          in={showMore}
-          timeout="auto"
-          unmountOnExit
-        >
-          <Experience
-            className="flex flex-col items-center gap-2 bg-[#F8F8FD] p-5"
-            {...doctor}
-          />
-        </Collapse>
-
-        <button
-          onClick={() => setShowMore((pv) => !pv)}
-          className="text-primary w-full px-2 pt-3 md:hidden"
-        >
-          {showMore
-            ? "Hide Experience & Education"
-            : "Show Experience & Education"}
-        </button>
       </div>
     </div>
   );
 };
 
 export default DoctorCard;
-
-const Experience: React.FC<Doctor & { className?: string }> = ({
-  id,
-  education,
-  experience,
-  className,
-}) => {
-  return (
-    <div className={className}>
-      {experience.map((exp, index) => (
-        <div
-          className="flex w-full max-w-[700px] flex-wrap items-center gap-1 md:gap-4"
-          key={`${id}-exp-${index}`}
-        >
-          <div className="flex w-[65%] items-center gap-3">
-            <WorkOutlineOutlinedIcon color="primary" />
-            <p className="text-main text-sm font-semibold md:text-base">
-              {exp.name}
-            </p>
-          </div>
-          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
-            <Flag {...exp.country} /> {exp.country.name}
-          </div>
-          <div>
-            <p className="text-secondary text-xs md:text-sm">
-              ({exp.startDate} - {exp.endDate})
-            </p>
-          </div>
-        </div>
-      ))}
-      {/* Education */}
-      {education.map((edu, index) => (
-        <div
-          className="flex w-full max-w-[700px] flex-wrap items-center gap-1 md:gap-4"
-          key={`${id}-edu-${index}`}
-        >
-          <div className="flex w-[65%] items-center gap-3">
-            <SchoolIcon color="primary" />
-            <div>
-              <p className="text-main text-sm font-semibold md:text-base">
-                {edu.name}
-              </p>
-              <p className="text-secondary text-xs md:text-sm">
-                {edu.degree} in {edu.specialty}
-              </p>
-            </div>
-          </div>
-          <div className="text-main w-fit rounded-md bg-white px-4 py-2 text-xs">
-            <Flag {...edu.country} /> {edu.country.name}
-          </div>
-          <div>
-            <p className="text-secondary text-xs md:text-sm">
-              ({edu.startDate} - {edu.endDate})
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 function toggleId(ids: string[], id: string): string[] {
   // Check if the ID already exists in the array

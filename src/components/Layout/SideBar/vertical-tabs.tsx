@@ -22,6 +22,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getLastSegment } from "@/util";
 
+type SideBarType = "employer" | "job-seeker";
+
+interface VerticalTabsProps {
+  sideBardType?: SideBarType;
+}
 type NavItem = {
   icon?: React.ElementType;
   label?: string;
@@ -183,11 +188,13 @@ function a11yProps(index: number) {
   };
 }
 
-export default function VerticalTabs() {
+export default function VerticalTabs({ sideBardType }: VerticalTabsProps) {
+  const links =
+    sideBardType === "employer" ? employerSideBarLinks : navigationItems;
   const pathname = usePathname(); // Get the current path
   let currentPage = pathname.split("/").pop();
   currentPage = pathname.includes("me") ? "me" : currentPage;
-  const activeTabIndex = employerSideBarLinks.findIndex((link) => {
+  const activeTabIndex = links.findIndex((link) => {
     return getLastSegment(link.path) == currentPage;
   });
   const [value, setValue] = useState(
@@ -216,7 +223,7 @@ export default function VerticalTabs() {
         },
       }}
     >
-      {employerSideBarLinks.map((item, index) => {
+      {links.map((item, index) => {
         const IconComponent = item.icon;
         if (item.type === "divider") {
           return <Divider key={index} className="mt-2" />;
