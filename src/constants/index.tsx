@@ -928,3 +928,18 @@ export const companies: CompanyItem[] = [
     tag: "healthcare",
   },
 ];
+
+export const countries = [
+  { name: "Egypt", code: "EG" },
+  { name: "Saudi Arabia", code: "SA" },
+  { name: "United Arab Emirates", code: "AE" },
+  { name: "Qatar", code: "QA" },
+  { name: "Kuwait", code: "KW" },
+  { name: "Oman", code: "OM" },
+  { name: "United States", code: "US" },
+  { name: "Canada", code: "CA" },
+  { name: "United Kingdom", code: "gb" },
+  { name: "Australia", code: "AU" },
+  { name: "Germany", code: "DE" },
+  { name: "India", code: "IN" },
+];

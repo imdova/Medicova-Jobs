@@ -4,13 +4,17 @@ import Tab from "@mui/material/Tab";
 import {
   BusinessOutlined,
   DescriptionOutlined,
+  FolderOutlined,
   HelpOutline,
   HomeOutlined,
   MessageOutlined,
   NotificationsActiveOutlined,
+  PaidOutlined,
   Person,
+  PostAddOutlined,
   Search,
   SettingsOutlined,
+  WorkOutline,
 } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 import { useState } from "react";
@@ -24,7 +28,8 @@ type NavItem = {
   path?: string;
   notifications?: number;
   section?: string; // Optional section header
-  type?: "divider" | "text";
+  type?: "divider" | "text" | "collapse";
+  links?: NavItem[];
 };
 
 const navigationItems: NavItem[] = [
@@ -85,6 +90,84 @@ const navigationItems: NavItem[] = [
   },
 ];
 
+export const employerSideBarLinks: NavItem[] = [
+  {
+    label: "Dashboard",
+    icon: HomeOutlined,
+    path: "/employer/dashboard",
+  },
+  {
+    label: "Profile",
+    icon: Person,
+    path: "/me/1",
+  },
+  {
+    label: "Company Info",
+    icon: BusinessOutlined,
+    path: "/employer/company-info",
+  },
+  {
+    label: "Manage Jobs",
+    icon: WorkOutline,
+    path: "/employer/job/manage-jobs",
+  },
+  {
+    label: "Post New Job",
+    icon: PostAddOutlined,
+    path: "/employer/job/posted",
+  },
+  {
+    label: "Applicants",
+    icon: WorkOutline,
+    path: "/employer/job/applicants",
+  },
+  {
+    label: "Search",
+    icon: Search,
+    path: "/employer/search",
+    links: [
+      {
+        label: "Saved Searches",
+        path: "/employer/search/saved-search",
+      },
+    ],
+  },
+  {
+    label: "My Folders",
+    icon: FolderOutlined,
+    path: "/employer/search/saved-search",
+  },
+  {
+    label: "Billing & Subscription",
+    icon: PaidOutlined,
+    path: "/employer/subscription-plans",
+  },
+  {
+    label: "Report",
+    icon: DescriptionOutlined,
+  },
+  {
+    label: "Chat",
+    icon: MessageOutlined,
+    path: "/chat",
+  },
+  {
+    type: "divider",
+  },
+  {
+    type: "text",
+    section: "Settings",
+  },
+  {
+    label: "Settings",
+    icon: SettingsOutlined,
+    path: "/employer/setting",
+  },
+  {
+    label: "Help Center",
+    icon: HelpOutline,
+  },
+];
 function a11yProps(index: number) {
   return {
     className:
@@ -102,12 +185,13 @@ function a11yProps(index: number) {
 
 export default function VerticalTabs() {
   const pathname = usePathname(); // Get the current path
-  const currentPage = pathname.split("/")[1];
-  const activeTabIndex = navigationItems.findIndex(
-    (link) => getLastSegment(link.path) === currentPage,
-  );
+  let currentPage = pathname.split("/").pop();
+  currentPage = pathname.includes("me") ? "me" : currentPage;
+  const activeTabIndex = employerSideBarLinks.findIndex((link) => {
+    return getLastSegment(link.path) == currentPage;
+  });
   const [value, setValue] = useState(
-    activeTabIndex > 0 ? activeTabIndex : null,
+    activeTabIndex >= 0 ? activeTabIndex : null,
   );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -132,7 +216,7 @@ export default function VerticalTabs() {
         },
       }}
     >
-      {navigationItems.map((item, index) => {
+      {employerSideBarLinks.map((item, index) => {
         const IconComponent = item.icon;
         if (item.type === "divider") {
           return <Divider key={index} className="mt-2" />;
@@ -141,6 +225,31 @@ export default function VerticalTabs() {
             <p key={index} className="p-4 text-sm uppercase text-secondary">
               {item.section}
             </p>
+          );
+        } else if (item.type === "collapse") {
+          return (
+            <Tab
+              key={index}
+              // icon={<IconComponent />}
+              // label={item.label}
+              label={
+                <div className="flex w-full flex-row items-center justify-between gap-2">
+                  <div className="flex flex-row items-center gap-2 text-left">
+                    {IconComponent && <IconComponent />}{" "}
+                    <span>{item.label}</span>
+                  </div>
+                  {item.notifications && (
+                    <div
+                      className={`${value === index ? "bg-primary-foreground text-light-primary" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
+                    >
+                      {item.notifications}
+                    </div>
+                  )}
+                </div>
+              }
+              // iconPosition="start"
+              {...a11yProps(index)}
+            />
           );
         }
         return (

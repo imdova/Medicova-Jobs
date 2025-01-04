@@ -67,13 +67,14 @@ const HomePage = () => {
                   ICU Nurse
                 </Link>
                 <Link
-                  href="/search?q=Obsteric Consultant Saudi Arabia"
+                  href="/search?q=Obsteric+Consultant&country=Saudi Arabia&cCd=SA"
                   className="rounded-full border border-white px-4 py-2 text-sm text-primary-foreground transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white"
                 >
                   Obsteric Consultant Saudi Arabia
                 </Link>
+
                 <Link
-                  href="/search?q=Internal Medicine Registrar Oman"
+                  href="/search?q=Internal Medicine&country=Oman&cCd=om"
                   className="rounded-full border border-white px-4 py-2 text-sm text-primary-foreground transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white"
                 >
                   Internal Medicine Registrar Oman
