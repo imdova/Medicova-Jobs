@@ -125,3 +125,15 @@ export interface CompanyItem {
   description: string;
   tag: string;
 }
+
+export interface NotificationItem {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  tags: { status: "normal" | "warning" | "error" | "success"; text: string }[];
+  timeStamp: Date;
+  isRead: boolean;
+  readTime: Date | null;
+  category: string;
+  image: string;
+}

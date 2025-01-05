@@ -3,17 +3,16 @@ import LogoIcon from "@/components/icons/logo";
 import ItemSelector from "@/components/UI/menu-item";
 import NotificationModal from "@/components/UI/Notification-modal";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
-import { NextAuthProvider } from "@/NextAuthProvider";
 import { useAppSelector } from "@/store/hooks";
+import { UserState } from "@/types";
 import { LinkType } from "@/types/side-bar";
 import { getLastSegment } from "@/util";
 import { NotificationsActive, NotificationsNone } from "@mui/icons-material";
 import { Drawer, IconButton, List } from "@mui/material";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type HeaderType = "home" | "employer" | "job-seeker";
 
@@ -65,18 +64,15 @@ const employerLinks: LinkType[] = [
   },
 ];
 
-const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
+const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
   const user = useAppSelector((state) => state.user);
   const pathname = usePathname(); // Get the current path
+
   const currentPage = pathname.split("/")[1];
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const close = () => setIsMenuOpen(false);
   const open = () => setIsMenuOpen(true);
-
-  const [isNotificationOpen, setNotificationOpen] = useState(false);
-  const toggleNotification = () => setNotificationOpen(!isNotificationOpen);
-  const closeNotification = () => setNotificationOpen(false);
 
   const links =
     headerType === "job-seeker"
@@ -129,63 +125,9 @@ const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
           </ul>
         </nav>
         {/* notification */}
-        <NotificationModal
-          isOpen={isNotificationOpen}
-          onClose={closeNotification}
-        />
+
         {/* Actions */}
-        {user?.email ? (
-          <div className="hidden gap-3 md:flex">
-            <Link href="/notifications">
-              <IconButton
-                className="relative h-12 w-12"
-                size="medium"
-                component="div" // Ensures proper accessibility
-              >
-                {currentPage !== "notifications" && (
-                  <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
-                )}
-                {currentPage === "notifications" ? (
-                  <NotificationsActive className="h-6 w-6 text-white" />
-                ) : (
-                  <NotificationsNone className="h-6 w-6 text-white" />
-                )}
-              </IconButton>
-            </Link>
-            <Link href={`/me/${user?.firstName || "1"}`}>
-              {user?.photo ? (
-                <Image
-                  src={user?.photo}
-                  alt={user?.firstName ?? "User Image"}
-                  height={48}
-                  width={48}
-                  className="h-12 w-12 rounded-full object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md"
-                />
-              ) : (
-                <div className="flex h-12 w-12 items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md">
-                  <span className="w-full text-center text-3xl uppercase text-white">
-                    {user?.firstName?.[0] ?? ""}
-                  </span>
-                </div>
-              )}
-            </Link>
-          </div>
-        ) : (
-          <div className="hidden gap-3 md:flex">
-            <Link
-              href="/register"
-              className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
-            >
-              Sign Up
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-[10px] bg-primary px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
-            >
-              Login
-            </Link>
-          </div>
-        )}
+        <HeaderAction {...user} currentPage={currentPage} />
 
         {/* Mobile Menu Button */}
         <button
@@ -232,12 +174,83 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
   );
 };
 
-const MainHeader: React.FC<MainHeaderProps> = ({ headerType }) => {
-  return (
-    <NextAuthProvider>
-      <Header headerType={headerType} />
-    </NextAuthProvider>
-  );
-};
-
 export default MainHeader;
+
+const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
+  id,
+  firstName,
+  photo,
+  currentPage,
+}) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+  if (id) {
+    return (
+      <div className="hidden gap-3 md:flex">
+        <NotificationModal anchorEl={anchorEl} onClose={handleClose} />
+        <IconButton
+          className="relative h-12 w-12"
+          size="medium"
+          onClick={handleClick}
+          disabled={currentPage === "notifications"}
+        >
+          {currentPage !== "notifications" && (
+            <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
+          )}
+          {currentPage === "notifications" ? (
+            <NotificationsActive className="h-6 w-6 text-white" />
+          ) : (
+            <NotificationsNone className="h-6 w-6 text-white" />
+          )}
+        </IconButton>
+        <Link href={`/me/${firstName || "1"}`}>
+          {photo ? (
+            <Image
+              src={photo}
+              alt={firstName ?? "User Image"}
+              height={48}
+              width={48}
+              className="h-12 w-12 rounded-full object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md"
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md">
+              <span className="w-full text-center text-3xl uppercase text-white">
+                {firstName?.[0] ?? ""}
+              </span>
+            </div>
+          )}
+        </Link>
+      </div>
+    );
+  } else {
+    return (
+      <div className="hidden gap-3 md:flex">
+        <Link
+          href="/register"
+          className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
+        >
+          Sign Up
+        </Link>
+        <Link
+          href="/login"
+          className="rounded-[10px] bg-primary px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
+        >
+          Login
+        </Link>
+      </div>
+    );
+  }
+};
