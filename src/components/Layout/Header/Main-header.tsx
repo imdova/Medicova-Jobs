@@ -4,6 +4,7 @@ import ItemSelector from "@/components/UI/menu-item";
 import NotificationModal from "@/components/UI/Notification-modal";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
 import { NextAuthProvider } from "@/NextAuthProvider";
+import { useAppSelector } from "@/store/hooks";
 import { LinkType } from "@/types/side-bar";
 import { getLastSegment } from "@/util";
 import { NotificationsActive, NotificationsNone } from "@mui/icons-material";
@@ -65,7 +66,7 @@ const employerLinks: LinkType[] = [
 ];
 
 const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
-  const { data: session } = useSession();
+  const user = useAppSelector((state) => state.user);
   const pathname = usePathname(); // Get the current path
   const currentPage = pathname.split("/")[1];
 
@@ -133,13 +134,13 @@ const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
           onClose={closeNotification}
         />
         {/* Actions */}
-        {session?.user?.email ? (
+        {user?.email ? (
           <div className="hidden gap-3 md:flex">
             <Link href="/notifications">
               <IconButton
-                // onClick={toggleNotification}
                 className="relative h-12 w-12"
                 size="medium"
+                component="div" // Ensures proper accessibility
               >
                 {currentPage !== "notifications" && (
                   <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
@@ -151,18 +152,20 @@ const Header: React.FC<MainHeaderProps> = ({ headerType = "home" }) => {
                 )}
               </IconButton>
             </Link>
-            <Link href={`/me/${session?.user?.name || "1"}`}>
-              {session?.user?.image ? (
+            <Link href={`/me/${user?.firstName || "1"}`}>
+              {user?.photo ? (
                 <Image
-                  src={session?.user?.image}
-                  alt={session?.user?.name ?? "User Image"}
+                  src={user?.photo}
+                  alt={user?.firstName ?? "User Image"}
                   height={48}
                   width={48}
                   className="h-12 w-12 rounded-full object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md"
                 />
               ) : (
-                <div className="h-12 w-12 rounded-full bg-gray-500 object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md">
-                  {session?.user?.name?.[0] ?? ""}
+                <div className="flex h-12 w-12 items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md">
+                  <span className="w-full text-center text-3xl uppercase text-white">
+                    {user?.firstName?.[0] ?? ""}
+                  </span>
                 </div>
               )}
             </Link>

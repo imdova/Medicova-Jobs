@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   TextField,
   Button,
   Typography,
   Divider,
-  InputLabel,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
@@ -15,8 +14,12 @@ import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import GoogleButton from "./googleButton";
-import { useRouter } from "next/navigation";
 import FacebookButton from "./facebookButton";
+import { apiCall, UseApiOptions } from "@/hooks/APIUse";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setUser } from "@/store/slices/userSlice";
+import { UserState } from "@/types";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   email: string;
@@ -24,21 +27,12 @@ interface FormData {
   rememberMe: boolean;
 }
 
-type UserType = "jobSeeker" | "employer";
-
-const user = {
-  email: "admin@medicova.com",
-  password: "123456",
-};
-
-interface LoginFormProps {
-  userType: "jobSeeker" | "employer";
-  setUserType: React.Dispatch<React.SetStateAction<"jobSeeker" | "employer">>;
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
+const LoginForm: React.FC = () => {
   const router = useRouter();
-  // const [userType, setUserType] = useState<UserType>("employer"); // default to jobSeeker
+  const user = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const {
     handleSubmit,
@@ -48,25 +42,45 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false,
     },
   });
 
-  const validateForm = (data: FormData) => {
-    if (data.email === user.email) {
-      if (data.password === user.password) {
-        return true;
+  async function login(data: FormData) {
+    const url = "/users/api/v1.0/employer-users/login";
+    const options: UseApiOptions = {
+      method: "POST",
+      data: data,
+      config: {
+        withCredentials: true,
+      },
+      userType: "employer-user",
+    };
+    setLoading(true);
+    try {
+      const response: UserState = await apiCall(url, options);
+      dispatch(setUser(response));
+      router.replace(`/me/${response.firstName}`);
+    } catch (error: any) {
+      if (error.status == "401") {
+        setError("Email Address or Password is incorrect");
+      } else {
+        console.error("🚀 ~ login ~ error:", error);
       }
+    } finally {
+      setLoading(false);
     }
-    setError("Email Address or Password is incorrect");
-    return false;
-  };
+  }
+
   const onSubmit = (data: FormData) => {
-    if (validateForm(data)) {
-      router.push("/profile");
-    }
-    console.log("Form Submitted:", data);
+    login(data);
   };
+
+  useEffect(() => {
+    if (user.id) {
+      router.replace(`/me/${user.firstName}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <Box
@@ -81,46 +95,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
         mx: "auto",
       }}
     >
-      <div className="mb-3 flex justify-center gap-2">
-        <Button
-          onClick={() => setUserType("jobSeeker")}
-          className={`${userType === "jobSeeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
-          variant="text"
-        >
-          Job Seeker
-        </Button>
-        <Button
-          onClick={() => setUserType("employer")}
-          className={`${userType === "employer" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
-          variant="text"
-        >
-          Employer
-        </Button>
-      </div>
-
-      <h4 className="text-main my-2 text-3xl font-bold">
+      <h4 className="my-2 text-3xl font-bold text-main">
         Welcome Back, in{" "}
-        <span className="text-light-primary my-2 text-3xl font-bold">
+        <span className="my-2 text-3xl font-bold text-light-primary">
           Medicova
         </span>
       </h4>
-      <Box
-        sx={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "center",
-          gap: 2,
-        }}
-      >
+      <div className="flex w-full justify-center gap-2">
         <NextAuthProvider>
           <GoogleButton>Login with Google</GoogleButton>
+
+          <FacebookButton>Login with Facebook</FacebookButton>
         </NextAuthProvider>
-        {userType === "jobSeeker" && (
-          <NextAuthProvider>
-            <FacebookButton>Login with Facebook</FacebookButton>
-          </NextAuthProvider>
-        )}
-      </Box>
+      </div>
       <Box
         sx={{
           display: "flex",
@@ -145,11 +132,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
       <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Email Field */}
         <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Email Address
-          </InputLabel>
           <Controller
             name="email"
             control={control}
@@ -164,6 +146,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
               <TextField
                 {...field}
                 fullWidth
+                label="Email Address"
+                variant="outlined"
+                id="email"
                 error={!!errors.email}
                 helperText={errors.email?.message}
               />
@@ -173,11 +158,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
 
         {/* Password Field */}
         <Box>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Password
-          </InputLabel>
           <Controller
             name="password"
             control={control}
@@ -187,6 +167,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
                 {...field}
                 type="password"
                 fullWidth
+                label="Password"
+                variant="outlined"
+                id="password"
                 error={!!errors.password}
                 helperText={errors.password?.message}
               />
@@ -226,12 +209,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
           />
           <Link
             href="/forget"
-            className="text-secondary font-semibold hover:underline"
+            className="font-semibold text-secondary hover:underline"
           >
             Forgot Password?
           </Link>
         </Box>
-        <Typography className="my-1 text-red-500">{error}</Typography>
+        <p className="my-1 text-red-500">{error}</p>
 
         {/* Submit Button */}
         <Button
@@ -246,15 +229,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, setUserType }) => {
           variant="contained"
           fullWidth
         >
-          Login
+          {loading ? "loading..." : "Login"}
         </Button>
 
         {/* Sign Up Link */}
-        <p className="text-secondary mt-1">
+        <p className="mt-1 text-secondary">
           Don&apos;t have an account?{" "}
           <Link
             href="/register"
-            className="text-primary inline text-lg font-semibold hover:underline"
+            className="inline text-lg font-semibold text-primary hover:underline"
           >
             Sign Up
           </Link>
