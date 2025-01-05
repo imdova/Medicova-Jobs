@@ -33,6 +33,17 @@ const theme = createTheme({
           "&.Mui-error .MuiOutlinedInput-notchedOutline": {
             borderColor: "red", // Error border color
           },
+          borderRadius: "10px",
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          "&.Mui-focused": {
+            color: "black", // Set the label color when focused
+          },
+          borderRadius: "10px",
         },
       },
     },

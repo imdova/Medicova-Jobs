@@ -7,6 +7,7 @@ import {
   FolderOutlined,
   HelpOutline,
   HomeOutlined,
+  InfoOutlined,
   MessageOutlined,
   NotificationsActiveOutlined,
   PaidOutlined,
@@ -47,6 +48,11 @@ const navigationItems: NavItem[] = [
     icon: Person,
     label: "My Profile",
     path: "/me/1",
+  },
+  {
+    icon: InfoOutlined,
+    label: "My Personal Information",
+    path: "/job-seeker/general-info",
   },
   {
     icon: MessageOutlined,
@@ -229,7 +235,7 @@ export default function VerticalTabs({ sideBardType }: VerticalTabsProps) {
           return <Divider key={index} className="mt-2" />;
         } else if (item.type === "text") {
           return (
-            <p key={index} className="p-4 text-sm uppercase text-secondary">
+            <p key={index} className="p-4 text-sm normal-case text-secondary">
               {item.section}
             </p>
           );
@@ -241,7 +247,7 @@ export default function VerticalTabs({ sideBardType }: VerticalTabsProps) {
               // label={item.label}
               label={
                 <div className="flex w-full flex-row items-center justify-between gap-2">
-                  <div className="flex flex-row items-center gap-2 text-left">
+                  <div className="flex flex-row items-center gap-2 text-left normal-case">
                     {IconComponent && <IconComponent />}{" "}
                     <span>{item.label}</span>
                   </div>
@@ -266,7 +272,7 @@ export default function VerticalTabs({ sideBardType }: VerticalTabsProps) {
             // label={item.label}
             label={
               <div className="flex w-full flex-row items-center justify-between gap-2">
-                <div className="flex flex-row items-center gap-2 text-left">
+                <div className="flex flex-row items-center gap-2 text-left normal-case">
                   {IconComponent && <IconComponent />} <span>{item.label}</span>
                 </div>
                 {item.notifications && (

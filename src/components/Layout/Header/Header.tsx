@@ -92,14 +92,7 @@ const Header = () => {
                 </IconButton>
               </div>
 
-              <div className="space-y-4">
-                {dummyNotifications.map((notification) => (
-                  <NotificationCard
-                    key={notification.id}
-                    notification={notification}
-                  />
-                ))}
-              </div>
+              <div className="space-y-4"></div>
             </div>
           </Drawer>
 

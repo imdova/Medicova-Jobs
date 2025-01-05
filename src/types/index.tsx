@@ -3,6 +3,22 @@ interface Country {
   code: string;
 }
 
+export interface UserState {
+  id: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  roles: string[];
+  active: boolean;
+  photo?: string;
+  birth: string | null;
+  phone: string | null;
+  companyId: string | null;
+  created_at: string | null;
+  deleted_at: string | null;
+  updated_at: string | null;
+}
+
 export interface Notification {
   id: number;
   title: string;
@@ -108,4 +124,16 @@ export interface CompanyItem {
   title: string;
   description: string;
   tag: string;
+}
+
+export interface NotificationItem {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  tags: { status: "normal" | "warning" | "error" | "success"; text: string }[];
+  timeStamp: Date;
+  isRead: boolean;
+  readTime: Date | null;
+  category: string;
+  image: string;
 }

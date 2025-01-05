@@ -27,36 +27,36 @@ const Register = () => {
     <Container className="flex justify-between gap-5">
       {/* Right Section: Register Form */}
       <RegisterForm />
-      <div className="from-light-primary to-primary relative m-2 hidden min-h-[500px] flex-1 flex-col justify-between bg-gradient-to-b md:flex">
-        <div className="ml-12 mt-8">
+      <div className="relative m-2 hidden max-h-[80%] min-h-[500px] flex-1 flex-col justify-between bg-gradient-to-b from-light-primary to-primary md:flex">
+        <div className="ml-6 mt-5 xl:ml-12">
           <h3>
-            <span className="text-primary-foreground mr-20 text-[42px] font-bold">
+            <span className="mr-20 text-[30px] font-bold text-primary-foreground xl:text-[42px]">
               Find new pathways
             </span>
             <br />
-            <span className="text-primary-foreground mr-2 text-[42px] font-bold">
+            <span className="mr-2 text-[30px] font-bold text-primary-foreground xl:text-[42px]">
               to
             </span>
-            <span className="text-main text-[42px] font-bold">
+            <span className="text-[30px] font-bold text-main xl:text-[42px]">
               Healthcare Professionals
             </span>
             <br />
-            <span className="text-primary-foreground text-[42px] font-bold">
+            <span className="text-[30px] font-bold text-primary-foreground xl:text-[42px]">
               “
             </span>
           </h3>
-          <p className="text-primary-foreground max-w-lg text-2xl leading-9">
+          <p className="max-w-lg text-lg leading-9 text-primary-foreground xl:text-2xl">
             “Search for healthcare professionals from more than 300000 CVs. Use
             35+ robust filters and shortlist candidates faster. Hire top talent
             faster and smarter. “
           </p>
         </div>
         <div className="m-8 mb-24 ml-[8%] max-w-[366px] bg-white p-6 pr-14">
-          <h4 className="text-main mb-2 text-2xl font-bold">
+          <h4 className="mb-2 text-lg font-bold text-main xl:text-2xl">
             Trusted by 12,000 organizations, including:
           </h4>
-          <div className="flex items-center">
-            <p className="text-secondary flex-1 text-lg">
+          <div className="flex flex-col items-center xl:flex-row">
+            <p className="flex-1 text-secondary xl:text-lg">
               Saudi German Hospital ,DAF Hospital Alsalam International Hospital
             </p>
 

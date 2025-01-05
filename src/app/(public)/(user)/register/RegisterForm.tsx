@@ -1,22 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Divider,
-  InputLabel,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, TextField, Button, Typography, Divider } from "@mui/material";
 import Link from "next/link";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import GoogleButton from "../login/googleButton";
 import { useForm, Controller } from "react-hook-form";
+import { apiCall, UseApiOptions } from "@/hooks/APIUse";
+import FacebookButton from "../login/facebookButton";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setUser } from "@/store/slices/userSlice";
+import { UserState } from "@/types";
 
 const RegisterForm: React.FC = () => {
+  const router = useRouter();
+  const user = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [userType, setUserType] = useState<"jobSeeker" | "employer">(
     "employer",
   );
@@ -38,9 +43,41 @@ const RegisterForm: React.FC = () => {
     },
   });
 
+  async function signUp(data: FormData) {
+    const url = "/users/api/v1.0/employer-users";
+    const options: UseApiOptions = {
+      method: "POST",
+      data: data,
+      config: {
+        withCredentials: true,
+      },
+      userType: "employer-user",
+    };
+    setLoading(true);
+    try {
+      const response: UserState = await apiCall(url, options);
+      dispatch(setUser(response));
+    } catch (error: any) {
+      if (error.status == "401") {
+        setError("Email Address or Password is incorrect");
+      } else {
+        console.error("🚀 ~ login ~ error:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
+    signUp(data);
   };
+
+  useEffect(() => {
+    if (user.id) {
+      router.replace(`/me/${user.firstName}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <Box
@@ -57,7 +94,7 @@ const RegisterForm: React.FC = () => {
         padding: 2,
       }}
     >
-      <div className="mb-3 flex justify-center gap-2">
+      <div className="flex justify-center gap-2">
         <Button
           onClick={() => setUserType("jobSeeker")}
           className={`${userType === "jobSeeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
@@ -74,15 +111,20 @@ const RegisterForm: React.FC = () => {
         </Button>
       </div>
 
-      <h4 className="text-main my-2 text-[30px] font-bold">
+      <h4 className="my-2 text-[30px] font-bold text-main">
         Signup as a {userType === "jobSeeker" ? "Job Seeker" : "Recruiter"} on{" "}
-        <span className="text-light-primary my-2 text-[30px] font-bold">
+        <span className="my-2 text-[30px] font-bold text-light-primary">
           Medicova
         </span>
       </h4>
-      <NextAuthProvider>
-        <GoogleButton>SignUp with Google</GoogleButton>
-      </NextAuthProvider>
+      <div className="flex w-full justify-center gap-2">
+        <NextAuthProvider>
+          <GoogleButton>SignUp with Google</GoogleButton>
+          {userType === "jobSeeker" && (
+            <FacebookButton>Sign Up with Facebook</FacebookButton>
+          )}
+        </NextAuthProvider>
+      </div>
       <Box
         sx={{
           display: "flex",
@@ -108,17 +150,12 @@ const RegisterForm: React.FC = () => {
         <Box
           sx={{
             display: "flex",
-            gap: 2,
-            mb: 2,
+            gap: 1,
+            mb: 1,
           }}
         >
           {/* First Name */}
           <Box sx={{ flex: 1 }}>
-            <InputLabel
-              sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-            >
-              First Name
-            </InputLabel>
             <Controller
               control={control}
               name="firstName"
@@ -127,6 +164,9 @@ const RegisterForm: React.FC = () => {
                   {...field}
                   placeholder="Enter first name"
                   fullWidth
+                  label="First Name"
+                  variant="outlined"
+                  id="firstName"
                   error={!!errors.firstName}
                   helperText={errors.firstName?.message}
                 />
@@ -143,11 +183,6 @@ const RegisterForm: React.FC = () => {
 
           {/* Last Name */}
           <Box sx={{ flex: 1 }}>
-            <InputLabel
-              sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-            >
-              Last Name
-            </InputLabel>
             <Controller
               control={control}
               name="lastName"
@@ -155,6 +190,9 @@ const RegisterForm: React.FC = () => {
                 <TextField
                   {...field}
                   placeholder="Enter last name"
+                  label="Last Name"
+                  variant="outlined"
+                  id="last-name"
                   fullWidth
                   error={!!errors.lastName}
                   helperText={errors.lastName?.message}
@@ -171,12 +209,7 @@ const RegisterForm: React.FC = () => {
           </Box>
         </Box>
 
-        <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Email Address
-          </InputLabel>
+        <Box sx={{ mb: 1 }}>
           <Controller
             control={control}
             name="email"
@@ -184,6 +217,9 @@ const RegisterForm: React.FC = () => {
               <TextField
                 {...field}
                 placeholder="Enter email address"
+                label="Email Address"
+                variant="outlined"
+                id="email"
                 fullWidth
                 error={!!errors.email}
                 helperText={errors.email?.message}
@@ -199,12 +235,7 @@ const RegisterForm: React.FC = () => {
           />
         </Box>
 
-        <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Password
-          </InputLabel>
+        <Box sx={{ mb: 1 }}>
           <Controller
             control={control}
             name="password"
@@ -214,6 +245,9 @@ const RegisterForm: React.FC = () => {
                 placeholder="Enter password"
                 type="password"
                 fullWidth
+                label="Password"
+                variant="outlined"
+                id="password"
                 error={!!errors.password}
                 helperText={errors.password?.message}
               />
@@ -228,83 +262,45 @@ const RegisterForm: React.FC = () => {
           />
         </Box>
 
-        {userType === "employer" && (
-          <Box sx={{ mb: 2 }}>
-            <InputLabel
-              sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-            >
-              Company Name
-            </InputLabel>
-            <Controller
-              control={control}
-              name="companyName"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Enter company name"
-                  fullWidth
-                  error={!!errors.companyName}
-                  helperText={errors.companyName?.message}
-                />
-              )}
-              rules={{
-                required: "Company Name is required",
-                minLength: {
-                  value: 3,
-                  message: "Company Name must be at least 3 characters",
-                },
-              }}
-            />
-          </Box>
-        )}
-
         <Box
           sx={{
             mb: 2,
             "& .PhoneInput": {
               display: "flex",
-              paddingY: "10px",
-              gap: "5px",
+              border: "1px solid #ccc",
+              borderRadius: "10px",
             },
             "& .PhoneInputInput": {
-              border: "1px solid #ccc",
               padding: "15px",
               fontSize: "14px",
               width: "100%",
+              borderRadius: "0 10px 10px 0",
+              border: "1px solid transparent",
               "&::placeholder": {
                 color: "#000", // Set placeholder color to black
                 opacity: 0.7, // Ensure full opacity
               },
+              "&:hover": {
+                border: "1px solid black",
+              },
+              "&:focus": {
+                border: "1px solid transparent",
+                outline: "2px solid var(--light-primary)",
+              },
             },
-            "& .PhoneInputCountrySelect": {
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "5px",
-              fontSize: "14px",
-              height: "35px",
-              backgroundColor: "#f9f9f9",
+            "& .PhoneInputCountry": {
+              borderRadius: "10px 0 0 10px",
+              border: "1px solid transparent",
+              display: "flex",
+              gap: "5px",
+              px: 1,
+              m: 0,
             },
-            "& .PhoneInputCountrySelect:hover": {
-              backgroundColor: "#eaeaea",
-            },
-            "& .PhoneInputCountrySelect:focus": {
-              outline: "none",
-              borderColor: "#2EAE7D",
-            },
-            "& .PhoneInputCountrySelectDropdown": {
-              maxHeight: "150px",
-              overflowY: "auto",
-            },
-            "& .PhoneInputCountrySelectDropdownItem": {
-              padding: "6px 10px",
+            "& .PhoneInputCountry:hover": {
+              border: "1px solid black",
             },
           }}
         >
-          <InputLabel
-            sx={{ fontSize: "16px", fontWeight: 600, color: "#515B6F" }}
-          >
-            Phone Number
-          </InputLabel>
           <Controller
             control={control}
             name="phone"
@@ -313,6 +309,8 @@ const RegisterForm: React.FC = () => {
                 {...field}
                 defaultCountry="EG"
                 value={field.value ?? ""}
+                labels={{ phone: "Enter Phone Number" }}
+                id=""
                 placeholder="Enter phone number"
                 onChange={(value) => setValue("phone", value ?? "")}
               />
@@ -327,7 +325,7 @@ const RegisterForm: React.FC = () => {
             </Typography>
           )}
         </Box>
-
+        <p className="my-1 text-red-500">{error}</p>
         <Button
           sx={{
             height: "50px",
@@ -339,13 +337,13 @@ const RegisterForm: React.FC = () => {
           variant="contained"
           fullWidth
         >
-          Sign Up
+          {loading ? "Loading..." : "Sign Up"}
         </Button>
-        <p className="text-secondary mt-1">
+        <p className="mt-1 text-secondary">
           Aleardy on MEDICOVA ?{" "}
           <Link
             href="/login"
-            className="text-primary inline text-lg font-semibold hover:underline"
+            className="inline text-lg font-semibold text-primary hover:underline"
           >
             Login
           </Link>

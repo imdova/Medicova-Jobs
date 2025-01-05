@@ -1,6 +1,7 @@
 import ThemeProviderClient from "./ThemeProviderClient";
 import { DM_Serif_Display, Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
+import StoreProvider from "@/store/StoreProvider";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -27,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSerifDisplay.variable} ${baiJamjuree.variable}`}>
-        <ThemeProviderClient>{children}</ThemeProviderClient>
+        <ThemeProviderClient>
+          <StoreProvider>{children}</StoreProvider>
+        </ThemeProviderClient>
       </body>
     </html>
   );

@@ -2,20 +2,12 @@
 
 import React, { useState } from "react";
 import { Box, Typography, Container } from "@mui/material";
-import doctor from "@/components/images/doctor.svg";
 import login from "@/components/images/login.svg";
 import network from "@/components/images/network.svg";
 import Image from "next/image";
 import LoginForm from "./LoginForm";
 
 const Login = () => {
-  const [userType, setUserType] = useState<"jobSeeker" | "employer">(
-    "employer",
-  );
-
-  // Conditional image rendering
-  const coverImage = userType === "jobSeeker" ? doctor : login;
-
   return (
     <Box className="flex min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center px-5">
       {/* Main Content */}
@@ -32,7 +24,9 @@ const Login = () => {
         <Box className="relative hidden flex-1 flex-col items-center justify-center px-2 md:flex">
           {/* Main Background Image */}
           <Image
-            src={coverImage}
+            src={login}
+            width={400}
+            height={400}
             alt="Login Cover"
             priority={true}
             className="max-h-[80vh] w-full object-cover p-4"
@@ -108,7 +102,7 @@ const Login = () => {
         </Box>
 
         {/* Right Section: Login Form */}
-        <LoginForm userType={userType} setUserType={setUserType} />
+        <LoginForm />
       </Container>
     </Box>
   );
