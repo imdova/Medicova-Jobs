@@ -70,9 +70,26 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
           </IconButton>
         </Box>
         <div className="p-2">
-          <h3 className="mb-4 text-lg font-semibold">Recently Used</h3>
-          <div className="grid grid-cols-3 gap-4 md:grid-cols-5">
-            {folders.slice(0, 5).map((folder, index) => (
+          {/* <h3 className="mb-4 text-lg font-semibold">Recently Used</h3> */}
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Recently Used</h2>
+            <TextField
+              variant="outlined"
+              placeholder="Search folders"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+                classes: {
+                  input: "p-2", // Add padding to the input element
+                },
+              }}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4 md:grid-cols-4">
+            {folders.slice(0, 8).map((folder, index) => (
               <FolderSmallCard
                 key={index}
                 folder={folder}
@@ -82,7 +99,7 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
             ))}
           </div>
         </div>
-        <div className="p-2">
+        {/* <div className="p-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">All folders</h2>
             <TextField
@@ -109,7 +126,7 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
               selectedItem={folderId}
             />
           </div>
-        </div>
+        </div> */}
         {/* Modal Content */}
         <div className="flex justify-start gap-2">
           {/* Add Button */}

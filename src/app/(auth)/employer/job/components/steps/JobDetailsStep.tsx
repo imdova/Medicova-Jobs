@@ -112,7 +112,7 @@ const JobDetailsStep: React.FC = () => {
           gap: 2,
         }}
       >
-        <Box sx={{ width: "100%" }}>
+        {/* <Box sx={{ width: "100%" }}>
           <InputLabel
             sx={{
               marginBottom: 1,
@@ -137,7 +137,7 @@ const JobDetailsStep: React.FC = () => {
               </MenuItem>
             </Select>
           </FormControl>
-        </Box>
+        </Box> */}
         <Box sx={{ width: "100%" }}>
           <InputLabel
             sx={{
@@ -284,7 +284,7 @@ const JobDetailsStep: React.FC = () => {
 
       {/* Gender */}
       <Box sx={{ width: { xs: "100%", md: "50%" } }}>
-        <Typography sx={{ mb: 1, fontWeight: "bold" }}>Work Place *</Typography>
+        <Typography sx={{ mb: 1, fontWeight: "bold" }}>Gender *</Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
           {["Male", "Female"].map((label) => (
             <Button

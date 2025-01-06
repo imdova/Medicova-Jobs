@@ -517,6 +517,83 @@ const ProfileForm: React.FC = () => {
                 />
               </Box>
             </Box>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  Category *
+                </InputLabel>
+                <FormControl fullWidth>
+                  <Select
+                    sx={{
+                      backgroundColor: "rgba(214, 221, 235, 0.18)",
+                      height: "40px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <MenuItem value="Doctors">Doctors</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  Speciality *
+                </InputLabel>
+                <FormControl fullWidth>
+                  <Select
+                    sx={{
+                      backgroundColor: "rgba(214, 221, 235, 0.18)",
+                      height: "40px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <MenuItem value="Cardiology">Cardiology</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{
+                    marginBottom: 1,
+                    fontWeight: 600,
+                    color: "#000",
+                    fontSize: "14px",
+                  }}
+                >
+                  Career Level *
+                </InputLabel>
+                <FormControl fullWidth>
+                  <Select
+                    sx={{
+                      backgroundColor: "rgba(214, 221, 235, 0.18)",
+                      height: "40px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <MenuItem value="Consultant">Consultant</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
             {/* Driver License */}
             <Box sx={{ marginY: 2 }}>
               <Typography

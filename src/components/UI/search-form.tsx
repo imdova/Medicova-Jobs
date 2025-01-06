@@ -2,6 +2,8 @@
 import { createUrl } from "@/app/(auth)/employer/search/search-page";
 import {
   FilterAltOutlined,
+  Group,
+  GroupOutlined,
   LocationOnOutlined,
   Search,
 } from "@mui/icons-material";
@@ -180,7 +182,7 @@ const SearchForm: React.FC<{
           )}
           {isCategory && (
             <div className="flex flex-1 items-center gap-2 pr-2">
-              <FilterAltOutlined className="h-8 w-8 text-light-primary" />
+              <GroupOutlined className="h-8 w-8 text-light-primary" />
               <FormControl
                 variant="standard"
                 className="h-full w-full justify-center border-b border-solid border-gray-300"

@@ -9,17 +9,9 @@ import LoginForm from "./LoginForm";
 
 const Login = () => {
   return (
-    <Box className="flex min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center px-5">
+    <div className="flex h-[calc(100vh-100px)] max-h-[720px] w-full items-center justify-center md:px-5">
       {/* Main Content */}
-      <Container
-        sx={{
-          display: "flex",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 2,
-        }}
-      >
+      <Container className="flex items-center justify-between gap-5">
         {/* Left Section: Photo */}
         <Box className="relative hidden flex-1 flex-col items-center justify-center px-2 md:flex">
           {/* Main Background Image */}
@@ -104,7 +96,7 @@ const Login = () => {
         {/* Right Section: Login Form */}
         <LoginForm />
       </Container>
-    </Box>
+    </div>
   );
 };
 

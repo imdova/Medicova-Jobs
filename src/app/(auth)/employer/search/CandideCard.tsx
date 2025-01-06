@@ -25,6 +25,7 @@ import {
 import { formatName } from "@/util";
 import FolderModal from "./saved-search/folder-modal";
 import AddToFolderModal from "./add-to-folder-modal";
+import Link from "next/link";
 
 interface CandidateCardProps {
   doctor: Doctor;
@@ -81,9 +82,12 @@ const CandideCard: React.FC<CandidateCardProps> = ({
               />
               <div>
                 <div className="flex items-center gap-2">
-                  <h6 className="font-semibold text-main md:text-xl">
+                  <Link
+                    href={`/me/${doctor.name}`}
+                    className="font-semibold text-main hover:underline md:text-[20px]"
+                  >
                     {isAvailable ? doctor.name : formatName(doctor.name)}
-                  </h6>
+                  </Link>
                   {isAvailable ? (
                     <LockOpenIcon className="h-5 w-5 text-primary" />
                   ) : (
@@ -94,6 +98,13 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                   Cardiology Consultant at{" "}
                   <strong className="text-main">Saudi German Hospital</strong>
                 </p>
+                <div className="flex items-center gap-2 rounded-base text-secondary">
+                  <SchoolIcon className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                  <p className="text-xs md:text-base">
+                    Master&apos;s Degree in Cardiology{" "}
+                    <span className="mx-1 text-sm">(2022 - 2026)</span>
+                  </p>
+                </div>
               </div>
             </div>
             <IconButton
@@ -165,42 +176,38 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 </div>
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                <div className="flex items-center gap-2 rounded-base text-secondary">
                   <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">{doctor.location}</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                <div className="flex items-center gap-2 rounded-base text-secondary">
                   <PeopleAltIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Doctors</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                <div className="flex items-center gap-2 rounded-base text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
                     {doctor.yearsOfExperience} years Experience
                   </p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <SchoolIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">
-                    {doctor.education[0].degree} Degree
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                <div className="flex items-center gap-2 rounded-base text-secondary">
                   <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Consultant</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                <div className="flex items-center gap-2 rounded-base text-secondary">
                   <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">Cardiology</p>
                 </div>
               </div>
             </div>
-            <div className="mt-2 flex w-full flex-row md:w-auto md:flex-col">
+            <div
+              className={`${isAvailable ? "mt-10" : "mt-2"} flex w-full flex-row md:w-auto md:flex-col`}
+            >
               {!isAvailable && (
                 <Button
                   startIcon={<KeyOutlined />}
                   variant="text"
-                  className="flex-1 text-nowrap"
+                  className="mb-2 flex-1 text-nowrap p-0"
                   onClick={unlock}
                 >
                   Unlock Now

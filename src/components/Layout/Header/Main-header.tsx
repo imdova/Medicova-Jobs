@@ -18,6 +18,8 @@ type HeaderType = "home" | "employer" | "job-seeker";
 
 interface MainHeaderProps {
   headerType?: HeaderType;
+  textColor?: string;
+  logoColor?: string;
 }
 const homeLinks: LinkType[] = [
   {
@@ -64,7 +66,11 @@ const employerLinks: LinkType[] = [
   },
 ];
 
-const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
+const MainHeader = ({
+  headerType = "home",
+  textColor,
+  logoColor,
+}: MainHeaderProps) => {
   const user = useAppSelector((state) => state.user);
   const pathname = usePathname(); // Get the current path
 
@@ -83,15 +89,17 @@ const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
 
   return (
     <header>
-      <div className="container mx-auto flex h-[100px] items-center justify-between gap-12 lg:max-w-[1170px]">
+      <div
+        className={`container mx-auto flex h-[70px] items-center justify-between gap-12 lg:max-w-[1170px] ${textColor}`}
+      >
         {/* Logo and Brand Name */}
-        <Link href="/" className="flex items-end text-primary-foreground">
-          <LogoIcon className="h-[50px] w-[40px]" />
+        <Link href="/" className={`flex items-end ${logoColor}`}>
+          <LogoIcon className="h-[40px] w-[30px]" />
           <div className="flex h-fit flex-col text-center">
-            <h1 className="font-baiJamJuree text-[30px] font-bold leading-[25px]">
+            <h1 className="font-baiJamJuree text-[20px] font-bold leading-[18px]">
               MEDICOVA
             </h1>
-            <p className="font-baiJamJuree text-[14px] font-medium">
+            <p className="font-baiJamJuree text-[10px] font-medium">
               MEDICAL COMMUNITY
             </p>
           </div>
@@ -101,8 +109,9 @@ const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
           anchor="right"
           open={isMenuOpen}
           onClose={close} // Handles backdrop clicks automatically
+          className="text-inherit"
         >
-          <div className="h-full max-w-[600px] overflow-hidden bg-primary text-primary-foreground">
+          <div className="h-full max-w-[600px] overflow-hidden bg-primary">
             <div className="scroll-bar-hidden max-h-full overflow-y-auto py-5">
               <List>
                 {jobSeekerSideBarLinks.map((link, index) => (
@@ -115,7 +124,7 @@ const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
 
         {/* Navigation Menu */}
         <nav
-          className="hidden flex-1 uppercase text-primary-foreground md:flex"
+          className="hidden flex-1 uppercase text-inherit md:flex"
           aria-label="Main navigation"
         >
           <ul className="flex md:gap-4 lg:gap-12">
@@ -132,7 +141,7 @@ const MainHeader = ({ headerType = "home" }: MainHeaderProps) => {
         {/* Mobile Menu Button */}
         <button
           onClick={open}
-          className="text-primary-foreground focus:outline-none md:hidden"
+          className="text-inherit focus:outline-none md:hidden"
           aria-label="Open menu"
         >
           <svg
@@ -166,7 +175,7 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
     <li>
       <Link
         href={url || "#"}
-        className={`${isActive ? "font-black" : "font-semibold"} text-[16px] text-white focus:outline-none`}
+        className={`${isActive ? "font-black" : "font-semibold"} text-[16px] focus:outline-none`}
       >
         {title}
       </Link>
@@ -199,7 +208,7 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
   if (!isMounted) return null;
   if (id) {
     return (
-      <div className="hidden gap-3 md:flex">
+      <div className="hidden gap-3 text-inherit md:flex">
         <NotificationModal anchorEl={anchorEl} onClose={handleClose} />
         <IconButton
           className="relative h-12 w-12"
@@ -211,9 +220,9 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
             <div className="absolute right-4 top-3 h-2 w-2 rounded-full border border-white bg-red-500" />
           )}
           {currentPage === "notifications" ? (
-            <NotificationsActive className="h-6 w-6 text-white" />
+            <NotificationsActive className="h-6 w-6 text-inherit" />
           ) : (
-            <NotificationsNone className="h-6 w-6 text-white" />
+            <NotificationsNone className="h-6 w-6 text-inherit" />
           )}
         </IconButton>
         <Link href={`/me/${firstName || "1"}`}>
@@ -227,7 +236,7 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
             />
           ) : (
             <div className="flex h-12 w-12 items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md">
-              <span className="w-full text-center text-3xl uppercase text-white">
+              <span className="w-full text-center text-3xl uppercase text-inherit">
                 {firstName?.[0] ?? ""}
               </span>
             </div>
@@ -240,7 +249,7 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
       <div className="hidden gap-3 md:flex">
         <Link
           href="/register"
-          className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
+          className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-inherit transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
         >
           Sign Up
         </Link>

@@ -6,6 +6,7 @@ module.exports = {
       fontFamily: {
         dmSerifDisplay: ["var(--font-dmSerif)"],
         baiJamJuree: ["var(--font-baiJamjuree)"],
+        poppins: ["var(--font-poppins)"],
       },
       colors: {
         primary: "var(--primary)",
