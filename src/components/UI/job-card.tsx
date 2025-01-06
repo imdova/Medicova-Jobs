@@ -1,19 +1,25 @@
 "use client";
-import { Avatar, IconButton, Switch } from "@mui/material";
+import { IconButton, Switch } from "@mui/material";
 import { Job } from "@/types";
 import {
+  AccessTime,
+  AccessTimeOutlined,
   Bookmark,
   BookmarkBorder,
   Edit,
   LocationOnOutlined,
+  LockClockOutlined,
   MedicalServicesOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
 import Flag from "@/components/UI/flagitem";
 import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
-import { getLastEdit } from "@/util";
 import { DropdownMenu } from "./Controls";
+import UserAvatar from "./Avatar";
+import { getFullLastEdit } from "@/util";
+import Image from "next/image";
+import { notifications } from "@/constants";
 
 interface JobCardProps {
   job: Job;
@@ -36,70 +42,90 @@ const JobCard: React.FC<JobCardProps> = ({
 
   return (
     <div className="grid w-full grid-cols-1 flex-wrap justify-between gap-5 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg sm:flex-nowrap md:grid-cols-4 md:p-5">
-      <div className="flex justify-center gap-5 md:col-span-3 md:flex-nowrap md:justify-normal">
-        <div>
-          <Avatar
-            src={"/images/company-logo.jpg"}
+      <div className="flex flex-col gap-1 md:col-span-3 md:flex-nowrap md:justify-normal">
+        <div className="flex items-center gap-2">
+          <Image
+            src={notifications[3].image}
             alt={job.title}
-            sx={{ width: 76, height: 76 }}
+            width={60}
+            height={60}
+            className={`h-[60px] w-[60px] rounded-base border border-gray-100 object-cover transition-transform duration-150`}
           />
-          <p className="mt-4 text-center text-xs text-secondary">
-            {getLastEdit(job.timeStamps)}
-          </p>
-        </div>
-        <div>
-          {isApply ? (
-            <h6 className="text-lg font-semibold text-main">{job.title}</h6>
-          ) : isEdit ? (
+          <div>
             <div className="flex items-center gap-2">
-              <h6 className="text-lg font-semibold text-main">{job.title}</h6>
-              <IconButton size="small" aria-label="edit">
-                <Edit className="h-5 w-5 hover:text-light-primary" />
-              </IconButton>
+              {isApply ? (
+                <h6 className="text-lg font-semibold text-main">{job.title}</h6>
+              ) : isEdit ? (
+                <div className="flex items-center gap-2">
+                  <h6 className="text-lg font-semibold text-main">
+                    {job.title}
+                  </h6>
+                  <IconButton size="small" aria-label="edit">
+                    <Edit className="h-5 w-5 hover:text-light-primary" />
+                  </IconButton>
+                </div>
+              ) : (
+                <Link
+                  href={`/job/${job.id}`}
+                  className="text-lg font-semibold text-main hover:underline"
+                >
+                  {job.title}
+                </Link>
+              )}
+              <div className="ml-3 flex items-center gap-1">
+                <AccessTimeOutlined className="m-0 h-4 w-4 p-0 text-secondary" />
+                <span className="text-xs text-secondary">
+                  {getFullLastEdit(job.timeStamps)}
+                </span>
+              </div>
             </div>
-          ) : (
-            <Link
-              href={`/job/${job.id}`}
-              className="text-lg font-semibold text-main hover:underline"
-            >
-              {job.title}
-            </Link>
-          )}
-          <div className="mt-2 flex flex-wrap text-secondary">
-            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
-              <LocationOnOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
-              <p className="text-xs md:text-base">{job.location}</p>
-            </div>
-            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
-              <SchoolOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
-              <p className="text-xs md:text-base">{job.education}</p>
-            </div>
-            <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+            <div className="flex flex-wrap text-secondary">
+              <div className="mr-2 flex items-center gap-1 text-secondary md:mb-0">
+                <LocationOnOutlined className="-ml-1 h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                <p className="text-xs md:text-base">{job.location}</p>
+              </div>
+              <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+                <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                <p className="text-xs md:text-base">{job.education}</p>
+              </div>
+              {/* <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
               <MedicalServicesOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
               <p className="text-xs md:text-base">{job.specialty}</p>
+            </div> */}
             </div>
           </div>
-          <div className="mb-2 flex max-w-[500px] flex-wrap text-secondary">
+        </div>
+        <div>
+          <div className="mb-2 flex max-w-[600px] flex-wrap text-secondary">
             {job.features.map((feature, index) => (
               <div
                 key={index}
                 className="flex items-center gap-1 text-xs md:text-base"
               >
-                <span className="mx-[4px] h-2 w-2 rounded-full bg-secondary md:mx-[5px]"></span>
+                <div>
+                  <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+                </div>
                 {feature}
               </div>
             ))}
+            <div className="flex items-center gap-1 text-xs md:text-base">
+              <div>
+                <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+              </div>
+              <span className="rounded-base bg-red-100/60 px-2 py-1 text-sm text-red-600">
+                Urgently hiring
+              </span>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <button className="rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
-              Healthcare
+          <div className="ml-5 flex gap-3">
+            <button className="text-sm text-primary underline hover:no-underline">
+              #Healthcare
             </button>
-            <button className="rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
-              Doctors
+            <button className="text-sm text-primary underline hover:no-underline">
+              #Doctors
             </button>
-            <button className="flex items-center gap-2 rounded-[10px] border border-light-primary px-4 py-2 text-xs font-semibold text-main transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus:ring-2 focus:ring-white md:text-base">
-              Egypt
-              <Flag code="eg" name="egypt" />
+            <button className="text-sm text-primary underline hover:no-underline">
+              #Egypt
             </button>
           </div>
         </div>

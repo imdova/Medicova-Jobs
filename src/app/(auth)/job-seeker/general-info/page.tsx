@@ -9,7 +9,7 @@ const ProfilePage = () => {
   return (
     <Box sx={{ p: 2 }}>
       {/* Header Section */}
-      <HeaderSection />
+      {/* <HeaderSection /> */}
 
       <Grid container spacing={3}>
         {/* Left + Center Sections */}

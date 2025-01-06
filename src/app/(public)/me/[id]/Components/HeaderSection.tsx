@@ -16,6 +16,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BackupIcon from "@mui/icons-material/Backup";
+import { Verified } from "@mui/icons-material";
 
 const HeaderSection: React.FC = () => {
   const router = useRouter();
@@ -46,73 +47,28 @@ const HeaderSection: React.FC = () => {
   };
 
   return (
-    <div className="rounded-base border border-gray-100 bg-white shadow-lg">
+    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
       {/* Background Cover Image */}
-      <Box
-        component="div"
-        sx={{
-          width: "100%",
-          height: { xs: "150px", sm: "200px" },
-          backgroundImage: `url(/images/cover.png)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-        }}
-      >
-        {/* Avatar Positioned on Background Image */}
+      <div className="flex h-[200px] w-full items-center rounded-t-base bg-primary-100">
         <Avatar
           alt="Profile"
           src={avatarImage || undefined}
-          sx={{
-            position: "absolute",
-            bottom: "-50px",
-            left: "20px",
-            width: { xs: 80, sm: 120 },
-            height: { xs: 80, sm: 120 },
-            border: "6px solid white",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
-          }}
+          className="ml-14 mr-8 h-[100px] w-[100px] border-[6px] border-white shadow-xl"
         />
-      </Box>
-
-      {/* Profile Section */}
-      <Box
-        sx={{
-          backgroundColor: "#fff",
-          padding: "20px",
-          borderRadius: "0 0 8px 8px",
-          marginTop: "45px",
-        }}
-      >
-        <Grid container alignItems="start">
-          {/* Text Section */}
+        <div className="mr-5">
+          <div className="flex items-center">
+            <h5 className="text-xl font-bold text-main">Jake Gyll</h5>
+            <Verified color="primary" className="ml-2 h-6 w-6" />
+          </div>
+          <Typography
+            variant="body1"
+            sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
+          >
+            Cardiology Consultant at{" "}
+            <span className="font-bold text-main">Saudi German Hospital</span>
+          </Typography>
           <Grid item xs={12} sm={9}>
             <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  color: "#000",
-                  marginBottom: "4px",
-                  fontSize: { xs: "1.2rem", sm: "1.5rem" },
-                }}
-              >
-                Jake Gyll
-                <CheckCircleIcon
-                  color="primary"
-                  sx={{
-                    fontSize: { xs: 20, sm: 24 },
-                    marginLeft: "8px", // Adds space between the text and the icon
-                  }}
-                />
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
-              >
-                Cardiology Consultant at{" "}
-                <span style={{ color: "#000" }}>Saudi German Hospital</span>
-              </Typography>
               <Typography
                 variant="body1"
                 sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
@@ -142,6 +98,7 @@ const HeaderSection: React.FC = () => {
                   textTransform: "uppercase",
                   backgroundColor: "var(--primary-100)",
                   gap: 1,
+                  p: 0,
                   fontSize: { xs: "0.9rem", sm: "1rem" },
                 }}
               >
@@ -153,32 +110,28 @@ const HeaderSection: React.FC = () => {
               </Button>
             </Box>
           </Grid>
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: { xs: "center", sm: "flex-end" },
+            height: "100%",
+            gap: 1,
+          }}
+        >
+          {/* Edit Button */}
+          <IconButton onClick={handleEditProfileClick}>
+            <EditIcon />
+          </IconButton>
 
-          {/* Edit Profile Button */}
-          <Grid item xs={12} sm={3}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: { xs: "center", sm: "flex-end" },
-                height: "100%",
-                gap: 1,
-              }}
-            >
-              {/* Edit Button */}
-              <IconButton onClick={handleEditProfileClick}>
-                <EditIcon />
-              </IconButton>
-
-              {/* Share Button */}
-              <IconButton>
-                <ShareIcon />
-              </IconButton>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
+          {/* Share Button */}
+          <IconButton>
+            <ShareIcon />
+          </IconButton>
+        </Box>
+      </div>
     </div>
   );
 };

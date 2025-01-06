@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
         <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent px-4 shadow-md">
-          <MainHeader />
+          <MainHeader logoColor="text-white" textColor="text-white" />
         </div>
       </div>
       <main>{children}</main>
