@@ -20,7 +20,11 @@ const SearchComponent: React.FC = () => {
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
         <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent px-4 shadow-md">
-          <MainHeader headerType="employer" />
+          <MainHeader
+            headerType="employer"
+            logoColor="text-white"
+            textColor="text-white"
+          />
 
           <div className="container mx-auto my-8 flex w-full flex-col gap-3 p-2 md:flex-row lg:max-w-[1170px]">
             <p className="mb-4 w-full text-center !font-dmSerifDisplay text-[26px] text-white md:w-1/4 md:text-left">

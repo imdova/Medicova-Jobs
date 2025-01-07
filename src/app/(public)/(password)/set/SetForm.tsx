@@ -45,7 +45,7 @@ const SetForm: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", formData);
-      router.push("/login");
+      router.push("/auth/signin");
     }
   };
 
@@ -53,7 +53,7 @@ const SetForm: React.FC = () => {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="w-full justify-center items-center flex flex-col py-5"
+      className="flex w-full flex-col items-center justify-center py-5"
     >
       <Box className="w-full md:w-[400px]">
         <Box sx={{ mb: 2 }}>

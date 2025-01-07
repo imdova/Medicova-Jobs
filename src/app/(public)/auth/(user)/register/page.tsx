@@ -24,8 +24,9 @@ const users = [
 
 const Register = () => {
   return (
-    <div className="flex h-[calc(100vh-100px)] max-h-[720px] w-full items-center justify-center md:px-5">
-      <Container className="flex items-center justify-between gap-5">
+    <div className="flex w-full items-center justify-center md:px-5">
+      {/* Main Content */}
+      <div className="container mx-auto my-2 flex items-center justify-between gap-5 lg:max-w-[1170px]">
         {/* Right Section: Register Form */}
         <RegisterForm />
         <div className="relative m-2 hidden max-h-[80%] min-h-[500px] flex-1 flex-col justify-between bg-gradient-to-b from-light-primary to-primary md:flex">
@@ -100,7 +101,7 @@ const Register = () => {
           <div className="absolute bottom-0 left-0 h-20 w-20 bg-white"></div>
           <div className="absolute right-0 top-0 h-20 w-20 bg-white"></div>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };

@@ -128,10 +128,8 @@ const ApplicantsPage: React.FC = ({
     <SearchComponent />
   ) : (
     <div>
-      <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
-        <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent px-4 shadow-md">
-          <MainHeader headerType="employer" />
-        </div>
+      <div className="bg-white px-4 shadow-md">
+        <MainHeader headerType="employer" />
       </div>
       <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1170px]">
         {/* Left Column: Filter Section */}

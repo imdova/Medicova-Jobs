@@ -13,13 +13,14 @@ import {
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import GoogleButton from "./googleButton";
-import FacebookButton from "./facebookButton";
 import { apiCall, UseApiOptions } from "@/hooks/APIUse";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setUser } from "@/store/slices/userSlice";
 import { UserState } from "@/types";
 import { useRouter } from "next/navigation";
+import GoogleButton from "@/components/auth/googleButton";
+import FacebookButton from "@/components/auth/facebookButton";
+import { signIn } from "next-auth/react";
 
 interface FormData {
   email: string;
@@ -45,35 +46,47 @@ const LoginForm: React.FC = () => {
     },
   });
 
-  async function login(data: FormData) {
-    const url = "/users/api/v1.0/employer-users/login";
-    const options: UseApiOptions = {
-      method: "POST",
-      data: data,
-      config: {
-        withCredentials: true,
-      },
-      userType: "employer-user",
-    };
-    setLoading(true);
-    try {
-      const response: UserState = await apiCall(url, options);
-      dispatch(setUser(response));
-      router.replace(`/me/${response.firstName}`);
-    } catch (error: any) {
-      if (error.status == "401") {
-        setError("Email Address or Password is incorrect");
-      } else {
-        console.error("🚀 ~ login ~ error:", error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  // async function login(data: FormData) {
+  //   const url = "/users/api/v1.0/employer-users/login";
+  //   const options: UseApiOptions = {
+  //     method: "POST",
+  //     data: data,
+  //     config: {
+  //       withCredentials: true,
+  //     },
+  //     userType: "employer-user",
+  //   };
+  //   setLoading(true);
+  //   try {
+  //     const response: UserState = await apiCall(url, options);
+  //     dispatch(setUser(response));
+  //     router.replace(`/me/${response.firstName}`);
+  //   } catch (error: any) {
+  //     if (error.status == "401") {
+  //       setError("Email Address or Password is incorrect");
+  //     } else {
+  //       console.error("🚀 ~ login ~ error:", error);
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
-  const onSubmit = (data: FormData) => {
-    login(data);
+  const onSubmit = async (data: FormData) => {
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      callbackUrl: "/employer/dashboard",
+    });
   };
+
+  // const onSubmit = async (data: any) => {
+  //   await signIn("credentials", {
+  //     email: data.email,
+  //     password: data.password,
+  //     callbackUrl: "/dashboard",
+  //   });
+  // };
 
   useEffect(() => {
     if (user.id) {
@@ -236,7 +249,7 @@ const LoginForm: React.FC = () => {
         <p className="mt-1 text-secondary">
           Don&apos;t have an account?{" "}
           <Link
-            href="/register"
+            href="/auth/register"
             className="inline text-lg font-semibold text-primary hover:underline"
           >
             Sign Up

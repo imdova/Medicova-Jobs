@@ -1,25 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Divider } from "@mui/material";
 import Link from "next/link";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import GoogleButton from "../login/googleButton";
 import { useForm, Controller } from "react-hook-form";
-import { apiCall, UseApiOptions } from "@/hooks/APIUse";
-import FacebookButton from "../login/facebookButton";
-import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setUser } from "@/store/slices/userSlice";
-import { UserState } from "@/types";
+import GoogleButton from "@/components/auth/googleButton";
+import FacebookButton from "@/components/auth/facebookButton";
+import { API_SIGNUP } from "@/lib/constants";
 
 const RegisterForm: React.FC = () => {
-  const router = useRouter();
-  const user = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [userType, setUserType] = useState<"jobSeeker" | "employer">(
@@ -44,19 +36,14 @@ const RegisterForm: React.FC = () => {
   });
 
   async function signUp(data: FormData) {
-    const url = "/users/api/v1.0/employer-users";
-    const options: UseApiOptions = {
-      method: "POST",
-      data: data,
-      config: {
-        withCredentials: true,
-      },
-      userType: "employer-user",
-    };
     setLoading(true);
     try {
-      const response: UserState = await apiCall(url, options);
-      dispatch(setUser(response));
+      const response = await fetch(API_SIGNUP + "?companyName=new", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
     } catch (error: any) {
       if (error.status == "401") {
         setError("Email Address or Password is incorrect");
@@ -71,13 +58,6 @@ const RegisterForm: React.FC = () => {
   const onSubmit = (data: any) => {
     signUp(data);
   };
-
-  useEffect(() => {
-    if (user.id) {
-      router.replace(`/me/${user.firstName}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   return (
     <Box
@@ -341,7 +321,7 @@ const RegisterForm: React.FC = () => {
         <p className="mt-1 text-secondary">
           Aleardy on MEDICOVA ?{" "}
           <Link
-            href="/login"
+            href="/auth/signin"
             className="inline text-lg font-semibold text-primary hover:underline"
           >
             Login

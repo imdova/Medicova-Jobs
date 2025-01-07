@@ -1,15 +1,16 @@
 "use client";
 import LogoIcon from "@/components/icons/logo";
+import UserAvatar from "@/components/UI/Avatar";
 import ItemSelector from "@/components/UI/menu-item";
 import NotificationModal from "@/components/UI/Notification-modal";
 import { jobSeekerSideBarLinks } from "@/constants/side-bar";
-import { useAppSelector } from "@/store/hooks";
+import { NextAuthProvider } from "@/NextAuthProvider";
 import { UserState } from "@/types";
 import { LinkType } from "@/types/side-bar";
 import { getLastSegment } from "@/util";
 import { NotificationsActive, NotificationsNone } from "@mui/icons-material";
 import { Drawer, IconButton, List } from "@mui/material";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,15 +55,15 @@ const employerLinks: LinkType[] = [
   },
   {
     title: "CV Search",
-    url: "/cv-search",
+    url: "/employer/search",
   },
   {
     title: "Report",
-    url: "/report",
+    url: "#",
   },
   {
     title: "Billing",
-    url: "/billing",
+    url: "/employer/subscription-plans",
   },
 ];
 
@@ -71,7 +72,9 @@ const MainHeader = ({
   textColor,
   logoColor,
 }: MainHeaderProps) => {
-  const user = useAppSelector((state) => state.user);
+  const session = useSession();
+  const user = session.data?.user as UserState;
+
   const pathname = usePathname(); // Get the current path
 
   const currentPage = pathname.split("/")[1];
@@ -93,7 +96,10 @@ const MainHeader = ({
         className={`container mx-auto flex h-[70px] items-center justify-between gap-12 lg:max-w-[1170px] ${textColor}`}
       >
         {/* Logo and Brand Name */}
-        <Link href="/" className={`flex items-end ${logoColor}`}>
+        <Link
+          href="/"
+          className={`flex items-end ${logoColor || "text-primary"}`}
+        >
           <LogoIcon className="h-[40px] w-[30px]" />
           <div className="flex h-fit flex-col text-center">
             <h1 className="font-baiJamJuree text-[20px] font-bold leading-[18px]">
@@ -183,13 +189,31 @@ const HeaderItem: React.FC<LinkType & { currentPage: string }> = ({
   );
 };
 
-export default MainHeader;
+const Header = ({
+  headerType = "home",
+  textColor,
+  logoColor,
+}: MainHeaderProps) => {
+  return (
+    <NextAuthProvider>
+      <MainHeader
+        headerType={headerType}
+        textColor={textColor}
+        logoColor={logoColor}
+      />
+    </NextAuthProvider>
+  );
+};
+
+export default Header;
 
 const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
   id,
   firstName,
   photo,
   currentPage,
+  name,
+  image,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -208,10 +232,10 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
   if (!isMounted) return null;
   if (id) {
     return (
-      <div className="hidden gap-3 text-inherit md:flex">
+      <div className="hidden items-center gap-3 text-inherit md:flex">
         <NotificationModal anchorEl={anchorEl} onClose={handleClose} />
         <IconButton
-          className="relative h-12 w-12"
+          className="relative h-12 w-12 text-inherit"
           size="medium"
           onClick={handleClick}
           disabled={currentPage === "notifications"}
@@ -225,36 +249,23 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
             <NotificationsNone className="h-6 w-6 text-inherit" />
           )}
         </IconButton>
-        <Link href={`/me/${firstName || "1"}`}>
-          {photo ? (
-            <Image
-              src={photo}
-              alt={firstName ?? "User Image"}
-              height={48}
-              width={48}
-              className="h-12 w-12 rounded-full object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md">
-              <span className="w-full text-center text-3xl uppercase text-inherit">
-                {firstName?.[0] ?? ""}
-              </span>
-            </div>
-          )}
-        </Link>
+        <UserAvatar
+          userAvatar={photo || image}
+          userName={firstName || name || "User Image"}
+        />
       </div>
     );
   } else {
     return (
       <div className="hidden gap-3 md:flex">
         <Link
-          href="/register"
+          href="/auth/register"
           className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-inherit transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
         >
           Sign Up
         </Link>
         <Link
-          href="/login"
+          href="/auth/signin"
           className="rounded-[10px] bg-primary px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
         >
           Login

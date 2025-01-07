@@ -6,7 +6,7 @@ import LogoIcon from "../icons/logo";
 const Header = () => {
   return (
     <div className="container mx-auto flex items-center justify-between p-2 lg:max-w-[1170px]">
-      <Link href="/" className="text-primary flex items-center">
+      <Link href="/" className="flex items-center text-primary">
         <LogoIcon className="h-[50px] w-[40px]" />
         <div className="flex h-fit flex-col text-center">
           <h1 className="font-baiJamJuree text-[16px] font-bold leading-none">
@@ -17,8 +17,8 @@ const Header = () => {
           </p>
         </div>
       </Link>
-      <Link href="/register">
-        <Button className="bg-secondary text-primary-foreground px-3 py-2 font-semibold normal-case">
+      <Link href="/auth/register">
+        <Button className="bg-secondary px-3 py-2 font-semibold normal-case text-primary-foreground">
           Create an account
         </Button>
       </Link>

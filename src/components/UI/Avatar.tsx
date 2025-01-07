@@ -1,22 +1,92 @@
-import Image, { ImageProps } from "next/image";
+"use client";
 
-const UserAvatar: React.FC<ImageProps> = (props) => {
-  return props.src ? (
-    <Image
-      {...props}
-      src={props.src}
-      alt={props.alt}
-      className={`h-${props.height}px w-${props.width}px rounded-full object-cover transition-transform duration-150 hover:scale-105 hover:shadow-md`}
-    />
-  ) : (
-    <div
-      className={`flex h-${props.height}px w-${props.width}px items-center rounded-full bg-gray-500 transition-transform duration-150 hover:scale-105 hover:shadow-md`}
-    >
-      <span className="w-full text-center text-3xl uppercase text-inherit">
-        {props.alt?.[0] ?? ""}
-      </span>
+import { useState } from "react";
+import {
+  Menu,
+  MenuItem,
+  Avatar,
+  IconButton,
+  Tooltip,
+  Button,
+} from "@mui/material";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+
+interface UserDropdownProps {
+  userName: string | null;
+  userAvatar: string | null; // URL for the user's avatar
+}
+
+const UserDropdown: React.FC<UserDropdownProps> = ({
+  userName,
+  userAvatar,
+}) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div className="relative">
+      <Tooltip title="Account settings">
+        <IconButton
+          onClick={handleOpen}
+          size="small"
+          className="focus:outline-none"
+        >
+          <Avatar
+            alt={userName || undefined}
+            src={userAvatar || undefined}
+            className="h-12 w-12"
+          />
+        </IconButton>
+      </Tooltip>
+
+      {/* Material-UI Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        className="min-w-40 rounded-lg shadow-lg"
+      >
+        <MenuItem>
+          <Link
+            href={`/me/${userName}`}
+            className="min-w-40 text-gray-700 transition-colors hover:text-blue-500"
+          >
+            Profile
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link
+            href="/settings"
+            className="text-gray-700 transition-colors hover:text-blue-500"
+          >
+            Settings
+          </Link>
+        </MenuItem>
+        <MenuItem className="p-0">
+          <Button
+            onClick={() => signOut()}
+            variant="text"
+            color="error"
+            className="w-full justify-normal"
+          >
+            Logout
+          </Button>
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
 
-export default UserAvatar;
+export default UserDropdown;

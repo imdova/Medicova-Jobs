@@ -8,6 +8,10 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
+  //
+  image: string | null;
+  name: string | null;
+  //
   roles: string[];
   active: boolean;
   photo?: string;
