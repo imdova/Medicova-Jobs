@@ -29,7 +29,7 @@ const HeaderAction: React.FC<UserActionProps> = ({ user, pageName }) => {
   if (!isMounted) return null;
   if (user?.id) {
     return (
-      <div className="hidden items-center gap-3 text-inherit md:flex">
+      <div className="flex items-center gap-3 text-inherit">
         <NotificationModal anchorEl={anchorEl} onClose={handleClose} />
         <IconButton
           className="relative h-12 w-12 text-inherit"
@@ -54,16 +54,16 @@ const HeaderAction: React.FC<UserActionProps> = ({ user, pageName }) => {
     );
   } else {
     return (
-      <div className="hidden gap-3 md:flex">
+      <div className="flex gap-3">
         <Link
           href="/auth/register"
-          className="text-nowrap rounded-[10px] px-4 py-2 font-semibold uppercase text-inherit transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
+          className="text-nowrap rounded-[10px] px-4 py-2 text-sm font-semibold uppercase text-inherit transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground md:text-base"
         >
           Sign Up
         </Link>
         <Link
           href="/auth/signin"
-          className="rounded-[10px] bg-primary px-4 py-2 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground"
+          className="rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-primary-foreground md:text-base"
         >
           Login
         </Link>

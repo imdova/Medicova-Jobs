@@ -8,7 +8,6 @@ import { GridViewOutlined, List } from "@mui/icons-material";
 import MinJobCard from "@/components/UI/job-card-min";
 import JobCard from "@/components/UI/job-card";
 import SearchForm from "@/components/UI/search-form";
-import MainHeader from "@/components/Layout/Header/Main-header";
 import CountrySearchResult from "@/components/UI/CountrySearchResult";
 
 const SearchPage: React.FC = ({

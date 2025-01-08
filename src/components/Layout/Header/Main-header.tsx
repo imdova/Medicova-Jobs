@@ -3,7 +3,6 @@ import LogoIcon from "@/components/icons/logo";
 import UserAvatar from "@/components/UI/Avatar";
 import ItemSelector from "@/components/UI/menu-item";
 import NotificationModal from "@/components/UI/Notification-modal";
-import { jobSeekerSideBarLinks } from "@/constants/side-bar";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { UserState } from "@/types";
 import { LinkType } from "@/types/side-bar";
@@ -120,7 +119,7 @@ const MainHeader = ({
           <div className="h-full max-w-[600px] overflow-hidden bg-primary">
             <div className="scroll-bar-hidden max-h-full overflow-y-auto py-5">
               <List>
-                {jobSeekerSideBarLinks.map((link, index) => (
+                {links.map((link, index) => (
                   <ItemSelector key={index} link={link} onClick={close} />
                 ))}
               </List>

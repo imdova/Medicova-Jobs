@@ -3,6 +3,8 @@ import { DM_Serif_Display, Bai_Jamjuree, Poppins } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import DynamicHeader from "@/components/Layout/Header/Header";
+import DynamicLayout from "@/components/Layout/layout";
+import { NextAuthProvider } from "@/NextAuthProvider";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -39,8 +41,10 @@ export default function RootLayout({
       >
         <ThemeProviderClient>
           <StoreProvider>
-            <DynamicHeader />
-            {children}
+            <NextAuthProvider>
+              <DynamicHeader />
+              <DynamicLayout>{children}</DynamicLayout>
+            </NextAuthProvider>
           </StoreProvider>
         </ThemeProviderClient>
       </body>

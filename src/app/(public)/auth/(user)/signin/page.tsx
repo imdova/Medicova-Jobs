@@ -5,7 +5,7 @@ import LoginForm from "./LoginForm";
 
 const Login = () => {
   return (
-    <div className="flex w-full items-center justify-center md:px-5">
+    <div className="flex min-h-[calc(100dvh-70px)] w-full items-center justify-center md:px-5">
       {/* Main Content */}
       <div className="container mx-auto flex items-center justify-between gap-5 py-3 lg:max-w-[1170px]">
         {/* Left Section: Photo */}

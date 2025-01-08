@@ -129,7 +129,7 @@ const ApplicantsPage: React.FC = () => {
     );
   };
   return (
-    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1170px]">
+    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
       {/* Left Column: Filter Section */}
       <JobFilter
         sections={filterSections}

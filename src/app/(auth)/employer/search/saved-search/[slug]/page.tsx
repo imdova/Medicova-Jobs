@@ -24,6 +24,7 @@ import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import JobFilter from "@/app/(public)/search/filter";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
@@ -133,17 +134,16 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
   };
   if (!folder) return notFound;
   return (
-    <Box className="flex min-h-screen w-full flex-row bg-white p-2">
+    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
       {/* Left Column: Filter Section */}
-      <FilterSections
-        className="scroll-bar-hidden sticky top-[107px] hidden max-h-[calc(100vh-114px)] w-1/5 overflow-y-scroll pb-[16px] pt-[101px] lg:block"
+      <JobFilter
         sections={filterSections}
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
         searchKeys={["Residency (Location)"]}
       />
       {/* Right Column: Results Section */}
-      <Box className="w-full p-2 md:p-4 lg:w-[80%]">
+      <div className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="mb-5 flex w-full gap-3 pl-[32px]">
           <Image
             src={"/images/folder.png"}
@@ -152,7 +152,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
             width={24}
             height={24}
           />
-          <h2 className="text-main text-2xl font-bold">{folder.name}</h2>
+          <h2 className="text-2xl font-bold text-main">{folder.name}</h2>
         </div>
 
         <Box className="flex justify-between pl-[32px]">
@@ -218,7 +218,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
           <div className="flex items-center gap-5">
             <button
               onClick={toggleSelectAll}
-              className="bg-primary-100 h-fit rounded-md"
+              className="h-fit rounded-md bg-primary-100"
             >
               {isAllSelect ? (
                 <DeselectIcon className="m-2 h-6 w-6" />
@@ -233,7 +233,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
                   aria-controls={open ? "Action-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
+                  className="h-fit rounded-md bg-primary-100 p-2 px-4 duration-300 hover:bg-primary hover:text-primary-foreground"
                 >
                   <p className="inline-block">Action</p>
                   <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -306,7 +306,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
               aria-controls={exportOpen ? "export-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={exportOpen ? "true" : undefined}
-              className="bg-primary-100 hover:bg-primary hover:text-primary-foreground h-fit rounded-md p-2 px-4 duration-300"
+              className="h-fit rounded-md bg-primary-100 p-2 px-4 duration-300 hover:bg-primary hover:text-primary-foreground"
             >
               <p className="inline-block w-16">Export</p>
               <ExpandMoreIcon className="ml-2 inline-block h-6 w-6" />
@@ -345,7 +345,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
           setCurrentPage={setCurrentPage}
           totalItems={doctors.length} // Pass the total items count
         />
-      </Box>
+      </div>
       <Snackbar
         open={showCopyAlert}
         autoHideDuration={3000}
@@ -353,7 +353,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
         message="Link copied to clipboard!"
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-    </Box>
+    </div>
   );
 };
 

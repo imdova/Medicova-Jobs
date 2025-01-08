@@ -96,28 +96,16 @@ const LoginForm: React.FC = () => {
   }, [user]);
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        maxWidth: "500px",
-        width: "100%",
-        mx: "auto",
-      }}
-    >
+    <div className="mx-auto flex h-full w-full max-w-[500px] flex-1 flex-col items-center justify-center p-4">
       <h4 className="my-2 text-3xl font-bold text-main">
         Welcome Back, in{" "}
         <span className="my-2 text-3xl font-bold text-light-primary">
           Medicova
         </span>
       </h4>
-      <div className="flex w-full justify-center gap-2">
+      <div className="flex w-full flex-col justify-center gap-2 md:flex-row">
         <NextAuthProvider>
           <GoogleButton>Login with Google</GoogleButton>
-
           <FacebookButton>Login with Facebook</FacebookButton>
         </NextAuthProvider>
       </div>
@@ -256,7 +244,7 @@ const LoginForm: React.FC = () => {
           </Link>
         </p>
       </form>
-    </Box>
+    </div>
   );
 };
 

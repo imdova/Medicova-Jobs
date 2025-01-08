@@ -6,7 +6,7 @@ import { Facebook } from "@mui/icons-material";
 const FacebookButton = ({ children }: { children: React.ReactNode }) => {
   return (
     <Button
-      className="w-full"
+      className="h-[45px] w-full"
       variant="outlined"
       onClick={() => signIn("facebook", { callbackUrl: "/profile" })}
     >

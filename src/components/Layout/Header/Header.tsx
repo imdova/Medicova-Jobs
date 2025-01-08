@@ -8,7 +8,6 @@ import TransparentHeader from "./TransparentHeader";
 import DarkHeader from "./DarkHeader";
 import { useSession } from "next-auth/react";
 import { UserState } from "@/types";
-import { NextAuthProvider } from "@/NextAuthProvider";
 
 const DynamicHeader: React.FC = () => {
   const session = useSession();
@@ -30,12 +29,4 @@ const DynamicHeader: React.FC = () => {
   return <SelectedHeader user={user} pathname={pathname} />;
 };
 
-const Header = () => {
-  return (
-    <NextAuthProvider>
-      <DynamicHeader />
-    </NextAuthProvider>
-  );
-};
-
-export default Header;
+export default DynamicHeader;

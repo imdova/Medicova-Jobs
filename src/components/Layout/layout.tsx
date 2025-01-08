@@ -1,0 +1,39 @@
+"use client";
+import { useSession } from "next-auth/react";
+import { UserState } from "@/types";
+import { usePathname } from "next/navigation";
+import { matchRoute } from "./SideBar/LayoutRoutConfigs";
+import DynamicSideBar from "./SideBar/dynamic-side-bar";
+
+const DynamicLayout = ({ children }: { children: React.ReactNode }) => {
+  const session = useSession();
+  const user = session.data?.user as UserState;
+
+  const pathname = usePathname() || "/";
+  const sideBarType = matchRoute(pathname)?.sideBarType || "";
+  const getLayout = () => {
+    switch (sideBarType) {
+      case "full":
+        return (
+          <div>
+            <div className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1300px]">
+              <div className="hidden w-1/5 rounded-base border border-gray-100 bg-white py-4 shadow-xl lg:block">
+                <div className="sticky top-[85px]">
+                  <DynamicSideBar user={user} pathname={pathname} />
+                </div>
+              </div>
+              <main className="w-full px-2 md:px-6 lg:w-[80%]">{children}</main>
+            </div>
+          </div>
+        );
+      case "minimal":
+        return children;
+      default:
+        return children;
+    }
+  };
+
+  return getLayout();
+};
+
+export default DynamicLayout;

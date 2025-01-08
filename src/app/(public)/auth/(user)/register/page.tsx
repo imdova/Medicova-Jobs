@@ -24,7 +24,7 @@ const users = [
 
 const Register = () => {
   return (
-    <div className="flex w-full items-center justify-center md:px-5">
+    <div className="flex min-h-[calc(100dvh-70px)] w-full items-center justify-center md:px-5">
       {/* Main Content */}
       <div className="container mx-auto my-2 flex items-center justify-between gap-5 lg:max-w-[1170px]">
         {/* Right Section: Register Form */}

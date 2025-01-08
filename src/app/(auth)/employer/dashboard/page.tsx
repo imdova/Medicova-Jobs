@@ -4,8 +4,7 @@ import Image from "next/image";
 import { Ellipse5, GridIcon } from "@/components/icons/icons";
 import EastIcon from "@mui/icons-material/East";
 import JobCard from "@/components/UI/job-card";
-import { Search } from "@mui/icons-material";
-import { icons } from "@/constants/side-bar";
+import { GroupAddOutlined, Search, WorkOutline } from "@mui/icons-material";
 import { folders, jobs } from "@/constants";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -14,14 +13,14 @@ import FolderMainCard from "@/components/UI/folder-main-card";
 interface Card {
   title: string;
   content: string;
-  icon: keyof typeof icons;
+  icon?: React.ElementType;
   url: string;
 }
 
 const cards: Card[] = [
-  { title: "All Jobs", content: "120", icon: "workOT", url: "" },
-  { title: "Active Jobs", content: "07", icon: "workOT", url: "" },
-  { title: "New Applicants", content: "120", icon: "PeopleIcon", url: "" },
+  { title: "All Jobs", content: "120", icon: WorkOutline, url: "" },
+  { title: "Active Jobs", content: "07", icon: WorkOutline, url: "" },
+  { title: "New Applicants", content: "120", icon: GroupAddOutlined, url: "" },
 ];
 
 const page = () => {
@@ -144,12 +143,14 @@ const StatusCard: React.FC<{ lastOne: boolean; card: Card }> = ({
   card,
   lastOne,
 }) => {
-  const Icon = icons[card.icon];
+  const IconComponent = card.icon;
   return (
     <div
       className={`${lastOne ? "col-span-2 md:col-span-1" : ""} flex justify-center gap-2 text-nowrap rounded-base border border-gray-100 bg-white p-4 pb-1 text-secondary shadow-xl`}
     >
-      <Icon className="h-[30px] w-[30px] text-primary" />
+      {IconComponent ? (
+        <IconComponent className="h-[30px] w-[30px] text-primary" />
+      ) : null}
       <div>
         <p className="text-[16px] font-medium text-secondary md:text-[22px]">
           {card.title}

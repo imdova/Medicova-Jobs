@@ -8,12 +8,12 @@ const MinimalHeader: React.FC<BaseHeaderProps> = ({ user }) => {
       <div className="mx-auto max-w-5xl px-4">
         <div className="flex h-[60px] items-center">
           <Link href="/">
-            <LogoIcon className={`h-[40px] w-auto text-primary`} />
+            <LogoIcon className={`h-[30px] w-auto text-primary md:h-[40px]`} />
           </Link>
           <nav className="ml-auto flex space-x-4">
             <Link
               href="/auth/register"
-              className="font-semibold hover:text-primary"
+              className="text-sm font-semibold hover:text-primary md:text-base"
             >
               Sign Up
             </Link>

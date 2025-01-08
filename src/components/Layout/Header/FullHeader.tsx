@@ -18,15 +18,17 @@ const FullHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
             <LogoIcon className={`h-[40px] w-auto text-primary`} />
           </Link>
           <nav className="ml-auto flex items-center space-x-8">
-            {links.map((link, i) => (
-              <Link
-                key={i}
-                href={link.url}
-                className="font-medium hover:text-gray-300"
-              >
-                {link.title}
-              </Link>
-            ))}
+            <div className="hidden items-center space-x-8 md:flex">
+              {links.map((link, i) => (
+                <Link
+                  key={i}
+                  href={link.url}
+                  className="font-medium hover:text-gray-300"
+                >
+                  {link.title}
+                </Link>
+              ))}
+            </div>
 
             <HeaderAction user={user} pageName={pageName} />
           </nav>

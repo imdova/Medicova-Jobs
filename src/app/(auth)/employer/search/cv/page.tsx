@@ -10,7 +10,6 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
@@ -21,7 +20,6 @@ import { Add, Delete, Mail, Search } from "@mui/icons-material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import Image from "next/image";
 import JobFilter from "@/app/(public)/search/filter";
-import MainHeader from "@/components/Layout/Header/Main-header";
 import InviteModal from "@/components/UI/invite-to-apply-modal";
 import FolderModal from "@/components/UI/folder-modal";
 import AddToFolderModal from "@/components/UI/add-to-folder-modal";

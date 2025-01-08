@@ -11,7 +11,7 @@ const Set = () => {
   return (
     <React.Fragment>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
-      <Box className="flex min-h-[calc(100vh-80px)] w-full flex-col items-center justify-center">
+      <Box className="flex min-h-[calc(100vh-80px)] w-full flex-col items-center justify-center p-4">
         <Box className="flex w-full max-w-[600px] flex-col items-center justify-center bg-[#f8faff] shadow-md">
           {/* Lock Icon */}
           <Image

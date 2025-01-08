@@ -37,19 +37,21 @@ const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
             // className={`${isScrolled ? "text-primary" : "text-white"}`}
           >
             <LogoIcon
-              className={`${isScrolled ? "text-primary" : "text-white"} h-[40px] w-auto`}
+              className={`${isScrolled ? "text-primary" : "text-white"} h-[30px] w-auto md:h-[40px]`}
             />
           </Link>
           <nav className="ml-auto flex items-center space-x-8">
-            {links.map((link, i) => (
-              <Link
-                key={i}
-                href={link.url}
-                className="font-medium hover:text-gray-300"
-              >
-                {link.title}
-              </Link>
-            ))}
+            <div className="hidden items-center space-x-8 md:flex">
+              {links.map((link, i) => (
+                <Link
+                  key={i}
+                  href={link.url}
+                  className="font-medium hover:text-gray-300"
+                >
+                  {link.title}
+                </Link>
+              ))}
+            </div>
 
             <HeaderAction user={user} pageName={pageName} />
           </nav>

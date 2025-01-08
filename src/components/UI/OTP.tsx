@@ -71,6 +71,7 @@ const OTPInput = ({
               height: "40px",
             },
           }}
+          type="number"
           autoFocus={index === 0}
           variant="outlined"
         />

@@ -1,35 +1,42 @@
-import { commonLinks, roleBasedLinks } from "@/constants/header";
+import { roleBasedSideBarLinks } from "@/constants/side-bar";
 import { RoleState } from "@/types/next-auth";
 
-type HeaderType = "minimal" | "full" | "centered" | "transparent" | "dark";
+type SideBarType = "minimal" | "full" | "none";
 type LinksType = "default" | "role";
 
 interface RouteConfig {
   pattern: string;
-  headerType: HeaderType;
+  sideBarType: SideBarType;
   linksType?: LinksType;
 }
 
 export const routeConfigs: RouteConfig[] = [
   // default
-  { pattern: "/", headerType: "transparent", linksType: "default" },
-  { pattern: "/search", headerType: "transparent", linksType: "role" },
-  { pattern: "/me/[id]", headerType: "full", linksType: "role" },
-  { pattern: "/job/[slug]", headerType: "full", linksType: "role" },
+  { pattern: "/me/[id]", sideBarType: "full", linksType: "role" },
 
-  { pattern: "/chat", headerType: "full", linksType: "role" },
-  { pattern: "/notifications", headerType: "full", linksType: "role" },
+  { pattern: "/chat", sideBarType: "full", linksType: "role" },
+  { pattern: "/notifications", sideBarType: "full", linksType: "role" },
 
+  { pattern: "/job/[slug]", sideBarType: "full", linksType: "role" },
   // auth
-  { pattern: "/auth/*", headerType: "minimal", linksType: "role" },
   //employer
-  { pattern: "/employer/*", headerType: "full", linksType: "role" },
-  { pattern: "/employer/search", headerType: "transparent", linksType: "role" },
+  { pattern: "/employer/search", sideBarType: "none", linksType: "role" },
+  {
+    pattern: "/employer/job/applicants",
+    sideBarType: "none",
+    linksType: "role",
+  },
+  { pattern: "/employer/search/cv", sideBarType: "none", linksType: "role" },
+  {
+    pattern: "/employer/search/saved-search/[slug]",
+    sideBarType: "none",
+    linksType: "role",
+  },
+  { pattern: "/employer/*", sideBarType: "full", linksType: "role" },
   //job-seeker
-  { pattern: "/job-seeker/*", headerType: "full", linksType: "role" },
+  { pattern: "/job-seeker/*", sideBarType: "full", linksType: "role" },
 ];
 
-// DynamicHeader.tsx
 export const matchRoute = (pathname: string) => {
   // First, prioritize exact matches (including dynamic segments)
   const exactMatch = routeConfigs.find((route) => {
@@ -57,12 +64,12 @@ export const matchRoute = (pathname: string) => {
   return wildcardMatch;
 };
 
-export function getNavLinks(role?: RoleState, pathname?: string) {
+export function getSideBarLinks(role?: RoleState, pathname?: string) {
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
     if (type === "role" && role) {
-      return roleBasedLinks[role];
+      return roleBasedSideBarLinks[role];
     }
   }
-  return commonLinks.home;
+  return [];
 }
