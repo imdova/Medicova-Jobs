@@ -1,3 +1,5 @@
+import { ReadonlyURLSearchParams } from "next/navigation";
+
 export const formatDate = (date: Date): string => {
   const months = [
     "Jan",
@@ -79,3 +81,13 @@ export function getLastSegment(url?: string) {
   if (segments.find((s) => s === "me")) return "me";
   return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
 }
+
+export const createUrl = (
+  pathname: string,
+  params: URLSearchParams | ReadonlyURLSearchParams,
+) => {
+  const paramsString = params.toString();
+  const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
+
+  return `${pathname}${queryString}`;
+};

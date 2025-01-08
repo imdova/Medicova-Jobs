@@ -38,7 +38,7 @@ const ForgetForm: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", formData);
-      router.push("/reset");
+      router.push("/auth/reset");
     }
   };
 
@@ -46,7 +46,7 @@ const ForgetForm: React.FC = () => {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="w-full justify-center items-center flex flex-col py-5"
+      className="flex w-full flex-col items-center justify-center py-5"
     >
       <Box className="w-full md:w-[400px]">
         <Box sx={{ mb: !!errors.email ? 1 : 2 }}>

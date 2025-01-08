@@ -221,7 +221,7 @@ const LoginForm: React.FC = () => {
             )}
           />
           <Link
-            href="/forget"
+            href="/auth/forget"
             className="font-semibold text-secondary hover:underline"
           >
             Forgot Password?

@@ -12,7 +12,6 @@ import { Close, Search } from "@mui/icons-material";
 import { folders } from "@/constants";
 import FolderSmallCard from "./folder-small-card";
 import { Folder } from "@/types";
-import CandidateTable from "./saved-search/folders-table";
 
 interface NewUserModalProps {
   open: boolean;

@@ -1,5 +1,4 @@
 "use client";
-import { createUrl } from "@/app/(auth)/employer/search/search-page";
 import {
   FilterAltOutlined,
   Group,
@@ -12,6 +11,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Flag from "./flagitem";
 import { countries } from "@/constants";
+import { createUrl } from "@/util";
 
 let timer: NodeJS.Timeout;
 function debounce<T extends (...args: string[]) => void>(

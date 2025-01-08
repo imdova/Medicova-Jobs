@@ -6,10 +6,10 @@ import EastIcon from "@mui/icons-material/East";
 import JobCard from "@/components/UI/job-card";
 import { Search } from "@mui/icons-material";
 import { icons } from "@/constants/side-bar";
-import FolderMainCard from "../search/folder-main-card";
 import { folders, jobs } from "@/constants";
 import Link from "next/link";
 import { Suspense } from "react";
+import FolderMainCard from "@/components/UI/folder-main-card";
 
 interface Card {
   title: string;

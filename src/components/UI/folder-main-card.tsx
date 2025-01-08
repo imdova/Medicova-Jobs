@@ -5,9 +5,8 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { createUrl } from "./search-page";
 import { Folder } from "@/types";
-import { getLastEdit } from "@/util";
+import { createUrl, getLastEdit } from "@/util";
 
 interface FolderMainCardProps {
   folder: Folder;
@@ -77,11 +76,11 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
           aria-controls={open ? "save-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
-          className="text-secondary absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white"
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-secondary"
         >
           <MoreHoriz />
         </IconButton>
-        <div className="text-primary absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white">
+        <div className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary">
           <span>{folder.candidates}</span>
         </div>
       </div>

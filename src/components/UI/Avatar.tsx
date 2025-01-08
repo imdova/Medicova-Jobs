@@ -76,7 +76,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </MenuItem>
         <MenuItem className="p-0">
           <Button
-            onClick={() => signOut()}
+            onClick={() => {
+              signOut({ callbackUrl: "/" });
+            }}
             variant="text"
             color="error"
             className="w-full justify-normal"

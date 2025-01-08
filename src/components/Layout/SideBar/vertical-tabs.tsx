@@ -92,7 +92,7 @@ const navigationItems: NavItem[] = [
   {
     icon: SettingsOutlined,
     label: "Settings",
-    path: "/job-seeker/settings",
+    path: "/job-seeker/setting",
   },
   {
     icon: HelpOutline,

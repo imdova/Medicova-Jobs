@@ -43,9 +43,9 @@ const Forget = () => {
           <ForgetForm />
 
           <Link
-            href="/login"
+            href="/auth/signin"
             replace
-            className="text-secondary mb-4 flex items-center gap-2 hover:underline"
+            className="mb-4 flex items-center gap-2 text-secondary hover:underline"
           >
             <ArrowBackIcon
               sx={{
@@ -65,7 +65,7 @@ const Forget = () => {
         </Box>
         {/* Stages */}
         <div className="my-10 flex h-1 w-full max-w-[600px] items-center justify-center gap-5 px-10">
-          <div className="bg-light-primary h-full flex-1 rounded"></div>
+          <div className="h-full flex-1 rounded bg-light-primary"></div>
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>

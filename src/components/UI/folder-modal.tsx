@@ -11,7 +11,7 @@ import {
 import { Close } from "@mui/icons-material";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { createUrl } from "../search-page";
+import { createUrl } from "@/util";
 
 interface NewUserModalProps {
   open: boolean;

@@ -23,9 +23,9 @@ import {
   KeyOutlined,
 } from "@mui/icons-material";
 import { formatName } from "@/util";
-import FolderModal from "./saved-search/folder-modal";
 import AddToFolderModal from "./add-to-folder-modal";
 import Link from "next/link";
+import FolderModal from "./folder-modal";
 
 interface CandidateCardProps {
   doctor: Doctor;

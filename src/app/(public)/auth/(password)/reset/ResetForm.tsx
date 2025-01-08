@@ -30,7 +30,7 @@ const ResetForm: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", otp);
-      router.push("/set");
+      router.push("/auth/set");
     }
   };
 
@@ -67,7 +67,7 @@ const ResetForm: React.FC = () => {
           </Button>
         </Box>
       </form>
-      <p className="text-secondary mt-2 text-center font-semibold">
+      <p className="mt-2 text-center font-semibold text-secondary">
         Don&apos;t receive the email ?{" "}
         <button className="text-light-primary underline hover:no-underline">
           Click here to send again

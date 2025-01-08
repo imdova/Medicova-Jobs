@@ -1,20 +1,19 @@
 import React from "react";
 import Header from "@/components/Layout/Header/HeaderSeeker";
 import SideBar from "@/components/Layout/SideBar/SideBar";
-import {
-  jobSeekerSideBarLinks,
-} from "@/constants/side-bar";
+import { jobSeekerSideBarLinks } from "@/constants/side-bar";
+import VerticalTabs from "@/components/Layout/SideBar/vertical-tabs";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      {/* Header */}
-      <Header />
-      <div style={{ display: "flex" }}>
-        {/* Sidebar */}
-        <SideBar links={jobSeekerSideBarLinks} />
-        {/* Main Content */}
-        <main className="flex-1 ml-0 md:ml-14 lg:ml-0 p-2">{children}</main>
+      <div className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1300px]">
+        <div className="hidden w-1/5 rounded-base border border-gray-100 bg-white py-4 shadow-xl lg:block">
+          <div className="sticky top-[80px]">
+            <VerticalTabs sideBardType="job-seeker" />
+          </div>
+        </div>
+        <main className="w-full px-2 md:px-6 lg:w-[80%]">{children}</main>
       </div>
     </div>
   );
