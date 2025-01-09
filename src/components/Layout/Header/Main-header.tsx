@@ -2,7 +2,6 @@
 import LogoIcon from "@/components/icons/logo";
 import UserAvatar from "@/components/UI/Avatar";
 import ItemSelector from "@/components/UI/menu-item";
-import NotificationModal from "@/components/UI/Notification-modal";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { UserState } from "@/types";
 import { LinkType } from "@/types/side-bar";
@@ -232,7 +231,6 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
   if (id) {
     return (
       <div className="hidden items-center gap-3 text-inherit md:flex">
-        <NotificationModal anchorEl={anchorEl} onClose={handleClose} />
         <IconButton
           className="relative h-12 w-12 text-inherit"
           size="medium"

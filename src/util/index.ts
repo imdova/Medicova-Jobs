@@ -61,15 +61,15 @@ export function getFullLastEdit(date: Date): string {
     const diffHours = Math.floor(diffMinutes / 60);
 
     if (diffHours === 0) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+      return `${diffMinutes} min`;
     }
 
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    return `${diffHours} d`;
   }
 
   // Check if it's within the last 15 days
   if (diffDays <= 15) {
-    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return `${diffDays} d`;
   }
 
   return formatDate(date);

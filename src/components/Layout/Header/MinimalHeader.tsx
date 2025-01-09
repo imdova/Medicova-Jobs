@@ -5,7 +5,7 @@ import Link from "next/link";
 const MinimalHeader: React.FC<BaseHeaderProps> = ({ user }) => {
   return (
     <header className="w-full bg-white shadow-md">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="container mx-auto px-6 lg:max-w-[1170px]">
         <div className="flex h-[60px] items-center">
           <Link href="/">
             <LogoIcon className={`h-[30px] w-auto text-primary md:h-[40px]`} />
@@ -15,7 +15,7 @@ const MinimalHeader: React.FC<BaseHeaderProps> = ({ user }) => {
               href="/auth/register"
               className="text-sm font-semibold hover:text-primary md:text-base"
             >
-              Sign Up
+              Create Account
             </Link>
           </nav>
         </div>

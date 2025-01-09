@@ -57,6 +57,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         className="min-w-40 rounded-lg shadow-lg"
+        disableScrollLock
       >
         <MenuItem>
           <Link
