@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 const GoogleButton = ({ children }: { children: React.ReactNode }) => {
   return (
     <Button
-      className="h-[45px] w-full"
+      className="h-[50px] w-full"
       variant="outlined"
       onClick={() => signIn("google", { callbackUrl: "/" })}
     >

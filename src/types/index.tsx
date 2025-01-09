@@ -162,3 +162,14 @@ export type RoleBasedLinks = {
 export type CommonLinks = {
   [key in CommonLinksType]: HeaderLink[];
 };
+
+export type NavItem = {
+  id: number;
+  icon?: React.ElementType;
+  label?: string;
+  path?: string;
+  notifications?: number;
+  section?: string; // Optional section header
+  type?: "divider" | "text" | "collapse" | "supLink";
+  links?: NavItem[];
+};

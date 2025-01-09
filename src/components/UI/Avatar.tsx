@@ -69,7 +69,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </MenuItem>
         <MenuItem>
           <Link
-            href="/settings"
+            href="/employer/setting"
             className="text-gray-700 transition-colors hover:text-blue-500"
           >
             Settings

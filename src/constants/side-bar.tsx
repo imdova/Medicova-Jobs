@@ -1,3 +1,4 @@
+import { NavItem } from "@/types";
 import { RoleState } from "@/types/next-auth";
 import {
   BusinessOutlined,
@@ -16,16 +17,6 @@ import {
   WorkOutline,
 } from "@mui/icons-material";
 
-type NavItem = {
-  icon?: React.ElementType;
-  label?: string;
-  path?: string;
-  notifications?: number;
-  section?: string; // Optional section header
-  type?: "divider" | "text" | "collapse";
-  links?: NavItem[];
-};
-
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
@@ -39,129 +30,176 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
   admin: [],
   employer: [
     {
+      id: 1,
       label: "Dashboard",
       icon: HomeOutlined,
       path: "/employer/dashboard",
     },
     {
+      id: 2,
       label: "Company Info",
       icon: BusinessOutlined,
       path: "/employer/company-info",
     },
     {
-      label: "Manage Jobs",
+      id: 3,
+      label: "Jobs",
       icon: WorkOutline,
-      path: "/employer/job/manage-jobs",
-    },
-    {
-      label: "Post New Job",
-      icon: PostAddOutlined,
-      path: "/employer/job/posted",
-    },
-    {
-      label: "Applicants",
-      icon: WorkOutline,
-      path: "/employer/job/applicants",
-    },
-    {
-      label: "Search",
-      icon: Search,
-      path: "/employer/search",
+      type: "collapse",
       links: [
         {
-          label: "Saved Searches",
-          path: "/employer/search/saved-search",
+          id: 4,
+          label: "Manage Jobs",
+          icon: WorkOutline,
+          path: "/employer/job/manage-jobs",
+          type: "supLink",
+        },
+        {
+          id: 5,
+          label: "Post New Job",
+          icon: PostAddOutlined,
+          path: "/employer/job/posted",
+          type: "supLink",
+        },
+        {
+          id: 6,
+          label: "Applicants",
+          icon: WorkOutline,
+          path: "/employer/job/applicants",
+          type: "supLink",
         },
       ],
     },
     {
-      label: "My Folders",
-      icon: FolderOutlined,
-      path: "/employer/search/saved-search",
+      id: 7,
+      label: "Search",
+      icon: Search,
+      type: "collapse",
+      links: [
+        {
+          id: 8,
+          label: "Search",
+          icon: Search,
+          path: "/employer/search",
+          type: "supLink",
+        },
+        {
+          id: 10,
+          label: "My Folders",
+          icon: FolderOutlined,
+          path: "/employer/search/saved-search",
+          type: "supLink",
+        },
+      ],
     },
     {
+      id: 11,
       label: "Billing & Subscription",
       icon: PaidOutlined,
       path: "/employer/subscription-plans",
     },
     {
+      id: 12,
       label: "Report",
       icon: DescriptionOutlined,
     },
     {
+      id: 13,
       label: "Chat",
       icon: MessageOutlined,
-      path: "/chat",
-    },
-    {
-      type: "divider",
-    },
-    {
-      type: "text",
-      section: "Settings",
-    },
-    {
-      label: "Settings",
-      icon: SettingsOutlined,
-      path: "/employer/setting",
-    },
-    {
-      label: "Help Center",
-      icon: HelpOutline,
-    },
-  ],
-  user: [
-    {
-      icon: HomeOutlined,
-      label: "Home",
-      path: "/",
-    },
-    {
-      icon: InfoOutlined,
-      label: "My Personal Information",
-      path: "/job-seeker/general-info",
-    },
-    {
-      icon: MessageOutlined,
-      label: "Messages",
       path: "/chat",
       notifications: 3,
     },
     {
-      icon: DescriptionOutlined,
-      label: "My Applications",
-      path: "/job-seeker/my-applications",
-    },
-    {
-      icon: Search,
-      label: "Find Jobs",
-      path: "/search",
-    },
-    {
-      icon: BusinessOutlined,
-      label: "Browse Companies",
-      path: "/job-seeker/browse-companies",
-    },
-
-    {
+      id: 40,
       icon: NotificationsActiveOutlined,
       label: "Notifications",
       path: "/notifications",
       notifications: 4,
     },
     {
+      id: 14,
       type: "divider",
     },
     {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/employer/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
+  user: [
+    {
+      id: 18,
+      icon: HomeOutlined,
+      label: "Home",
+      path: "/",
+    },
+    {
+      id: 19,
+      icon: InfoOutlined,
+      label: "My Personal Information",
+      path: "/job-seeker/general-info",
+    },
+    {
+      id: 20,
+      icon: MessageOutlined,
+      label: "Messages",
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 21,
+      icon: DescriptionOutlined,
+      label: "My Applications",
+      path: "/job-seeker/my-applications",
+    },
+    {
+      id: 22,
+      icon: Search,
+      label: "Find Jobs",
+      path: "/search",
+    },
+    {
+      id: 23,
+      icon: BusinessOutlined,
+      label: "Browse Companies",
+      path: "/job-seeker/browse-companies",
+    },
+    {
+      id: 24,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 25,
+      type: "divider",
+    },
+    {
+      id: 26,
       section: "Settings",
       type: "text",
     },
     {
+      id: 27,
       icon: SettingsOutlined,
       label: "Settings",
       path: "/job-seeker/setting",
     },
     {
+      id: 28,
       icon: HelpOutline,
       label: "Help Center",
       path: "#",

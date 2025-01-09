@@ -64,19 +64,15 @@ export const commonLinks: CommonLinks = {
       url: "/search",
     },
     {
-      title: "Boost",
+      title: "Post a Job",
+      url: "/employer/job/posted",
+    },
+    {
+      title: "Blog",
       url: "#",
     },
     {
-      title: "Prep",
-      url: "#",
-    },
-    {
-      title: "Learn",
-      url: "#",
-    },
-    {
-      title: "Career Advice",
+      title: "Courses",
       url: "#",
     },
   ],
