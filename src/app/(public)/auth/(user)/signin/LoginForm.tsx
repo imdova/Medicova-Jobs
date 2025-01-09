@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -9,18 +9,15 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  IconButton,
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import { apiCall, UseApiOptions } from "@/hooks/APIUse";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setUser } from "@/store/slices/userSlice";
-import { UserState } from "@/types";
-import { useRouter } from "next/navigation";
 import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
 import { signIn } from "next-auth/react";
+import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 
 interface FormData {
   email: string;
@@ -29,10 +26,7 @@ interface FormData {
 }
 
 const LoginForm: React.FC = () => {
-  const router = useRouter();
-  const user = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const {
@@ -43,57 +37,38 @@ const LoginForm: React.FC = () => {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
-  // async function login(data: FormData) {
-  //   const url = "/users/api/v1.0/employer-users/login";
-  //   const options: UseApiOptions = {
-  //     method: "POST",
-  //     data: data,
-  //     config: {
-  //       withCredentials: true,
-  //     },
-  //     userType: "employer-user",
-  //   };
-  //   setLoading(true);
-  //   try {
-  //     const response: UserState = await apiCall(url, options);
-  //     dispatch(setUser(response));
-  //     router.replace(`/me/${response.firstName}`);
-  //   } catch (error: any) {
-  //     if (error.status == "401") {
-  //       setError("Email Address or Password is incorrect");
-  //     } else {
-  //       console.error("🚀 ~ login ~ error:", error);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-
   const onSubmit = async (data: FormData) => {
-    await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      callbackUrl: "/employer/dashboard",
-    });
+    setLoading(true);
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        // callbackUrl: "/employer/dashboard",
+        redirect: false,
+      });
+      if (result?.error) {
+        setError(
+          result.error === "CredentialsSignin"
+            ? "Invalid email or password"
+            : "An error occurred during sign in",
+        );
+      } else {
+        window.location.href = "/employer/dashboard";
+      }
+    } catch (error) {
+      setError("Failed to sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // const onSubmit = async (data: any) => {
-  //   await signIn("credentials", {
-  //     email: data.email,
-  //     password: data.password,
-  //     callbackUrl: "/dashboard",
-  //   });
-  // };
-
-  useEffect(() => {
-    if (user.id) {
-      router.replace(`/me/${user.firstName}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="mx-auto flex h-full w-full max-w-[500px] flex-1 flex-col items-center justify-center p-4">
@@ -158,7 +133,7 @@ const LoginForm: React.FC = () => {
         </Box>
 
         {/* Password Field */}
-        <Box>
+        <div className="mb-2">
           <Controller
             name="password"
             control={control}
@@ -166,17 +141,28 @@ const LoginForm: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 fullWidth
                 label="Password"
                 variant="outlined"
                 id="password"
                 error={!!errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={toggleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOffOutlined />
+                      ) : (
+                        <VisibilityOutlined />
+                      )}
+                    </IconButton>
+                  ),
+                }}
                 helperText={errors.password?.message}
               />
             )}
           />
-        </Box>
+        </div>
 
         {/* Remember Me Checkbox */}
         <Box
@@ -215,22 +201,16 @@ const LoginForm: React.FC = () => {
             Forgot Password?
           </Link>
         </Box>
-        <p className="my-1 text-red-500">{error}</p>
+        {error && <p className="my-1 text-red-500">{error}</p>}
 
         {/* Submit Button */}
         <Button
-          sx={{
-            height: "50px",
-            fontWeight: "700",
-            fontSize: "16px",
-            textTransform: "capitalize",
-            mb: 1,
-          }}
+          className="mb-1 h-[50px] w-full text-lg font-semibold capitalize"
           type="submit"
           variant="contained"
-          fullWidth
+          disabled={loading}
         >
-          {loading ? "loading..." : "Login"}
+          {loading ? "Loading..." : "Login"}
         </Button>
 
         {/* Sign Up Link */}

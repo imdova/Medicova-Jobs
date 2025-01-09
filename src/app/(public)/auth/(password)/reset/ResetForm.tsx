@@ -1,35 +1,64 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import OTPInput from "@/components/UI/OTP";
 import { useRouter } from "next/navigation";
+import { API_VALIDATE_OTP } from "@/lib/constants";
 
-const OTP_MATCH = "1234";
 const OTP_LENGTH = 4;
 
-const ResetForm: React.FC = () => {
+const ResetForm: React.FC<{ email: string }> = ({ email }) => {
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
   const validateForm = () => {
     let error = "";
     if (!otp) {
       error = "Enter all digits";
     }
-    if (otp !== OTP_MATCH) {
+    if (otp.length !== OTP_LENGTH) {
       error = "Invalid OTP";
     }
     setError(error);
     return !error;
   };
 
+  const validateOTP = async ({
+    email,
+    otp,
+  }: {
+    email: string;
+    otp: string;
+  }) => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_VALIDATE_OTP, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+        credentials: "include",
+      });
+      if (response.ok) {
+        router.push("/auth/reset");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", otp);
+      // validateOTP({ email, otp });
       router.push("/auth/set");
     }
   };

@@ -1,87 +1,112 @@
 "use client";
 import React, { useState } from "react";
-import { Box, TextField, Button, InputLabel } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { API_SEND_OTP } from "@/lib/constants";
+import { Controller, useForm } from "react-hook-form";
 
 const ForgetForm: React.FC = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: "",
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
-  const [errors, setErrors] = useState({
-    email: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    defaultValues: {
+      email: "",
+    },
   });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   const validateForm = () => {
-    const newErrors: any = {};
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA0-9]{2,4}$/;
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Enter a valid email address";
+    // Custom email validation can be added here if needed.
+    if (!getValues("email")) {
+      setError("Email is required");
+      return false;
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(getValues("email"))) {
+      setError("Enter a valid email address");
+      return false;
+    }
+    setError("");
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const sendOTP = async (email: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_SEND_OTP, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "include",
+      });
+      if (response.ok) {
+        router.push("/auth/reset");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: { email: string }) => {
     if (validateForm()) {
-      console.log("Form submitted:", formData);
-      router.push("/auth/reset");
+      router.push(`/auth/reset?em=${data.email}`);
+      // await sendOTP(data.email);
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="flex w-full flex-col items-center justify-center p-4"
+      className="flex w-full flex-col items-center justify-center"
     >
-      <Box className="w-full md:w-[400px]">
-        <Box sx={{ mb: !!errors.email ? 1 : 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Email Address
-          </InputLabel>
-          <TextField
-            placeholder="Enter email address"
-            fullWidth
+      <div className="w-full md:w-[400px]">
+        <div className="mb-2">
+          <Controller
+            control={control}
             name="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder="Enter email address"
+                label="Email Address"
+                variant="outlined"
+                id="email"
+                fullWidth
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            )}
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "Enter a valid email address",
+              },
+            }}
           />
-        </Box>
-
-        {/* Send Button */}
+          {error && <p className="my-1 text-red-500">{error}</p>}
+        </div>
         <Button
           variant="contained"
-          fullWidth
-          sx={{
-            maxWidth: 400,
-
-            paddingY: 1.5,
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
+          className="h-[45px] w-full max-w-[400px] py-2 font-bold"
+          disabled={loading}
           type="submit"
         >
-          Send
+          {loading ? "Loading..." : "Send"}
         </Button>
-      </Box>
+      </div>
     </form>
   );
 };

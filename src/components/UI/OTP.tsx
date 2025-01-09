@@ -69,9 +69,11 @@ const OTPInput = ({
               fontWeight: "bold",
               width: "40px",
               height: "40px",
+              MozAppearance: "textfield", // Firefox
             },
+            inputMode: "numeric", // Mobile keyboards
           }}
-          type="number"
+          type="text" // Change to text to remove arrows
           autoFocus={index === 0}
           variant="outlined"
         />

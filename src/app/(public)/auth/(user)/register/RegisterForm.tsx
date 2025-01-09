@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Divider,
+  IconButton,
+} from "@mui/material";
 import Link from "next/link";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -10,10 +17,17 @@ import { useForm, Controller } from "react-hook-form";
 import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
 import { API_SIGNUP } from "@/lib/constants";
+import {
+  Visibility,
+  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@mui/icons-material";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<"jobSeeker" | "employer">(
     "employer",
   );
@@ -44,6 +58,7 @@ const RegisterForm: React.FC = () => {
         body: JSON.stringify(data),
         credentials: "include",
       });
+      console.log("🚀 ~ signUp ~ response:", response);
     } catch (error: any) {
       if (error.status == "401") {
         setError("Email Address or Password is incorrect");
@@ -57,6 +72,9 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit = (data: any) => {
     signUp(data);
+  };
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -214,7 +232,7 @@ const RegisterForm: React.FC = () => {
           />
         </Box>
 
-        <Box sx={{ mb: 1 }}>
+        <Box sx={{ mb: 1, position: "relative" }}>
           <Controller
             control={control}
             name="password"
@@ -222,13 +240,24 @@ const RegisterForm: React.FC = () => {
               <TextField
                 {...field}
                 placeholder="Enter password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 fullWidth
                 label="Password"
                 variant="outlined"
                 id="password"
                 error={!!errors.password}
                 helperText={errors.password?.message}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={toggleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOffOutlined />
+                      ) : (
+                        <VisibilityOutlined />
+                      )}
+                    </IconButton>
+                  ),
+                }}
               />
             )}
             rules={{
@@ -237,13 +266,19 @@ const RegisterForm: React.FC = () => {
                 value: 6,
                 message: "Password must be at least 6 characters",
               },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+                message:
+                  "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol",
+              },
             }}
           />
         </Box>
 
         <Box
           sx={{
-            mb: 2,
+            mb: 1,
             "& .PhoneInput": {
               display: "flex",
               border: "1px solid #ccc",

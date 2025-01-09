@@ -1,18 +1,23 @@
-import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 import ResetForm from "./ResetForm";
 
-const user = { email: "alaahassan@gmail.com" };
-
-const Set = () => {
+const Set = ({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) => {
+  const { em } = searchParams as {
+    [key: string]: string;
+  };
   return (
     <React.Fragment>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
-      <Box className="flex min-h-[calc(100vh-80px)] w-full flex-col items-center justify-center p-4">
-        <Box className="flex w-full max-w-[600px] flex-col items-center justify-center bg-[#f8faff] shadow-md">
+      {/* Main Content */}
+      <div className="m-auto flex h-screen flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center rounded-base border border-gray-50 bg-[#f8faff]/80 p-5 shadow-xl">
           {/* Lock Icon */}
           <Image
             src="/images/reset-password.jpg"
@@ -23,56 +28,33 @@ const Set = () => {
           />
 
           {/* Title */}
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            sx={{ marginBottom: 1, color: "#03353C" }}
-          >
+          <h4 className="mb-1 text-center text-3xl font-semibold text-main">
             Password Reset
-          </Typography>
-
+          </h4>
           {/* Subtitle */}
-          <Typography
-            variant="body1"
-            className="t mb-1 text-center text-lg font-semibold text-black/50"
-          >
-            We send a Code to{" "}
-            <span className="text-light-primary">{user.email}</span>
-          </Typography>
-
+          <p className="mb-4 text-center text-secondary">
+            We send a Code to <span className="text-light-primary">{em}</span>
+          </p>
           {/* Email Input */}
 
-          <ResetForm />
+          <ResetForm email={em} />
 
           <Link
             href="/auth/signin"
             replace
-            passHref
-            className="my-4 flex items-center gap-2 text-secondary hover:underline"
+            className="mt-5 flex items-center gap-2 text-secondary hover:underline"
           >
-            <ArrowBackIcon
-              sx={{
-                fontSize: "20px", // Size of the icon
-              }}
-            />
-            <Typography
-              component="span"
-              sx={{
-                fontSize: "16px",
-                fontWeight: "600",
-              }}
-            >
-              Back to login
-            </Typography>
+            <ArrowBackIcon />
+            <span>Back to login</span>
           </Link>
-        </Box>
+        </div>
         {/* Stages */}
-        <div className="my-10 flex h-1 w-full max-w-[600px] items-center justify-center gap-5 px-10">
+        <div className="mt-5 flex h-1 w-full max-w-[400px] items-center justify-center gap-5 px-10">
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
           <div className="h-full flex-1 rounded bg-light-primary"></div>
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>
-      </Box>
+      </div>
     </React.Fragment>
   );
 };

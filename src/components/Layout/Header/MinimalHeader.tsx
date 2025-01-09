@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const MinimalHeader: React.FC<BaseHeaderProps> = ({ user }) => {
   return (
-    <header className="w-full bg-white shadow-md">
+    <header className="fixed left-0 top-0 z-50 w-full transition-colors duration-300">
       <div className="container mx-auto px-6 lg:max-w-[1170px]">
         <div className="flex h-[60px] items-center">
           <Link href="/">

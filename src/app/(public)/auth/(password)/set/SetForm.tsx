@@ -1,97 +1,145 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, TextField, Button, InputLabel } from "@mui/material";
+import { Box, TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { API_CHANGE_PASSWORD } from "@/lib/constants";
 
-const SetForm: React.FC = () => {
+const SetForm: React.FC<{ email: string }> = ({ email }) => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
-  const [errors, setErrors] = useState({
-    password: "",
-    confirmPassword: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
   });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   const validateForm = () => {
-    const newErrors: any = {};
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    // Custom validation logic
+    const { password, confirmPassword } = getValues();
+    if (!password || !confirmPassword) {
+      setError("Both fields are required");
+      return false;
     }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Password is required";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Password does not match";
+    if (password !== confirmPassword) {
+      setError("Passwords must match");
+      return false;
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setError("");
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const changePassword = async (data: { email: string; password: string }) => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_CHANGE_PASSWORD, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (response.ok) {
+        router.push("/auth/reset");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: {
+    password: string;
+    confirmPassword: string;
+  }) => {
     if (validateForm()) {
-      console.log("Form submitted:", formData);
+      console.log("Form submitted:", data);
+      changePassword({ email, password: data.password });
       router.push("/auth/signin");
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
       className="flex w-full flex-col items-center justify-center p-4"
     >
       <Box className="w-full md:w-[400px]">
+        {/* Password Field */}
         <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Password
-          </InputLabel>
-          <TextField
-            placeholder="Enter password"
-            type="password"
-            fullWidth
+          <Controller
+            control={control}
             name="password"
-            value={formData.password}
-            onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <InputLabel
-            sx={{ color: "#515B6F", fontWeight: "600", fontSize: "16px" }}
-          >
-            Confirme Password
-          </InputLabel>
-          <TextField
-            placeholder="Enter Confirm password"
-            type="password"
-            fullWidth
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder="Enter password"
+                type="password"
+                label="Password"
+                variant="outlined"
+                fullWidth
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+            )}
+            rules={{
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+                message:
+                  "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol",
+              },
+            }}
           />
         </Box>
 
-        {/* Send Button */}
+        {/* Confirm Password Field */}
+        <Box sx={{ mb: 2 }}>
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder="Enter confirm password"
+                type="password"
+                label="Confirm Password"
+                variant="outlined"
+                fullWidth
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
+              />
+            )}
+            rules={{
+              required: "Confirm password is required",
+              validate: (value) =>
+                value === getValues("password") || "Passwords must match",
+            }}
+          />
+        </Box>
+
+        {/* Error message */}
+        {error && <p className="my-1 text-red-500">{error}</p>}
+
+        {/* Submit Button */}
         <Button
           variant="contained"
           fullWidth
@@ -102,8 +150,9 @@ const SetForm: React.FC = () => {
             fontWeight: "bold",
           }}
           type="submit"
+          disabled={loading}
         >
-          Set
+          {loading ? "Loading..." : "Set"}
         </Button>
       </Box>
     </form>
