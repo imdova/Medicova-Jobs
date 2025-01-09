@@ -1,0 +1,36 @@
+import UserDropdown from "@/components/UI/Avatar";
+import NotificationDropdown from "@/components/UI/NotificationDropdown";
+import { UserState } from "@/types";
+import Link from "next/link";
+
+interface UserActionProps {
+  user?: UserState;
+  pathname?: string;
+}
+
+const HeaderAction: React.FC<UserActionProps> = ({ user, pathname }) => {
+  if (user?.id) {
+    return (
+      <div className="flex items-center gap-3 text-inherit">
+        <NotificationDropdown pathname={pathname} />
+        <UserDropdown
+          userAvatar={user.photo || user.image}
+          userName={user.firstName || user.name || "User Image"}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className="flex gap-3">
+        <Link href="/auth/register" className="btn-primary btn-signup">
+          Sign Up
+        </Link>
+        <Link href="/auth/signin" className="btn-primary btn-login">
+          Login
+        </Link>
+      </div>
+    );
+  }
+};
+
+export default HeaderAction;

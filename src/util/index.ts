@@ -1,3 +1,5 @@
+import { ReadonlyURLSearchParams } from "next/navigation";
+
 export const formatDate = (date: Date): string => {
   const months = [
     "Jan",
@@ -59,15 +61,15 @@ export function getFullLastEdit(date: Date): string {
     const diffHours = Math.floor(diffMinutes / 60);
 
     if (diffHours === 0) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+      return `${diffMinutes} min`;
     }
 
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    return `${diffHours} d`;
   }
 
   // Check if it's within the last 15 days
   if (diffDays <= 15) {
-    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return `${diffDays} d`;
   }
 
   return formatDate(date);
@@ -79,3 +81,24 @@ export function getLastSegment(url?: string) {
   if (segments.find((s) => s === "me")) return "me";
   return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
 }
+
+export const isCurrentPage = (pathname: string, linkPath: string): boolean => {
+  // Convert the linkPath into a regex pattern
+  const regexPattern = linkPath
+    .replace(/\[.*?\]/g, "[^/]+") // Replace dynamic segments (e.g., [id]) with a regex to match any non-slash characters
+    .replace(/\//g, "\\/"); // Escape slashes for regex
+
+  // Create the regex and test the pathname
+  const regex = new RegExp(`^${regexPattern}$`);
+  return regex.test(pathname);
+};
+
+export const createUrl = (
+  pathname: string,
+  params: URLSearchParams | ReadonlyURLSearchParams,
+) => {
+  const paramsString = params.toString();
+  const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
+
+  return `${pathname}${queryString}`;
+};

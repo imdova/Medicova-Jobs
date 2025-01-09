@@ -8,7 +8,6 @@ import { companies, jobs, specialists } from "@/constants";
 import BasicTabs from "@/components/UI/tabs";
 import Testimonials from "@/components/UI/testimonials";
 import MinJobCard from "@/components/UI/job-card-min";
-import MainHeader from "@/components/Layout/Header/Main-header";
 
 const countries = [
   { name: "Saudi Arabia", code: "SA" },
@@ -28,8 +27,7 @@ const HomePage = () => {
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
         <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-4 shadow-md">
-          <MainHeader logoColor="text-white" textColor="text-white" />
-          <div className="container mx-auto flex flex-col-reverse items-center gap-6 p-4 md:flex-row lg:max-w-[1170px]">
+          <div className="container mx-auto mt-[70px] flex flex-col-reverse items-center gap-6 p-4 md:flex-row lg:max-w-[1170px]">
             <div className="col-span-4 md:col-span-3">
               <h2 className="mb-6 text-[45px] font-black leading-none text-primary-foreground md:text-[60px]">
                 <span className="text-[45px] font-black text-main md:text-[60px]">
@@ -95,7 +93,7 @@ const HomePage = () => {
         {/* explore jobs by specialist */}
         <div className="bg-opacity-10 bg-[url('/images/specialty-bg.png')] bg-cover bg-center">
           <div className="bg-neutral-100/60">
-            <div className="container mx-auto min-h-screen p-2 pt-16 lg:max-w-[1170px]">
+            <div className="container mx-auto h-screen max-h-[720px] p-2 pt-16 lg:max-w-[1170px]">
               <div className="flex justify-center p-4">
                 <div className="rounded-full bg-primary px-6 py-2 text-primary-foreground">
                   Job Categories
@@ -134,7 +132,7 @@ const HomePage = () => {
         </div>
 
         {/* popular country  */}
-        <div className="container mx-auto min-h-screen p-2 pt-16 lg:max-w-[1170px]">
+        <div className="container mx-auto h-screen max-h-[720px] p-2 pt-16 lg:max-w-[1170px]">
           <h2 className="my-6 text-center text-[45px] font-bold leading-none text-light-primary md:text-[60px]">
             <span className="text-[45px] font-bold text-main md:text-[60px]">
               Popular
@@ -167,7 +165,7 @@ const HomePage = () => {
         {/* Discover who is hiring on Medicova */}
         <div className="bg-opacity-10 bg-[url('/images/hiring-bg.jpg')] bg-cover bg-center">
           <div className="bg-neutral-100/60">
-            <div className="container mx-auto min-h-screen p-2 py-16 lg:max-w-[1170px]">
+            <div className="container mx-auto h-screen max-h-[720px] p-2 py-16 lg:max-w-[1170px]">
               <h2 className="my-6 text-center text-[45px] font-bold leading-none text-light-primary md:text-[60px]">
                 <span className="text-[45px] font-bold text-main md:text-[60px]">
                   Discover who is hiring on
@@ -302,7 +300,7 @@ const HomePage = () => {
 
         <div className="bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
           <div className="bg-white/80 shadow-md">
-            <div className="container mx-auto min-h-screen p-4 lg:max-w-[1170px]">
+            <div className="container mx-auto h-screen max-h-[720px] p-4 lg:max-w-[1170px]">
               <h2 className="my-6 text-center text-[45px] font-bold leading-none text-main md:text-[60px]">
                 Find Job Vacancies
                 <span className="text-[45px] font-bold text-light-primary md:text-[60px]">

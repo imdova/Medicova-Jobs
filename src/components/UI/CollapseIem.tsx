@@ -12,12 +12,11 @@ import {
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
-import { icons } from "@/constants/side-bar";
 import { LinkType } from "@/types/side-bar";
 const CollapseItem: React.FC<
   LinkType & { onClick?: () => void; collapseOnClick?: () => void }
 > = ({ title, links, icon, onClick, collapseOnClick }) => {
-  const Icon = icon ? icons[icon] : null;
+  const IconComponent = icon;
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -27,10 +26,10 @@ const CollapseItem: React.FC<
     <div>
       <ListItem disablePadding>
         <ListItemButton className="hover:bg-[#2EAE7D]/50" onClick={toggle}>
-          {Icon && (
+          {IconComponent && (
             <ListItemIcon>
               {isOpen ? (
-                <Icon sx={{ color: "white", fontSize: "20px" }} />
+                <IconComponent sx={{ color: "white", fontSize: "20px" }} />
               ) : (
                 <Tooltip
                   title={title}
@@ -38,7 +37,7 @@ const CollapseItem: React.FC<
                   placement="right"
                   arrow
                 >
-                  <Icon sx={{ color: "white", fontSize: "20px" }} />
+                  <IconComponent sx={{ color: "white", fontSize: "20px" }} />
                 </Tooltip>
               )}
             </ListItemIcon>

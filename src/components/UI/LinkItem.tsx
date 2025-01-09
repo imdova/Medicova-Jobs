@@ -6,7 +6,6 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import { icons } from "@/constants/side-bar";
 import { LinkType } from "@/types/side-bar";
 
 const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
@@ -15,7 +14,8 @@ const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
   icon,
   onClick,
 }) => {
-  const Icon = icon ? icons[icon] : null;
+  const IconComponent = icon;
+
   return (
     <ListItem disablePadding>
       <ListItemButton
@@ -25,7 +25,7 @@ const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
         href={url || "#"}
         onClick={onClick}
       >
-        {Icon && (
+        {IconComponent && (
           <ListItemIcon>
             <Tooltip
               title={title}
@@ -34,7 +34,7 @@ const LinkItem: React.FC<LinkType & { onClick?: () => void }> = ({
               placement="right"
               arrow
             >
-              <Icon sx={{ color: "white", fontSize: "20px" }} />
+              <IconComponent sx={{ color: "white", fontSize: "20px" }} />
             </Tooltip>
           </ListItemIcon>
         )}

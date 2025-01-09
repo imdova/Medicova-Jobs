@@ -1,3 +1,5 @@
+import { RoleState } from "./next-auth";
+
 interface Country {
   name: string;
   code: string;
@@ -8,6 +10,11 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
+  //
+  role?: RoleState;
+  image: string | null;
+  name: string | null;
+  //
   roles: string[];
   active: boolean;
   photo?: string;
@@ -17,6 +24,11 @@ export interface UserState {
   created_at: string | null;
   deleted_at: string | null;
   updated_at: string | null;
+}
+
+export interface BaseHeaderProps {
+  user?: UserState;
+  pathname: string;
 }
 
 export interface Notification {
@@ -137,3 +149,27 @@ export interface NotificationItem {
   category: string;
   image: string;
 }
+
+export interface HeaderLink {
+  title: string;
+  url: string;
+}
+export type CommonLinksType = "home";
+
+export type RoleBasedLinks = {
+  [key in RoleState]: HeaderLink[];
+};
+export type CommonLinks = {
+  [key in CommonLinksType]: HeaderLink[];
+};
+
+export type NavItem = {
+  id: number;
+  icon?: React.ElementType;
+  label?: string;
+  path?: string;
+  notifications?: number;
+  section?: string; // Optional section header
+  type?: "divider" | "text" | "collapse" | "supLink";
+  links?: NavItem[];
+};

@@ -43,7 +43,6 @@ const theme = createTheme({
           "&.Mui-focused": {
             color: "black", // Set the label color when focused
           },
-          borderRadius: "10px",
         },
       },
     },

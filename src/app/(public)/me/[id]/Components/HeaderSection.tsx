@@ -53,7 +53,7 @@ const HeaderSection: React.FC = () => {
         <Avatar
           alt="Profile"
           src={avatarImage || undefined}
-          className="ml-14 mr-8 h-[100px] w-[100px] border-[6px] border-white shadow-xl"
+          className="ml-14 mr-8 min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl"
         />
         <div className="mr-5">
           <div className="flex items-center">

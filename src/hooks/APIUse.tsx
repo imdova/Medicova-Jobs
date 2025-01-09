@@ -29,14 +29,14 @@ async function apiCall<T>(url: string, options: UseApiOptions): Promise<T> {
   };
 
   try {
-    const response = await axios(BASE_URL + url, axiosConfig);
+    const response = await axios(url, axiosConfig);
     return response.data;
   } catch (err) {
     const axiosError = err as AxiosError;
     if (axiosError.response?.status === 401) {
       try {
         await refreshToken(options.userType);
-        const retryResponse = await axios(BASE_URL + url, axiosConfig);
+        const retryResponse = await axios(url, axiosConfig);
         return retryResponse.data;
       } catch (retryError) {
         throw err;

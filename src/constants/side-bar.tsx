@@ -1,214 +1,211 @@
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import BusinessIcon from "@mui/icons-material/Business";
-import WorkIcon from "@mui/icons-material/Work";
-import SearchIcon from "@mui/icons-material/Search";
-import PaymentIcon from "@mui/icons-material/Payment";
-import ReportIcon from "@mui/icons-material/Assessment";
-import ChatIcon from "@mui/icons-material/Chat";
-import SettingsIcon from "@mui/icons-material/Settings";
-import HelpIcon from "@mui/icons-material/Help";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import InfoIcon from "@mui/icons-material/Info";
-import SchoolIcon from "@mui/icons-material/School";
-import StarsIcon from "@mui/icons-material/Stars";
-import PsychologyIcon from "@mui/icons-material/Psychology";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
-import PeopleIcon from "@mui/icons-material/People";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-import DescriptionIcon from "@mui/icons-material/Description";
-import { LinkType } from "@/types/side-bar";
+import { NavItem } from "@/types";
+import { RoleState } from "@/types/next-auth";
+import {
+  BusinessOutlined,
+  DescriptionOutlined,
+  FolderOutlined,
+  HelpOutline,
+  HomeOutlined,
+  InfoOutlined,
+  MessageOutlined,
+  NotificationsActiveOutlined,
+  PaidOutlined,
+  Person,
+  PostAddOutlined,
+  Search,
+  SettingsOutlined,
+  WorkOutline,
+} from "@mui/icons-material";
 
-export const icons = {
-  home: HomeOutlinedIcon,
-  dashBoard: DashboardIcon,
-  profile: BusinessIcon,
-  job: WorkIcon,
-  search: SearchIcon,
-  wallet: PaymentIcon,
-  report: ReportIcon,
-  chat: ChatIcon,
-  settings: SettingsIcon,
-  help: HelpIcon,
-  info: InfoIcon,
-  school: SchoolIcon,
-  star: StarsIcon,
-  skill: PsychologyIcon,
-  upload: CloudUploadIcon,
-  work: WorkHistoryIcon,
-  workOT: WorkOutlineIcon,
-  manage: WorkHistoryIcon,
-  PeopleIcon: PeopleIcon,
-  AccountCircleIcon: AccountCircleIcon,
-  ManageAccountsIcon: ManageAccountsIcon,
-  CorporateFareIcon: CorporateFareIcon,
-  DescriptionIcon: DescriptionIcon,
+export type CommonLinksType = "home";
+
+export type RoleBasedLinks = {
+  [key in RoleState]: NavItem[];
+};
+export type CommonLinks = {
+  [key in CommonLinksType]: NavItem[];
 };
 
-export const employerSideBarLinks: LinkType[] = [
-  {
-    title: "Dashboard",
-    icon: "dashBoard",
-    kind: "collapse",
-    links: [
-      {
-        title: "OverView",
-        url: "/employer/dashboard",
-      },
-      {
-        title: "Analytics",
-      },
-      {
-        title: "Report",
-      },
-    ],
-  },
-  {
-    title: "Profile",
-    icon: "profile",
-    kind: "collapse",
-    links: [
-      {
-        title: "View Profile",
-        url: "/employer/profile",
-      },
-      {
-        title: "Company Info",
-        url: "/employer/company-info",
-      },
-    ],
-  },
-  {
-    title: "My Jobs",
-    icon: "job",
-    kind: "collapse",
-    links: [
-      {
-        title: "Manage Jobs",
-        url: "/employer/job/manage-jobs",
-      },
-      {
-        title: "Posted Jobs",
-        url: "/employer/job/posted",
-      },
-      {
-        title: "Applicants",
-        url: "/employer/job/applicants",
-      },
-      {
-        title: "Job Analytics",
-      },
-    ],
-  },
-  {
-    title: "Search",
-    icon: "search",
-    kind: "collapse",
-    links: [
-      {
-        title: "Search Candidates",
-        url: "/employer/search/",
-      },
-      {
-        title: "Saved Searches",
-        url: "/employer/search/saved-search",
-      },
-    ],
-  },
-  {
-    title: "Billing & Subscription",
-    icon: "wallet",
-    url: "/employer/subscription-plans",
-  },
-  {
-    title: "Report",
-    icon: "report",
-  },
-  {
-    title: "Chat",
-    icon: "chat",
-    url: "/chat",
-  },
-  {
-    kind: "divider",
-  },
-  {
-    kind: "title",
-    title: "Settings",
-  },
-  {
-    title: "Settings",
-    icon: "settings",
-    url: "/employer/setting",
-  },
-  {
-    title: "Help Center",
-    icon: "help",
-  },
-];
-
-export const jobSeekerSideBarLinks: LinkType[] = [
-  {
-    title: "Home page",
-    icon: "home",
-    url: "/",
-  },
-  {
-    title: "Profile ",
-    icon: "AccountCircleIcon",
-    kind: "collapse",
-    links: [
-      {
-        title: "View Profile",
-        url: "/job-seeker/general-info",
-      },
-      {
-        title: "Personal Info",
-        url: "/job-seeker/profile",
-      },
-    ],
-  },
-  {
-    title: "Career References",
-    icon: "ManageAccountsIcon",
-    url: "/job-seeker/career-references",
-  },
-  {
-    title: "Browse Companies",
-    icon: "CorporateFareIcon",
-    url: "/job-seeker/browse-companies",
-  },
-  {
-    title: "My Applications",
-    icon: "DescriptionIcon",
-    url: "/job-seeker/my-applications",
-  },
-  {
-    title: "Chat",
-    icon: "chat",
-    url: "/chat",
-  },
-  {
-    kind: "divider",
-  },
-  {
-    kind: "title",
-    title: "Settings",
-  },
-  {
-    title: "Settings",
-    icon: "settings",
-    url: "/job-seeker/setting",
-  },
-  {
-    title: "Help Center",
-    icon: "help",
-    url: "#",
-  },
-];
+export const roleBasedSideBarLinks: RoleBasedLinks = {
+  admin: [],
+  employer: [
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: HomeOutlined,
+      path: "/employer/dashboard",
+    },
+    {
+      id: 2,
+      label: "Company Info",
+      icon: BusinessOutlined,
+      path: "/employer/company-info",
+    },
+    {
+      id: 3,
+      label: "Jobs",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 4,
+          label: "Manage Jobs",
+          icon: WorkOutline,
+          path: "/employer/job/manage-jobs",
+          type: "supLink",
+        },
+        {
+          id: 5,
+          label: "Post New Job",
+          icon: PostAddOutlined,
+          path: "/employer/job/posted",
+          type: "supLink",
+        },
+        {
+          id: 6,
+          label: "Applicants",
+          icon: WorkOutline,
+          path: "/employer/job/applicants",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 7,
+      label: "Search",
+      icon: Search,
+      type: "collapse",
+      links: [
+        {
+          id: 8,
+          label: "Search",
+          icon: Search,
+          path: "/employer/search",
+          type: "supLink",
+        },
+        {
+          id: 10,
+          label: "My Folders",
+          icon: FolderOutlined,
+          path: "/employer/search/saved-search",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 11,
+      label: "Billing & Subscription",
+      icon: PaidOutlined,
+      path: "/employer/subscription-plans",
+    },
+    {
+      id: 12,
+      label: "Report",
+      icon: DescriptionOutlined,
+    },
+    {
+      id: 13,
+      label: "Chat",
+      icon: MessageOutlined,
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 40,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 14,
+      type: "divider",
+    },
+    {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/employer/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
+  user: [
+    {
+      id: 18,
+      icon: HomeOutlined,
+      label: "Home",
+      path: "/",
+    },
+    {
+      id: 19,
+      icon: InfoOutlined,
+      label: "My Personal Information",
+      path: "/job-seeker/general-info",
+    },
+    {
+      id: 20,
+      icon: MessageOutlined,
+      label: "Messages",
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 21,
+      icon: DescriptionOutlined,
+      label: "My Applications",
+      path: "/job-seeker/my-applications",
+    },
+    {
+      id: 22,
+      icon: Search,
+      label: "Find Jobs",
+      path: "/search",
+    },
+    {
+      id: 23,
+      icon: BusinessOutlined,
+      label: "Browse Companies",
+      path: "/job-seeker/browse-companies",
+    },
+    {
+      id: 24,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 25,
+      type: "divider",
+    },
+    {
+      id: 26,
+      section: "Settings",
+      type: "text",
+    },
+    {
+      id: 27,
+      icon: SettingsOutlined,
+      label: "Settings",
+      path: "/job-seeker/setting",
+    },
+    {
+      id: 28,
+      icon: HelpOutline,
+      label: "Help Center",
+      path: "#",
+    },
+  ],
+};
 
 export const applicantsFilters = {
   Residency: [

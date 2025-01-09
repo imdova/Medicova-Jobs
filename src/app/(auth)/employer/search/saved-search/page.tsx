@@ -1,11 +1,11 @@
 "use client";
+import FolderMainCard from "@/components/UI/folder-main-card";
+import FolderModal from "@/components/UI/folder-modal";
+import CandidateTable from "@/components/UI/folders-table";
+import { folders } from "@/constants";
 import { Add, Search } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Suspense, useState } from "react";
-import CandidateTable from "./folders-table";
-import { folders } from "@/constants";
-import FolderModal from "./folder-modal";
-import FolderMainCard from "../folder-main-card";
 
 const SavedSearchPage: React.FC = ({
   searchParams,

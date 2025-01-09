@@ -28,6 +28,12 @@ function getTotalCount(items: FilterOption[]) {
   return items.reduce((sum, item) => sum + (item.count || 0), 0);
 }
 
+const filterOptions = (options: FilterOption[], query: string) => {
+  return options.filter((option) =>
+    option.label.toLowerCase().includes(query.toLowerCase()),
+  );
+};
+
 const FilterItem: React.FC<FilterItemProps> = ({
   section,
   value,
@@ -46,14 +52,9 @@ const FilterItem: React.FC<FilterItemProps> = ({
   };
 
   const filteredOptions =
-    isSearch && query
-      ? section.options.filter((option) =>
-          option.label.toLowerCase().includes(query.toLowerCase()),
-        )
-      : section.options;
+    isSearch && query ? filterOptions(section.options, query) : section.options;
 
   const isAllSelected = value.length === section.options.length;
-  const isNoneSelected = value.length === 0;
 
   const handleAllChange = () => {
     const newValue = isAllSelected

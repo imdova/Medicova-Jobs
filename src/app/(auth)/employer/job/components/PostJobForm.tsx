@@ -128,7 +128,7 @@ const PostJobForm: React.FC = () => {
           >
             Back
           </Button>
-          <Button className="rounded-none bg-[#FFAE35] px-2 text-sm text-[#464748] hover:bg-[#e19e39] md:px-6">
+          <Button className="bg-[#FFAE35] px-2 text-sm text-[#464748] hover:bg-[#e19e39] md:px-6">
             Save and Publish Later
           </Button>
           <Button

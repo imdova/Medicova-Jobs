@@ -14,6 +14,8 @@ const initialState: UserState = {
   created_at: null,
   updated_at: null,
   deleted_at: null,
+  image: null,
+  name: null,
 };
 
 const userSlice = createSlice({

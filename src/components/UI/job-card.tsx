@@ -2,21 +2,16 @@
 import { IconButton, Switch } from "@mui/material";
 import { Job } from "@/types";
 import {
-  AccessTime,
   AccessTimeOutlined,
   Bookmark,
   BookmarkBorder,
   Edit,
   LocationOnOutlined,
-  LockClockOutlined,
-  MedicalServicesOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
-import Flag from "@/components/UI/flagitem";
 import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
 import { DropdownMenu } from "./Controls";
-import UserAvatar from "./Avatar";
 import { getFullLastEdit } from "@/util";
 import Image from "next/image";
 import { notifications } from "@/constants";

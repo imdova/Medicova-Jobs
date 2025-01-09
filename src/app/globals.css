@@ -30,6 +30,20 @@ html,
   font-size: 14px;
 }
 
+@layer components {
+  .btn-primary {
+    @apply rounded-[10px] px-4 py-2 text-sm font-semibold uppercase focus:ring-2 focus:ring-primary-foreground md:text-base;
+  }
+
+  .btn-signup {
+    @apply text-nowrap text-inherit hover:bg-primary-foreground hover:text-primary;
+  }
+
+  .btn-login {
+    @apply bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary;
+  }
+}
+
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .scroll-bar-hidden::-webkit-scrollbar {
