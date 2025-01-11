@@ -1,7 +1,7 @@
 import { UserState } from "@/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: UserState = {
+const InitialUserData: UserState = {
   id: null,
   email: null,
   firstName: null,
@@ -17,37 +17,33 @@ const initialState: UserState = {
   image: null,
   name: null,
 };
+interface UserReducerState {
+  loading: boolean;
+  user: UserState;
+  error?: string;
+}
+const initialState: UserReducerState = {
+  loading: false,
+  user: InitialUserData,
+};
 
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
   reducers: {
-    initialUser: () => {
-      let user = initialState;
-      if (typeof window !== "undefined") {
-        const userFromStorage = localStorage.getItem("user");
-        if (userFromStorage) {
-          user = JSON.parse(userFromStorage);
-        }
-      }
-      return user; // initialize the user
-    },
-    setUser: (state, action: PayloadAction<UserState>) => {
-      const user = action.payload;
-      if (typeof window !== "undefined") {
-        // Store user in localStorage on the client-side only
-        localStorage.setItem("user", JSON.stringify(user));
-      }
-      return user; // Update Redux state with the user object
+    setUser: (state, action) => {
+      return { ...state, user: action.payload, loading: false }; // Update Redux state with the user object
     },
     clearUser: () => {
-      if (typeof window !== "undefined") {
-        // Remove user from localStorage on the client-side only
-        localStorage.removeItem("user");
-      }
       return initialState; // Reset to initial state
+    },
+    setLoading: (state, action) => {
+      return { ...state, loading: action.payload };
+    },
+    setError: (state, action) => {
+      return { ...state, error: action.payload };
     },
   },
 });
-export const { setUser, clearUser, initialUser } = userSlice.actions;
+export const { setUser, clearUser, setLoading, setError } = userSlice.actions;
 export const userReducer = userSlice.reducer;

@@ -1,5 +1,5 @@
-import UserDropdown from "@/components/UI/Avatar";
 import NotificationDropdown from "@/components/UI/NotificationDropdown";
+import UserDropdown from "@/components/UI/UserDropdown";
 import { UserState } from "@/types";
 import Link from "next/link";
 

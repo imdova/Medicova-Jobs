@@ -4,14 +4,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 import ResetForm from "./ResetForm";
 
-const Set = ({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
-  const { em } = searchParams as {
-    [key: string]: string;
-  };
+const Set = () => {
   return (
     <React.Fragment>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
@@ -32,12 +25,8 @@ const Set = ({
             Password Reset
           </h4>
           {/* Subtitle */}
-          <p className="mb-4 text-center text-secondary">
-            We send a Code to <span className="text-light-primary">{em}</span>
-          </p>
-          {/* Email Input */}
 
-          <ResetForm email={em} />
+          <ResetForm />
 
           <Link
             href="/auth/signin"

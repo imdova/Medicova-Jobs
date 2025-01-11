@@ -1,4 +1,5 @@
 import { API_SIGNIN } from "@/lib/constants";
+import { validateOTP } from "../access";
 
 export async function authenticateUser(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
@@ -12,6 +13,19 @@ export async function authenticateUser(credentials: any) {
     });
     const user = await response.json();
     return response.ok ? user : null;
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return null;
+  }
+}
+export async function authenticateOTP(credentials: any) {
+  if (!credentials?.email || !credentials?.otp) return null;
+  try {
+    const response = await validateOTP({
+      otp: credentials?.otp,
+      email: credentials?.email,
+    });
+    return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
     return null;

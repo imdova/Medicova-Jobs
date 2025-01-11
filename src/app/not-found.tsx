@@ -2,9 +2,9 @@ import Image from "next/image";
 
 export default function NotFoundPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white text-main">
+    <div className="flex h-full flex-col items-center justify-center bg-white text-main">
       <div className="px-6 text-center">
-        <h1 className="mb-6 bg-gradient-to-r from-primary to-light-primary bg-clip-text text-8xl font-extrabold tracking-tight text-transparent">
+        <h1 className="mb-6 bg-gradient-to-r from-primary to-light-primary bg-clip-text text-[9rem] font-extrabold tracking-tight text-transparent">
           404
         </h1>
         <p className="mb-4 text-2xl font-semibold text-secondary">
@@ -23,7 +23,7 @@ export default function NotFoundPage() {
       </div>
 
       <div className="absolute bottom-4 text-sm text-secondary">
-        <p>© {new Date().getFullYear()} Your Company. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Medicova. All rights reserved.</p>
       </div>
     </div>
   );

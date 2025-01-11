@@ -15,7 +15,7 @@ const DynamicLayout = ({ children }: { children: React.ReactNode }) => {
     switch (sideBarType) {
       case "full":
         return (
-          <div className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1300px]">
+          <div className="container mx-auto my-8 flex min-h-[calc(100vh-150px)] w-full flex-row p-2 lg:max-w-[1300px]">
             <aside className="hidden w-1/5 rounded-base border border-gray-100 bg-white py-4 shadow-xl lg:block">
               <div className="sticky top-[85px]">
                 <DynamicSideBar user={user} pathname={pathname} />

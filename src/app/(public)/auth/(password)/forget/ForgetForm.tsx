@@ -2,10 +2,14 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { API_SEND_OTP } from "@/lib/constants";
 import { Controller, useForm } from "react-hook-form";
+import { sendOTP } from "@/lib/access";
+import { setEmail } from "@/store/slices/resetSlice";
+import { useAppDispatch } from "@/store/hooks";
 
 const ForgetForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -36,32 +40,18 @@ const ForgetForm: React.FC = () => {
     return true;
   };
 
-  const sendOTP = async (email: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_SEND_OTP, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-        credentials: "include",
-      });
-      if (response.ok) {
-        router.push("/auth/reset");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "An error occurred");
-      }
-    } catch (error: any) {
-      setError(error.message || "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const onSubmit = async (data: { email: string }) => {
     if (validateForm()) {
-      router.push(`/auth/reset?em=${data.email}`);
-      // await sendOTP(data.email);
+      setLoading(true);
+      const result = await sendOTP(data.email);
+      if (result.success) {
+        setLoading(false);
+        dispatch(setEmail({ email: data.email }));
+        router.push(`/auth/reset`);
+      } else {
+        setLoading(false);
+        setError(result.message);
+      }
     }
   };
 

@@ -4,14 +4,7 @@ import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 
-const Set = ({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
-  const { em } = searchParams as {
-    [key: string]: string;
-  };
+const Set = () => {
   return (
     <React.Fragment>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
@@ -39,7 +32,7 @@ const Set = ({
 
           {/* Email Input */}
 
-          <SetForm email={em} />
+          <SetForm />
 
           <Link
             href="/auth/signin"

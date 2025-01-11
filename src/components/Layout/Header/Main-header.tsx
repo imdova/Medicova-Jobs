@@ -1,6 +1,6 @@
 "use client";
 import LogoIcon from "@/components/icons/logo";
-import UserAvatar from "@/components/UI/Avatar";
+import UserDropdown from "@/components/UI/UserDropdown";
 import ItemSelector from "@/components/UI/menu-item";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { UserState } from "@/types";
@@ -246,10 +246,10 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
             <NotificationsNone className="h-6 w-6 text-inherit" />
           )}
         </IconButton>
-        <UserAvatar
+        {/* <UserAvatar
           userAvatar={photo || image}
           userName={firstName || name || "User Image"}
-        />
+        /> */}
       </div>
     );
   } else {

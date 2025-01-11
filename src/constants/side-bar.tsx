@@ -142,14 +142,14 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 18,
       icon: HomeOutlined,
-      label: "Home",
+      label: "Home", 
       path: "/",
     },
     {
       id: 19,
       icon: InfoOutlined,
-      label: "My Personal Information",
-      path: "/job-seeker/general-info",
+      label: "My Personal Info",
+      path: "/job-seeker/setting?act=Profile",
     },
     {
       id: 20,

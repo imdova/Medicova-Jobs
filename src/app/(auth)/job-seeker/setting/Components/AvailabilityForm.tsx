@@ -1,7 +1,7 @@
 import React from "react";
-import { Typography, Grid, Card, Switch, Box } from "@mui/material";
+import {  Grid, Card, Switch, Box } from "@mui/material";
 
-const AboutCompany: React.FC = () => {
+const AvailabilityForm: React.FC = () => {
   return (
     <Grid item xs={12}>
       <Card className="flex items-center justify-between bg-primary-100 p-[16px] text-start">
@@ -23,4 +23,4 @@ const AboutCompany: React.FC = () => {
   );
 };
 
-export default AboutCompany;
+export default AvailabilityForm;
