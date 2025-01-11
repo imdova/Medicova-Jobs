@@ -16,15 +16,15 @@ import { NextAuthProvider } from "@/NextAuthProvider";
 import { useForm, Controller } from "react-hook-form";
 import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
-import { API_SIGNUP } from "@/lib/constants";
 import {
-  Visibility,
-  VisibilityOff,
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from "@mui/icons-material";
+import { register } from "@/lib/access";
+import { useRouter } from "next/navigation";
 
 const RegisterForm: React.FC = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,30 +49,59 @@ const RegisterForm: React.FC = () => {
     },
   });
 
-  async function signUp(data: FormData) {
-    setLoading(true);
-    try {
-      const response = await fetch(API_SIGNUP + "?companyName=new", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      console.log("🚀 ~ signUp ~ response:", response);
-    } catch (error: any) {
-      if (error.status == "401") {
-        setError("Email Address or Password is incorrect");
-      } else {
-        console.error("🚀 ~ login ~ error:", error);
-      }
-    } finally {
-      setLoading(false);
+  const validateForm = () => {
+    const { firstName, lastName, email, password, companyName, phone } =
+      watch();
+    let error = "";
+    if (!firstName) {
+      error = "First name is required";
     }
-  }
-
-  const onSubmit = (data: any) => {
-    signUp(data);
+    if (!lastName) {
+      error = "Last name is required";
+    }
+    if (!email) {
+      error = "Email is required";
+    }
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(email)) {
+      error = "Enter a valid email address";
+    }
+    if (!password) {
+      error = "Password is required";
+    }
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (!passwordPattern.test(password)) {
+      error =
+        "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol";
+    }
+    if (!phone) {
+      error = "Phone number is required";
+    }
+    setError(error);
+    return !error;
   };
+
+  const onSubmit = async (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    companyName: string;
+    phone: string;
+  }) => {
+    if (validateForm()) {
+      setLoading(true);
+      const result = await register(data);
+      if (result.success) {
+        setLoading(false);
+        router.replace(`/`);
+      } else {
+        setLoading(false);
+        setError(result.message);
+      }
+    }
+  };
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };

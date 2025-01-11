@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import OTPInput from "@/components/UI/OTP";
 import { useRouter } from "next/navigation";
-import { API_VALIDATE_OTP } from "@/lib/constants";
+import { sendOTP, validateOTP } from "@/lib/access";
+import { useAppSelector } from "@/store/hooks";
+import ResendEmailTimer from "./ResendEmailTimer";
+import { signIn } from "next-auth/react";
 
-const OTP_LENGTH = 4;
+const OTP_LENGTH = 6;
 
-const ResetForm: React.FC<{ email: string }> = ({ email }) => {
+const ResetForm: React.FC = () => {
+  const email = useAppSelector((state) => state.resetEmail.email);
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
@@ -17,6 +21,9 @@ const ResetForm: React.FC<{ email: string }> = ({ email }) => {
 
   const validateForm = () => {
     let error = "";
+    if (!email) {
+      error = "Email is required";
+    }
     if (!otp) {
       error = "Enter all digits";
     }
@@ -27,46 +34,49 @@ const ResetForm: React.FC<{ email: string }> = ({ email }) => {
     return !error;
   };
 
-  const validateOTP = async ({
-    email,
-    otp,
-  }: {
-    email: string;
-    otp: string;
-  }) => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_VALIDATE_OTP, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-        credentials: "include",
-      });
-      if (response.ok) {
-        router.push("/auth/reset");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "An error occurred");
-      }
-    } catch (error: any) {
-      setError(error.message || "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted:", otp);
-      // validateOTP({ email, otp });
-      router.push("/auth/set");
+    if (validateForm() && email) {
+      setLoading(true);
+      try {
+        const result = await signIn("OTP-Credentials", {
+          email: email,
+          otp: otp,
+          redirect: false,
+        });
+        if (result?.error) {
+          setError(
+            result.error === "CredentialsSignin"
+              ? "Invalid email or password"
+              : "An error occurred during sign in",
+          );
+        } else {
+          window.location.href = "/auth/set";
+        }
+      } catch (error) {
+        setError("Failed to sign in");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
+  const resendEmail = async () => {
+    if (email) {
+      await sendOTP(email);
+    }
+  };
+
+  if (!email) {
+    router.replace(`/auth/forget`);
+  }
   return (
-    <Box>
-      <form noValidate onSubmit={handleSubmit}>
-        <Box className="w-full md:min-w-[400px]">
+    <div>
+      <p className="mb-4 text-center text-secondary">
+        We send a Code to <span className="text-light-primary">{email}</span>
+      </p>
+      <form noValidate onSubmit={onSubmit}>
+        <div className="flex w-full flex-col items-center justify-center md:min-w-[400px]">
           <div className="my-4 flex w-full max-w-[400px] justify-center space-x-2 px-8">
             <OTPInput
               length={OTP_LENGTH}
@@ -74,35 +84,27 @@ const ResetForm: React.FC<{ email: string }> = ({ email }) => {
               error={!!error}
             />
           </div>
-          <Typography className="my-1 text-center text-red-500">
-            {error}
-          </Typography>
+          <p className="my-1 text-center text-red-500">{error}</p>
 
           {/* Send Button */}
 
           <Button
             variant="contained"
-            disabled={otp.length !== OTP_LENGTH}
+            disabled={otp.length !== OTP_LENGTH || loading}
             fullWidth
             sx={{
-              maxWidth: 400,
               paddingY: 1.5,
               fontSize: "16px",
               fontWeight: "bold",
             }}
             type="submit"
           >
-            Verify
+            {loading ? "Loading..." : "Verify"}
           </Button>
-        </Box>
+        </div>
       </form>
-      <p className="mt-2 text-center font-semibold text-secondary">
-        Don&apos;t receive the email ?{" "}
-        <button className="text-light-primary underline hover:no-underline">
-          Click here to send again
-        </button>
-      </p>
-    </Box>
+      <ResendEmailTimer initialTime={30} onResend={resendEmail} />
+    </div>
   );
 };
 

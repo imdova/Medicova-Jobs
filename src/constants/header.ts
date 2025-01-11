@@ -25,20 +25,20 @@ export const roleBasedLinks: RoleBasedLinks = {
   ],
   user: [
     {
-      title: "Profile",
-      url: "/job-seeker/profile",
+      title: "Find Job",
+      url: "/search",
     },
     {
       title: "Applications",
-      url: "/job-seeker/applications",
+      url: "/job-seeker/my-applications",
     },
     {
-      title: "Saved Jobs",
-      url: "/job-seeker/saved-jobs",
+      title: "Courses",
+      url: "#",
     },
     {
       title: "Settings",
-      url: "/job-seeker/settings",
+      url: "/job-seeker/setting",
     },
   ],
   admin: [

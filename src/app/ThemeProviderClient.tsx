@@ -15,7 +15,7 @@ const theme = createTheme({
   },
   typography: {
     // Apply the font globally to all typography variants
-    fontFamily: "'Epilogue', sans-serif",
+    fontFamily: "var(--font-poppins), sans-serif",
     fontSize: 14,
     // add for h3
     h3: {

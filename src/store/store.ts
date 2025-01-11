@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userReducer } from "./slices/userSlice";
+import { resetReducer } from "./slices/resetSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       user: userReducer,
+      resetEmail: resetReducer,
     },
   });
 };

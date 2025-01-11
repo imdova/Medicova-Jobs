@@ -1,15 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { API_CHANGE_PASSWORD } from "@/lib/constants";
+import { useSession } from "next-auth/react";
+import { UserState } from "@/types";
+import { changePassword } from "@/lib/access";
 
-const SetForm: React.FC<{ email: string }> = ({ email }) => {
+const SetForm: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
+
+  const { data: session , status} = useSession();
+  const user = session?.user as UserState;
 
   const {
     control,
@@ -38,38 +43,32 @@ const SetForm: React.FC<{ email: string }> = ({ email }) => {
     return true;
   };
 
-  const changePassword = async (data: { email: string; password: string }) => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_CHANGE_PASSWORD, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (response.ok) {
-        router.push("/auth/reset");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "An error occurred");
-      }
-    } catch (error: any) {
-      setError(error.message || "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const onSubmit = async (data: {
     password: string;
     confirmPassword: string;
   }) => {
-    if (validateForm()) {
-      console.log("Form submitted:", data);
-      changePassword({ email, password: data.password });
-      router.push("/auth/signin");
+    if (validateForm() && user?.email) {
+      setLoading(true);
+      const result = await changePassword({
+        email: user.email,
+        password: data.password,
+      });
+      if (result.success) {
+        setLoading(false);
+        router.push(`/`);
+      } else {
+        setLoading(false);
+        setError(result.message);
+      }
     }
   };
+
+  useEffect(() => {
+    if (!user?.id && status !== "loading") {
+      router.push("/auth/signin");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   return (
     <form

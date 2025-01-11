@@ -1,5 +1,5 @@
 import ThemeProviderClient from "./ThemeProviderClient";
-import { DM_Serif_Display, Bai_Jamjuree, Poppins } from "next/font/google";
+import { DM_Serif_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import DynamicHeader from "@/components/Layout/Header/Header";
@@ -9,12 +9,6 @@ import { NextAuthProvider } from "@/NextAuthProvider";
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
   variable: "--font-dmSerif",
-  weight: "400",
-});
-
-const baiJamjuree = Bai_Jamjuree({
-  subsets: ["latin"],
-  variable: "--font-baiJamjuree",
   weight: "400",
 });
 
@@ -37,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSerifDisplay.variable} ${baiJamjuree.variable} ${poppins.variable} font-poppins`}
+        className={`${dmSerifDisplay.variable}  ${poppins.variable} font-poppins`}
       >
         <ThemeProviderClient>
           <StoreProvider>

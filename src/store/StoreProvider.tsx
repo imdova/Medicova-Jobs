@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import { Provider } from "react-redux";
 import { AppStore, makeStore } from "./store";
-import { initialUser } from "./slices/userSlice";
+// import { initialUser } from "./slices/userSlice";
 
 export default function StoreProvider({
   children,
@@ -13,7 +13,7 @@ export default function StoreProvider({
   if (!storeRef.current) {
     // Create the store instance the first time this renders
     storeRef.current = makeStore();
-    storeRef.current.dispatch(initialUser());
+    // storeRef.current.dispatch(initialUser());
   }
 
   return <Provider store={storeRef.current}>{children}</Provider>;

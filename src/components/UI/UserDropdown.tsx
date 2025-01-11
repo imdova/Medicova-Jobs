@@ -62,7 +62,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         <MenuItem>
           <Link
             href={`/me/${userName}`}
-            className="min-w-40 text-gray-700 transition-colors hover:text-blue-500"
+            className="min-w-40 text-secondary text-base transition-colors hover:text-primary"
           >
             Profile
           </Link>
@@ -70,7 +70,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         <MenuItem>
           <Link
             href="/employer/setting"
-            className="text-gray-700 transition-colors hover:text-blue-500"
+            className="w-full text-secondary text-base transition-colors hover:text-primary"
           >
             Settings
           </Link>
@@ -82,7 +82,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
             }}
             variant="text"
             color="error"
-            className="w-full justify-normal"
+            className="w-full text-base justify-normal rounded-none"
           >
             Logout
           </Button>

@@ -27,7 +27,7 @@ const HomePage = () => {
     <div>
       <div className="bg-[url('/images/search-background.jpg')] bg-cover bg-center">
         <div className="bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-4 shadow-md">
-          <div className="container mx-auto mt-[70px] flex flex-col-reverse items-center gap-6 p-4 md:flex-row lg:max-w-[1170px]">
+          <div className="container mx-auto mt-[70px] flex flex-col-reverse items-center gap-6 p-4 lg:flex-row lg:max-w-[1170px]">
             <div className="col-span-4 md:col-span-3">
               <h2 className="mb-6 text-[45px] font-black leading-none text-primary-foreground md:text-[60px]">
                 <span className="text-[45px] font-black text-main md:text-[60px]">
@@ -84,7 +84,7 @@ const HomePage = () => {
               alt="search background"
               width={400}
               height={400}
-              className="col-span-1 h-auto w-[300px] object-contain md:w-[200px] lg:w-[400px]"
+              className="col-span-1 h-auto w-[300px] object-contain md:w-[250px] xl:w-[400px]"
             />
           </div>
         </div>

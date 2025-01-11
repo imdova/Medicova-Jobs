@@ -63,12 +63,13 @@ const OTPInput = ({
           onPaste={handlePaste}
           inputProps={{
             maxLength: 1,
+            className: "text-center font-bold aspect-square flex-1 p-3 md:p-5 md:text-xl",
             style: {
-              textAlign: "center",
-              fontSize: "24px",
-              fontWeight: "bold",
-              width: "40px",
-              height: "40px",
+              // textAlign: "center",
+              // fontWeight: "bold",
+              // padding:0,
+              // aspectRatio: "1/1",
+              // flex: 1,
               MozAppearance: "textfield", // Firefox
             },
             inputMode: "numeric", // Mobile keyboards
