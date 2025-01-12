@@ -10,12 +10,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 interface JobCardProps {
-  job?: Job;
+  job: Job;
   className?: string;
 }
 
-const MinJobCard: React.FC<JobCardProps> = ({ job: initialJob, className }) => {
-  const job = initialJob || jobs[0];
+const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
   return (
     <Link
       href={`/job/${job.id}`}
@@ -30,7 +29,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job: initialJob, className }) => {
           alt="company logo"
           width={45}
           height={45}
-          className="h-[45px] rounded-md border object-contain object-cover"
+          className="h-[45px] rounded-md border  object-cover"
         />
         <div className="flex flex-wrap gap-2 text-secondary">
           <div className="mb-1 mr-2 flex gap-1 md:mb-0">

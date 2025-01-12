@@ -1,14 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: { email: string | null } = {
+const initialState: { email: string | null; otp: string | null } = {
   email: null,
+  otp: null,
 };
 
 const resetSlice = createSlice({
   name: "resetEmail",
   initialState: initialState,
   reducers: {
-    setEmail: (state, action: PayloadAction<{ email: string | null }>) => {
+    setEmail: (
+      state,
+      action: PayloadAction<{ email: string | null; otp: string | null }>,
+    ) => {
       return action.payload; // Update Redux state with the user object
     },
     clearEmail: () => {

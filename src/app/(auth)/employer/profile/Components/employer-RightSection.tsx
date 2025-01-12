@@ -1,18 +1,17 @@
 import React from "react";
-import { Box, IconButton, Typography, Grid, Card, Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import { Box, IconButton,  Button } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
 import post from "@/components/images/post.svg";
-import AddIcon from "@mui/icons-material/Add";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
+import { Edit } from "@mui/icons-material";
 
 const RightSection: React.FC = () => {
   return (
-    <Grid item xs={12}>
-      <Card sx={{ padding: "16px", marginBottom: 3 }}>
+    <div>
+      <div className="relative mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
         <Box
           sx={{
             display: "flex",
@@ -31,7 +30,7 @@ const RightSection: React.FC = () => {
           />
 
           {/* Typography below the Image */}
-          <p className="text-secondary mb-2 text-center font-semibold">
+          <p className="mb-2 text-center font-semibold text-secondary">
             To find better candidates, make your job description detailed, use
             relevant keywords, and add screening questions to your job post.
           </p>
@@ -45,22 +44,11 @@ const RightSection: React.FC = () => {
             marginTop: 4,
           }}
         >
-          <Button
-            variant="contained"
-            sx={{
-              width: "204.16px",
-              height: "46px",
-              textTransform: "capitalize",
-              borderRadius: "3px",
-              fontWeight: "600",
-            }}
-          >
-            Post a job for free
-          </Button>
+          <Button variant="contained">Post a job for free</Button>
         </Box>
-      </Card>
+      </div>
 
-      <Card sx={{ padding: "16px" }}>
+      <div className="relative mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
         <Box
           sx={{
             display: "flex",
@@ -68,22 +56,12 @@ const RightSection: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <h6 className="text-main mb-2 text-2xl font-semibold">
+          <h6 className="mb-2 text-2xl font-semibold text-main">
             Social Links
           </h6>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <IconButton
-              size="small"
-              sx={{
-                border: 1,
-                borderColor: "grey.300",
-                borderRadius: 0,
-                color: "rgba(46, 174, 125, 1)",
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Box>
+          <IconButton className="rounded border border-solid border-gray-300 p-2">
+            <Edit />
+          </IconButton>
         </Box>
 
         <div className="flex gap-4">
@@ -97,8 +75,8 @@ const RightSection: React.FC = () => {
             <LanguageIcon sx={{ color: "rgba(46, 174, 125, 1)" }} />
           </Link>
         </div>
-      </Card>
-    </Grid>
+      </div>
+    </div>
   );
 };
 

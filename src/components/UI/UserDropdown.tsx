@@ -11,16 +11,16 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { UserState } from "@/types";
 
 interface UserDropdownProps {
-  userName: string | null;
-  userAvatar: string | null; // URL for the user's avatar
+  user: UserState;
 }
 
-const UserDropdown: React.FC<UserDropdownProps> = ({
-  userName,
-  userAvatar,
-}) => {
+const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
+  const userAvatar = user.photo;
+  const userName = user.firstName || "User Image";
+  const role = user.role;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -62,15 +62,17 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         <MenuItem>
           <Link
             href={`/me/${userName}`}
-            className="min-w-40 text-secondary text-base transition-colors hover:text-primary"
+            className="min-w-40 text-base text-secondary transition-colors hover:text-primary"
           >
             Profile
           </Link>
         </MenuItem>
         <MenuItem>
           <Link
-            href="/employer/setting"
-            className="w-full text-secondary text-base transition-colors hover:text-primary"
+            href={
+              role == "seeker" ? "/job-seeker/setting " : "/employer/setting"
+            }
+            className="w-full text-base text-secondary transition-colors hover:text-primary"
           >
             Settings
           </Link>
@@ -82,7 +84,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
             }}
             variant="text"
             color="error"
-            className="w-full text-base justify-normal rounded-none"
+            className="w-full justify-normal rounded-none text-base"
           >
             Logout
           </Button>

@@ -9,14 +9,11 @@ interface UserActionProps {
 }
 
 const HeaderAction: React.FC<UserActionProps> = ({ user, pathname }) => {
-  if (user?.id) {
+  if (user && user.id) {
     return (
       <div className="flex items-center gap-3 text-inherit">
         <NotificationDropdown pathname={pathname} />
-        <UserDropdown
-          userAvatar={user.photo || user.image}
-          userName={user.firstName || user.name || "User Image"}
-        />
+        <UserDropdown user={user} />
       </div>
     );
   } else {

@@ -1,7 +1,11 @@
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authenticateOTP, authenticateUser } from "./utils";
+import {
+  changePasswordWithOTP,
+  authenticateRegister,
+  authenticateUser,
+} from "./utils";
 
 export const providers = [
   GoogleProvider({
@@ -24,9 +28,23 @@ export const providers = [
     id: "OTP-Credentials",
     name: "OTP Credentials",
     credentials: {
-      email: { label: "Email", type: "email" },
-      otp: { label: "otp", type: "otp" },
+      email: { type: "email" },
+      password: { type: "password" },
+      otp: { type: "text" },
     },
-    authorize: authenticateOTP,
+    authorize: changePasswordWithOTP,
+  }),
+  CredentialsProvider({
+    id: "register",
+    name: "register Credentials",
+    credentials: {
+      firstName: { type: "text" },
+      lastName: { type: "text" },
+      email: { type: "email" },
+      password: { type: "password" },
+      phone: { type: "text" },
+      role: { type: "text" },
+    },
+    authorize: authenticateRegister,
   }),
 ];

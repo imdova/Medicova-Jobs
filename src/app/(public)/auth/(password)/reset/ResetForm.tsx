@@ -5,14 +5,16 @@ import { Button } from "@mui/material";
 import OTPInput from "@/components/UI/OTP";
 import { useRouter } from "next/navigation";
 import { sendOTP, validateOTP } from "@/lib/access";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import ResendEmailTimer from "./ResendEmailTimer";
-import { signIn } from "next-auth/react";
+import { setEmail } from "@/store/slices/resetSlice";
 
 const OTP_LENGTH = 6;
 
 const ResetForm: React.FC = () => {
   const email = useAppSelector((state) => state.resetEmail.email);
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
@@ -37,26 +39,14 @@ const ResetForm: React.FC = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm() && email) {
-      setLoading(true);
-      try {
-        const result = await signIn("OTP-Credentials", {
-          email: email,
-          otp: otp,
-          redirect: false,
-        });
-        if (result?.error) {
-          setError(
-            result.error === "CredentialsSignin"
-              ? "Invalid email or password"
-              : "An error occurred during sign in",
-          );
-        } else {
-          window.location.href = "/auth/set";
-        }
-      } catch (error) {
-        setError("Failed to sign in");
-      } finally {
+      const result = await validateOTP({ otp, email });
+      if (result.success) {
         setLoading(false);
+        dispatch(setEmail({ email, otp }));
+        router.push("/auth/set");
+      } else {
+        setLoading(false);
+        setError(result.message);
       }
     }
   };

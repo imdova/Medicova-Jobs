@@ -23,7 +23,7 @@ export const roleBasedLinks: RoleBasedLinks = {
       url: "/employer/subscription-plans",
     },
   ],
-  user: [
+  seeker: [
     {
       title: "Find Job",
       url: "/search",

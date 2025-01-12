@@ -14,8 +14,6 @@ const InitialUserData: UserState = {
   created_at: null,
   updated_at: null,
   deleted_at: null,
-  image: null,
-  name: null,
 };
 interface UserReducerState {
   loading: boolean;

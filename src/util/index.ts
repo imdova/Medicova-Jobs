@@ -102,3 +102,14 @@ export const createUrl = (
 
   return `${pathname}${queryString}`;
 };
+
+export function divideName(fullName?: string) {
+  // Split the full name into parts based on spaces
+  if (!fullName) return {};
+  const nameParts = fullName.trim().split(" ");
+  // The first name is everything before the last part
+  const firstName = nameParts.slice(0, nameParts.length - 1).join(" ");
+  // The last name is the last part of the name
+  const lastName = nameParts[nameParts.length - 1];
+  return { firstName, lastName };
+}
