@@ -210,8 +210,6 @@ const HeaderAction: React.FC<UserState & { currentPage: string }> = ({
   firstName,
   photo,
   currentPage,
-  name,
-  image,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

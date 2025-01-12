@@ -1,44 +1,18 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Box,
-  Avatar,
-  IconButton,
-  Typography,
-  Grid,
-  Button,
-} from "@mui/material";
+import React from "react";
+import { Box, Avatar, IconButton, Typography, Grid } from "@mui/material";
 
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PlaceIcon from "@mui/icons-material/Place";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EditIcon from "@mui/icons-material/Edit";
-import ShareMenu from "@/components/UI/ShareMenu";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ShareIcon from "@mui/icons-material/Share";
-import BackupIcon from "@mui/icons-material/Backup";
-import FlagIcon from "@mui/icons-material/Flag";
+import { Verified } from "@mui/icons-material";
 
-const HeaderSection: React.FC = () => {
-  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
-
-  // Handle deleting the avatar image
-  const handleDeleteImage = () => {
-    setAvatarImage(undefined);
-  };
-
-  // Handle selecting a new image
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarImage(imageUrl);
-    }
-  };
+const EmployerHeaderSection: React.FC = () => {
   return (
-    <Grid item xs={12}>
+    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
+      {/* Background Cover Image */}
       <Box
         component="div"
         sx={{
@@ -53,7 +27,7 @@ const HeaderSection: React.FC = () => {
         {/* Avatar Positioned on Background Image */}
         <Avatar
           alt="Profile"
-          src={avatarImage || undefined}
+          src={""}
           sx={{
             position: "absolute",
             bottom: "-50px",
@@ -64,45 +38,6 @@ const HeaderSection: React.FC = () => {
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
           }}
         />
-
-        {/* Container for the Delete Icon and Upload Button */}
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: "-50px",
-            left: "140px",
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          {/* Delete Icon Button */}
-          <IconButton
-            size="medium"
-            sx={{
-              color: "#E34817",
-            }}
-            onClick={handleDeleteImage}
-          >
-            <DeleteIcon sx={{ fontSize: "25px" }} />
-          </IconButton>
-
-          {/* Upload Button */}
-          <Button
-            variant="contained"
-            color="primary"
-            component="label"
-            startIcon={<BackupIcon />}
-          >
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </Button>
-        </Box>
       </Box>
       {/* Profile Section */}
       <Box
@@ -127,13 +62,7 @@ const HeaderSection: React.FC = () => {
                 }}
               >
                 Modicova Medical Community
-                <CheckCircleIcon
-                  sx={{
-                    color: "#00A884",
-                    fontSize: { xs: 20, sm: 24 },
-                    marginLeft: "8px", // Adds space between the text and the icon
-                  }}
-                />
+                <Verified className="ml-3 text-primary" />
               </Typography>
               <Typography
                 variant="body1"
@@ -186,28 +115,20 @@ const HeaderSection: React.FC = () => {
               }}
             >
               {/* Edit Button */}
-              <IconButton
-                sx={{
-                  color: "#00795c",
-                }}
-              >
+              <IconButton>
                 <EditIcon />
               </IconButton>
 
               {/* Share Button */}
-              <IconButton
-                sx={{
-                  color: "#00795c",
-                }}
-              >
+              <IconButton>
                 <ShareIcon />
               </IconButton>
             </Box>
           </Grid>
         </Grid>
       </Box>
-    </Grid>
+    </div>
   );
 };
 
-export default HeaderSection;
+export default EmployerHeaderSection;

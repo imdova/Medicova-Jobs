@@ -1,3 +1,4 @@
+"use client";
 import HeaderSection from "./Components/HeaderSection";
 import AboutSeeker from "./Components/AboutSeeker";
 import ExperienceSection from "./Components/ExperienceSection";
@@ -11,11 +12,37 @@ import Resume from "./Components/Resume";
 import ContactInfoSection from "./Components/ContactInfoSection";
 import SocialMediaSection from "./Components/SocialMediaSection";
 import LanguageSection from "./Components/LanguageSection";
+import { useSession } from "next-auth/react";
+import { UserState } from "@/types";
+import RightSection from "@/app/(auth)/employer/profile/Components/employer-RightSection";
+import AboutCompany from "@/app/(auth)/employer/profile/Components/AboutCompany";
+import JobCard from "@/app/(auth)/employer/profile/Components/JobCard";
+import EmployerHeaderSection from "@/app/(auth)/employer/profile/Components/EmployerHeaderSection";
 
-const JobDetailPage = ({ params: { id } }: { params: { id: string } }) => {
-  // const job = jobs.find((job) => job.id === id);
+const ProfilePage = ({ params: { id } }: { params: { id: string } }) => {
+  // const user = getUser(id);
+  const { data: session, status } = useSession();
+  const user = session?.user as UserState;
+  const isMe = true;
 
-  // if (!job) return notFound();
+  if (status === "loading") {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <p> Loading...</p>
+      </div>
+    );
+  }
+
+  return user?.role === "seeker" ? (
+    <SeekerPage isMe={isMe} />
+  ) : user?.role === "employer" ? (
+    <EmployerPage isMe={isMe} />
+  ) : null;
+};
+
+export default ProfilePage;
+
+const SeekerPage = ({ isMe }: { isMe: boolean }) => {
   return (
     <div className="w-full">
       <div className="flex gap-5">
@@ -56,4 +83,30 @@ const JobDetailPage = ({ params: { id } }: { params: { id: string } }) => {
   );
 };
 
-export default JobDetailPage;
+const EmployerPage = ({ isMe }: { isMe: boolean }) => {
+  return (
+    <div className="w-full">
+      <div className="flex gap-5">
+        {/* Left + Center Sections */}
+        <div>
+          {/* Header Section */}
+          <EmployerHeaderSection />
+          {/* Left Section */}
+          <AboutCompany />
+          {/* Center Section + Profile Form */}
+          <JobCard />
+        </div>
+        {/* Right Sections */}
+        <div className="hidden max-w-80 md:block">
+          {/* Public Profile Section */}
+          <CompleteProfile />
+          <RightSection />
+          {/* Complete Profile Section */}
+          {/* Public Profile Section */}
+          {/* <PublicProfile /> */}
+       
+        </div>
+      </div>
+    </div>
+  );
+};

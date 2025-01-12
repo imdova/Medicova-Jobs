@@ -1,9 +1,10 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import { RoleState } from "./types/next-auth";
+import { UserState } from "./types";
 
 export default withAuth(function middleware(req) {
-  const token = req.nextauth.token;
+  const token = req.nextauth.token as UserState | null;
   const path = req.nextUrl.pathname;
 
   // Redirect to login page if there is no accessible token
@@ -11,7 +12,14 @@ export default withAuth(function middleware(req) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
   const role = token.role as RoleState;
-
+  const name = token.firstName;
+  if (path == "/me") {
+    if(role === "seeker"){
+      return NextResponse.redirect(new URL(`/me/${name}`, req.url));
+    }else{
+      return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+    }
+  }
   let haveAccess = doesRoleHaveAccessToURL(role, path);
   if (!haveAccess) {
     // Redirect to login page if user has no access to that particular page
@@ -22,7 +30,12 @@ export default withAuth(function middleware(req) {
 });
 
 export const config = {
-  matcher: ["/job-seeker/:path*", "/employer/:path*", "/dashboard/:path*"],
+  matcher: [
+    "/job-seeker/:path*",
+    "/employer/:path*",
+    "/dashboard/:path*",
+    "/me",
+  ],
 };
 
 const roleAccessMap: Record<string, string[]> = {

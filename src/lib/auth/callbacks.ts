@@ -1,20 +1,21 @@
 import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { handleSocialLogin } from "./utils";
 import { RoleState } from "@/types/next-auth";
-// import { getSession } from "next-auth/react";
+import { divideName } from "@/util";
 
 export const callbacks = {
   async jwt({ token, user }: { token: JWT; user: any }) {
+    const { firstName, lastName } = divideName(user?.name);
     if (user) {
       token.id = user.id;
       token.email = user.email;
-      token.firstName = user.firstName;
-      token.lastName = user.lastName;
+      token.firstName = user.firstName || firstName;
+      token.lastName = user.lastName || lastName;
       token.roles = user.roles;
-      token.role = user.role || "user";
+      token.role = user.role || "seeker";
       token.active = user.active;
-      token.photo = user.photo;
+      token.photo = user.photo || user.image;
       token.birth = user.birth;
       token.phone = user.phone;
       token.companyId = user.companyId;
@@ -54,11 +55,10 @@ export const callbacks = {
 
   // async redirect({ url, baseUrl }: { url: any; baseUrl: any }) {
   //   // Redirect to /me/[name] after login
-  //   if (url === "/api/auth/callback/google") {
-  //     // You might have stored the user in the session or fetched the user's name
-  //     const session = await getSession();
-  //     const name = session?.user?.name || "default"; // Replace "default" with a fallback name if needed
-  //     return `${baseUrl}/me/${encodeURIComponent(name)}`;
+  //   // console.log("🚀 ~ redirect ~ url:", url)
+  //   if (url === "/me") {
+  //     const session = await getServerSession();
+  //     console.log("🚀 ~ redirect ~ session:", session);
   //   }
   //   return baseUrl;
   // },

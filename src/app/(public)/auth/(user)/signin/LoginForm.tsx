@@ -47,7 +47,6 @@ const LoginForm: React.FC = () => {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        // callbackUrl: "/employer/dashboard",
         redirect: false,
       });
       if (result?.error) {
@@ -57,7 +56,7 @@ const LoginForm: React.FC = () => {
             : "An error occurred during sign in",
         );
       } else {
-        window.location.href = "/employer/dashboard";
+        window.location.href = "/me";
       }
     } catch (error) {
       setError("Failed to sign in");

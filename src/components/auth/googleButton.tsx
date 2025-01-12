@@ -2,15 +2,29 @@ import React from "react";
 import { Button } from "@mui/material";
 import { DevIconGoogle } from "@/components/icons/icons";
 import { signIn } from "next-auth/react";
+import { RoleState } from "@/types/next-auth";
 
-const GoogleButton = ({ children }: { children: React.ReactNode }) => {
+const GoogleButton = ({
+  children,
+  userType,
+}: {
+  children: React.ReactNode;
+  userType?: RoleState;
+}) => {
   return (
     <Button
       className="h-[50px] w-full"
       variant="outlined"
-      onClick={() => signIn("google", { callbackUrl: "/" })}
+      disabled={true}
+      onClick={() =>
+        signIn(
+          "google",
+          { callbackUrl: "/" },
+          userType ? { role: userType } : {},
+        )
+      }
     >
-      <DevIconGoogle className="m-2 h-6 w-6" />
+      <DevIconGoogle className="m-2 h-6 w-6 opacity-40" />
       {children}
     </Button>
   );

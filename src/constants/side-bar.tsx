@@ -138,7 +138,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: HelpOutline,
     },
   ],
-  user: [
+  seeker: [
     {
       id: 18,
       icon: HomeOutlined,

@@ -46,7 +46,7 @@ const ForgetForm: React.FC = () => {
       const result = await sendOTP(data.email);
       if (result.success) {
         setLoading(false);
-        dispatch(setEmail({ email: data.email }));
+        dispatch(setEmail({ email: data.email, otp: null }));
         router.push(`/auth/reset`);
       } else {
         setLoading(false);

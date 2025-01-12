@@ -12,8 +12,6 @@ export interface UserState {
   lastName: string | null;
   //
   role?: RoleState;
-  image: string | null;
-  name: string | null;
   //
   roles: string[];
   active: boolean;
@@ -24,6 +22,14 @@ export interface UserState {
   created_at: string | null;
   deleted_at: string | null;
   updated_at: string | null;
+}
+
+export interface registerData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
 }
 
 export interface BaseHeaderProps {

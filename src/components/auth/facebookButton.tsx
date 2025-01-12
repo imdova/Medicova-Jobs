@@ -8,6 +8,7 @@ const FacebookButton = ({ children }: { children: React.ReactNode }) => {
     <Button
       className="h-[50px] w-full"
       variant="outlined"
+      disabled={true}
       onClick={() => signIn("facebook", { callbackUrl: "/profile" })}
     >
       <Facebook />

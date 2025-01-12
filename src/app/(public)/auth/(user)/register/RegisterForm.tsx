@@ -16,21 +16,19 @@ import { NextAuthProvider } from "@/NextAuthProvider";
 import { useForm, Controller } from "react-hook-form";
 import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
-import {
-  VisibilityOffOutlined,
-  VisibilityOutlined,
-} from "@mui/icons-material";
+import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { register } from "@/lib/access";
 import { useRouter } from "next/navigation";
+import { registerData } from "@/types";
+import { RoleState } from "@/types/next-auth";
+import { signIn } from "next-auth/react";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState<"jobSeeker" | "employer">(
-    "employer",
-  );
+  const [userType, setUserType] = useState<RoleState>("employer");
 
   const {
     control,
@@ -69,7 +67,8 @@ const RegisterForm: React.FC = () => {
     if (!password) {
       error = "Password is required";
     }
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (!passwordPattern.test(password)) {
       error =
         "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol";
@@ -81,24 +80,29 @@ const RegisterForm: React.FC = () => {
     return !error;
   };
 
-  const onSubmit = async (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    companyName: string;
-    phone: string;
-  }) => {
-    if (validateForm()) {
-      setLoading(true);
-      const result = await register(data);
-      if (result.success) {
-        setLoading(false);
-        router.replace(`/`);
+  const onSubmit = async (data: registerData) => {
+    setLoading(true);
+    try {
+      const result = await signIn("register", {
+        ...data,
+        role: userType,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("An error occurred during Creating your account");
       } else {
-        setLoading(false);
-        setError(result.message);
+        if (userType === "seeker") {
+          window.location.href = "/me";
+        } else if (userType === "employer") {
+          window.location.href = "/employer/dashboard";
+        } else {
+          window.location.href = "/";
+        }
       }
+    } catch (error) {
+      setError("Failed to sign in");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,8 +126,8 @@ const RegisterForm: React.FC = () => {
     >
       <div className="flex justify-center gap-2">
         <Button
-          onClick={() => setUserType("jobSeeker")}
-          className={`${userType === "jobSeeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
+          onClick={() => setUserType("seeker")}
+          className={`${userType === "seeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
           variant="text"
         >
           Job Seeker
@@ -138,15 +142,15 @@ const RegisterForm: React.FC = () => {
       </div>
 
       <h4 className="my-2 text-[30px] font-bold text-main">
-        Signup as a {userType === "jobSeeker" ? "Job Seeker" : "Recruiter"} on{" "}
+        Signup as a {userType === "seeker" ? "Job Seeker" : "Recruiter"} on{" "}
         <span className="my-2 text-[30px] font-bold text-light-primary">
           Medicova
         </span>
       </h4>
       <div className="flex w-full justify-center gap-2">
         <NextAuthProvider>
-          <GoogleButton>SignUp with Google</GoogleButton>
-          {userType === "jobSeeker" && (
+          <GoogleButton userType={userType}>SignUp with Google</GoogleButton>
+          {userType === "seeker" && (
             <FacebookButton>Sign Up with Facebook</FacebookButton>
           )}
         </NextAuthProvider>

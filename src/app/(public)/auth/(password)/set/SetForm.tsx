@@ -4,17 +4,16 @@ import React, { useEffect, useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
-import { UserState } from "@/types";
-import { changePassword } from "@/lib/access";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { signIn } from "next-auth/react";
 
 const SetForm: React.FC = () => {
+  const { email, otp } = useAppSelector((state) => state.resetEmail);
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
-
-  const { data: session , status} = useSession();
-  const user = session?.user as UserState;
 
   const {
     control,
@@ -43,32 +42,64 @@ const SetForm: React.FC = () => {
     return true;
   };
 
+  // const onSubmit = async (data: {
+  //   password: string;
+  //   confirmPassword: string;
+  // }) => {
+  //   if (validateForm() && email) {
+  //     setLoading(true);
+  //     const result = await forgetPassword({
+  //       email,
+  //       newPassword: data.password,
+  //       otp,
+  //     });
+  //     dispatch(setEmail({ email: null, otp: null }));
+  //     if (result.success) {
+  //       setLoading(false);
+  //       router.push(`/`);
+  //     } else {
+  //       setLoading(false);
+  //       setError(result.message);
+  //     }
+  //   }
+  // };
+
   const onSubmit = async (data: {
     password: string;
     confirmPassword: string;
   }) => {
-    if (validateForm() && user?.email) {
+    if (validateForm() && email) {
       setLoading(true);
-      const result = await changePassword({
-        email: user.email,
-        password: data.password,
-      });
-      if (result.success) {
+      try {
+        const result = await signIn("OTP-Credentials", {
+          email: email,
+          otp: otp,
+          password: data.password,
+          redirect: false,
+        });
+        if (result?.error) {
+          setError(
+            result.error === "CredentialsSignin"
+              ? "Invalid email or password"
+              : "An error occurred during sign in",
+          );
+        } else {
+          window.location.href = "/me";
+        }
+      } catch (error) {
+        setError("Failed to sign in");
+      } finally {
         setLoading(false);
-        router.push(`/`);
-      } else {
-        setLoading(false);
-        setError(result.message);
       }
     }
   };
 
   useEffect(() => {
-    if (!user?.id && status !== "loading") {
+    if (!email) {
       router.push("/auth/signin");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [email]);
 
   return (
     <form

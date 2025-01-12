@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-export type RoleState = "user" | "admin" | "employer";
+export type RoleState = "seeker" | "admin" | "employer";
 
 declare module "next-auth" {
   interface User {
@@ -36,5 +36,6 @@ declare module "next-auth" {
       deleted_at: string | null;
       updated_at: string | null;
     };
+    redirectUrl:string | null
   }
 }

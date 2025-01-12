@@ -194,8 +194,8 @@ const JobDetailPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
             <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
               {/* card  */}
-              {[1, 2, 3, 1, 2, 3, 1, 2, 3].map((_, i) => (
-                <MinJobCard key={i} />
+              {jobs.map((job, i) => (
+                <MinJobCard job={job} key={i} /> 
               ))}
             </div>
             <div className="mt-8 flex justify-center">

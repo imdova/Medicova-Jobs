@@ -1,30 +1,33 @@
-import { API_SIGNIN } from "@/lib/constants";
-import { validateOTP } from "../access";
+import { forgetPassword, register, serverSignIn } from "../access";
 
 export async function authenticateUser(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
-
   try {
-    const response = await fetch(API_SIGNIN, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-      credentials: "include",
-    });
-    const user = await response.json();
-    return response.ok ? user : null;
+    const response = await serverSignIn(credentials);
+    return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
     return null;
   }
 }
-export async function authenticateOTP(credentials: any) {
+export async function changePasswordWithOTP(credentials: any) {
   if (!credentials?.email || !credentials?.otp) return null;
   try {
-    const response = await validateOTP({
-      otp: credentials?.otp,
-      email: credentials?.email,
+    const response = await forgetPassword({
+      email: credentials.email,
+      newPassword: credentials.password,
+      otp: credentials.otp,
     });
+    return response.success ? response.data : null;
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return null;
+  }
+}
+export async function authenticateRegister(credentials: any) {
+  if (!credentials?.email || !credentials?.password) return null;
+  try {
+    const response = await register(credentials, credentials.role);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
