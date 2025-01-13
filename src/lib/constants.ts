@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_SERVER_BASE;
+export const API_URL = process.env.NEXT_SERVER_BASE;
 export const API_SIGNIN = API_URL + "/users/api/v1.0/users/login";
 export const API_SIGNUP = API_URL + "/users/api/v1.0/users/"; // + /seeker | /admin | /employer
 export const API_ME = API_URL + "/users/api/v1.0/users/me";
