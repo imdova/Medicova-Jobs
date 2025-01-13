@@ -15,7 +15,7 @@ const CompleteProfile: React.FC = () => {
   const progressColor = getProgressColor(value);
 
   return (
-    <div className="flex rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mb-5 flex rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
       {/* Title and Description */}
       <div className="flex-1">
         <Link

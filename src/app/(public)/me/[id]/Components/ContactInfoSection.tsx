@@ -1,44 +1,76 @@
 "use client";
 import React, { useEffect } from "react";
-import { IconButton, Divider } from "@mui/material";
+import { IconButton, Divider, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Edit, Email, PhoneIphone } from "@mui/icons-material";
+import { Edit, Email, KeyOutlined, PhoneIphone } from "@mui/icons-material";
+import { UserState } from "@/types";
+import Link from "next/link";
 
-const ContactInfoSection: React.FC = () => {
+const ContactInfoSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+  isLocked: boolean;
+}> = ({ user, isMe, isLocked }) => {
   const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
     }
   }, []);
-  const handleEditProfileClick = () => {
-    router.push("/job-seeker/profile");
-  };
+
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className="mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">About Me</h3>
-        <IconButton
-          className="rounded border border-solid border-gray-300 p-2"
-          onClick={handleEditProfileClick}
-        >
-          <Edit />
-        </IconButton>
+        <h3 className="mb-2 text-2xl font-bold text-main">Contact Info</h3>
+        {isMe && (
+          <Link href="/job-seeker/setting">
+            <IconButton
+              component="span"
+              className="rounded border border-solid border-gray-300 p-2"
+            >
+              <Edit />
+            </IconButton>
+          </Link>
+        )}
       </div>
 
       {/* Email Section */}
-      <p className="my-2 text-secondary">
-        <Email className="mr-2 inline-block" color="primary" />
-        <span className="font-semibold text-main">Email :</span>{" "}
-        jakegyll@email.com
-      </p>
-      <Divider sx={{ marginY: 1 }} />
-      {/* Phone Section */}
-      <p className="my-2 text-secondary">
-        <PhoneIphone className="mr-2 inline-block" color="primary" />
-        <span className="font-semibold text-main">Phone :</span> +44 1245 572
-        135
-      </p>
+      {isLocked && !isMe ? (
+        <div>
+          <p className="my-2 text-secondary">
+            Unlock me to see my contact information{" "}
+          </p>
+          <Button
+            startIcon={<KeyOutlined />}
+            variant="outlined"
+            className="text-nowrap"
+            // onClick={unlock}
+          >
+            Unlock Now
+          </Button>
+        </div>
+      ) : (
+        <div>
+          {user.email && (
+            <p className="my-2 text-secondary">
+              <Email className="mr-2 inline-block" color="primary" />
+              <span className="font-semibold text-main">Email :</span>{" "}
+              {user.email}
+            </p>
+          )}
+          {/* Phone Section */}
+          {user.phone && (
+            <>
+              <Divider sx={{ marginY: 1 }} />
+              <p className="my-2 text-secondary">
+                <PhoneIphone className="mr-2 inline-block" color="primary" />
+                <span className="font-semibold text-main">Phone :</span>
+                {user.phone}
+              </p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

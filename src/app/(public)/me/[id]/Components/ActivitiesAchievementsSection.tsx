@@ -2,9 +2,6 @@
 import React, { useState } from "react";
 import {
   Typography,
-  Grid,
-  Card,
-  Button,
   Box,
   TextField,
   InputLabel,
@@ -12,12 +9,52 @@ import {
   Select,
   Checkbox,
   FormControlLabel,
+  IconButton,
+  Button,
 } from "@mui/material";
-import Image from "next/image";
-import activities from "@/components/images/activities.png";
 import AddModal from "./Modals/AddModal";
+import courses from "@/components/icons/courses.png";
+import EmptyCard from "@/components/UI/emptyCard";
+import { Add, Edit, LocationOnOutlined } from "@mui/icons-material";
+import { UserState } from "@/types";
+import Image from "next/image";
 
-const ActivitiesAchievementsSection: React.FC = () => {
+type Activities = {
+  institution: string;
+  course: string;
+  years: string;
+  location: string;
+};
+
+const activitiesData: Activities[] = [
+  // {
+  //   institution: "Harvard University",
+  //   course: "Postgraduate degree, Applied Psychology",
+  //   years: "2010 - 2012",
+  //   location: "Cambridge, MA",
+  // },
+];
+
+const INITIAL_VISIBLE_ITEMS = 2;
+const ActivitiesAchievementsSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+}> = ({ user, isMe }) => {
+  const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS); // Initially show 2 items
+  const [isExpanded, setIsExpanded] = useState(false); // Track whether the list is expanded
+
+  const handleToggle = () => {
+    if (isExpanded) {
+      setVisibleItems(INITIAL_VISIBLE_ITEMS); // Show only 2 items if expanded
+    } else {
+      setVisibleItems(activitiesData.length); // Show all items if collapsed
+    }
+    setIsExpanded(!isExpanded); // Toggle expanded state
+  };
+
+  // Calculate how many more items are left to show
+  const remainingItems = activitiesData.length - visibleItems;
+
   const [openModal, setOpenModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [fields, setFields] = useState<JSX.Element[]>([]);
@@ -31,66 +68,89 @@ const ActivitiesAchievementsSection: React.FC = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
+  if (!isMe && activitiesData.length === 0) {
+    return null;
+  }
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
-      {/* Title aligned to the start */}
-      <h3 className="mb-2 text-2xl font-bold text-main">
-        Activities / Achievements
-      </h3>
-
-      {/* Centered Content */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        textAlign="center"
-      >
-        {/* Image */}
-        <Image
-          src={activities}
-          alt="Activities"
-          width={180}
-          height={180}
-          style={{
-            marginBottom: 16,
-            maxWidth: "100%",
-            height: "auto",
-          }}
-          priority
-        />
-
-        {/* Description */}
-        <p className="mb-2 text-secondary">
-          Your volunteering and student activities.
-        </p>
-
-        {/* Button */}
-        <Button
-          variant="contained"
-          sx={{
-            fontWeight: "600",
-            paddingX: 4,
-            paddingY: 1.2,
-            fontSize: { xs: "0.8rem", sm: "1rem" },
-          }}
+      <div className="flex items-center justify-between">
+        <h3 className="mb-2 text-2xl font-bold text-main">
+          Activities / Achievements
+        </h3>
+        {isMe && (
+          <IconButton
+            onClick={() =>
+              handleOpenModal("Add Courses", getActivitiesAchievementsFields)
+            }
+            className="rounded border border-solid border-gray-300 p-2"
+          >
+            <Add />
+          </IconButton>
+        )}
+      </div>
+      <AddModal
+        open={openModal}
+        onClose={handleCloseModal}
+        modalTitle={modalTitle}
+        fields={fields}
+      />
+      {/* Title and Description */}
+      {activitiesData.length > 0 ? (
+        <div className="my-2 grid grid-cols-1 gap-2">
+          {activitiesData.slice(0, visibleItems).map((item, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-3 rounded-base border p-2"
+            >
+              <Image
+                src={courses}
+                alt="Experience"
+                width={70}
+                height={70}
+                className=""
+              />
+              <div className="flex-1">
+                <h6 className="text-lg font-semibold text-main">
+                  {item.institution}
+                </h6>
+                <p className="text-sm text-secondary">{item.institution}</p>
+                <p className="text-sm text-secondary">{item.years}</p>
+                <p className="text-sm text-secondary">
+                  <LocationOnOutlined className="-ml-1 mb-[3px] h-4 w-4 text-secondary" />{" "}
+                  {item.location}
+                </p>
+              </div>
+              {isMe && (
+                <IconButton>
+                  <Edit />
+                </IconButton>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : isMe ? (
+        <EmptyCard
+          src={"/images/activities.png"}
+          description={" Your volunteering and student activities."}
+          buttonText="Add Activities / Achievements"
           onClick={() =>
             handleOpenModal(
-              "Activities & Achievements ",
+              "Add Activities / Achievements",
               getActivitiesAchievementsFields,
             )
           }
-        >
-          Add Activities / Achievements
-        </Button>
-        <AddModal
-          open={openModal}
-          onClose={handleCloseModal}
-          modalTitle={modalTitle}
-          fields={fields}
         />
-      </Box>
+      ) : null}
+      {/* Show More / Show Less Button */}
+      {activitiesData.length > INITIAL_VISIBLE_ITEMS ? (
+        <div className="flex items-center justify-center">
+          <Button variant="text" className="mt-2 p-0" onClick={handleToggle}>
+            {isExpanded
+              ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
+              : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -18,6 +18,7 @@ export async function changePasswordWithOTP(credentials: any) {
       newPassword: credentials.password,
       otp: credentials.otp,
     });
+    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data)
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);

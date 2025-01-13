@@ -10,15 +10,16 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { UserState } from "@/types";
 
-const SkillsSection: React.FC = () => {
-  const [keywords, setKeywords] = useState<string[]>([
-    "Communication",
-    "Teamwork",
-    "Problem Solving",
-    "Leadership",
-  ]);
-  const [newKeyword, setNewKeyword] = useState<string>("");
+const skillsData: string[] = [];
+
+const SkillsSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+}> = ({ user, isMe }) => {
+  const [keywords, setKeywords] = useState(skillsData);
+  const [newKeyword, setNewKeyword] = useState("");
 
   const handleAddKeyword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,100 +33,74 @@ const SkillsSection: React.FC = () => {
     setKeywords((prevKeywords) => prevKeywords.filter((_, i) => i !== index));
   };
 
+  if (!isMe && skillsData.length === 0) {
+    return null;
+  }
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
-      <h3 className="mb-2 text-2xl font-bold text-main">Skills</h3>
+      <div className="flex flex-col items-center justify-between md:flex-row">
+        <h3 className="text-2xl font-bold text-main">Skills</h3>
 
-      {/* TextField and Add Skill Button in the same row */}
-      <form onSubmit={handleAddKeyword}>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "center",
-            marginBottom: 2,
-          }}
-        >
-          {/* TextField for adding new keyword */}
-          <TextField
-            value={newKeyword}
-            onChange={(e) => setNewKeyword(e.target.value)}
-            variant="outlined"
-            placeholder={
-              keywords.length >= 12 ? "Maximum Entry 12 skills" : "Enter Skills"
-            }
-            disabled={keywords.length >= 12} // Disable if 12 keywords are reached
-            sx={{
-              width: "250px",
-              height: "40px",
-              border: "none",
-              backgroundColor: "#F8F8FD",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "none",
+        {/* TextField and Add Skill Button in the same row */}
+        {isMe && (
+          <form onSubmit={handleAddKeyword}>
+            <TextField
+              value={newKeyword}
+              onChange={(e) => setNewKeyword(e.target.value)}
+              className="m-0 rounded-base"
+              variant="outlined"
+              placeholder={
+                keywords.length >= 12
+                  ? "Maximum Entry 12 skills"
+                  : "Enter Skills"
+              }
+              disabled={keywords.length >= 12} // Disable if 12 keywords are reached
+              sx={{
+                width: "250px",
+                height: "40px",
+                border: "none",
+                backgroundColor: "#F8F8FD",
+                "& .MuiOutlinedInput-root": {
+                  p: 0,
+                  "& fieldset": {
+                    border: "none",
+                  },
+                  "& input": {
+                    padding: "10px 10px", // Vertically center the text inside
+                  },
                 },
-                "& input": {
-                  padding: "10px 10px", // Vertically center the text inside
-                },
-              },
-            }}
-          />
-          {/* Add IconButton */}
-          <IconButton
-            sx={{
-              border: "1px solid #D6DDEB",
-              borderRadius: "4px",
-              padding: "6px",
-            }}
-            type="submit"
-            disabled={keywords.length >= 12} // Disable if 12 keywords are reached
-          >
-            <AddIcon />
-          </IconButton>
-        </Box>
-      </form>
+              }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton type="submit" disabled={keywords.length >= 12}>
+                    <AddIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </form>
+        )}
+      </div>
 
       {/* Display Keywords */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          flexWrap: "wrap",
-        }}
-      >
-        {keywords.map((keyword, index) => (
-          <Box
+      <div className="mt-2 flex flex-wrap">
+        {keywords.map((skill, index) => (
+          <div
             key={index}
-            sx={{
-              backgroundColor: "#F8F8FD",
-              padding: "8px",
-              borderRadius: "4px",
-            }}
+            className="mb-2 mr-2 rounded-md bg-primary-100 px-2 py-1 text-main"
           >
-            <Typography
-              sx={{
-                fontWeight: "400",
-                color: "#185D43",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              {keyword}
+            <span>{skill}</span>
+            {isMe && (
               <IconButton
                 onClick={() => handleDeleteKeyword(index)}
-                sx={{
-                  color: "#D32F2F",
-                  padding: "2px",
-                  fontSize: "14px",
-                }}
+                color="error"
               >
                 <CloseIcon />
               </IconButton>
-            </Typography>
-          </Box>
+            )}
+          </div>
         ))}
-      </Box>
+      </div>
     </div>
   );
 };

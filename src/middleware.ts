@@ -12,10 +12,9 @@ export default withAuth(function middleware(req) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
   const role = token.role as RoleState;
-  const name = token.firstName;
   if (path == "/me") {
     if(role === "seeker"){
-      return NextResponse.redirect(new URL(`/me/${name}`, req.url));
+      return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
     }else{
       return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
     }

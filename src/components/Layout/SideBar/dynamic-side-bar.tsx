@@ -28,6 +28,10 @@ export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
   useEffect(() => {
     if (links.length === 0 && initialLinks.length > 0) {
       setLinks(initialLinks);
+      const activeTabIndex = initialLinks.findIndex((link) =>
+        link.path ? isCurrentPage(pathname, link.path) : false,
+      );
+      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
     }
     if (links.length > 0) {
       const activeTabIndex = links.findIndex((link) =>

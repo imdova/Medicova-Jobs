@@ -4,6 +4,11 @@ interface Country {
   name: string;
   code: string;
 }
+export interface Result<T = void> {
+  success: boolean;
+  message: string;
+  data?: any;
+}
 
 export interface UserState {
   id: string | null;

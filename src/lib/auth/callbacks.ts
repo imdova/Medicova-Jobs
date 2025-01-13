@@ -5,7 +5,7 @@ import { RoleState } from "@/types/next-auth";
 import { divideName } from "@/util";
 
 export const callbacks = {
-  async jwt({ token, user }: { token: JWT; user: any }) {
+  async jwt({ token, account, user }: { token: JWT; account: any; user: any }) {
     const { firstName, lastName } = divideName(user?.name);
     if (user) {
       token.id = user.id;
@@ -23,10 +23,16 @@ export const callbacks = {
       token.deleted_at = user.deleted_at;
       token.updated_at = user.updated_at;
     }
+    console.log("🚀 ~ jwt ~ account:", account);
+    if (account && account.state) {
+      console.log("🚀 ~ jwt ~ account.state:", account.state);
+      token.state = JSON.parse(account.state);
+    }
     return token;
   },
 
   async session({ session, token }: { session: Session; token: JWT }) {
+    console.log("🚀 ~ session ~ token:", token.state);
     if (session.user) {
       session.user.id = token.id as string | null;
       session.user.email = token.email as string | null;
@@ -62,4 +68,15 @@ export const callbacks = {
   //   }
   //   return baseUrl;
   // },
+
+  async authorize(credentials: any, req: any) {
+    console.log("🚀 ~ authorize ~ credentials:", credentials)
+    const { state } = req.query; // Retrieve state from query params
+    const parsedState = state ? JSON.parse(state) : null;
+
+    console.log("Custom state:", parsedState);
+
+    // Proceed with authentication
+    return { id: 1, name: "User" }; // Example user
+  },
 };
