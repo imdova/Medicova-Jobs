@@ -37,7 +37,9 @@ const ProfilePage = ({ params: { id } }: { params: { id: string } }) => {
     <SeekerPage isMe={isMe} />
   ) : user?.role === "employer" ? (
     <EmployerPage isMe={isMe} />
-  ) : null;
+  ) : (
+    <SeekerPage isMe={false} />
+  );
 };
 
 export default ProfilePage;
@@ -104,7 +106,6 @@ const EmployerPage = ({ isMe }: { isMe: boolean }) => {
           {/* Complete Profile Section */}
           {/* Public Profile Section */}
           {/* <PublicProfile /> */}
-       
         </div>
       </div>
     </div>
