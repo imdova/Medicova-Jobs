@@ -43,7 +43,7 @@ export const providers = [
       email: { type: "email" },
       password: { type: "password" },
       phone: { type: "text" },
-      role: { type: "text" },
+      type: { type: "text" },
     },
     authorize: authenticateRegister,
   }),

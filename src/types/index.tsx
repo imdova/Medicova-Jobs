@@ -1,4 +1,5 @@
 import { RoleState } from "./next-auth";
+import { Permission } from "./permissions";
 
 interface Country {
   name: string;
@@ -15,18 +16,11 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
-  //
-  role?: RoleState;
-  //
-  roles: string[];
-  active: boolean;
-  photo?: string;
-  birth: string | null;
+  type: RoleState;
+  photo: string | null;
   phone: string | null;
   companyId: string | null;
-  created_at: string | null;
-  deleted_at: string | null;
-  updated_at: string | null;
+  permissions: Permission[];
 }
 
 export interface registerData {

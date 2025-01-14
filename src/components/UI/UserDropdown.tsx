@@ -20,7 +20,7 @@ interface UserDropdownProps {
 const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
   const userAvatar = user.photo;
   const userName = user.firstName || "User Image";
-  const role = user.role;
+  const userType = user.type;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -70,7 +70,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         <MenuItem>
           <Link
             href={
-              role == "seeker" ? "/job-seeker/setting " : "/employer/setting"
+              userType == "seeker" ? "/job-seeker/setting " : "/employer/setting"
             }
             className="w-full text-base text-secondary transition-colors hover:text-primary"
           >

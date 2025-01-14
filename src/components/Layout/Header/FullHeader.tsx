@@ -6,7 +6,7 @@ import HeaderAction from "./HeaderAction";
 import { isCurrentPage } from "@/util";
 
 const FullHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
-  const links = getNavLinks(user?.role, pathname);
+  const links = getNavLinks(user?.type, pathname);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white text-black shadow-md transition-colors duration-300">

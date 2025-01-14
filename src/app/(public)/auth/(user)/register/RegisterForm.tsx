@@ -85,7 +85,7 @@ const RegisterForm: React.FC = () => {
     try {
       const result = await signIn("register", {
         ...data,
-        role: userType,
+        type: userType,
         redirect: false,
       });
       if (result?.error) {

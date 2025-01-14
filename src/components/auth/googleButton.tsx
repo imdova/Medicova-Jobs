@@ -23,7 +23,7 @@ const GoogleButton = ({
             callbackUrl: "/",
             state: JSON.stringify({ customKey: userType }),
           },
-          userType ? { role: userType } : {},
+          userType ? { type: userType } : {},
         )
       }
     >

@@ -15,8 +15,8 @@ import {
 // Utility for accessibility props
 
 export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
-  const role = user?.role;
-  const initialLinks = getSideBarLinks(role, pathname);
+  const userType = user?.type;
+  const initialLinks = getSideBarLinks(userType, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
 
   const [activeTab, setActiveTab] = useState<number | null>(null);

@@ -8,7 +8,7 @@ import { isCurrentPage } from "@/util";
 
 const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
   const isScrolled = useScrollDetection();
-  const links = getNavLinks(user?.role, pathname);
+  const links = getNavLinks(user?.type, pathname);
   return (
     <header
       className={`fixed left-0 top-0 z-50 w-full transition-colors duration-300 ${isScrolled ? "bg-white text-black shadow-md" : "bg-transparent text-white"}`}

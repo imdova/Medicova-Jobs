@@ -1,53 +1,38 @@
 import { JWT } from "next-auth/jwt";
-import { getServerSession, Session } from "next-auth";
+import { Session } from "next-auth";
 import { handleSocialLogin } from "./utils";
-import { RoleState } from "@/types/next-auth";
 import { divideName } from "@/util";
+import { Permission } from "@/types/permissions";
+import { RoleState } from "@/types/next-auth";
 
 export const callbacks = {
-  async jwt({ token, account, user }: { token: JWT; account: any; user: any }) {
+  async jwt({ token, user }: { token: JWT; user: any }) {
     const { firstName, lastName } = divideName(user?.name);
     if (user) {
       token.id = user.id;
       token.email = user.email;
       token.firstName = user.firstName || firstName;
       token.lastName = user.lastName || lastName;
-      token.roles = user.roles;
-      token.role = user.role || "seeker";
-      token.active = user.active;
       token.photo = user.photo || user.image;
-      token.birth = user.birth;
       token.phone = user.phone;
       token.companyId = user.companyId;
-      token.created_at = user.created_at;
-      token.deleted_at = user.deleted_at;
-      token.updated_at = user.updated_at;
-    }
-    console.log("🚀 ~ jwt ~ account:", account);
-    if (account && account.state) {
-      console.log("🚀 ~ jwt ~ account.state:", account.state);
-      token.state = JSON.parse(account.state);
+      token.permissions = user.permissions;
+      token.type = user.type;
     }
     return token;
   },
 
   async session({ session, token }: { session: Session; token: JWT }) {
-    console.log("🚀 ~ session ~ token:", token.state);
     if (session.user) {
       session.user.id = token.id as string | null;
       session.user.email = token.email as string | null;
       session.user.firstName = token.firstName as string | null;
       session.user.lastName = token.lastName as string | null;
-      session.user.roles = token.roles as string[];
-      session.user.role = token.role as RoleState;
-      session.user.active = token.active as boolean;
-      session.user.photo = token.photo as string | undefined;
-      session.user.birth = token.birth as string | null;
+      session.user.photo = token.photo as string | null;
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;
-      session.user.created_at = token.created_at as string | null;
-      session.user.deleted_at = token.deleted_at as string | null;
-      session.user.updated_at = token.updated_at as string | null;
+      session.user.permissions = token.permissions as Permission[];
+      session.user.type = token.type as RoleState;
     }
     return session;
   },
@@ -70,7 +55,7 @@ export const callbacks = {
   // },
 
   async authorize(credentials: any, req: any) {
-    console.log("🚀 ~ authorize ~ credentials:", credentials)
+    console.log("🚀 ~ authorize ~ credentials:", credentials);
     const { state } = req.query; // Retrieve state from query params
     const parsedState = state ? JSON.parse(state) : null;
 

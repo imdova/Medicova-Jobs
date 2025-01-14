@@ -12,6 +12,10 @@ import {
 } from "../constants";
 import { RoleState } from "@/types/next-auth";
 
+interface UserResponse {
+  user: UserState;
+  roles: string[];
+}
 
 export const sendOTP = async (email: string): Promise<Result> => {
   try {
@@ -87,14 +91,12 @@ export const serverSignIn = async ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    console.log("🚀 ~ response:", response)
     if (response.ok) {
-      const data: UserState = await response.json();
-      const roleData = await getRole(data.roles[0]);
+      const data: UserResponse = await response.json();
       return {
         success: true,
         message: "Registered successfully",
-        data: { ...data, role: roleData.data },
+        data: data.user,
       };
     } else {
       const errorData = await response.json();
@@ -121,12 +123,11 @@ export const register = async (
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const data: UserState = await response.json();
-      const roleData = await getRole(data.roles[0]);
+      const data: UserResponse = await response.json();
       return {
         success: true,
         message: "Registered successfully",
-        data: { ...data, role: roleData.data },
+        data: data.user,
       };
     } else {
       const errorData = await response.json();
@@ -153,7 +154,7 @@ export const forgetPassword = async (data: {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    console.log("🚀 ~ response:", response)
+    console.log("🚀 ~ response:", response);
     if (response.ok) {
       return {
         success: true,
@@ -216,7 +217,7 @@ export const getMe = async (): Promise<Result> => {
       },
       credentials: "include",
     });
-    // console.log("🚀 ~ getMe ~ response:", response); 
+    // console.log("🚀 ~ getMe ~ response:", response);
     if (response.ok) {
       const data = await response.json();
       return {

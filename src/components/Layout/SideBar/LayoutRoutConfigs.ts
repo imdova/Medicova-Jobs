@@ -2,7 +2,7 @@ import { roleBasedSideBarLinks } from "@/constants/side-bar";
 import { RoleState } from "@/types/next-auth";
 
 type SideBarType = "minimal" | "full" | "none";
-type LinksType = "default" | "role";
+type LinksType = "default" | "userType";
 
 interface RouteConfig {
   pattern: string;
@@ -12,29 +12,33 @@ interface RouteConfig {
 
 export const routeConfigs: RouteConfig[] = [
   // default
-  { pattern: "/me/[id]", sideBarType: "full", linksType: "role" },
+  { pattern: "/me/[id]", sideBarType: "full", linksType: "userType" },
 
-  { pattern: "/chat", sideBarType: "full", linksType: "role" },
-  { pattern: "/notifications", sideBarType: "full", linksType: "role" },
+  { pattern: "/chat", sideBarType: "full", linksType: "userType" },
+  { pattern: "/notifications", sideBarType: "full", linksType: "userType" },
 
-  { pattern: "/job/[slug]", sideBarType: "full", linksType: "role" },
+  { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },
   // auth
   //employer
-  { pattern: "/employer/search", sideBarType: "none", linksType: "role" },
+  { pattern: "/employer/search", sideBarType: "none", linksType: "userType" },
   {
     pattern: "/employer/job/applicants",
     sideBarType: "none",
-    linksType: "role",
+    linksType: "userType",
   },
-  { pattern: "/employer/search/cv", sideBarType: "none", linksType: "role" },
+  {
+    pattern: "/employer/search/cv",
+    sideBarType: "none",
+    linksType: "userType",
+  },
   {
     pattern: "/employer/search/saved-search/[slug]",
     sideBarType: "none",
-    linksType: "role",
+    linksType: "userType",
   },
-  { pattern: "/employer/*", sideBarType: "full", linksType: "role" },
+  { pattern: "/employer/*", sideBarType: "full", linksType: "userType" },
   //job-seeker
-  { pattern: "/job-seeker/*", sideBarType: "full", linksType: "role" },
+  { pattern: "/job-seeker/*", sideBarType: "full", linksType: "userType" },
 ];
 
 export const matchRoute = (pathname: string) => {
@@ -64,11 +68,11 @@ export const matchRoute = (pathname: string) => {
   return wildcardMatch;
 };
 
-export function getSideBarLinks(role?: RoleState, pathname?: string) {
+export function getSideBarLinks(userType?: RoleState, pathname?: string) {
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
-    if (type === "role" && role) {
-      return roleBasedSideBarLinks[role];
+    if (type === "userType" && userType) {
+      return roleBasedSideBarLinks[userType];
     }
   }
   return [];

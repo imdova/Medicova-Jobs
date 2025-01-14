@@ -2,7 +2,7 @@ import { commonLinks, roleBasedLinks } from "@/constants/header";
 import { RoleState } from "@/types/next-auth";
 
 type HeaderType = "minimal" | "full" | "centered" | "transparent" | "dark";
-type LinksType = "default" | "role";
+type LinksType = "default" | "userType";
 
 interface RouteConfig {
   pattern: string;
@@ -13,20 +13,20 @@ interface RouteConfig {
 export const routeConfigs: RouteConfig[] = [
   // default
   { pattern: "/", headerType: "transparent", linksType: "default" },
-  { pattern: "/search", headerType: "transparent", linksType: "role" },
-  { pattern: "/me/[id]", headerType: "full", linksType: "role" },
-  { pattern: "/job/[slug]", headerType: "full", linksType: "role" },
+  { pattern: "/search", headerType: "transparent", linksType: "userType" },
+  { pattern: "/me/[id]", headerType: "full", linksType: "userType" },
+  { pattern: "/job/[slug]", headerType: "full", linksType: "userType" },
 
-  { pattern: "/chat", headerType: "full", linksType: "role" },
-  { pattern: "/notifications", headerType: "full", linksType: "role" },
+  { pattern: "/chat", headerType: "full", linksType: "userType" },
+  { pattern: "/notifications", headerType: "full", linksType: "userType" },
 
   // auth
-  { pattern: "/auth/*", headerType: "minimal", linksType: "role" },
+  { pattern: "/auth/*", headerType: "minimal", linksType: "userType" },
   //employer
-  { pattern: "/employer/*", headerType: "full", linksType: "role" },
-  { pattern: "/employer/search", headerType: "transparent", linksType: "role" },
+  { pattern: "/employer/*", headerType: "full", linksType: "userType" },
+  { pattern: "/employer/search", headerType: "transparent", linksType: "userType" },
   //job-seeker
-  { pattern: "/job-seeker/*", headerType: "full", linksType: "role" },
+  { pattern: "/job-seeker/*", headerType: "full", linksType: "userType" },
 ];
 
 // DynamicHeader.tsx
@@ -57,11 +57,11 @@ export const matchRoute = (pathname: string) => {
   return wildcardMatch;
 };
 
-export function getNavLinks(role?: RoleState, pathname?: string) {
+export function getNavLinks(userType?: RoleState, pathname?: string) {
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
-    if (type === "role" && role) {
-      return roleBasedLinks[role];
+    if (type === "userType" && userType) {
+      return roleBasedLinks[userType];
     }
   }
   return commonLinks.home;
