@@ -1,20 +1,23 @@
 "use server";
 
-import { registerData, Result, UserState } from "@/types";
 import {
   API_FORGET_PASSWORD,
   API_GET_ME,
   API_GET_ROLE_BY_ID,
-  API_SEND_OTP,
   API_LOGIN,
   API_REGISTER_USER,
+  API_SEND_OTP,
   API_VALIDATE_OTP,
-} from "../constants";
+} from "@/api/users";
+import { registerData, Result, Role, UserState } from "@/types";
+
 import { RoleState } from "@/types/next-auth";
+import { getEmployerWithID } from "../actions/employer.actions";
+import { getPermissionNames } from "@/util";
 
 interface UserResponse {
   user: UserState;
-  roles: string[];
+  roles: Role[];
 }
 
 export const sendOTP = async (email: string): Promise<Result> => {
@@ -92,11 +95,34 @@ export const serverSignIn = async ({
       body: JSON.stringify({ email, password }),
     });
     if (response.ok) {
-      const data: UserResponse = await response.json();
+      const { user, roles }: UserResponse = await response.json();
+      const permissions = getPermissionNames(roles);
+      if (user && user.id) {
+        if (user.type === "employer") {
+          const response = await getEmployerWithID(user.id);
+          if (response.success) {
+            const companyId = response.data.id;
+            return {
+              success: true,
+              message: user.type + " Registered successfully",
+              data: { ...user, permissions, companyId },
+            };
+          }
+          return {
+            success: true,
+            message: user.type + " Registered successfully",
+            data: { ...user, permissions },
+          };
+        }
+        return {
+          success: true,
+          message: user.type + " Registered successfully",
+          data: user,
+        };
+      }
       return {
-        success: true,
-        message: "Registered successfully",
-        data: data.user,
+        success: false,
+        message: "User not found",
       };
     } else {
       const errorData = await response.json();
@@ -123,11 +149,11 @@ export const register = async (
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const data: UserResponse = await response.json();
+      const data: UserState = await response.json();
       return {
         success: true,
         message: "Registered successfully",
-        data: data.user,
+        data: data,
       };
     } else {
       const errorData = await response.json();

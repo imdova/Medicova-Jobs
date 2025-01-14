@@ -178,3 +178,8 @@ export type NavItem = {
   type?: "divider" | "text" | "collapse" | "supLink";
   links?: NavItem[];
 };
+
+
+export type Role = {
+  permissions: {name: Permission}[];
+};

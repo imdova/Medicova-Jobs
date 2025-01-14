@@ -13,10 +13,14 @@ export default withAuth(function middleware(req) {
   }
   const userType = token.type as RoleState;
   if (path == "/me") {
-    if(userType === "seeker"){
+    if (userType === "seeker") {
       return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
-    }else{
-      return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+    } else {
+      if (token.companyId) {
+        return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+      } else {
+        return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
+      }
     }
   }
   let haveAccess = doesRoleHaveAccessToURL(userType, path);

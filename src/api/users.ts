@@ -1,7 +1,9 @@
-export const API_URL = process.env.NEXT_SERVER_BASE;
+import { API_URL } from ".";
+
+export const API_USERS_BASE = API_URL + "/users/api/v1.0";
 
 // Users
-export const USERS = API_URL + "/users/api/v1.0/users";
+export const USERS = API_USERS_BASE + "/users";
 export const API_LOGIN = USERS + "/login"; // POST
 export const API_GOOGLE_LOGIN = USERS + "/google/login"; // POST
 export const API_SEND_OTP = USERS + "/send-otp"; // POST
@@ -21,7 +23,7 @@ export const API_LOGOUT = USERS + "/logout"; // POST
 export const API_REGISTER_USER = USERS + "/"; // POST + [userType]
 
 // Roles
-export const ROLES = API_URL + "/api/v1.0/roles";
+export const ROLES = API_USERS_BASE + "/roles";
 export const API_CREATE_ROLE = ROLES + "/userType/"; // POST + [userType]
 export const API_GET_ROLES = ROLES + "/userType/"; // GET + [userType]
 export const API_GET_ROLE_BY_ID = ROLES + "/"; // GET + [roleID]
@@ -29,7 +31,7 @@ export const API_UPDATE_ROLE = ROLES + "/"; // PATCH + [roleID]
 export const API_DELETE_ROLE = ROLES + "/"; // DELETE + [roleID]
 
 // Permissions
-export const PERMISSIONS = API_URL + "/api/v1.0/permissions";
+export const PERMISSIONS = API_USERS_BASE + "/permissions";
 export const API_CREATE_PERMISSION = PERMISSIONS + "/userType/"; // POST + [userType]
 export const API_GET_PERMISSIONS_BY_TYPE = PERMISSIONS + "/userType/"; // GET + [userType]
 export const API_GET_PERMISSION_BY_ID = PERMISSIONS + "/"; // GET + [permissionID]

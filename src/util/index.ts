@@ -1,3 +1,5 @@
+import { Role } from "@/types";
+import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 export const formatDate = (date: Date): string => {
@@ -112,4 +114,11 @@ export function divideName(fullName?: string) {
   // The last name is the last part of the name
   const lastName = nameParts[nameParts.length - 1];
   return { firstName, lastName };
+}
+
+export function getPermissionNames(roles: Role[]): Permission[] {
+  const permissionNames = roles
+    .flatMap((role) => role.permissions)
+    .map((permission) => permission.name);
+  return Array.from(new Set(permissionNames));
 }

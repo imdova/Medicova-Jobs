@@ -1,24 +1,21 @@
-import { API_GET_USER_BY_ID } from "@/api/users";
-import { Result, UserState } from "@/types";
+import { API_GET_EMPLOYEE_BY_ID } from "@/api/employer";
+import { Result } from "@/types";
 
-export const getUser = async (id: string): Promise<Result<UserState>> => {
-  // console.log("🚀 ~ getUser ~ id:", id);
+export const getEmployerWithID = async (id: string): Promise<Result> => {
   try {
-    const response = await fetch(API_GET_USER_BY_ID + id, {
+    const response = await fetch(API_GET_EMPLOYEE_BY_ID + id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
       },
-      credentials: "include",
     });
-    // console.log("🚀 ~ getMe ~ response:", response);
     if (response.ok) {
-      const data: UserState = await response.json();
+      const data = await response.json();
       return {
         success: true,
-        message: "User fetched successfully",
-        data: data,
+        message: "Role fetched successfully",
+        data: data.company,
       };
     } else {
       const errorData = await response.json();
