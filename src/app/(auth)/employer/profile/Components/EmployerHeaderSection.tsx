@@ -8,8 +8,17 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import { Verified } from "@mui/icons-material";
+import { HeaderData } from "@/types/employer";
 
-const EmployerHeaderSection: React.FC = () => {
+interface EmployerHeaderSectionProps {
+  isMe: boolean;
+  data: HeaderData;
+}
+
+const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
+  data,
+  isMe,
+}) => {
   return (
     <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
       {/* Background Cover Image */}
@@ -61,14 +70,14 @@ const EmployerHeaderSection: React.FC = () => {
                   fontSize: { xs: "1.2rem", sm: "1.5rem" },
                 }}
               >
-                Modicova Medical Community
+                {data.title}
                 <Verified className="ml-3 text-primary" />
               </Typography>
               <Typography
                 variant="body1"
                 sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
               >
-                Healthcare: Medical Services and Education healthcare
+                {data.subtitle}
               </Typography>
               <Box
                 sx={{
@@ -83,19 +92,19 @@ const EmployerHeaderSection: React.FC = () => {
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    Hospital
+                    {data.type}
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <PlaceIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    Egypt, Cairo
+                    {data.address}
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <GroupsIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    11-50 employees
+                    {data.employees} employees
                   </Typography>
                 </Box>
               </Box>
@@ -115,10 +124,11 @@ const EmployerHeaderSection: React.FC = () => {
               }}
             >
               {/* Edit Button */}
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-
+              {isMe && (
+                <IconButton>
+                  <EditIcon />
+                </IconButton>
+              )}
               {/* Share Button */}
               <IconButton>
                 <ShareIcon />

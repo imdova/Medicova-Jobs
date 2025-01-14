@@ -13,7 +13,6 @@ import { UserState } from "@/types";
 const DynamicHeader: React.FC = () => {
   const session = useSession();
   const user = session.data?.user as UserState;
-  console.log("🚀 ~ user:", user)
   // useValidateUser()
 
   const pathname = usePathname() || "/";

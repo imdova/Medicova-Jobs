@@ -14,14 +14,18 @@ import pdf from "@/components/icons/pdf.png";
 import Image from "next/image";
 import { UserState } from "@/types";
 
-const myCv = "sadasd";
+const getFileNameFromUrl = (url: string): string => {
+  const urlSplit = url.split("/");
+  return urlSplit[urlSplit.length - 1];
+};
+const myCv = "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf";
 const Resume: React.FC<{
   user: UserState;
   isMe: boolean;
   isLocked: boolean;
 }> = ({ user, isMe, isLocked }) => {
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(getFileNameFromUrl(myCv));
+  const [fileUrl, setFileUrl] = useState<string | null>(myCv);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -62,7 +66,7 @@ const Resume: React.FC<{
     }
   };
 
-  if (!isMe && !myCv) {
+  if (!isMe && !fileUrl) {
     return null;
   }
   if (!isMe && isLocked) {
@@ -107,7 +111,7 @@ const Resume: React.FC<{
       <div className="flex justify-between gap-3">
         <Button
           variant="outlined"
-          disabled={!fileName}
+          disabled={!fileUrl}
           onClick={handleReviewCV}
           className="flex-1"
         >
@@ -116,7 +120,7 @@ const Resume: React.FC<{
         {isMe ? (
           <Button
             variant="contained"
-            className="text-nowrap flex-1"
+            className="flex-1 text-nowrap"
             color="primary"
             component="label"
           >

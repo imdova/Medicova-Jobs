@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Button, IconButton, TextField } from "@mui/material";
+import { Box,  IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddModal from "./Modals/AddModal";
 import { UserState } from "@/types";
 import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
 
-const about = "";
+const about = "Dedicated pediatrician with a decade of experience caring for children's health and wellness. Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.";
 const AboutSeeker: React.FC<{
   user: UserState;
   isMe: boolean;

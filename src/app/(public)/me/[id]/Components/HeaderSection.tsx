@@ -9,6 +9,20 @@ import { Verified } from "@mui/icons-material";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { UserState } from "@/types";
 
+interface HeaderData {
+  name: string | null;
+  isVerified: boolean;
+  title: string | null;
+  location: string | null;
+  age: number | null;
+  nationality: string | null;
+  maritalStatus: string | null;
+  field: string | null;
+  yearsOfExperience: number | null;
+  isAvailable: boolean ;
+}
+
+
 const HeaderSection: React.FC<{
   user: UserState;
   isMe: boolean;

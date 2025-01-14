@@ -13,8 +13,15 @@ import SocialMediaSection from "./Components/SocialMediaSection";
 import LanguageSection from "./Components/LanguageSection";
 import { UserState } from "@/types";
 
-const SeekerPage = ({ user, isMe }: { user: UserState; isMe: boolean }) => {
-  const isLocked = true;
+const SeekerPage = ({
+  user,
+  isMe,
+  isLocked,
+}: {
+  user: UserState;
+  isMe: boolean;
+  isLocked: boolean;
+}) => {
   return (
     <div className="w-full">
       <div className="flex gap-5">
@@ -36,7 +43,7 @@ const SeekerPage = ({ user, isMe }: { user: UserState; isMe: boolean }) => {
           <ActivitiesAchievementsSection user={user} isMe={isMe} />
         </div>
         {/* Right Sections */}
-        <div className="hidden max-w-80 md:block">
+        <div className="hidden min-w-80 max-w-80 md:block">
           {/* Public Profile Section */}
           {isMe && (
             <>

@@ -1,63 +1,40 @@
-"use client";
-import React, { useState, useRef, useEffect } from "react";
-import { Button, IconButton } from "@mui/material";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
-import { Edit } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { Edit, PendingActions } from "@mui/icons-material";
+import ClampedText from "@/components/UI/ClampedText";
+import EmptyCard from "@/components/UI/emptyCard";
 
-const AboutCompany: React.FC = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [showExpandButton, setShowExpandButton] = useState(false);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    if (descriptionRef.current) {
-      const lineHeight = parseInt(
-        window.getComputedStyle(descriptionRef.current).lineHeight,
-        10,
-      );
-      const maxLines = 3;
-      const maxHeight = lineHeight * maxLines;
-      setShowExpandButton(descriptionRef.current.scrollHeight > maxHeight);
-    }
-  }, []);
-
-  const handleToggle = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const description = `A healthcare company refers to any business or organization that
-        provides products or services related to the maintenance, improvement,
-        or management of health.`;
-
+const AboutCompany: React.FC<{
+  data: string;
+  isMe: boolean;
+}> = ({ data, isMe }) => {
+  if (!isMe && data.length === 0) {
+    return null;
+  }
   return (
     <div className="relative mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Title */}
-      <div className="flex mb-2 items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
-        <IconButton className="rounded border border-solid border-gray-300 p-2">
-           <Edit />
-        </IconButton>
+        {isMe && (
+          <IconButton className="rounded border border-solid border-gray-300 p-2">
+            <Edit />
+          </IconButton>
+        )}
       </div>
-      <p
-        ref={descriptionRef}
-        className="invisible absolute max-w-[90%] px-2 text-secondary"
-      >
-        {description}
-      </p>
-      <p
-        className={`${isExpanded ? "" : "line-clamp-3"} max-w-[90%] px-2 text-secondary`}
-      >
-        <PendingActionsIcon className="-ml-1 mr-2 inline text-primary" />A healthcare
-        {description}
-      </p>
-
-      {showExpandButton && (
-        <div className="flex items-center justify-center">
-          <Button className="mt-2 p-0" variant="text" onClick={handleToggle}>
-            {isExpanded ? "Show less" : "Show more"}
-          </Button>
-        </div>
-      )}
+      {data ? (
+        <ClampedText className="px-2 text-secondary" lines={3}>
+          <PendingActions className="-ml-1 mr-2 inline text-primary" />
+          healthcare
+          {data}
+        </ClampedText>
+      ) : isMe ? (
+        <EmptyCard
+          src={"/images/activities.png"}
+          description={" Your volunteering and student activities."}
+          buttonText="Add Activities / Achievements"
+          onClick={() => {}}
+        />
+      ) : null}
     </div>
   );
 };

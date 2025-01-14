@@ -27,18 +27,18 @@ export interface ExperienceData {
   location: string;
 }
 const experienceData: ExperienceData[] = [
-  // {
-  //   company: "Google",
-  //   position: "Senior Software Engineer",
-  //   years: "2015 - 2020",
-  //   location: "Mountain View, CA", // Company location
-  // },
-  // {
-  //   company: "Google",
-  //   position: "Senior Software Engineer",
-  //   years: "2015 - 2020",
-  //   location: "Mountain View, CA", // Company location
-  // },
+  {
+    company: "Google",
+    position: "Senior Software Engineer",
+    years: "2015 - 2020",
+    location: "Mountain View, CA", // Company location
+  },
+  {
+    company: "Google",
+    position: "Senior Software Engineer",
+    years: "2015 - 2020",
+    location: "Mountain View, CA", // Company location
+  },
 ];
 const INITIAL_VISIBLE_ITEMS = 2;
 const ExperienceSection: React.FC<{

@@ -7,7 +7,7 @@ import EmployerPage from "./EmployerPage";
 export default function ProfileMe({ profileUser }: { profileUser: UserState }) {
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
-  const isMe = true || user?.id === profileUser?.id;
+  const isMe = true || (user?.id === profileUser?.id);
 
   if (status === "loading") {
     return (
@@ -19,13 +19,8 @@ export default function ProfileMe({ profileUser }: { profileUser: UserState }) {
 
   // return <EmployerPage user={user} isMe={isMe} />;
   return user?.type === "seeker" ? (
-    <SeekerPage user={user} isMe={isMe} />
+    <SeekerPage user={user} isMe={isMe} isLocked={true} />
   ) : user?.type === "employer" ? (
     <EmployerPage user={user} isMe={isMe} />
   ) : null;
-  //   return profileUser?.role === "seeker" ? (
-  //     <SeekerPage user={profileUser} isMe={isMe} />
-  //   ) : user?.role === "employer" ? (
-  //     <EmployerPage user={profileUser} isMe={isMe} />
-  //   ) : null;
 }
