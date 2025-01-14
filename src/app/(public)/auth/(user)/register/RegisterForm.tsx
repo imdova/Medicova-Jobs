@@ -89,15 +89,13 @@ const RegisterForm: React.FC = () => {
         redirect: false,
       });
       if (result?.error) {
-        setError("An error occurred during Creating your account");
+        setError(
+          result.error === "CredentialsSignin"
+            ? "Invalid email or password"
+            : "An error occurred during sign in",
+        );
       } else {
-        if (userType === "seeker") {
-          window.location.href = "/me";
-        } else if (userType === "employer") {
-          window.location.href = "/employer/dashboard";
-        } else {
-          window.location.href = "/";
-        }
+        window.location.href = "/me";
       }
     } catch (error) {
       setError("Failed to sign in");

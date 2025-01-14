@@ -6,11 +6,7 @@ const PostJobForm = dynamic(() => import("../components/PostJobForm"), {
 });
 
 const PostJobPage = () => {
-  return (
-    <div className="p-2 md:p-5 bg-white min-h-screen">
-      <PostJobForm />
-    </div>
-  );
+  return <PostJobForm />;
 };
 
 export default PostJobPage;

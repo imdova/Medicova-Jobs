@@ -39,15 +39,7 @@ const PostJobForm: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        p: { xs: 2, md: 4 },
-        margin: "0 auto",
-        backgroundColor: "rgba(248, 248, 253, 0.6)",
-        borderRadius: "8px",
-        boxShadow: 3,
-      }}
-    >
+    <div className=" rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Header */}
       <Typography
         className="text-main"
@@ -142,7 +134,7 @@ const PostJobForm: React.FC = () => {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 

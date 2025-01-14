@@ -15,7 +15,7 @@ const GoogleButton = ({
     <Button
       className="h-[50px] w-full"
       variant="outlined"
-      // disabled={true}
+      disabled={true}
       onClick={() =>
         signIn(
           "google",

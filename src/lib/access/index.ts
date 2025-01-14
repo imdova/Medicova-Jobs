@@ -95,8 +95,7 @@ export const serverSignIn = async ({
       body: JSON.stringify({ email, password }),
     });
     if (response.ok) {
-      const { user, roles }: UserResponse = await response.json();
-      const permissions = getPermissionNames(roles);
+      const user: UserState = await response.json();
       if (user && user.id) {
         if (user.type === "employer") {
           const response = await getEmployerWithID(user.id);
@@ -105,13 +104,13 @@ export const serverSignIn = async ({
             return {
               success: true,
               message: user.type + " Registered successfully",
-              data: { ...user, permissions, companyId },
+              data: { ...user, companyId },
             };
           }
           return {
             success: true,
             message: user.type + " Registered successfully",
-            data: { ...user, permissions },
+            data: user,
           };
         }
         return {
