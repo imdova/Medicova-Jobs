@@ -6,14 +6,11 @@ const InitialUserData: UserState = {
   email: null,
   firstName: null,
   lastName: null,
-  roles: [],
-  active: false,
-  birth: null,
   phone: null,
   companyId: null,
-  created_at: null,
-  updated_at: null,
-  deleted_at: null,
+  permissions: [],
+  photo: null,
+  type: "seeker",
 };
 interface UserReducerState {
   loading: boolean;

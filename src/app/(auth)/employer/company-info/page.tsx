@@ -299,10 +299,7 @@ interface SectorSelectionProps {
   setData: React.Dispatch<React.SetStateAction<Company>>;
 }
 
-export const SectorSelection: React.FC<SectorSelectionProps> = ({
-  data,
-  setData,
-}) => {
+const SectorSelection = ({ data, setData }: SectorSelectionProps) => {
   return (
     <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
