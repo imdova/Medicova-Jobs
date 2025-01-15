@@ -50,8 +50,8 @@ const companySizeList: CompanySize[] = [
 ];
 const CompanyInfoForm: React.FC = () => {
   const [data, setData] = useState<Company>(initialCompany);
-  const company = useAppSelector((state) => state.company);
-  const dispatch = useAppDispatch();
+  // const company = useAppSelector((state) => state.company);
+  // const dispatch = useAppDispatch();
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
 

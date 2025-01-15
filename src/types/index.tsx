@@ -1,14 +1,35 @@
 import { RoleState } from "./next-auth";
 import { Permission } from "./permissions";
 
-interface Country {
+export type Country = {
   name: string;
-  code: string;
-}
-export interface Result<T = void> {
+  isoCode: string;
+  flag: string;
+  phonecode: string;
+  currency: string;
+  latitude: string;
+  longitude: string;
+};
+
+export type state = {
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+};
+export type City = {
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+};
+
+export interface Result<T = any> {
   success: boolean;
   message: string;
-  data?: any;
+  data?: T;
 }
 
 export interface UserState {
@@ -80,13 +101,34 @@ export interface Doctor {
   education: Education[];
   available: boolean;
 }
+export type CompanySize = "micro" | "small" | "medium" | "large" | "enterprise";
+
 export interface Company {
   name: string;
-  industry: string;
-  website: string;
-  contact: string;
+  about?: string;
+  isPrivate?: boolean;
+  isProfitable?: boolean;
+  status?: "active" | "inactive";
+  countryCode?: string;
+  stateCode?: string;
+  city?: string;
+  size?: CompanySize | null;
+  phone?: string;
+  email?: string;
+  yearFounded?: number | string;
+  photo?: string;
+  socialLinks?: {
+    linkedin?: string;
+  };
+  visible?: boolean;
+  profileUrl?: string;
+  typeId: string;
 }
 
+export type Sector = {
+  id: string;
+  name: string;
+};
 export interface Job {
   id: string;
   title: string;
@@ -179,7 +221,6 @@ export type NavItem = {
   links?: NavItem[];
 };
 
-
 export type Role = {
-  permissions: {name: Permission}[];
+  permissions: { name: Permission }[];
 };
