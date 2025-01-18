@@ -5,16 +5,22 @@ import { Divider } from "@mui/material";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { isCurrentPage } from "@/util";
-import { BaseHeaderProps, NavItem } from "@/types";
+import { BaseHeaderProps, NavItem, UserState } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
-import {
-  ArrowDropDownCircleRounded,
-  KeyboardArrowDown,
-} from "@mui/icons-material";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import SkeletonSideBar from "@/components/loading/Skeleton-sideBar";
 
-// Utility for accessibility props
+export interface SideBarProps {
+  user?: UserState;
+  status: "authenticated" | "loading" | "unauthenticated";
+  pathname: string;
+}
 
-export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
+export default function DynamicSideBar({
+  user,
+  status,
+  pathname,
+}: SideBarProps) {
   const userType = user?.type;
   const initialLinks = getSideBarLinks(userType, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
@@ -41,6 +47,12 @@ export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLinks, pathname]);
+
+  if (status === "loading") {
+    return (
+      <SkeletonSideBar />
+    );
+  }
 
   return (
     <Tabs

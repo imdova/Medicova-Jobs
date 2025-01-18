@@ -35,6 +35,7 @@ const RegisterForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    clearErrors,
     watch,
   } = useForm({
     defaultValues: {
@@ -47,38 +48,38 @@ const RegisterForm: React.FC = () => {
     },
   });
 
-  const validateForm = () => {
-    const { firstName, lastName, email, password, companyName, phone } =
-      watch();
-    let error = "";
-    if (!firstName) {
-      error = "First name is required";
-    }
-    if (!lastName) {
-      error = "Last name is required";
-    }
-    if (!email) {
-      error = "Email is required";
-    }
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailPattern.test(email)) {
-      error = "Enter a valid email address";
-    }
-    if (!password) {
-      error = "Password is required";
-    }
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-    if (!passwordPattern.test(password)) {
-      error =
-        "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol";
-    }
-    if (!phone) {
-      error = "Phone number is required";
-    }
-    setError(error);
-    return !error;
-  };
+  // const validateForm = () => {
+  //   const { firstName, lastName, email, password, companyName, phone } =
+  //     watch();
+  //   let error = "";
+  //   if (!firstName) {
+  //     error = "First name is required";
+  //   }
+  //   if (!lastName) {
+  //     error = "Last name is required";
+  //   }
+  //   if (!email) {
+  //     error = "Email is required";
+  //   }
+  //   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  //   if (!emailPattern.test(email)) {
+  //     error = "Enter a valid email address";
+  //   }
+  //   if (!password) {
+  //     error = "Password is required";
+  //   }
+  //   const passwordPattern =
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+  //   if (!passwordPattern.test(password)) {
+  //     error =
+  //       "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol";
+  //   }
+  //   if (!phone) {
+  //     error = "Phone number is required";
+  //   }
+  //   setError(error);
+  //   return !error;
+  // };
 
   const onSubmit = async (data: registerData) => {
     setLoading(true);
@@ -282,9 +283,13 @@ const RegisterForm: React.FC = () => {
                   endAdornment: (
                     <IconButton onClick={toggleShowPassword} edge="end">
                       {showPassword ? (
-                        <VisibilityOffOutlined />
+                        <VisibilityOffOutlined
+                          sx={{ color: errors.password ? "red" : "gray" }}
+                        />
                       ) : (
-                        <VisibilityOutlined />
+                        <VisibilityOutlined
+                          sx={{ color: errors.password ? "red" : "gray" }}
+                        />
                       )}
                     </IconButton>
                   ),
@@ -312,7 +317,8 @@ const RegisterForm: React.FC = () => {
             mb: 1,
             "& .PhoneInput": {
               display: "flex",
-              border: "1px solid #ccc",
+              border: errors.phone ? "1px solid red" : "1px solid #ccc",
+              height: "50px",
               borderRadius: "10px",
             },
             "& .PhoneInputInput": {
@@ -321,16 +327,19 @@ const RegisterForm: React.FC = () => {
               width: "100%",
               borderRadius: "0 10px 10px 0",
               border: "1px solid transparent",
+              backgroundColor: "transparent",
+              height: "50px",
+
               "&::placeholder": {
-                color: "#000", // Set placeholder color to black
+                color: errors.phone ? "red" : "GrayText", // Set placeholder color to black
                 opacity: 0.7, // Ensure full opacity
               },
               "&:hover": {
-                border: "1px solid black",
+                border: errors.phone ? "" : "1px solid black",
               },
               "&:focus": {
-                border: "1px solid transparent",
-                outline: "2px solid var(--light-primary)",
+                border: errors.phone ? "" : "1px solid var(--light-primary)",
+                outline: "2px solid transparent",
               },
             },
             "& .PhoneInputCountry": {
@@ -342,7 +351,7 @@ const RegisterForm: React.FC = () => {
               m: 0,
             },
             "& .PhoneInputCountry:hover": {
-              border: "1px solid black",
+              border: errors.phone ? "" : "1px solid black",
             },
           }}
         >
@@ -355,9 +364,11 @@ const RegisterForm: React.FC = () => {
                 defaultCountry="EG"
                 value={field.value ?? ""}
                 labels={{ phone: "Enter Phone Number" }}
-                id=""
                 placeholder="Enter phone number"
-                onChange={(value) => setValue("phone", value ?? "")}
+                onChange={(value) => {
+                  clearErrors("phone");
+                  setValue("phone", value ?? "");
+                }}
               />
             )}
             rules={{

@@ -10,6 +10,10 @@ export type Country = {
   latitude: string;
   longitude: string;
 };
+export type CountryMin = {
+  name: string;
+  code: string;
+};
 
 export type state = {
   name: string;
@@ -67,14 +71,14 @@ export interface Notification {
 
 export interface Experience {
   name: string;
-  country: Country;
+  country: CountryMin;
   startDate: string;
   endDate: string;
 }
 
 export interface Education {
   name: string;
-  country: Country;
+  country: CountryMin;
   specialty: string;
   degree: string;
   startDate: string;
@@ -104,6 +108,7 @@ export interface Doctor {
 export type CompanySize = "micro" | "small" | "medium" | "large" | "enterprise";
 
 export interface Company {
+  id: string;
   name: string;
   about?: string;
   isPrivate?: boolean;
@@ -124,6 +129,12 @@ export interface Company {
   profileUrl?: string;
   typeId: string;
 }
+export interface MiniCompany {
+  name: string;
+  industry: string;
+  website: string;
+  contact: string;
+}
 
 export type Sector = {
   id: string;
@@ -142,7 +153,7 @@ export interface Job {
   additionalDetails: string;
   skills: string[];
   relatedSearch: string[];
-  company: Company;
+  company: MiniCompany;
 }
 
 export interface FilterOption {

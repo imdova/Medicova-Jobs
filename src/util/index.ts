@@ -122,3 +122,7 @@ export function getPermissionNames(roles: Role[]): Permission[] {
     .map((permission) => permission.name);
   return Array.from(new Set(permissionNames));
 }
+
+export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {
+  return JSON.stringify(originalData) !== JSON.stringify(currentData);
+};

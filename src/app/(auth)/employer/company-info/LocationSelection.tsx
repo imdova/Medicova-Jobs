@@ -1,0 +1,159 @@
+import { getCountryList, getStateList } from "@/lib/actions/location.actions";
+import { Company, Country, state } from "@/types";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+
+interface LocationSelectionProps {
+  data: Company;
+  setData: React.Dispatch<React.SetStateAction<Company>>;
+  errors: { [key: string]: string };
+}
+
+const LocationSelection = ({
+  data,
+  setData,
+  errors,
+}: LocationSelectionProps) => {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [states, setStates] = useState<state[]>([]);
+  const countriesHandler = async () => {
+    const result = await getCountryList();
+    if (result.success && result.data) {
+      setCountries(result.data);
+    }
+  };
+
+  const statesHandler = async (countryCode: string) => {
+    const result = await getStateList(countryCode);
+    if (result.success && result.data) {
+      setStates(result.data);
+    }
+  };
+
+  useEffect(() => {
+    countriesHandler();
+  }, []);
+
+  useEffect(() => {
+    if (data.countryCode) {
+      statesHandler(data.countryCode);
+    }
+  }, [data.countryCode]);
+  return (
+    <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
+      {/* Company Sector Selector */}
+      <div className="flex flex-1 gap-5">
+        <div className="min-w-[150px] flex-1">
+          <InputLabel className="mb-2 text-lg font-semibold text-main">
+            Country
+          </InputLabel>
+          <FormControl fullWidth>
+            <Select
+              className="w-full"
+              displayEmpty
+              MenuProps={{
+                disableScrollLock: true,
+                PaperProps: {
+                  sx: { maxHeight: 300 },
+                },
+              }}
+              renderValue={(selected?: string) => {
+                const countryName = countries.find(
+                  (c) => c.isoCode === selected,
+                )?.name;
+                if (!countryName) {
+                  return <em className="text-gray-400">Select Country</em>;
+                }
+                return <span>{countryName}</span>;
+              }}
+              onChange={(e) => {
+                setData({ ...data, countryCode: e.target.value });
+              }}
+              value={countries.length > 0 ? data.countryCode : ""}
+            >
+              <MenuItem value="" disabled>
+                <em>Select Sector</em>
+              </MenuItem>
+              {countries.map((country) => (
+                <MenuItem key={country.isoCode} value={country.isoCode}>
+                  {country.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {/* {Boolean(errors.typeId) && !sectorId && (
+              <FormHelperText>sector is required</FormHelperText>
+            )} */}
+          </FormControl>
+        </div>
+        {/* Company Type Selector */}
+        <div className="min-w-[150px] flex-1">
+          <InputLabel className="mb-2 text-lg font-semibold text-main">
+            states
+          </InputLabel>
+          <FormControl fullWidth>
+            <Tooltip
+              title={
+                data.countryCode ? undefined : "Please select Country first"
+              }
+              placement="bottom"
+            >
+              <Select
+                className="w-full"
+                displayEmpty
+                disabled={data.countryCode ? false : true}
+                MenuProps={{
+                  disableScrollLock: true,
+                  PaperProps: {
+                    sx: { maxHeight: 300 },
+                  },
+                }}
+                renderValue={(selected?: string) => {
+                  const stateName = states.find(
+                    (s) => s.isoCode === selected,
+                  )?.name;
+                  if (!stateName) {
+                    return <em className="text-gray-400">Select State</em>;
+                  }
+                  return <span>{stateName}</span>;
+                }}
+                onChange={(e) => {
+                  setData({ ...data, stateCode: e.target.value });
+                }}
+                value={states.length > 0 ? data.stateCode : ""}
+              >
+                <MenuItem value="" disabled>
+                  <em>Select State</em>
+                </MenuItem>
+                {states.map((state) => (
+                  <MenuItem key={state.isoCode} value={state.isoCode}>
+                    {state.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Tooltip>
+          </FormControl>
+        </div>
+      </div>
+      <div className="min-w-[250px] flex-1">
+        <InputLabel className="mb-2 text-lg font-semibold text-main">
+          City
+        </InputLabel>
+        <TextField
+          className="w-full"
+          placeholder="Enter City"
+          value={data.city}
+          onChange={(e) => setData({ ...data, city: e.target.value })}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default LocationSelection;

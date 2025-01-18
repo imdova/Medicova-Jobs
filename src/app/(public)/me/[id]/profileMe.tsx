@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import SeekerPage from "./SeekerPage";
 import EmployerPage from "./EmployerPage";
 
-export default function ProfileMe({ profileUser }: { profileUser: UserState }) {
+export default function ProfileMe({ profileUser }: { profileUser?: UserState }) {
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
   const isMe = true || (user?.id === profileUser?.id);

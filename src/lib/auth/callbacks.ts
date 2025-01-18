@@ -4,9 +4,20 @@ import { handleSocialLogin } from "./utils";
 import { divideName } from "@/util";
 import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
+import { UserState } from "@/types";
 
 export const callbacks = {
-  async jwt({ token, user }: { token: JWT; user: any }) {
+  jwt: async ({
+    token,
+    user,
+    trigger,
+    session,
+  }: {
+    token: JWT;
+    user: any;
+    trigger?: "update" | "signIn" | "signUp" | undefined;
+    session?: any;
+  }) => {
     const { firstName, lastName } = divideName(user?.name);
     if (user) {
       token.id = user.id;
@@ -18,6 +29,11 @@ export const callbacks = {
       token.companyId = user.companyId;
       token.permissions = user.permissions;
       token.type = user.type;
+    }
+    if (trigger === "update") {
+      if (session?.companyId) {
+        token.companyId = session.companyId;
+      }
     }
     return token;
   },

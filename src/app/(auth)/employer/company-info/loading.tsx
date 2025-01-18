@@ -3,19 +3,10 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 
 const LoadingPage = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
+    <div className="flex h-screen items-center justify-center">
       <CircularProgress />
-      <Typography variant="h6" sx={{ ml: 2 }}>
-        Loading...
-      </Typography>
-    </Box>
+      <h6 className="ml-4">Loading...</h6>
+    </div>
   );
 };
 
