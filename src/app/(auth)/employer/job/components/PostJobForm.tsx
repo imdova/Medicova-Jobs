@@ -11,6 +11,8 @@ import {
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
+import { JobData } from "@/types";
+import { useForm } from "react-hook-form";
 
 const steps = [
   "Job Details",
@@ -33,13 +35,18 @@ const PostJobForm: React.FC = () => {
     }
   };
 
+  const onFirstStepSubmit = (data: JobData) => {
+    handleNext();
+    console.log(data);
+  };
+
   if (activeStep === null) {
     // Prevent rendering until `activeStep` is initialized
     return null;
   }
 
   return (
-    <div className=" rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Header */}
       <Typography
         className="text-main"
@@ -97,43 +104,13 @@ const PostJobForm: React.FC = () => {
       </Stepper>
 
       {/* Form Section */}
-      <Box component="form" sx={{ display: "grid", gap: 3 }}>
-        {activeStep === 0 && <JobDetailsStep />}
+      <div className="grid gap-3">
+        {activeStep === 0 && <JobDetailsStep  onSubmit={onFirstStepSubmit} />}
         {activeStep === 1 && <ScreeningQuestionsStep />}
         {activeStep === 2 && <ReviewPublishStep />}
 
-        {/* Navigation Buttons */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: { xs: "space-between", md: "flex-end" },
-            fontSize: "14px",
-            gap: 1,
-            mt: 4,
-          }}
-        >
-          <Button
-            variant="outlined"
-            onClick={handleBack}
-            sx={{ backgroundColor: "white", px: { sx: 2, md: 6 } }}
-            disabled={activeStep === 0}
-          >
-            Back
-          </Button>
-          <Button className="bg-[#FFAE35] px-2 text-sm text-[#464748] hover:bg-[#e19e39] md:px-6">
-            Save and Publish Later
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              px: { sx: 2, md: 6 },
-            }}
-            onClick={handleNext}
-          >
-            {activeStep === steps.length - 1 ? "Finish" : "Next"}
-          </Button>
-        </Box>
-      </Box>
+        
+      </div>
     </div>
   );
 };

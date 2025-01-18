@@ -1,5 +1,10 @@
+import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { RoleState } from "./next-auth";
 import { Permission } from "./permissions";
+import { Gender } from "@/constants/enums/gender.enum";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
+import { StartDateType } from "@/constants/enums/start-type.enum";
+import { SalaryCurrency } from "@/constants/enums/currency.enum";
 
 export type Country = {
   name: string;
@@ -155,6 +160,46 @@ export interface Job {
   relatedSearch: string[];
   company: MiniCompany;
 }
+
+export interface JobData {
+  id: string;
+  companyId: string;
+  title: string;
+  jobIndustryId: string;
+  jobSectorId: string | null;
+  jobSpecialityId: string | null;
+  jobCategoryId: string | null;
+  jobCareerLevelId: string | null;
+  jobEmploymentTypeId: string | null;
+  jobWorkPlace: JobWorkPlace | null;
+  gender: Gender | null;
+  minAge: number | null;
+  maxAge: number | null;
+  educationLevel: EducationLevel | null;
+  countryCode: string | null;
+  city: string | null;
+  maxExpYears: number | null;
+  minExpYears: number | null;
+  hideSalary: boolean | null;
+  salaryRangeStart: number | null;
+  salaryRangeEnd: number | null;
+  salaryCurrency: SalaryCurrency | null;
+  availableVacancies: number | null;
+  description: string | null;
+  requirements: string | null;
+  salaryDetails: string | null;
+  keywords: string[] | null;
+  skills: string[] | null;
+  questions: string[] | null;
+  showCompany: boolean | null;
+  recieveEmails: boolean | null;
+  jobEmail: string | null;
+  draft: boolean | null;
+  active: boolean | null;
+  closed: boolean | null;
+  validTo: string | null; // ISO date string
+  startDateType: StartDateType | null;
+};
 
 export interface FilterOption {
   label: string;

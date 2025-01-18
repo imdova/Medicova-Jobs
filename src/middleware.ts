@@ -8,26 +8,26 @@ export default withAuth(function middleware(req) {
   const path = req.nextUrl.pathname;
 
   // Redirect to login page if there is no accessible token
-  if (!token) {
-    return NextResponse.redirect(new URL("/auth/signin", req.url));
-  }
-  const userType = token.type as RoleState;
-  if (path == "/me") {
-    if (userType === "seeker") {
-      return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
-    } else {
-      if (token.companyId) {
-        return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
-      } else {
-        return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
-      }
-    }
-  }
-  let haveAccess = doesRoleHaveAccessToURL(userType, path);
-  if (!haveAccess) {
-    // Redirect to login page if user has no access to that particular page
-    return NextResponse.rewrite(new URL("/403", req.url));
-  }
+  // if (!token) {
+  //   return NextResponse.redirect(new URL("/auth/signin", req.url));
+  // }
+  // const userType = token.type as RoleState;
+  // if (path == "/me") {
+  //   if (userType === "seeker") {
+  //     return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
+  //   } else {
+  //     if (token.companyId) {
+  //       return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+  //     } else {
+  //       return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
+  //     }
+  //   }
+  // }
+  // let haveAccess = doesRoleHaveAccessToURL(userType, path);
+  // if (!haveAccess) {
+  //   // Redirect to login page if user has no access to that particular page
+  //   return NextResponse.rewrite(new URL("/403", req.url));
+  // }
   // Allow
   return NextResponse.next();
 });

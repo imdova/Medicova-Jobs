@@ -11,16 +11,30 @@ import {
   InputLabel,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Divider,
+  RadioGroup,
+  Radio,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import TextEditor from "@/components/editor/editor";
-import { jobs } from "@/constants";
-import { Close } from "@mui/icons-material";
+import { JobData } from "@/types";
+import { Controller, useForm } from "react-hook-form";
 
-const steps = ["Job Details", "Screening Questions", "Review & Publish"];
-const job = jobs[0];
-const JobDetailsStep: React.FC = () => {
+interface SectorSelectionProps {
+  onSubmit: (data: JobData) => void;
+}
+const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm({
+    defaultValues: {} as JobData,
+  });
+
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
   const [count, setCount] = useState(1); // Set initial count to 1
@@ -44,24 +58,78 @@ const JobDetailsStep: React.FC = () => {
     },
   };
 
+  const options = [
+    { id: "Healthcare", label: "Healthcare" },
+    { id: "Pharmaceutical", label: "Pharmaceutical" },
+    { id: "Education", label: "Education" },
+  ];
   return (
-    <Box component="form" sx={{ display: "grid", gap: 3 }}>
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
       {/* Job Title */}
-      <Box>
-        <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Job Title *</InputLabel>
-        <TextField
-          fullWidth
-          placeholder="Enter Job Title"
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            width: { xs: "100%", sm: "50%" },
-            ...focusStyle,
-            "& .MuiInputBase-root": {
-              height: 40, // Adjust the height here
-            },
-          }}
+      <div className="mb-4 md:w-1/2 md:pr-5">
+        <InputLabel className="mb-2 text-lg font-semibold text-main">
+          Title *
+        </InputLabel>
+        <Controller
+          name="title"
+          control={control}
+          defaultValue=""
+          rules={{ required: "title is required" }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="w-full"
+              name="title"
+              placeholder="Enter The Job Title"
+              error={!!errors?.title?.message}
+              helperText={errors?.title?.message}
+            />
+          )}
         />
-      </Box>
+      </div>
+
+      <div className="mb-4 md:w-1/2 md:pr-5">
+        <InputLabel className="mb-2 text-lg font-semibold text-main">
+          Industry *
+        </InputLabel>
+        <Controller
+          name="jobIndustryId"
+          control={control}
+          defaultValue=""
+          rules={{ required: "industry is required" }}
+          render={({ field }) => (
+            <FormControl
+              component="fieldset"
+              margin="normal"
+              error={!!errors?.jobIndustryId?.message}
+            >
+              <ToggleButtonGroup
+                color="primary"
+                {...field}
+                exclusive
+                onChange={(e, value) => field.onChange(value)} // Ensure `onChange` updates the value properly
+              >
+                {options.map((option) => (
+                  <ToggleButton
+                    // className={`mr-4 flex-1 !rounded-base border border-solid border-gray-400 !border-l-gray-400 ${
+                    //   watch("jobIndustryId") === option.id
+                    //     ? "!bg-primary !text-white"
+                    //     : ""
+                    // }`}
+                    key={option.id}
+                    value={option.id}
+                  >
+                    {option.label}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              {errors.jobIndustryId && (
+                <Typography color="error">{errors.jobIndustryId.message}</Typography>
+              )}
+            </FormControl>
+          )}
+        />
+      </div>
 
       {/* Industry */}
       <Box sx={{ width: { xs: "100%", sm: "80%", md: "50%" } }}>
@@ -560,7 +628,7 @@ const JobDetailsStep: React.FC = () => {
         <h6 className="text-xl font-semibold text-main">
           Skills related to the job post{" "}
         </h6>
-        <div className="mt-2 flex flex-wrap">
+        {/* <div className="mt-2 flex flex-wrap">
           {job.skills.map((skill, i) => (
             <div
               key={i}
@@ -572,7 +640,7 @@ const JobDetailsStep: React.FC = () => {
               </IconButton>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
         <h6 className="text-xl font-semibold text-main">Keywords</h6>
@@ -580,7 +648,7 @@ const JobDetailsStep: React.FC = () => {
           Enter keywords including any related job titles, technologies, or
           keywords the candidate should have in his CV.
         </p>
-        <div className="mt-2 flex flex-wrap">
+        {/* <div className="mt-2 flex flex-wrap">
           {job.relatedSearch.map((keyWord, i) => (
             <div
               key={i}
@@ -592,11 +660,20 @@ const JobDetailsStep: React.FC = () => {
               </IconButton>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
-
+      {/* Navigation Buttons */}
+      <div className="space-between mt-5 flex gap-2 md:justify-end">
+        <Button variant="outlined">Back</Button>
+        <Button className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]">
+          Save and Publish Later
+        </Button>
+        <Button type="submit" variant="contained">
+          next
+        </Button>
+      </div>
       {/* //////////////////////// */}
-    </Box>
+    </form>
   );
 };
 
