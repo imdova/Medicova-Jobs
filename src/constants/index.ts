@@ -1,5 +1,6 @@
 import {
   CompanyItem,
+  CompanySize,
   Doctor,
   Folder,
   Job,
@@ -1002,4 +1003,12 @@ export const notifications: NotificationItem[] = [
       "https://i.iheart.com/v3/re/new_assets/66844a33690c77c14847c03c?ops=contain(1480,0)",
     readTime: november11th2024,
   },
+];
+
+export const companySizeList: {name:string, value:CompanySize}[] = [
+  {name:"1 to 10 employees",value:"micro"},
+  {name:"11 to 50 employees",value:"small"},
+  {name:"51 to 250 employees",value:"medium"},
+  {name:"251 to 1000 employees",value:"large"},
+  {name:"1001+ employees",value:"enterprise"},
 ];

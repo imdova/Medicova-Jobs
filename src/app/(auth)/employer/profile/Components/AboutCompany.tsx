@@ -4,10 +4,10 @@ import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
 
 const AboutCompany: React.FC<{
-  data: string;
+  data?: string;
   isMe: boolean;
 }> = ({ data, isMe }) => {
-  if (!isMe && data.length === 0) {
+  if (!isMe && data?.length === 0) {
     return null;
   }
   return (

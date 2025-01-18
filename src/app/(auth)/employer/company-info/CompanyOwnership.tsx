@@ -1,4 +1,5 @@
 import DynamicRadioGroup from "@/components/form/DynamicRadioGroup";
+import { companySizeList } from "@/constants";
 import { Company, CompanySize } from "@/types";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
@@ -7,14 +8,6 @@ interface SectorSelectionProps {
   handleChange: <K extends keyof Company>(name: K, value: Company[K]) => void;
   errors: { [key: string]: string };
 }
-
-const companySizeList: {name:string, value:CompanySize}[] = [
-  {name:"1 to 10 employees",value:"micro"},
-  {name:"11 to 50 employees",value:"small"},
-  {name:"51 to 250 employees",value:"medium"},
-  {name:"251 to 1000 employees",value:"large"},
-  {name:"1001+ employees",value:"enterprise"},
-];
 
 const CompanyOwnership: React.FC<SectorSelectionProps> = ({
   data,

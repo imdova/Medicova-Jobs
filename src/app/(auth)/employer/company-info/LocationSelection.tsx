@@ -1,5 +1,6 @@
-import { getCountryList, getStateList } from "@/lib/actions/location.actions";
-import { Company, Country, state } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
+import { Company } from "@/types";
 import {
   FormControl,
   InputLabel,
@@ -21,30 +22,36 @@ const LocationSelection = ({
   setData,
   errors,
 }: LocationSelectionProps) => {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [states, setStates] = useState<state[]>([]);
-  const countriesHandler = async () => {
-    const result = await getCountryList();
-    if (result.success && result.data) {
-      setCountries(result.data);
-    }
+  const {
+    countries: {
+      data: countries,
+      loading: countriesLoading,
+      error: countriesError,
+    },
+    states: { data: states, loading: statesLoading, error: statesError },
+  } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+
+  const handleFetchCountries = async () => {
+    await dispatch(fetchCountries());
   };
 
-  const statesHandler = async (countryCode: string) => {
-    const result = await getStateList(countryCode);
-    if (result.success && result.data) {
-      setStates(result.data);
-    }
+  const handleFetchStates = async (countryCode: string) => {
+    await dispatch(fetchStates(countryCode));
   };
 
   useEffect(() => {
-    countriesHandler();
-  }, []);
+    if (countries.length === 0) {
+      handleFetchCountries();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   useEffect(() => {
     if (data.countryCode) {
-      statesHandler(data.countryCode);
+      handleFetchStates(data.countryCode);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.countryCode]);
   return (
     <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">

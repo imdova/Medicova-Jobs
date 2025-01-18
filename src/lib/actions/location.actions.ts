@@ -5,11 +5,11 @@ import {
   API_GET_COUNTRIES,
   API_GET_STATES,
 } from "@/api/employer";
-import { City, Country, Result, state } from "@/types";
+import { City, Country, Result, State } from "@/types";
 
 export const getStateList = async (
   countryCode: string,
-): Promise<Result<state[]>> => {
+): Promise<Result<State[]>> => {
   try {
     const response = await fetch(
       API_GET_STATES + `?countryCode=${countryCode}`,

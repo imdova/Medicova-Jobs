@@ -15,7 +15,7 @@ export type CountryMin = {
   code: string;
 };
 
-export type state = {
+export type State = {
   name: string;
   isoCode: string;
   countryCode: string;

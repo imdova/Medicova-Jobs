@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { Box, Avatar, IconButton, Typography, Grid } from "@mui/material";
+import React, { useState } from "react";
+import { Box, IconButton, Typography, Grid } from "@mui/material";
 
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PlaceIcon from "@mui/icons-material/Place";
@@ -8,17 +8,29 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import { Verified } from "@mui/icons-material";
-import { HeaderData } from "@/types/employer";
+import { Company } from "@/types";
+import { companySizeList } from "@/constants";
+import Avatar from "@/components/UI/Avatar";
 
 interface EmployerHeaderSectionProps {
   isMe: boolean;
-  data: HeaderData;
+  data: Company;
 }
 
 const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
   data,
   isMe,
 }) => {
+  const [image, setImage] = useState<File | null>(null);
+  const size = companySizeList.find((item) => item.value === data.size);
+
+  const updateImage = async (file: File) => {
+    setImage(file);
+  };
+  const removeImage = async () => {
+    console.log("remove image");
+  };
+
   return (
     <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
       {/* Background Cover Image */}
@@ -34,18 +46,16 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
         }}
       >
         {/* Avatar Positioned on Background Image */}
+
         <Avatar
-          alt="Profile"
-          src={""}
-          sx={{
-            position: "absolute",
-            bottom: "-50px",
-            left: "20px",
-            width: { xs: 80, sm: 120 },
-            height: { xs: 80, sm: 120 },
-            border: "6px solid white",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
-          }}
+          currentImageUrl={""}
+          size="medium"
+          onImageUpdate={updateImage}
+          onImageRemove={removeImage}
+          maxFileSizeMB={5}
+          imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50" 
+          containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
+          acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
         />
       </Box>
       {/* Profile Section */}
@@ -70,14 +80,14 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                   fontSize: { xs: "1.2rem", sm: "1.5rem" },
                 }}
               >
-                {data.title}
+                {data.name}
                 <Verified className="ml-3 text-primary" />
               </Typography>
               <Typography
                 variant="body1"
                 sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
               >
-                {data.subtitle}
+                Healthcare: Medical Services and Education healthcare
               </Typography>
               <Box
                 sx={{
@@ -92,21 +102,29 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {data.type}
+                    Hospital
                   </Typography>
                 </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <PlaceIcon className="text-primary" />
-                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {data.address}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <GroupsIcon className="text-primary" />
-                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {data.employees} employees
-                  </Typography>
-                </Box>
+                {(data.countryCode || data.stateCode || data.city) && (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <PlaceIcon className="text-primary" />
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                      {data.countryCode +
+                        ", " +
+                        data.stateCode +
+                        ", " +
+                        data.city}
+                    </Typography>
+                  </Box>
+                )}
+                {size && (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <GroupsIcon className="text-primary" />
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                      {size?.name}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Grid>

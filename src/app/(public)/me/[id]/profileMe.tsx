@@ -3,18 +3,19 @@ import { UserState } from "@/types";
 import { useSession } from "next-auth/react";
 import SeekerPage from "./SeekerPage";
 import EmployerPage from "./EmployerPage";
+import Loading from "@/components/loading/loading";
 
-export default function ProfileMe({ profileUser }: { profileUser?: UserState }) {
+export default function ProfileMe({
+  profileUser,
+}: {
+  profileUser?: UserState;
+}) {
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
-  const isMe = true || (user?.id === profileUser?.id);
+  const isMe = true || user?.id === profileUser?.id;
 
   if (status === "loading") {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <p> Loading...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   // return <EmployerPage user={user} isMe={isMe} />;
