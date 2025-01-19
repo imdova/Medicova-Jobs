@@ -5,7 +5,6 @@ import { Company, UserState } from "@/types";
 import {
   createCompany,
   getCompanyById,
-  getTypeById,
   updateCompany,
 } from "@/lib/actions/employer.actions";
 import { useSession } from "next-auth/react";
@@ -16,6 +15,7 @@ import { usePrompt } from "@/hooks/usePrompt";
 import MainInformation from "./Main-Information";
 import CompanyOwnership from "./CompanyOwnership";
 import CompanyContactInputs from "./CompanyContacInputs";
+import { CompanyStatus } from "@/constants/enums/company-status.enum";
 
 const initialCompany: Company = {
   id: "",
@@ -23,9 +23,9 @@ const initialCompany: Company = {
   about: "",
   isPrivate: true,
   isProfitable: true,
-  status: "active",
+  status: CompanyStatus.ACTIVE,
   countryCode: "",
-  stateCode: "",
+  stateCode: null,
   city: "",
   size: null,
   phone: "",
@@ -112,7 +112,7 @@ const CompanyInfoForm: React.FC = () => {
   };
 
   const handleCreate = async () => {
-    const result = await createCompany(data);
+    const result = await createCompany(data, user?.id || "");
     if (result.success && result.data) {
       const newCompany = result.data;
       setData(newCompany); // Set the form data with the fetched company data

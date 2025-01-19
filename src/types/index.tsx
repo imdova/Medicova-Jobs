@@ -5,6 +5,8 @@ import { Gender } from "@/constants/enums/gender.enum";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
+import { CompanyStatus } from "@/constants/enums/company-status.enum";
+import { CompanySize } from "@/constants/enums/company-size.enum";
 
 export type Country = {
   name: string;
@@ -110,7 +112,6 @@ export interface Doctor {
   education: Education[];
   available: boolean;
 }
-export type CompanySize = "micro" | "small" | "medium" | "large" | "enterprise";
 
 export interface Company {
   id: string;
@@ -118,9 +119,9 @@ export interface Company {
   about?: string;
   isPrivate?: boolean;
   isProfitable?: boolean;
-  status?: "active" | "inactive";
+  status?: CompanyStatus | null;
   countryCode?: string;
-  stateCode?: string;
+  stateCode?: string | null;
   city?: string;
   size?: CompanySize | null;
   phone?: string;
@@ -162,7 +163,7 @@ export interface Job {
 }
 
 export interface JobData {
-  id: string;
+  id?: string;
   companyId: string;
   title: string;
   jobIndustryId: string;
@@ -199,7 +200,7 @@ export interface JobData {
   closed: boolean | null;
   validTo: string | null; // ISO date string
   startDateType: StartDateType | null;
-};
+}
 
 export interface FilterOption {
   label: string;
@@ -273,7 +274,7 @@ export type NavItem = {
   path?: string;
   notifications?: number;
   section?: string; // Optional section header
-  type?: "divider" | "text" | "collapse" | "supLink";
+  type?: "divider" | "text" | "collapse" | "supLink" | "profile";
   links?: NavItem[];
 };
 

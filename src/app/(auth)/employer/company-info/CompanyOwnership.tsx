@@ -1,6 +1,7 @@
 import DynamicRadioGroup from "@/components/form/DynamicRadioGroup";
 import { companySizeList } from "@/constants";
-import { Company, CompanySize } from "@/types";
+import { CompanySize } from "@/constants/enums/company-size.enum";
+import { Company } from "@/types";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface SectorSelectionProps {
@@ -26,7 +27,7 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
               { value: "private", label: "Private" },
               { value: "governmental", label: "Governmental" },
             ]}
-            defaultValue={ data.isPrivate ? "private" : "governmental" }
+            defaultValue={data.isPrivate ? "private" : "governmental"}
             row
             onChange={(value) =>
               handleChange("isPrivate", value === "private" ? true : false)
@@ -38,7 +39,7 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
               { value: "nonProfit", label: "Non-Profit Org" },
               { value: "profit", label: "Profit Org" },
             ]}
-            defaultValue={ data.isProfitable ? "profit" : "nonProfit" }
+            defaultValue={data.isProfitable ? "profit" : "nonProfit"}
             row
             onChange={(value) =>
               handleChange("isProfitable", value === "profit" ? true : false)
@@ -68,7 +69,9 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
               handleChange("size", e.target.value as CompanySize)
             }
             renderValue={(selected) => {
-              const selectedSize = companySizeList.find((item) => item.value === selected);
+              const selectedSize = companySizeList.find(
+                (item) => item.value === selected,
+              );
               if (!selectedSize) {
                 return <em className="text-gray-400">Select Company Size</em>;
               }

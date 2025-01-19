@@ -24,7 +24,6 @@ const AboutCompany: React.FC<{
       {data ? (
         <ClampedText className="px-2 text-secondary" lines={3}>
           <PendingActions className="-ml-1 mr-2 inline text-primary" />
-          healthcare
           {data}
         </ClampedText>
       ) : isMe ? (

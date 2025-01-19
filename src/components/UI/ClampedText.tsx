@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 
 interface ClampedTextProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -8,7 +8,7 @@ interface ClampedTextProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ClampedText: React.FC<ClampedTextProps> = ({
-  children, 
+  children,
   lines,
   ...props
 }) => {
@@ -19,9 +19,9 @@ const ClampedText: React.FC<ClampedTextProps> = ({
 
   useEffect(() => {
     if (textRef.current && hiddenRef.current) {
-      const clampedHeight = parseInt(
-        window.getComputedStyle(textRef.current).lineHeight || "0"
-      ) * lines;
+      const clampedHeight =
+        parseInt(window.getComputedStyle(textRef.current).lineHeight || "0") *
+        lines;
       const fullHeight = hiddenRef.current.offsetHeight;
       setIsClamped(fullHeight > clampedHeight);
     }
@@ -32,23 +32,23 @@ const ClampedText: React.FC<ClampedTextProps> = ({
       {/* Hidden span to measure full text height */}
       <div
         ref={hiddenRef}
-        className="invisible absolute top-0 left-0 z-[-1] pointer-events-none whitespace-normal"
+        className="pointer-events-none invisible absolute left-0 top-0 z-[-1] whitespace-normal"
       >
         {children}
       </div>
       {/* Clamped or expanded text */}
-      <div
+      <Typography
         ref={textRef}
-        className={`overflow-hidden transition-all ${
-          isExpanded ? "" : `line-clamp-${lines}`
-        }`}
-        style={{
-          display: "-webkit-box",
+        sx={{
+          overflow: "hidden",
+          display: isExpanded ? "block" : "-webkit-box",
           WebkitBoxOrient: "vertical",
+          WebkitLineClamp: isExpanded ? "none" : lines,
+          transition: "all 0.3s ease-in-out",
         }}
       >
         {children}
-      </div>
+      </Typography>
       {/* Show more/less button */}
       {isClamped && (
         <div className="flex items-center justify-center">

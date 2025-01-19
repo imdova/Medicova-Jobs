@@ -71,7 +71,7 @@ const CompanyJobs: React.FC<{
           <h6 className="text-2xl font-semibold text-secondary">
             You haven&apos;t posted any jobs yet.
           </h6>
-          <Button LinkComponent={Link} href="/post-job" variant="contained">
+          <Button LinkComponent={Link} href="/employer/job/posted" variant="contained">
             Post Job Now
           </Button>
         </div>

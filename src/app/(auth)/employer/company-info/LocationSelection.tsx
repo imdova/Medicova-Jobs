@@ -133,7 +133,7 @@ const LocationSelection = ({
                 onChange={(e) => {
                   setData({ ...data, stateCode: e.target.value });
                 }}
-                value={states.length > 0 ? data.stateCode : ""}
+                value={states.length > 0 ? data.stateCode ?? "" : ""}
               >
                 <MenuItem value="" disabled>
                   <em>Select State</em>

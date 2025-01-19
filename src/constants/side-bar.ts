@@ -30,6 +30,11 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
   admin: [],
   employer: [
     {
+      id: 0,
+      type: "profile",
+      path: "/me/[id]",
+    },
+    {
       id: 1,
       label: "Dashboard",
       icon: HomeOutlined,
@@ -140,9 +145,14 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
   ],
   seeker: [
     {
+      id: 0,
+      type: "profile",
+      path: "/me/[id]",
+    },
+    {
       id: 18,
       icon: HomeOutlined,
-      label: "Home", 
+      label: "Home",
       path: "/",
     },
     {

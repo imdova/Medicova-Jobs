@@ -1,6 +1,5 @@
 import {
   CompanyItem,
-  CompanySize,
   Doctor,
   Folder,
   Job,
@@ -14,6 +13,7 @@ import {
   Edit,
   Search,
 } from "@mui/icons-material";
+import { CompanySize } from "./enums/company-size.enum";
 
 export const doctorsBase: Doctor[] = [
   {
@@ -1006,9 +1006,9 @@ export const notifications: NotificationItem[] = [
 ];
 
 export const companySizeList: {name:string, value:CompanySize}[] = [
-  {name:"1 to 10 employees",value:"micro"},
-  {name:"11 to 50 employees",value:"small"},
-  {name:"51 to 250 employees",value:"medium"},
-  {name:"251 to 1000 employees",value:"large"},
-  {name:"1001+ employees",value:"enterprise"},
+  {name:"1 to 10 employees",value:CompanySize.MICRO},
+  {name:"11 to 50 employees",value:CompanySize.SMALL},
+  {name:"51 to 250 employees",value:CompanySize.MEDIUM},
+  {name:"251 to 1000 employees",value:CompanySize.LARGE},
+  {name:"1001+ employees",value:CompanySize.ENTERPRISE},
 ];

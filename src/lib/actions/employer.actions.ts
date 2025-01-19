@@ -42,9 +42,12 @@ export const getEmployerWithID = async (id: string): Promise<Result> => {
   }
 };
 
-export const createCompany = async (companyData: Company): Promise<Result> => {
+export const createCompany = async (
+  companyData: Company,
+  userId: string,
+): Promise<Result> => {
   try {
-    const response = await fetch(API_CREATE_COMPANY, {
+    const response = await fetch(API_CREATE_COMPANY + `?userId=${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +120,6 @@ export const getCompanyById = async (
     });
     if (response.ok) {
       const data = await response.json();
-      console.log("🚀 ~ data:", data);
       return {
         success: true,
         message: "Company fetched successfully",
