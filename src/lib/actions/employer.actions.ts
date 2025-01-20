@@ -119,7 +119,9 @@ export const getCompanyById = async (
       },
     });
     if (response.ok) {
-      const data = await response.json();
+      const data : Company = await response.json();
+      data.typeId = data.type.id;
+      data.sectorId = data.type.sector.id;
       return {
         success: true,
         message: "Company fetched successfully",

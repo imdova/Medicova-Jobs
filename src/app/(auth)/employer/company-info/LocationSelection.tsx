@@ -23,12 +23,8 @@ const LocationSelection = ({
   errors,
 }: LocationSelectionProps) => {
   const {
-    countries: {
-      data: countries,
-      loading: countriesLoading,
-      error: countriesError,
-    },
-    states: { data: states, loading: statesLoading, error: statesError },
+    countries: { data: countries },
+    states: { data: states },
   } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
 
@@ -48,11 +44,16 @@ const LocationSelection = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (data.countryCode) {
-      handleFetchStates(data.countryCode);
+    if (data.country) {
+      const countryCode = countries.find(
+        (c) => c.name === data.country,
+      )?.isoCode;
+      if (countryCode) {
+        handleFetchStates(countryCode);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.countryCode]);
+  }, [data.country]);
   return (
     <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
@@ -72,24 +73,21 @@ const LocationSelection = ({
                 },
               }}
               renderValue={(selected?: string) => {
-                const countryName = countries.find(
-                  (c) => c.isoCode === selected,
-                )?.name;
-                if (!countryName) {
+                if (!selected) {
                   return <em className="text-gray-400">Select Country</em>;
                 }
-                return <span>{countryName}</span>;
+                return <span>{selected}</span>;
               }}
               onChange={(e) => {
-                setData({ ...data, countryCode: e.target.value });
+                setData({ ...data, country: e.target.value });
               }}
-              value={countries.length > 0 ? data.countryCode : ""}
+              value={countries.length > 0 ? data.country : ""}
             >
               <MenuItem value="" disabled>
                 <em>Select Sector</em>
               </MenuItem>
               {countries.map((country) => (
-                <MenuItem key={country.isoCode} value={country.isoCode}>
+                <MenuItem key={country.isoCode} value={country.name}>
                   {country.name}
                 </MenuItem>
               ))}
@@ -106,15 +104,13 @@ const LocationSelection = ({
           </InputLabel>
           <FormControl fullWidth>
             <Tooltip
-              title={
-                data.countryCode ? undefined : "Please select Country first"
-              }
+              title={data.country ? undefined : "Please select Country first"}
               placement="bottom"
             >
               <Select
                 className="w-full"
                 displayEmpty
-                disabled={data.countryCode ? false : true}
+                disabled={data.country ? false : true}
                 MenuProps={{
                   disableScrollLock: true,
                   PaperProps: {
@@ -122,24 +118,21 @@ const LocationSelection = ({
                   },
                 }}
                 renderValue={(selected?: string) => {
-                  const stateName = states.find(
-                    (s) => s.isoCode === selected,
-                  )?.name;
-                  if (!stateName) {
+                  if (!selected) {
                     return <em className="text-gray-400">Select State</em>;
                   }
-                  return <span>{stateName}</span>;
+                  return <span>{selected}</span>;
                 }}
                 onChange={(e) => {
-                  setData({ ...data, stateCode: e.target.value });
+                  setData({ ...data, state: e.target.value });
                 }}
-                value={states.length > 0 ? data.stateCode ?? "" : ""}
+                value={states.length > 0 ? (data.state ?? "") : ""}
               >
                 <MenuItem value="" disabled>
                   <em>Select State</em>
                 </MenuItem>
                 {states.map((state) => (
-                  <MenuItem key={state.isoCode} value={state.isoCode}>
+                  <MenuItem key={state.isoCode} value={state.name}>
                     {state.name}
                   </MenuItem>
                 ))}

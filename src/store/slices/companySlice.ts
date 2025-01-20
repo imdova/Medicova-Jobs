@@ -2,11 +2,11 @@ import { getCompanyById } from "@/lib/actions/employer.actions";
 import { Company } from "@/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: Company = {
-  id: "",
-  name: "",
-  typeId: "",
-};
+// const initialState: Company = {
+//   id: "",
+//   name: "",
+//   typeId: "",
+// };
 
 // export const fetchCompany = createAsyncThunk(
 //   "todos/fetchTodos",
@@ -38,13 +38,13 @@ const initialState: Company = {
 
 const companySlice = createSlice({
   name: "company",
-  initialState: initialState,
+  initialState: {} as Company,
   reducers: {
     setCompany: (state, action: PayloadAction<Company>) => {
       return action.payload; // Update Redux state with the user object
     },
     clearCompany: () => {
-      return initialState; // Reset to initial state
+      return {} as Company; // Reset to initial state
     },
   },
 });

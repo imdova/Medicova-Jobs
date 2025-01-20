@@ -52,7 +52,7 @@ const CompanyJobs: React.FC<{
         <h3 className="text-2xl font-bold text-main">Latest jobs:</h3>
         {isMe && (
           <Tooltip title="Post New Job">
-            <IconButton className="rounded border border-solid border-gray-300 p-2">
+            <IconButton LinkComponent={Link} href="/employer/job/posted" className="rounded border border-solid border-gray-300 p-2">
               <Add />
             </IconButton>
           </Tooltip>

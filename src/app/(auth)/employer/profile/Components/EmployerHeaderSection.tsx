@@ -105,13 +105,13 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                     Hospital
                   </Typography>
                 </Box>
-                {(data.countryCode || data.stateCode || data.city) && (
+                {(data.country || data.state || data.city) && (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PlaceIcon className="text-primary" />
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      {data.countryCode +
+                      {data.country +
                         ", " +
-                        data.stateCode +
+                        data.state +
                         ", " +
                         data.city}
                     </Typography>

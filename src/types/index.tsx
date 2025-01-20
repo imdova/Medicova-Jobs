@@ -120,8 +120,8 @@ export interface Company {
   isPrivate?: boolean;
   isProfitable?: boolean;
   status?: CompanyStatus | null;
-  countryCode?: string;
-  stateCode?: string | null;
+  country?: string;
+  state?: string | null;
   city?: string;
   size?: CompanySize | null;
   phone?: string;
@@ -134,6 +134,15 @@ export interface Company {
   visible?: boolean;
   profileUrl?: string;
   typeId: string;
+  sectorId?: string | null;
+  type: {
+    id: string;
+    name: string;
+    sector: {
+      id: string;
+      name: string;
+    };
+  };
 }
 export interface MiniCompany {
   name: string;

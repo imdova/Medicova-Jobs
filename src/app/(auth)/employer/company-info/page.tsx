@@ -17,26 +17,11 @@ import CompanyOwnership from "./CompanyOwnership";
 import CompanyContactInputs from "./CompanyContacInputs";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 
-const initialCompany: Company = {
-  id: "",
-  name: "",
-  about: "",
-  isPrivate: true,
-  isProfitable: true,
-  status: CompanyStatus.ACTIVE,
-  countryCode: "",
-  stateCode: null,
-  city: "",
-  size: null,
-  phone: "",
-  email: "",
-  yearFounded: "",
-  typeId: "",
-};
 
 const CompanyInfoForm: React.FC = () => {
   const [company, setCompany] = useState<Company | null>(null);
-  const [data, setData] = useState<Company>(initialCompany);
+  console.log("🚀 ~ company:", company)
+  const [data, setData] = useState<Company>({} as Company);
   const [isDirty, setIsDirty] = useState(false); // Tracks if the form has unsaved changes.
 
   const { data: session, status, update } = useSession();

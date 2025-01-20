@@ -13,7 +13,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { FieldErrors } from "react-hook-form";
 
 interface SectorSelectionProps {
   data: Company;
@@ -23,7 +22,6 @@ interface SectorSelectionProps {
 
 const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
   const [sectorList, setSectorList] = useState<Sector[]>([]);
-  const [sectorId, setSectorId] = useState("");
   const [typeList, setTypeList] = useState<Sector[]>([]);
   const sectorDataHandler = async () => {
     const result = await getSectorList();
@@ -39,32 +37,16 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
     }
   };
 
-  const getSectorIdFromTypeId = async (typeId: string) => {
-    const result = await getTypeById(typeId);
-    if (result.success && result.data) {
-      const sector = result.data.sector;
-      setSectorId(sector.id);
-    } else {
-      console.log("there is no sector for this type");
-    }
-  };
-
   useEffect(() => {
     sectorDataHandler();
   }, []);
 
   useEffect(() => {
-    if (sectorId) {
-      typesDataHandler(sectorId);
+    if (data.sectorId) {
+      typesDataHandler(data.sectorId);
     }
-  }, [sectorId]);
+  }, [data.sectorId]);
 
-  useEffect(() => {
-    if (data.typeId && !sectorId) {
-      getSectorIdFromTypeId(data.typeId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.typeId]);
   return (
     <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
@@ -72,7 +54,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
         <InputLabel className="mb-2 text-lg font-semibold text-main">
           Company Sector
         </InputLabel>
-        <FormControl fullWidth error={Boolean(errors.typeId) && !sectorId}>
+        <FormControl fullWidth error={Boolean(errors.typeId) && !data.sectorId}>
           <Select
             className="w-full"
             displayEmpty
@@ -92,9 +74,9 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               return <span>{sec}</span>;
             }}
             onChange={(e) => {
-              setSectorId(e.target.value);
+              setData({ ...data, sectorId: e.target.value });
             }}
-            value={sectorList.length > 0 ? sectorId : ""}
+            value={sectorList.length > 0 ? data.sectorId ?? "" : ""}
           >
             <MenuItem value="" disabled>
               <em>Select Sector</em>
@@ -105,7 +87,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               </MenuItem>
             ))}
           </Select>
-          {Boolean(errors.typeId) && !sectorId && (
+          {Boolean(errors.typeId) && !data.sectorId && (
             <FormHelperText>sector is required</FormHelperText>
           )}
         </FormControl>
@@ -118,13 +100,13 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
         </InputLabel>
         <FormControl fullWidth error={Boolean(errors.typeId) && !data.typeId}>
           <Tooltip
-            title={sectorId ? undefined : "Please select company sector first"}
+            title={data.sectorId ? undefined : "Please select company sector first"}
             placement="bottom"
           >
             <Select
               className="w-full"
               displayEmpty
-              disabled={sectorId ? false : true || typeList.length === 0}
+              disabled={data.sectorId ? false : true || typeList.length === 0}
               MenuProps={{
                 disableScrollLock: true,
                 PaperProps: {
@@ -141,7 +123,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               onChange={(e) => {
                 setData({ ...data, typeId: e.target.value });
               }}
-              value={typeList?.length > 0 ? (data.typeId || "") : ""} 
+              value={typeList?.length > 0 ? data.typeId || "" : ""}
             >
               <MenuItem value="" disabled>
                 <em>Select Company Type</em>
