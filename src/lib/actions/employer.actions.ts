@@ -6,10 +6,11 @@ import {
   API_GET_COMPANY_TYPE_BY_ID,
   API_GET_COMPANY_TYPES,
   API_GET_EMPLOYEE_BY_ID,
+  API_GET_JOB_INDUSTRIES,
   API_GET_JOBS,
   API_UPDATE_COMPANY,
 } from "@/api/employer";
-import { Company, Job, Result, Sector } from "@/types";
+import { Company, Industry, Job, Result, Sector } from "@/types";
 
 export const getEmployerWithID = async (id: string): Promise<Result> => {
   try {
@@ -119,7 +120,7 @@ export const getCompanyById = async (
       },
     });
     if (response.ok) {
-      const data : Company = await response.json();
+      const data: Company = await response.json();
       data.typeId = data.type.id;
       data.sectorId = data.type.sector.id;
       return {
@@ -264,6 +265,48 @@ export const getJobsByCompanyId = async (
       return {
         success: true,
         message: "Jobs list fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getIndustriesByCompanyId = async (
+  companyId: string,
+  page: number = 1,
+  limit: number = 10,
+): Promise<
+  Result<{
+    data: Industry[];
+    total: number;
+  }>
+> => {
+  try {
+    const response = await fetch(
+      `${API_GET_JOB_INDUSTRIES}?page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      },
+    );
+    if (response.ok) {
+      const data: { total: number; data: Industry[] } = await response.json();
+      return {
+        success: true,
+        message: "Industries list fetched successfully",
         data: data,
       };
     } else {

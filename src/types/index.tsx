@@ -170,6 +170,13 @@ export interface Job {
   relatedSearch: string[];
   company: MiniCompany;
 }
+export interface JobCategory { id: string; name: string }
+
+export interface Industry {
+  id: string;
+  name: string;
+  categories: JobCategory;
+}
 
 export interface JobData {
   id?: string;
