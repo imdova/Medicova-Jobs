@@ -18,6 +18,8 @@ html {
   --primary-transparent: #2ba149e5;
   --text-main: #161439;
   --text-secondary: #6d6c80;
+  --warning: #ff9900;
+  --error: #ff0000;
 }
 
 /* Apply global font family */

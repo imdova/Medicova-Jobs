@@ -10,8 +10,8 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
   // Function to determine color based on value
   const getProgressColor = (progress: number): string => {
     if (progress >= 80) return "var(--primary)";
-    if (progress >= 50) return "#ff6600";
-    return "#ff0000";
+    if (progress >= 50) return "var(--warning)";
+    return "var(--error)";
   };
 
   if (!percentage || percentage === 100) return null;
@@ -24,7 +24,8 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
       <div className="flex-1">
         <Link
           href="#"
-          className="mb-2 text-2xl font-bold text-primary hover:underline"
+          className="mb-2 text-2xl font-bold hover:underline"
+          style={{ color: progressColor }}
         >
           Complete Your Profile!
         </Link>

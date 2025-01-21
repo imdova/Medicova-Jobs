@@ -24,7 +24,6 @@ import { RoleState } from "@/types/next-auth";
 import { signIn } from "next-auth/react";
 
 const RegisterForm: React.FC = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -92,7 +91,7 @@ const RegisterForm: React.FC = () => {
       if (result?.error) {
         setError(
           result.error === "CredentialsSignin"
-            ? "Invalid email or password"
+            ? "Invalid email or phone Number"
             : "An error occurred during sign in",
         );
       } else {
@@ -391,6 +390,7 @@ const RegisterForm: React.FC = () => {
           }}
           type="submit"
           variant="contained"
+          disabled={loading}
           fullWidth
         >
           {loading ? "Loading..." : "Sign Up"}

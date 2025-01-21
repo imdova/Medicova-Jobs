@@ -23,6 +23,7 @@ import { Add, Close, Remove } from "@mui/icons-material";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { useSession } from "next-auth/react";
 import IndustryForm from "../industry";
+import MultiTextInput from "@/components/form/MultiTextInput";
 
 const employmentTypes = [
   { id: "Full Time", label: "Full Time" },
@@ -46,12 +47,18 @@ const educationOptions = [
   { id: EducationLevel.MASTERS, label: "Master's" },
   { id: EducationLevel.PHD, label: "PHD" },
 ];
-interface SectorSelectionProps {
-  onSubmit: (data: JobData) => void;
-}
 
-const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
-  const { data: session, status, update } = useSession();
+interface JobDetailProps {
+  jobData: JobData;
+  onSubmit: (data: JobData) => void;
+  onDraft: (data: Partial<JobData>) => void;
+}
+const JobDetailsStep: React.FC<JobDetailProps> = ({
+  jobData,
+  onSubmit,
+  onDraft,
+}) => {
+  const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
 
@@ -62,12 +69,15 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm({
-    defaultValues: { companyId } as JobData,
+    defaultValues: { ...jobData, companyId },
   });
 
-  const handelJobDescription = (e: string) => {
-    console.log(e);
+  const onDraftSubmit = () => {
+    const data = watch();
+    onDraft({ ...data, companyId, draft: true });
   };
 
   const handleFetchCountries = async () => {
@@ -105,7 +115,12 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
         )}
       </div>
       {/* Industry */}
-      <IndustryForm control={control} errors={errors} />
+      <IndustryForm
+        control={control}
+        errors={errors}
+        watch={watch}
+        setValue={setValue}
+      />
 
       {/* Dropdowns employment type - education level  */}
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
@@ -153,7 +168,7 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
           <Controller
             name="educationLevel"
             control={control}
-            defaultValue={null}
+            defaultValue={""}
             rules={{ required: "Education Level is required" }}
             render={({ field }) => (
               <FormControl fullWidth error={Boolean(errors.educationLevel)}>
@@ -285,13 +300,29 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
               name="minAge"
               control={control}
               defaultValue={null}
-              rules={{ required: "min age is required" }}
+              rules={{
+                required: "min age is required",
+                min: {
+                  value: 16,
+                  message: "min age must be at least 16",
+                },
+                max: {
+                  value: 100,
+                  message: "min age must be at most 100",
+                },
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   className="w-full"
                   name="min age"
                   type="number"
+                  inputProps={{ min: 16, max: 100 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">y</InputAdornment>
+                    ),
+                  }}
                   placeholder="Enter The Min Age"
                   error={!!errors?.minAge?.message}
                 />
@@ -311,13 +342,29 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
               name="maxAge"
               control={control}
               defaultValue={null}
-              rules={{ required: "max age is required" }}
+              rules={{
+                required: "max age is required",
+                min: {
+                  value: 16,
+                  message: "min age must be at least 16",
+                },
+                max: {
+                  value: 100,
+                  message: "min age must be at most 100",
+                },
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   className="w-full"
                   name="max age"
                   type="number"
+                  inputProps={{ min: 16, max: 100 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">y</InputAdornment>
+                    ),
+                  }}
                   placeholder="Enter The Max Age"
                   error={!!errors?.maxAge?.message}
                 />
@@ -338,12 +385,12 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
               Job Location *
             </label>
             <Controller
-              name="countryCode"
+              name="country"
               control={control}
               defaultValue=""
               rules={{ required: "country is required" }}
               render={({ field }) => (
-                <FormControl error={Boolean(errors.countryCode)} fullWidth>
+                <FormControl error={Boolean(errors.country)} fullWidth>
                   <Select
                     {...field}
                     displayEmpty
@@ -354,29 +401,26 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
                       },
                     }}
                     renderValue={(selected) => {
-                      const country = countries.data.find(
-                        (c) => c.isoCode === selected,
-                      );
-                      if (!country) {
+                      if (!selected) {
                         return (
                           <span className="text-gray-400">Job Location</span>
                         );
                       }
-                      return country.name;
+                      return selected;
                     }}
                   >
                     <MenuItem value="" disabled>
                       <em>Select Job Location</em>
                     </MenuItem>
                     {countries.data.map((country) => (
-                      <MenuItem key={country.isoCode} value={country.isoCode}>
+                      <MenuItem key={country.isoCode} value={country.name}>
                         {country.name}
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.countryCode && (
+                  {errors.country && (
                     <p className="mt-2 text-sm text-red-500">
-                      {errors.countryCode.message}
+                      {errors.country.message}
                     </p>
                   )}
                 </FormControl>
@@ -413,19 +457,26 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
       <div className="mb-6 flex flex-wrap gap-5 md:w-1/2 md:flex-nowrap md:pr-3">
         <div className="min-w-[150px] flex-1">
           <label className="mb-2 text-lg font-semibold text-main">
-            Min Years of Experience *
+            Min Years Exp *
           </label>
           <Controller
             name="minExpYears"
             control={control}
             defaultValue={null}
-            rules={{ required: "min experience years is required" }}
+            rules={{
+              required: "min experience years is required",
+              min: {
+                value: 0,
+                message: "min experience years must be greater than 0",
+              },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
                 className="w-full"
                 name="min experience years"
                 type="number"
+                inputProps={{ min: 0 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="start">y</InputAdornment>
@@ -444,19 +495,26 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
         </div>
         <div className="min-w-[150px] flex-1">
           <label className="mb-2 text-lg font-semibold text-main">
-            Max Years of Experience *
+            Max Years Exp *
           </label>
           <Controller
             name="maxExpYears"
             control={control}
             defaultValue={null}
-            rules={{ required: "max experience years is required" }}
+            rules={{
+              required: "max experience years is required",
+              min: {
+                value: 0,
+                message: "max experience years must be greater than 0",
+              },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
                 className="w-full"
                 name="max experience years"
                 type="number"
+                inputProps={{ min: 0 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">y</InputAdornment>
@@ -481,13 +539,19 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
           <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
             <div className="min-w-[150px] flex-1">
               <label className="mb-2 text-lg font-semibold text-main">
-                Salary Start range *
+                Salary start range *
               </label>
               <Controller
                 name="salaryRangeStart"
                 control={control}
                 defaultValue={null}
-                rules={{ required: "salary rang start is required" }}
+                rules={{
+                  required: "salary rang start is required",
+                  min: {
+                    value: 0,
+                    message: "salary range start must be greater than 0",
+                  },
+                }}
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -512,13 +576,19 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
             </div>
             <div className="min-w-[150px] flex-1">
               <label className="mb-2 text-lg font-semibold text-main">
-                Salary Start range *
+                Salary end range *
               </label>
               <Controller
                 name="salaryRangeEnd"
                 control={control}
                 defaultValue={null}
-                rules={{ required: "salary range end is required" }}
+                rules={{
+                  required: "salary range end is required",
+                  min: {
+                    value: 0,
+                    message: "salary range end must be greater than 0",
+                  },
+                }}
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -657,36 +727,28 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
       <div className="mb-4 w-full">
         <h6 className="mb-2 text-xl font-bold text-main">Job Description</h6>
         <TextEditor
-          value={"<p>Write your job description ...</p>"}
-          onChange={handelJobDescription}
+          value={watch("description") || ""}
+          onChange={(e) => setValue("description", e)}
         />
       </div>
       <div className="w-full">
         <h6 className="mb-2 text-xl font-bold text-main">Job Requirements</h6>
         <TextEditor
-          value={"<p>Write your job requirements ... </p>"}
-          onChange={handelJobDescription}
+          value={watch("requirements") || ""}
+          onChange={(e) => setValue("requirements", e)}
         />
       </div>
 
       {/* Skills */}
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
-        <h6 className="text-xl font-semibold text-main">
+        <h6 className="mb-2 text-xl font-semibold text-main">
           Skills related to the job post{" "}
         </h6>
-        <div className="mt-2 flex flex-wrap">
-          {["React", "Angular", "Vue"].map((skill, i) => (
-            <div
-              key={i}
-              className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
-            >
-              {skill}
-              <IconButton size="small" color="error">
-                <Close />
-              </IconButton>
-            </div>
-          ))}
-        </div>
+        <MultiTextInput
+          defaultValue={watch("skills") || []}
+          placeholder="Add your skills (press Enter after each)"
+          onChange={(items) => setValue("skills", items)}
+        />
       </div>
 
       {/* Keywords */}
@@ -696,24 +758,19 @@ const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
           Enter keywords including any related job titles, technologies, or
           keywords the candidate should have in his CV.
         </p>
-        <div className="mt-2 flex flex-wrap">
-          {["React", "Angular", "Vue"].map((skill, i) => (
-            <div
-              key={i}
-              className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
-            >
-              {skill}
-              <IconButton size="small" color="error">
-                <Close />
-              </IconButton>
-            </div>
-          ))}
-        </div>
+        <MultiTextInput
+          defaultValue={watch("keywords") || []}
+          placeholder="Add your Keywords (press Enter after each)"
+          onChange={(items) => setValue("keywords", items)}
+        />
       </div>
       {/* Navigation Buttons */}
       <div className="space-between mt-5 flex gap-2 md:justify-end">
         {/* <Button variant="outlined" >Back</Button> */}
-        <Button className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]">
+        <Button
+          onClick={onDraftSubmit}
+          className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
+        >
           Save and Publish Later
         </Button>
         <Button type="submit" variant="contained">

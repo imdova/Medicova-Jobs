@@ -10,6 +10,7 @@ export function EditorContentWrapper({ editor }: EditorContentProps) {
   return (
     <EditorContent
       editor={editor}
+      placeholder="<p>Start writing...<p/>"
       className="prose prose-sm focus:outline-none"
     />
   );

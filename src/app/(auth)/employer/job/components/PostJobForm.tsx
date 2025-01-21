@@ -1,18 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-} from "@mui/material";
+import { Typography, Stepper, Step, StepLabel } from "@mui/material";
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
 import { JobData } from "@/types";
-import { useForm } from "react-hook-form";
 
 const steps = [
   "Job Details",
@@ -20,9 +12,47 @@ const steps = [
   "Review & Publish",
 ];
 
+const initialJob: JobData = {
+  companyId: "",
+  title: "",
+  jobIndustryId: "",
+  jobSpecialityId: "",
+  jobCategoryId: "",
+  jobCareerLevelId: "",
+  jobEmploymentTypeId: "",
+  jobWorkPlace: null,
+  gender: null,
+  minAge: null,
+  maxAge: null,
+  educationLevel: null,
+  country: "",
+  city: null,
+  maxExpYears: null,
+  minExpYears: null,
+  hideSalary: true,
+  salaryRangeStart: null,
+  salaryRangeEnd: null,
+  salaryCurrency: null,
+  availableVacancies: null,
+  description: null,
+  requirements: null,
+  salaryDetails: null,
+  keywords: [],
+  skills: [],
+  questions: [],
+  showCompany: true,
+  recieveEmails: true,
+  jobEmail: null,
+  draft: false,
+  active: true,
+  closed: false,
+  startDateType: null,
+  jobSectorId: "",
+  validTo: null,
+};
 const PostJobForm: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
-
+  const [jobData, setJobData] = useState(initialJob);
   const handleNext = () => {
     if (activeStep !== null && activeStep < steps.length - 1) {
       setActiveStep((prevStep) => (prevStep !== null ? prevStep + 1 : 0));
@@ -36,8 +66,27 @@ const PostJobForm: React.FC = () => {
   };
 
   const onFirstStepSubmit = (data: JobData) => {
+    const newData = { ...jobData, ...data };
     handleNext();
-    console.log(data);
+    setJobData(newData);
+    console.log(newData);
+  };
+  const onSecondStepSubmit = (data: Partial<JobData>) => {
+    const newData = { ...jobData, ...data };
+    handleNext();
+    setJobData(newData);
+    console.log(newData);
+  };
+  const publish = () => {
+    console.log(jobData);
+  };
+  const onDraft = (data?: Partial<JobData>) => {
+    const newData = {
+      ...jobData,
+      ...data,
+      draft: true,
+    };
+    console.log(newData);
   };
 
   if (activeStep === null) {
@@ -105,11 +154,28 @@ const PostJobForm: React.FC = () => {
 
       {/* Form Section */}
       <div className="grid gap-3">
-        {activeStep === 0 && <JobDetailsStep  onSubmit={onFirstStepSubmit} />}
-        {activeStep === 1 && <ScreeningQuestionsStep />}
-        {activeStep === 2 && <ReviewPublishStep />}
-
-        
+        {activeStep === 0 && (
+          <JobDetailsStep
+            jobData={jobData}
+            onDraft={onDraft}
+            onSubmit={onFirstStepSubmit}
+          />
+        )}
+        {activeStep === 1 && (
+          <ScreeningQuestionsStep
+            onBack={handleBack}
+            onDraft={onDraft}
+            onSubmit={onSecondStepSubmit}
+          />
+        )}
+        {activeStep === 2 && (
+          <ReviewPublishStep
+            onBack={handleBack}
+            jobData={jobData}
+            onDraft={handleNext}
+            onSubmit={publish}
+          />
+        )}
       </div>
     </div>
   );

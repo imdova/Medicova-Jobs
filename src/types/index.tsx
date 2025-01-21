@@ -169,15 +169,26 @@ export interface Job {
   relatedSearch: string[];
   company: MiniCompany;
 }
+
+export type SpecialtyItem = {
+  id:string;
+  name:string
+}
+export type CareerLevels = {
+  id:string;
+  name:string
+}
 export interface JobCategory {
   id: string;
   name: string;
+  specialities: SpecialtyItem[];
+  careerLevels: CareerLevels[]
 }
 
 export interface Industry {
   id: string;
   name: string;
-  categories: JobCategory;
+  categories: JobCategory[];
 }
 
 export interface JobData {
@@ -190,19 +201,19 @@ export interface JobData {
   jobCategoryId: string | null;
   jobCareerLevelId: string | null;
   jobEmploymentTypeId: string | null;
-  jobWorkPlace: JobWorkPlace | null;
+  jobWorkPlace: JobWorkPlace | null | "";
   gender: Gender | null;
   minAge: number | null;
   maxAge: number | null;
-  educationLevel: EducationLevel | null;
-  countryCode: string | null;
+  educationLevel: EducationLevel | null | "";
+  country: string | null | "";
   city: string | null;
   maxExpYears: number | null;
   minExpYears: number | null;
   hideSalary: boolean | null;
   salaryRangeStart: number | null;
   salaryRangeEnd: number | null;
-  salaryCurrency: SalaryCurrency | null;
+  salaryCurrency: SalaryCurrency | null | "";
   availableVacancies: number | null;
   description: string | null;
   requirements: string | null;
@@ -217,7 +228,7 @@ export interface JobData {
   active: boolean | null;
   closed: boolean | null;
   validTo: string | null; // ISO date string
-  startDateType: StartDateType | null;
+  startDateType: StartDateType | null | "";
 }
 
 export interface FilterOption {
