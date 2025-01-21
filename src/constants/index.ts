@@ -13,6 +13,7 @@ import {
   Edit,
   Search,
 } from "@mui/icons-material";
+import { CompanySize } from "./enums/company-size.enum";
 
 export const doctorsBase: Doctor[] = [
   {
@@ -1002,4 +1003,12 @@ export const notifications: NotificationItem[] = [
       "https://i.iheart.com/v3/re/new_assets/66844a33690c77c14847c03c?ops=contain(1480,0)",
     readTime: november11th2024,
   },
+];
+
+export const companySizeList: {name:string, value:CompanySize}[] = [
+  {name:"1 to 10 employees",value:CompanySize.MICRO},
+  {name:"11 to 50 employees",value:CompanySize.SMALL},
+  {name:"51 to 250 employees",value:CompanySize.MEDIUM},
+  {name:"251 to 1000 employees",value:CompanySize.LARGE},
+  {name:"1001+ employees",value:CompanySize.ENTERPRISE},
 ];

@@ -5,18 +5,24 @@ import { Divider } from "@mui/material";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { isCurrentPage } from "@/util";
-import { BaseHeaderProps, NavItem } from "@/types";
+import { NavItem, UserState } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
-import {
-  ArrowDropDownCircleRounded,
-  KeyboardArrowDown,
-} from "@mui/icons-material";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import Image from "next/image";
 
-// Utility for accessibility props
+export interface SideBarProps {
+  user?: UserState;
+  status: "authenticated" | "loading" | "unauthenticated";
+  pathname: string;
+}
 
-export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
-  const role = user?.role;
-  const initialLinks = getSideBarLinks(role, pathname);
+export default function DynamicSideBar({
+  user,
+  status,
+  pathname,
+}: SideBarProps) {
+  const userType = user?.type;
+  const initialLinks = getSideBarLinks(userType, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
 
   const [activeTab, setActiveTab] = useState<number | null>(null);
@@ -28,6 +34,10 @@ export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
   useEffect(() => {
     if (links.length === 0 && initialLinks.length > 0) {
       setLinks(initialLinks);
+      const activeTabIndex = initialLinks.findIndex((link) =>
+        link.path ? isCurrentPage(pathname, link.path) : false,
+      );
+      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
     }
     if (links.length > 0) {
       const activeTabIndex = links.findIndex((link) =>
@@ -61,6 +71,16 @@ export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
       }
     >
       {links.map((item, index) => {
+        if (item.type === "profile" && user) {
+          return (
+            <ProfileTab
+              key={item.id}
+              user={user}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          );
+        }
         if (item.type === "divider")
           return <Divider key={item.id} className="mt-2" />;
         if (item.type === "text")
@@ -76,7 +96,6 @@ export default function DynamicSideBar({ user, pathname }: BaseHeaderProps) {
               item={item}
               index={index}
               activeTab={activeTab}
-              onTabChange={setActiveTab}
               setLinks={setLinks}
             />
           );
@@ -101,13 +120,11 @@ const CollapseTab = ({
   item,
   index,
   activeTab,
-  onTabChange,
   setLinks,
 }: {
   item: NavItem;
   index: number;
   activeTab: number | null;
-  onTabChange: (index: number) => void;
   setLinks: React.Dispatch<React.SetStateAction<NavItem[]>>;
 }) => {
   const isActive = activeTab === index;
@@ -116,7 +133,6 @@ const CollapseTab = ({
 
   // Toggle the collapse state when the tab is clicked
   const toggleCollapse = () => {
-    onTabChange(index); // Set active tab index when clicked
     setIsOpen(!isOpen);
     if (isOpen) {
       setLinks((e) => removeItems(e, index + 1, item.links?.length || 0));
@@ -140,6 +156,47 @@ const CollapseTab = ({
           <KeyboardArrowDown
             className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
           />
+        </div>
+      }
+    />
+  );
+};
+const ProfileTab = ({
+  user,
+  activeTab,
+  onTabChange,
+}: {
+  user: UserState;
+  activeTab: number | null;
+  onTabChange: (index: number) => void;
+}) => {
+  const isActive = activeTab === 0;
+  return (
+    <Tab
+      className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
+      id={`vertical-tab-0`}
+      aria-controls={`vertical-tabpanel-0`}
+      value={0}
+      onClick={() => onTabChange(0)}
+      component={Link}
+      href={user.firstName ? `/me/${user.firstName}` : "#"}
+      label={
+        <div className="flex items-center gap-1">
+          <Image
+            src={user?.photo || "/images/placeholder-avatar.svg"}
+            alt={user.firstName + "photo"}
+            width={40}
+            height={40}
+            className={`${isActive ? "border-white" : "border-gray-300"} object-cover" rounded-full border-2 bg-white`}
+          />
+          <div>
+            <h6 className="text-left text-sm normal-case">
+              {user.firstName + " ." + user.lastName?.[0]}
+            </h6>
+            <p className="max-w-full text-left text-xs normal-case">
+              {user.email}
+            </p>
+          </div>
         </div>
       }
     />

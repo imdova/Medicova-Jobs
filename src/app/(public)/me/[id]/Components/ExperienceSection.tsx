@@ -17,8 +17,16 @@ import experience from "@/components/icons/briefcase.png";
 import EditIcon from "@mui/icons-material/Edit";
 import AddModal from "./Modals/AddModal";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
+import { UserState } from "@/types";
+import EmptyCard from "@/components/UI/emptyCard";
 
-const experienceData = [
+export interface ExperienceData {
+  company: string;
+  position: string;
+  years: string;
+  location: string;
+}
+const experienceData: ExperienceData[] = [
   {
     company: "Google",
     position: "Senior Software Engineer",
@@ -26,38 +34,23 @@ const experienceData = [
     location: "Mountain View, CA", // Company location
   },
   {
-    company: "Facebook",
-    position: "Frontend Developer",
-    years: "2020 - 2022",
-    location: "Menlo Park, CA", // Company location
-  },
-  {
-    company: "Amazon",
-    position: "UX Designer",
-    years: "2012 - 2015",
-    location: "Seattle, WA", // Company location
-  },
-  {
-    company: "Apple",
-    position: "iOS Developer",
-    years: "2018 - 2021",
-    location: "Cupertino, CA", // Company location
-  },
-  {
-    company: "Tesla",
-    position: "Software Architect",
-    years: "2022 - Present",
-    location: "Palo Alto, CA", // Company location
+    company: "Google",
+    position: "Senior Software Engineer",
+    years: "2015 - 2020",
+    location: "Mountain View, CA", // Company location
   },
 ];
-
-const ExperienceSection: React.FC = () => {
-  const [visibleItems, setVisibleItems] = useState(2);
+const INITIAL_VISIBLE_ITEMS = 2;
+const ExperienceSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+}> = ({ user, isMe }) => {
+  const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleToggle = () => {
     if (isExpanded) {
-      setVisibleItems(2);
+      setVisibleItems(INITIAL_VISIBLE_ITEMS);
     } else {
       setVisibleItems(experienceData.length);
     }
@@ -81,18 +74,24 @@ const ExperienceSection: React.FC = () => {
     setOpenModal(false);
   };
 
+  if (!isMe && experienceData.length === 0) {
+    return null;
+  }
+
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">Experience</h3>
-        <IconButton
-          onClick={() =>
-            handleOpenModal("Add Experiences", getExperienceFields)
-          }
-          className="rounded border border-solid border-gray-300 p-2"
-        >
-          <Add />
-        </IconButton>
+        {isMe && (
+          <IconButton
+            onClick={() =>
+              handleOpenModal("Add Experiences", getExperienceFields)
+            }
+            className="rounded border border-solid border-gray-300 p-2"
+          >
+            <Add />
+          </IconButton>
+        )}
       </div>
 
       <AddModal
@@ -101,47 +100,62 @@ const ExperienceSection: React.FC = () => {
         modalTitle={modalTitle}
         fields={fields}
       />
-      <div className="my-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-        {experienceData.slice(0, visibleItems).map((item, index) => (
-          <div
-            key={index}
-            className="flex items-start gap-3 rounded-base border p-2"
-          >
-            <Image
-              src={experience}
-              alt="Experience"
-              width={70}
-              height={70}
-              className=""
-            />
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <h6 className="text-lg font-semibold text-main">
-                  {item.company}
-                </h6>
-                <IconButton>
-                  <EditIcon />
-                </IconButton>
-              </div>
-              <p className="text-sm text-secondary">{item.position}</p>
-              <p className="text-sm text-secondary">{item.years}</p>
-              <div className="flex text-sm text-secondary">
-                <LocationOnOutlined className="-ml-1 text-base" />
-                <p className="text-sm text-secondary">{item.location}</p>
+      {experienceData.length > 0 ? (
+        <div className="my-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+          {experienceData.slice(0, visibleItems).map((item, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-3 rounded-base border p-2"
+            >
+              <Image
+                src={experience}
+                alt="Experience"
+                width={70}
+                height={70}
+                className=""
+              />
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h6 className="text-lg font-semibold text-main">
+                    {item.company}
+                  </h6>
+                  {isMe && (
+                    <IconButton>
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                </div>
+                <p className="text-sm text-secondary">{item.position}</p>
+                <p className="text-sm text-secondary">{item.years}</p>
+                <div className="flex text-sm text-secondary">
+                  <LocationOnOutlined className="-ml-1 text-base" />
+                  <p className="text-sm text-secondary">{item.location}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : isMe ? (
+        <EmptyCard
+          src={"/images/activities.png"}
+          description={"Your Experiences will appear here."}
+          buttonText="Add Experience"
+          onClick={() =>
+            handleOpenModal("Add Experiences", getExperienceFields)
+          }
+        />
+      ) : null}
 
       {/* Show More / Show Less Button */}
-      <div className="flex items-center justify-center">
-        <Button className="mt-2 p-0" variant="text" onClick={handleToggle}>
-          {isExpanded
-            ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
-            : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
-        </Button>
-      </div>
+      {experienceData.length > INITIAL_VISIBLE_ITEMS ? (
+        <div className="flex items-center justify-center">
+          <Button className="mt-2 p-0" variant="text" onClick={handleToggle}>
+            {isExpanded
+              ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
+              : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

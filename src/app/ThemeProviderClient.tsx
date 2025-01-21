@@ -27,6 +27,7 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          height: "50px",
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "var(--light-primary)", // Focused border color
           },

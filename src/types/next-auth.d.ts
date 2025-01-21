@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import { Permission } from "./permissions";
 export type RoleState = "seeker" | "admin" | "employer";
 
 declare module "next-auth" {
@@ -7,35 +8,15 @@ declare module "next-auth" {
     email: string | null;
     firstName: string | null;
     lastName: string | null;
-    roles: string[];
-    role: RoleState;
-    active: boolean;
-    photo?: string;
-    birth: string | null;
+    type: RoleState;
+    photo: string | null;
     phone: string | null;
     companyId: string | null;
-    created_at: string | null;
-    deleted_at: string | null;
-    updated_at: string | null;
+    permissions: Permission[];
   }
 
   interface Session {
-    user: User & {
-      id: string | null;
-      email: string | null;
-      firstName: string | null;
-      lastName: string | null;
-      roles: string[];
-      role: RoleState;
-      active: boolean;
-      photo?: string;
-      birth: string | null;
-      phone: string | null;
-      companyId: string | null;
-      created_at: string | null;
-      deleted_at: string | null;
-      updated_at: string | null;
-    };
-    redirectUrl:string | null
+    user: User;
+    redirectUrl: string | null;
   }
 }

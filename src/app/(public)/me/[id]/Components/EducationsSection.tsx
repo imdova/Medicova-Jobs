@@ -14,47 +14,36 @@ import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import education from "@/components/icons/education.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
+import { UserState } from "@/types";
+import EmptyCard from "@/components/UI/emptyCard";
 
-const educationData = [
-  {
-    institution: "Harvard University",
-    degree: "Postgraduate degree, Applied Psychology",
-    years: "2010 - 2012",
-    location: "Cambridge, MA", // Add location
-  },
-  {
-    institution: "Stanford University",
-    degree: "Bachelor's degree, Computer Science",
-    years: "2015 - 2019",
-    location: "Stanford, CA", // Add location
-  },
-  {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
-  },
-  {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
-  },
-  {
-    institution: "MIT",
-    degree: "PhD, Biomedical Engineering",
-    years: "2018 - 2022",
-    location: "Cambridge, MA", // Add location
-  },
+interface Education {
+  institution: string;
+  degree: string;
+  years: string;
+  location: string;
+}
+
+const educationData: Education[] = [
+  // {
+  //   institution: "Harvard University",
+  //   degree: "Postgraduate degree, Applied Psychology",
+  //   years: "2010 - 2012",
+  //   location: "Cambridge, MA", // Add location
+  // },
 ];
+const INITIAL_VISIBLE_ITEMS = 2;
 
-const EducationsSection: React.FC = () => {
-  const [visibleItems, setVisibleItems] = useState(2); // Initially show 2 items
+const EducationsSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+}> = ({ user, isMe }) => {
+  const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS); // Initially show INITIAL_VISIBLE_ITEMS items
   const [isExpanded, setIsExpanded] = useState(false); // Track whether the list is expanded
 
   const handleToggle = () => {
     if (isExpanded) {
-      setVisibleItems(2); // Show only 2 items if expanded
+      setVisibleItems(INITIAL_VISIBLE_ITEMS); // Show only 2 items if expanded
     } else {
       setVisibleItems(educationData.length); // Show all items if collapsed
     }
@@ -78,16 +67,24 @@ const EducationsSection: React.FC = () => {
     setOpenModal(false);
   };
 
+  if (!isMe && educationData.length === 0) {
+    return null;
+  }
+
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">Educations</h3>
-        <IconButton
-          onClick={() => handleOpenModal("Add Educations", getEducationFields)}
-          className="rounded border border-solid border-gray-300 p-2"
-        >
-          <Add />
-        </IconButton>
+        {isMe && (
+          <IconButton
+            onClick={() =>
+              handleOpenModal("Add Educations", getEducationFields)
+            }
+            className="rounded border border-solid border-gray-300 p-2"
+          >
+            <Add />
+          </IconButton>
+        )}
       </div>
       <AddModal
         open={openModal}
@@ -97,45 +94,58 @@ const EducationsSection: React.FC = () => {
       />
 
       {/* Title and Description */}
-      <div className="my-2 grid grid-cols-1 gap-2">
-        {educationData.slice(0, visibleItems).map((item, index) => (
-          <div
-            key={index}
-            className="flex items-start gap-3 rounded-base border p-2"
-          >
-            <Image
-              src={education}
-              alt="Experience"
-              width={70}
-              height={70}
-              className=""
-            />
-            <div className="flex-1">
-              <h6 className="text-lg font-semibold text-main">
-                {item.institution}
-              </h6>
-              <p className="text-sm text-secondary">{item.degree}</p>
-              <p className="text-sm text-secondary">{item.years}</p>
-              <div className="flex text-sm text-secondary">
-                <LocationOnOutlined className="-ml-1 text-base" />
-                <p className="text-sm text-secondary">{item.location}</p>
+      {educationData.length > 0 ? (
+        <div className="my-2 grid grid-cols-1 gap-2">
+          {educationData.slice(0, visibleItems).map((item, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-3 rounded-base border p-2"
+            >
+              <Image
+                src={education}
+                alt="Experience"
+                width={70}
+                height={70}
+                className=""
+              />
+              <div className="flex-1">
+                <h6 className="text-lg font-semibold text-main">
+                  {item.institution}
+                </h6>
+                <p className="text-sm text-secondary">{item.degree}</p>
+                <p className="text-sm text-secondary">{item.years}</p>
+                <div className="flex text-sm text-secondary">
+                  <LocationOnOutlined className="-ml-1 text-base" />
+                  <p className="text-sm text-secondary">{item.location}</p>
+                </div>
               </div>
+              {isMe && (
+                <IconButton>
+                  <EditIcon />
+                </IconButton>
+              )}
             </div>
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : isMe ? (
+        <EmptyCard
+          src={"/images/activities.png"}
+          description={"Your Educations will appear here."}
+          buttonText="Add Educations"
+          onClick={() => handleOpenModal("Add Educations", getEducationFields)}
+        />
+      ) : null}
 
       {/* Show More / Show Less Button */}
-      <div className="flex items-center justify-center">
-        <Button variant="text" className="mt-2 p-0" onClick={handleToggle}>
-          {isExpanded
-            ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
-            : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
-        </Button>
-      </div>
+      {educationData.length > INITIAL_VISIBLE_ITEMS ? (
+        <div className="flex items-center justify-center">
+          <Button variant="text" className="mt-2 p-0" onClick={handleToggle}>
+            {isExpanded
+              ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
+              : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

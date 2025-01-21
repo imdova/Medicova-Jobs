@@ -1,28 +1,31 @@
 "use server";
 
-import { registerData, UserState } from "@/types";
 import {
   API_FORGET_PASSWORD,
-  API_GET_ROLE_ID,
+  API_GET_ME,
+  API_GET_ROLE_BY_ID,
+  API_LOGIN,
+  API_REGISTER_USER,
   API_SEND_OTP,
-  API_SIGNIN,
-  API_SIGNUP,
   API_VALIDATE_OTP,
-} from "../constants";
-import { RoleState } from "@/types/next-auth";
+} from "@/api/users";
+import { registerData, Result, Role, UserState } from "@/types";
 
-export interface Result<T = void> {
-  success: boolean;
-  message: string;
-  data?: any;
+import { RoleState } from "@/types/next-auth";
+import { getEmployerWithID } from "../actions/employer.actions";
+import { getPermissionNames } from "@/util";
+
+interface UserResponse {
+  user: UserState;
+  roles: Role[];
 }
+
 export const sendOTP = async (email: string): Promise<Result> => {
   try {
     const response = await fetch(API_SEND_OTP, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
-      credentials: "include",
     });
     if (response.ok) {
       return {
@@ -56,7 +59,6 @@ export const validateOTP = async ({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp }),
-      credentials: "include",
     });
     if (response.ok) {
       return {
@@ -87,19 +89,39 @@ export const serverSignIn = async ({
   password: string;
 }): Promise<Result> => {
   try {
-    const response = await fetch(API_SIGNIN, {
+    const response = await fetch(API_LOGIN, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
-      credentials: "include",
     });
     if (response.ok) {
-      const data: UserState = await response.json();
-      const roleData = await getRole(data.roles[0]);
+      const user: UserState = await response.json();
+      if (user && user.id) {
+        if (user.type === "employer") {
+          const response = await getEmployerWithID(user.id);
+          if (response.success) {
+            const companyId = response.data.id;
+            return {
+              success: true,
+              message: user.type + " Registered successfully",
+              data: { ...user, companyId },
+            };
+          }
+          return {
+            success: true,
+            message: user.type + " Registered successfully",
+            data: user,
+          };
+        }
+        return {
+          success: true,
+          message: user.type + " Registered successfully",
+          data: user,
+        };
+      }
       return {
-        success: true,
-        message: "Registered successfully",
-        data: { ...data, role: roleData.data },
+        success: false,
+        message: "User not found",
       };
     } else {
       const errorData = await response.json();
@@ -120,19 +142,17 @@ export const register = async (
   userType: RoleState,
 ): Promise<Result> => {
   try {
-    const response = await fetch(API_SIGNUP + userType, {
+    const response = await fetch(API_REGISTER_USER + userType, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: "include",
     });
     if (response.ok) {
       const data: UserState = await response.json();
-      const roleData = await getRole(data.roles[0]);
       return {
         success: true,
         message: "Registered successfully",
-        data: { ...data, role: roleData.data },
+        data: data,
       };
     } else {
       const errorData = await response.json();
@@ -158,8 +178,8 @@ export const forgetPassword = async (data: {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: "include",
     });
+    console.log("🚀 ~ response:", response);
     if (response.ok) {
       return {
         success: true,
@@ -183,7 +203,7 @@ export const forgetPassword = async (data: {
 
 export const getRole = async (roleId: string): Promise<Result> => {
   try {
-    const response = await fetch(API_GET_ROLE_ID + roleId, {
+    const response = await fetch(API_GET_ROLE_BY_ID + roleId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -196,6 +216,39 @@ export const getRole = async (roleId: string): Promise<Result> => {
         success: true,
         message: "Role fetched successfully",
         data: data.forUserType,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export const getMe = async (): Promise<Result> => {
+  try {
+    const response = await fetch(API_GET_ME, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+    });
+    // console.log("🚀 ~ getMe ~ response:", response);
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        message: "User fetched successfully",
+        data: data,
       };
     } else {
       const errorData = await response.json();

@@ -1,24 +1,32 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Avatar,
-  Typography,
-  Button,
-  Grid,
-  IconButton,
-} from "@mui/material";
+import { Avatar, Button, IconButton } from "@mui/material";
 import { useRouter } from "next/navigation";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FlagIcon from "@mui/icons-material/Flag";
 import EditIcon from "@mui/icons-material/Edit";
-import ShareIcon from "@mui/icons-material/Share";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BackupIcon from "@mui/icons-material/Backup";
 import { Verified } from "@mui/icons-material";
+import ShareMenu from "@/components/UI/ShareMenu";
+import { UserState } from "@/types";
 
-const HeaderSection: React.FC = () => {
+interface HeaderData {
+  name: string | null;
+  isVerified: boolean;
+  title: string | null;
+  location: string | null;
+  age: number | null;
+  nationality: string | null;
+  maritalStatus: string | null;
+  field: string | null;
+  yearsOfExperience: number | null;
+  isAvailable: boolean ;
+}
+
+
+const HeaderSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+}> = ({ user, isMe }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +35,7 @@ const HeaderSection: React.FC = () => {
   }, []);
 
   const handleEditProfileClick = () => {
-    router.push("/job-seeker/general-info");
+    router.push("/job-seeker/setting");
   };
 
   const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
@@ -47,90 +55,46 @@ const HeaderSection: React.FC = () => {
   };
 
   return (
-    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
-      {/* Background Cover Image */}
-      <div className="flex h-[200px] w-full items-center rounded-t-base bg-primary-100">
-        <Avatar
-          alt="Profile"
-          src={avatarImage || undefined}
-          className="ml-14 mr-8 min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl"
-        />
+    <div className="flex h-fit min-h-[200px] gap-8 w-full flex-col items-center overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
+      <Avatar
+        alt="Profile"
+        src={avatarImage || undefined}
+        className="lg:ml-8 xl:ml-14  min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl"
+      />
+      <div className="flex">
         <div className="mr-5">
-          <div className="flex items-center">
-            <h5 className="text-xl font-bold text-main">Jake Gyll</h5>
-            <Verified color="primary" className="ml-2 h-6 w-6" />
-          </div>
-          <Typography
-            variant="body1"
-            sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
-          >
+          <h5 className="text-xl font-bold text-main">
+            Jake Gyll <Verified color="primary" className="ml-1 h-6 w-6" />
+          </h5>
+          <p className="text-sm text-secondary">
             Cardiology Consultant at{" "}
             <span className="font-bold text-main">Saudi German Hospital</span>
-          </Typography>
-          <Grid item xs={12} sm={9}>
-            <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
-              <Typography
-                variant="body1"
-                sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
-              >
-                35 years old - Egyptian - Married - Cardiology - 10 years
-                Experience
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "#999",
-                  display: "flex",
-                  justifyContent: { xs: "center", sm: "flex-start" },
-                  alignItems: "center",
-                  gap: 0.5,
-                  marginY: "8px",
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
-                }}
-              >
-                <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> Cairo,
-                Egypt
-              </Typography>
-              <Button
-                variant="text"
-                sx={{
-                  fontWeight: "600",
-                  textTransform: "uppercase",
-                  backgroundColor: "var(--primary-100)",
-                  gap: 1,
-                  p: 0,
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
-                }}
-              >
-                <FlagIcon
-                  color="primary"
-                  sx={{ fontSize: { xs: 18, sm: 20 } }}
-                />
-                Open For Opportunities
-              </Button>
-            </Box>
-          </Grid>
+          </p>
+          <div>
+            <p className="text-sm text-secondary">
+              35 years old - Egyptian - Married - Cardiology - 10 years
+              Experience
+            </p>
+            <p className="text-sm text-secondary">
+              <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> Cairo,
+              Egypt
+            </p>
+            <Button variant="text" className="p-1">
+              <FlagIcon color="primary" sx={{ fontSize: { xs: 18, sm: 20 } }} />
+              Open For Opportunities
+            </Button>
+          </div>
         </div>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: { xs: "center", sm: "flex-end" },
-            height: "100%",
-            gap: 1,
-          }}
-        >
+        <div className="fex h-full flex-col items-center justify-center gap-1">
           {/* Edit Button */}
-          <IconButton onClick={handleEditProfileClick}>
-            <EditIcon />
-          </IconButton>
-
+          {isMe && (
+            <IconButton onClick={handleEditProfileClick}>
+              <EditIcon />
+            </IconButton>
+          )}
           {/* Share Button */}
-          <IconButton>
-            <ShareIcon />
-          </IconButton>
-        </Box>
+          <ShareMenu link="https://medicova.com" />
+        </div>
       </div>
     </div>
   );

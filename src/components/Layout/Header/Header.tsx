@@ -8,10 +8,12 @@ import TransparentHeader from "./TransparentHeader";
 import DarkHeader from "./DarkHeader";
 import { useSession } from "next-auth/react";
 import { UserState } from "@/types";
+// import useValidateUser from "@/hooks/useValidateUser";
 
 const DynamicHeader: React.FC = () => {
   const session = useSession();
   const user = session.data?.user as UserState;
+  // useValidateUser()
 
   const pathname = usePathname() || "/";
   const headerType = matchRoute(pathname)?.headerType || "minimal";

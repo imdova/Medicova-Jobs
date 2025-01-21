@@ -1,567 +1,681 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
-  Box,
-  Typography,
   Button,
   TextField,
   MenuItem,
   Select,
   FormControl,
-  InputLabel,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Divider,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import TextEditor from "@/components/editor/editor";
-import { jobs } from "@/constants";
-import { Close } from "@mui/icons-material";
+import { JobData, UserState } from "@/types";
+import { Controller, useForm } from "react-hook-form";
+import { JobWorkPlace } from "@/constants/enums/work-place.enum";
+import { Gender } from "@/constants/enums/gender.enum";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCountries } from "@/store/slices/locationSlice";
+import { Add, Close, Remove } from "@mui/icons-material";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
+import { useSession } from "next-auth/react";
+import IndustryForm from "../industry";
 
-const steps = ["Job Details", "Screening Questions", "Review & Publish"];
-const job = jobs[0];
-const JobDetailsStep: React.FC = () => {
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+const employmentTypes = [
+  { id: "Full Time", label: "Full Time" },
+  { id: "Part Time", label: "Part Time" },
+  { id: "Freelance", label: "Freelance" },
+  { id: "Volunteer", label: "Volunteer" },
+];
+const jobWorkPlaceOptions = [
+  { id: JobWorkPlace.ONSITE, label: "Onsite" },
+  { id: JobWorkPlace.REMOTE, label: "Remote" },
+  { id: JobWorkPlace.HYBRID, label: "Hybrid" },
+];
+const genderOptions = [
+  { id: Gender.ANY, label: "Any" },
+  { id: Gender.FEMALE, label: "Female" },
+  { id: Gender.MALE, label: "Male" },
+];
+const educationOptions = [
+  { id: EducationLevel.HIGH_SCHOOL, label: "High School" },
+  { id: EducationLevel.BACHELORS, label: "bachelors" },
+  { id: EducationLevel.MASTERS, label: "Master's" },
+  { id: EducationLevel.PHD, label: "PHD" },
+];
+interface SectorSelectionProps {
+  onSubmit: (data: JobData) => void;
+}
 
-  const [count, setCount] = useState(1); // Set initial count to 1
+const JobDetailsStep: React.FC<SectorSelectionProps> = ({ onSubmit }) => {
+  const { data: session, status, update } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId || "";
 
-  const increment = () => setCount(count + 1); // Increase count
-  const decrement = () => setCount(count > 1 ? count - 1 : 1);
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { companyId } as JobData,
+  });
 
   const handelJobDescription = (e: string) => {
     console.log(e);
   };
 
-  const handleClick = (label: string) => {
-    setSelectedButton(label);
+  const handleFetchCountries = async () => {
+    await dispatch(fetchCountries());
   };
-
-  const focusStyle = {
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: "rgba(46, 174, 125, 1)",
-      },
-    },
-  };
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      handleFetchCountries();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
-    <Box component="form" sx={{ display: "grid", gap: 3 }}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       {/* Job Title */}
-      <Box>
-        <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Job Title *</InputLabel>
-        <TextField
-          fullWidth
-          placeholder="Enter Job Title"
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            width: { xs: "100%", sm: "50%" },
-            ...focusStyle,
-            "& .MuiInputBase-root": {
-              height: 40, // Adjust the height here
-            },
-          }}
+      <div className="mb-6 md:w-1/2 md:pr-3">
+        <label className="mb-2 text-lg font-semibold text-main">Title *</label>
+        <Controller
+          name="title"
+          control={control}
+          defaultValue=""
+          rules={{ required: "title is required" }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="w-full"
+              name="title"
+              placeholder="Enter The Job Title"
+              error={!!errors?.title?.message}
+            />
+          )}
         />
-      </Box>
-
+        {errors.title && (
+          <p className="mt-2 text-sm text-red-500">{errors.title.message}</p>
+        )}
+      </div>
       {/* Industry */}
-      <Box sx={{ width: { xs: "100%", sm: "80%", md: "50%" } }}>
-        <Typography sx={{ mb: 1, fontWeight: "bold" }}>Industry *</Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: { xs: "wrap", md: "nowrap" },
-            gap: 2,
-          }}
-        >
-          {["Healthcare", "Pharmaceutical", "Education"].map((label) => (
-            <Button
-              key={label}
-              variant="outlined"
-              onClick={() => handleClick(label)}
-              sx={{
-                textTransform: "capitalize",
-                flex: 1,
-                borderColor:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button border color
-                    : "rgba(214, 221, 235, 1)", // Inactive button border color
-                backgroundColor:
-                  selectedButton === label
-                    ? "#fff" // Active button border color
-                    : "rgba(214, 221, 235, 0.18)", // Inactive button border color
-                color:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button text color
-                    : "inherit", // Default text color
-                "&:hover": {
-                  borderColor: "rgba(46, 174, 125, 1)", // Maintain hover border color
-                },
-              }}
-            >
-              {label}
-            </Button>
-          ))}
-        </Box>
-      </Box>
+      <IndustryForm control={control} errors={errors} />
 
-      {/* Dropdowns */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-          gap: 2,
-        }}
-      >
-        {/* <Box sx={{ width: "100%" }}>
-          <InputLabel
-            sx={{
-              marginBottom: 1,
-              fontWeight: 600,
-              color: "#000",
-              fontSize: "14px",
-            }}
-          >
-            Sector *
-          </InputLabel>
-          <FormControl fullWidth>
-            <Select
-              sx={{
-                backgroundColor: "rgba(214, 221, 235, 0.18)",
-                height: "40px",
-                fontSize: "14px",
-                ...focusStyle, // Apply focus styles
-              }}
-            >
-              <MenuItem value="Healthcare professionals">
-                Healthcare professionals
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Box> */}
-        <Box sx={{ width: "100%" }}>
-          <InputLabel
-            sx={{
-              marginBottom: 1,
-              fontWeight: 600,
-              color: "#000",
-              fontSize: "14px",
-            }}
-          >
-            Category *
-          </InputLabel>
-          <FormControl fullWidth>
-            <Select
-              sx={{
-                backgroundColor: "rgba(214, 221, 235, 0.18)",
-                height: "40px",
-                fontSize: "14px",
-              }}
-            >
-              <MenuItem value="Doctors">Doctors</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box sx={{ width: "100%" }}>
-          <InputLabel
-            sx={{
-              marginBottom: 1,
-              fontWeight: 600,
-              color: "#000",
-              fontSize: "14px",
-            }}
-          >
-            Speciality *
-          </InputLabel>
-          <FormControl fullWidth>
-            <Select
-              sx={{
-                backgroundColor: "rgba(214, 221, 235, 0.18)",
-                height: "40px",
-                fontSize: "14px",
-              }}
-            >
-              <MenuItem value="Cardiology">Cardiology</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box sx={{ width: "100%" }}>
-          <InputLabel
-            sx={{
-              marginBottom: 1,
-              fontWeight: 600,
-              color: "#000",
-              fontSize: "14px",
-            }}
-          >
-            Career Level *
-          </InputLabel>
-          <FormControl fullWidth>
-            <Select
-              sx={{
-                backgroundColor: "rgba(214, 221, 235, 0.18)",
-                height: "40px",
-                fontSize: "14px",
-              }}
-            >
-              <MenuItem value="Consultant">Consultant</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
+      {/* Dropdowns employment type - education level  */}
+      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+        <div className="min-w-[150px] flex-1">
+          <label className="mb-1 text-lg font-semibold text-main">
+            Type of Employment *
+          </label>
+          <Controller
+            name="jobEmploymentTypeId"
+            control={control}
+            defaultValue=""
+            rules={{ required: "industry is required" }}
+            render={({ field }) => (
+              <FormControl
+                component="fieldset"
+                error={!!errors?.jobEmploymentTypeId?.message}
+                fullWidth
+              >
+                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                  {employmentTypes.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => field.onChange(item.id)}
+                      className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobEmploymentTypeId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                    >
+                      {item.id}
+                    </button>
+                  ))}
+                </div>
 
-      {/* Type of Employment */}
-      <Box sx={{ width: { xs: "100%", md: "50%" } }}>
-        <Typography sx={{ mb: 1, fontWeight: "bold" }}>
-          Type of Employment *
-        </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {["Full Time", "Part Time", "Freelance", "Volunteer"].map((label) => (
-            <Button
-              key={label}
-              variant="outlined"
-              onClick={() => handleClick(label)}
-              sx={{
-                textTransform: "capitalize",
-                flex: 1,
-                borderColor:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button border color
-                    : "rgba(214, 221, 235, 1)", // Inactive button border color
-                backgroundColor:
-                  selectedButton === label
-                    ? "#fff" // Active button background color
-                    : "rgba(214, 221, 235, 0.18)", // Inactive button background color
-                color:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button text color
-                    : "inherit", // Default text color
-                "&:hover": {
-                  borderColor: "rgba(46, 174, 125, 1)", // Maintain hover border color
-                },
-                whiteSpace: "nowrap", // Add this
-              }}
-            >
-              {label}
-            </Button>
-          ))}
-        </Box>
-      </Box>
+                {errors.jobEmploymentTypeId && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.jobEmploymentTypeId.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
+        <div className="min-w-[150px] flex-1">
+          <label className="mb-1 text-lg font-semibold text-main">
+            Education Level *
+          </label>
+          <Controller
+            name="educationLevel"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "Education Level is required" }}
+            render={({ field }) => (
+              <FormControl fullWidth error={Boolean(errors.educationLevel)}>
+                <Select
+                  {...field}
+                  MenuProps={{
+                    disableScrollLock: true,
+                    PaperProps: {
+                      sx: { maxHeight: 300 },
+                    },
+                  }}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    const selectedEducationLevel = educationOptions.find(
+                      (c) => c.id === selected,
+                    );
+                    if (!selectedEducationLevel) {
+                      return (
+                        <span className="text-gray-400">Education Level</span>
+                      );
+                    }
+                    return selectedEducationLevel.label;
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select Your Education Level</em>
+                  </MenuItem>
+                  {educationOptions.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.educationLevel && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.educationLevel.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
+      </div>
+
       {/* Work Place */}
-      <Box sx={{ width: { xs: "100%", md: "50%" } }}>
-        <Typography sx={{ mb: 1, fontWeight: "bold" }}>Work Place *</Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {["Onsite", "Remote", "Hybird"].map((label) => (
-            <Button
-              key={label}
-              variant="outlined"
-              onClick={() => handleClick(label)}
-              sx={{
-                whiteSpace: "nowrap", // Add this
-                textTransform: "capitalize",
-                flex: 1,
-                borderColor:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button border color
-                    : "rgba(214, 221, 235, 1)", // Inactive button border color
-                backgroundColor:
-                  selectedButton === label
-                    ? "#fff" // Active button border color
-                    : "rgba(214, 221, 235, 0.18)", // Inactive button border color
-                color:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button text color
-                    : "inherit", // Default text color
-                "&:hover": {
-                  borderColor: "rgba(46, 174, 125, 1)", // Maintain hover border color
-                },
-              }}
+      <div className="mb-6 md:w-1/2 md:pr-3">
+        <label className="mb-1 text-lg font-semibold text-main">
+          Work Place *
+        </label>
+        <Controller
+          name="jobWorkPlace"
+          control={control}
+          defaultValue={null}
+          rules={{ required: "industry is required" }}
+          render={({ field }) => (
+            <FormControl
+              component="fieldset"
+              error={!!errors?.jobWorkPlace?.message}
+              fullWidth
             >
-              {label}
-            </Button>
-          ))}
-        </Box>
-      </Box>
+              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                {jobWorkPlaceOptions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => field.onChange(item.id)}
+                    className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobWorkPlace ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                  >
+                    {item.id}
+                  </button>
+                ))}
+              </div>
+
+              {errors.jobWorkPlace && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.jobWorkPlace.message}
+                </p>
+              )}
+            </FormControl>
+          )}
+        />
+      </div>
 
       {/* Gender */}
-      <Box sx={{ width: { xs: "100%", md: "50%" } }}>
-        <Typography sx={{ mb: 1, fontWeight: "bold" }}>Gender *</Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {["Male", "Female"].map((label) => (
-            <Button
-              key={label}
-              variant="outlined"
-              onClick={() => handleClick(label)}
-              sx={{
-                whiteSpace: "nowrap",
-                textTransform: "capitalize",
-                flex: 1,
-                borderColor:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button border color
-                    : "rgba(214, 221, 235, 1)", // Inactive button border color
-                backgroundColor:
-                  selectedButton === label
-                    ? "#fff" // Active button border color
-                    : "rgba(214, 221, 235, 0.18)", // Inactive button border color
-                color:
-                  selectedButton === label
-                    ? "rgba(46, 174, 125, 1)" // Active button text color
-                    : "inherit", // Default text color
-                "&:hover": {
-                  borderColor: "rgba(46, 174, 125, 1)", // Maintain hover border color
-                },
-              }}
+      <div className="mb-6 md:w-1/2 md:pr-3">
+        <label className="mb-1 text-lg font-semibold text-main">Gender *</label>
+        <Controller
+          name="gender"
+          control={control}
+          defaultValue={null}
+          rules={{ required: "gender is required" }}
+          render={({ field }) => (
+            <FormControl
+              component="fieldset"
+              error={!!errors?.gender?.message}
+              fullWidth
             >
-              {label}
-            </Button>
-          ))}
-        </Box>
-      </Box>
-      {/* //////////////////////// */}
+              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                {genderOptions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => field.onChange(item.id)}
+                    className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.gender ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                  >
+                    {item.id}
+                  </button>
+                ))}
+              </div>
 
-      {/* Age */}
-      <Box
-        sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}
-      >
-        <Box sx={{ flex: 1 }}>
-          <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Age Min *</InputLabel>
-          <TextField
-            fullWidth
-            type="number"
-            placeholder="Enter Age Min"
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              ...focusStyle,
-              "& .MuiInputBase-root": {
-                height: 40, // Adjust the height here
-              },
-            }}
-          />
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Age Max *</InputLabel>
-          <TextField
-            fullWidth
-            type="number"
-            placeholder="Enter Age Max"
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              ...focusStyle,
-              "& .MuiInputBase-root": {
-                height: 40, // Adjust the height here
-              },
-            }}
-          />
-        </Box>
-      </Box>
-
-      {/* Education Level */}
-      {/* <FormControl fullWidth>
-                <InputLabel>Education Level *</InputLabel>
-                <Select>
-                  <MenuItem value="Bachelor's">Bachelors</MenuItem>
-                </Select>
-              </FormControl> */}
-
-      <Box sx={{ width: "100%" }}>
-        <InputLabel
-          sx={{
-            marginBottom: 1,
-            fontWeight: 600,
-            color: "#000",
-            fontSize: "14px",
-          }}
-        >
-          Education Level *
-        </InputLabel>
-        <FormControl fullWidth>
-          <Select
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              height: "40px",
-              fontSize: "14px",
-              ...focusStyle, // Apply focus styles
-            }}
-          >
-            <MenuItem value="Bachelors">Bachelors</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      {/* Job Location */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: 2,
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel>Job Location *</InputLabel>
-          <Select>
-            <MenuItem value="Egypt">Egypt</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel>City/Area *</InputLabel>
-          <Select>
-            <MenuItem value="Cairo">Cairo</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      {/* Years of Experience */}
-      <Box
-        sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}
-      >
-        <Box sx={{ flex: 1 }}>
-          <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>
-            Years of Experience Min *
-          </InputLabel>
-          <TextField
-            fullWidth
-            type="number"
-            placeholder="Enter Age Min"
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              ...focusStyle,
-              "& .MuiInputBase-root": {
-                height: 40, // Adjust the height here
-              },
-            }}
-          />
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>
-            Years of Experience Max *
-          </InputLabel>
-          <TextField
-            fullWidth
-            type="number"
-            placeholder="Enter Years of Experience Max"
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              ...focusStyle,
-              "& .MuiInputBase-root": {
-                height: 40, // Adjust the height here
-              },
-            }}
-          />
-        </Box>
-      </Box>
-      {/* Hide Salary Checkbox */}
-      <Box sx={{ width: "100%" }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              sx={{
-                color: "rgba(46, 174, 125, 1)",
-                "&.Mui-checked": {
-                  color: "rgba(46, 174, 125, 1)",
-                },
-                "& .MuiSvgIcon-root": {
-                  fontSize: 34,
-                },
-              }}
-            />
-          }
-          label={
-            <Typography sx={{ color: "#515B6F", fontWeight: "700" }}>
-              Hide Salary in job post
-            </Typography>
-          }
+              {errors.gender && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.gender.message}
+                </p>
+              )}
+            </FormControl>
+          )}
         />
-      </Box>
+      </div>
 
-      {/* Additional Salary Details */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          alignItems: "center",
-          width: { xs: "100%", md: "50%" },
-        }}
-      >
-        <Box sx={{ flex: 1 }}>
-          <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>
-            Additional Salary Details *
-          </InputLabel>
-          <TextField
-            fullWidth
-            multiline // Enables textarea
-            minRows={4}
-            placeholder="Bonus Commission"
-            sx={{
-              backgroundColor: "rgba(214, 221, 235, 0.18)",
-              ...focusStyle,
-              "& .MuiInputBase-root": {
-                height: "auto", // Allow height to adjust based on content
-              },
-            }}
+      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+        {/* Age */}
+        <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+          <div className="min-w-[150px] flex-1">
+            <label className="mb-2 text-lg font-semibold text-main">
+              Min Age *
+            </label>
+            <Controller
+              name="minAge"
+              control={control}
+              defaultValue={null}
+              rules={{ required: "min age is required" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="w-full"
+                  name="min age"
+                  type="number"
+                  placeholder="Enter The Min Age"
+                  error={!!errors?.minAge?.message}
+                />
+              )}
+            />
+            {errors.minAge && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.minAge.message}
+              </p>
+            )}
+          </div>
+          <div className="min-w-[150px] flex-1">
+            <label className="mb-2 text-lg font-semibold text-main">
+              Max Age *
+            </label>
+            <Controller
+              name="maxAge"
+              control={control}
+              defaultValue={null}
+              rules={{ required: "max age is required" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="w-full"
+                  name="max age"
+                  type="number"
+                  placeholder="Enter The Max Age"
+                  error={!!errors?.maxAge?.message}
+                />
+              )}
+            />
+            {errors.maxAge && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.maxAge.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Job Location */}
+        <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+          <div className="min-w-[150px] flex-1">
+            <label className="mb-2 text-lg font-semibold text-main">
+              Job Location *
+            </label>
+            <Controller
+              name="countryCode"
+              control={control}
+              defaultValue=""
+              rules={{ required: "country is required" }}
+              render={({ field }) => (
+                <FormControl error={Boolean(errors.countryCode)} fullWidth>
+                  <Select
+                    {...field}
+                    displayEmpty
+                    MenuProps={{
+                      disableScrollLock: true,
+                      PaperProps: {
+                        sx: { maxHeight: 300 },
+                      },
+                    }}
+                    renderValue={(selected) => {
+                      const country = countries.data.find(
+                        (c) => c.isoCode === selected,
+                      );
+                      if (!country) {
+                        return (
+                          <span className="text-gray-400">Job Location</span>
+                        );
+                      }
+                      return country.name;
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      <em>Select Job Location</em>
+                    </MenuItem>
+                    {countries.data.map((country) => (
+                      <MenuItem key={country.isoCode} value={country.isoCode}>
+                        {country.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.countryCode && (
+                    <p className="mt-2 text-sm text-red-500">
+                      {errors.countryCode.message}
+                    </p>
+                  )}
+                </FormControl>
+              )}
+            />
+          </div>
+          <div className="min-w-[150px] flex-1">
+            <label className="mb-2 text-lg font-semibold text-main">
+              City/Area *
+            </label>
+            <Controller
+              name="city"
+              control={control}
+              defaultValue=""
+              rules={{ required: "city is required" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="w-full"
+                  name="city"
+                  placeholder="Enter The Job City / Area"
+                  error={!!errors?.city?.message}
+                />
+              )}
+            />
+            {errors.city && (
+              <p className="mt-2 text-sm text-red-500">{errors.city.message}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Years of Experience */}
+      <div className="mb-6 flex flex-wrap gap-5 md:w-1/2 md:flex-nowrap md:pr-3">
+        <div className="min-w-[150px] flex-1">
+          <label className="mb-2 text-lg font-semibold text-main">
+            Min Years of Experience *
+          </label>
+          <Controller
+            name="minExpYears"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "min experience years is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="w-full"
+                name="min experience years"
+                type="number"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">y</InputAdornment>
+                  ),
+                }}
+                placeholder="Enter The Min Experience Years"
+                error={!!errors?.minExpYears?.message}
+              />
+            )}
           />
-        </Box>
-      </Box>
-      {/* Additional Salary Details */}
-      <Box
-        sx={{
-          gap: 2,
-          alignItems: "center",
-          width: { xs: "100%", md: "50%" },
-        }}
-      >
-        <Typography sx={{ fontWeight: "bold", mb: 1 }}>
-          Number of Vacancies *
-        </Typography>
+          {errors.minExpYears && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.minExpYears.message}
+            </p>
+          )}
+        </div>
+        <div className="min-w-[150px] flex-1">
+          <label className="mb-2 text-lg font-semibold text-main">
+            Max Years of Experience *
+          </label>
+          <Controller
+            name="maxExpYears"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "max experience years is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="w-full"
+                name="max experience years"
+                type="number"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">y</InputAdornment>
+                  ),
+                }}
+                placeholder="Enter The Max Experience Years"
+                error={!!errors?.maxExpYears?.message}
+              />
+            )}
+          />
+          {errors.maxExpYears && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.maxExpYears.message}
+            </p>
+          )}
+        </div>
+      </div>
 
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          <Button
-            variant="outlined"
-            sx={{
-              fontSize: "24px", // Make the text inside button bigger
-              color: "rgba(46, 174, 125, 1)",
-              borderColor: "rgba(46, 174, 125, 1)",
-            }}
-            onClick={decrement}
-            disabled={count === 1} // Disable the minus button when count is 1
-          >
-            -
-          </Button>
-          <Typography sx={{ fontSize: "24px", fontWeight: "600" }}>
-            {count}
-          </Typography>
-          <Button
-            variant="outlined"
-            sx={{
-              fontSize: "24px", // Make the text inside button bigger
-              color: "rgba(46, 174, 125, 1)",
-              borderColor: "rgba(46, 174, 125, 1)",
-            }}
-            onClick={increment}
-          >
-            +
-          </Button>
-        </Box>
-      </Box>
+      {/* Salary Details */}
+      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+        <div className="flex-1">
+          <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+            <div className="min-w-[150px] flex-1">
+              <label className="mb-2 text-lg font-semibold text-main">
+                Salary Start range *
+              </label>
+              <Controller
+                name="salaryRangeStart"
+                control={control}
+                defaultValue={null}
+                rules={{ required: "salary rang start is required" }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="w-full"
+                    name="salary rang start"
+                    type="number"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                    placeholder="Enter The Salary Range Start"
+                    error={!!errors?.salaryRangeStart?.message}
+                  />
+                )}
+              />
+              {errors.salaryRangeStart && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.salaryRangeStart.message}
+                </p>
+              )}
+            </div>
+            <div className="min-w-[150px] flex-1">
+              <label className="mb-2 text-lg font-semibold text-main">
+                Salary Start range *
+              </label>
+              <Controller
+                name="salaryRangeEnd"
+                control={control}
+                defaultValue={null}
+                rules={{ required: "salary range end is required" }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="w-full"
+                    name="salary range end"
+                    type="number"
+                    placeholder="Enter The Salary Range End"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                    // value={field.value ? Number(field.value).toLocaleString('en-US') : ''}
+                    // onChange={(e) => field.onChange(e.target.value.replace(/[^\d]/g, ''))}
+                    error={!!errors?.salaryRangeEnd?.message}
+                  />
+                )}
+              />
+              {errors.salaryRangeEnd && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.salaryRangeEnd.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <Controller
+            name="hideSalary"
+            control={control}
+            defaultValue={true}
+            render={({ field }) => (
+              <FormControl error={!!errors.hideSalary} fullWidth>
+                <FormControlLabel
+                  control={<Checkbox {...field} color="primary" />}
+                  label="Hide Salary in job post"
+                />
+                {errors.hideSalary && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.hideSalary.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
+
+        {/* Additional Salary Details */}
+        <div className="min-w-[150px] flex-1">
+          <label className="mb-2 text-lg font-semibold text-main">
+            Additional Salary Details *
+          </label>
+          <Controller
+            name="salaryDetails"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="w-full"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                    height: "auto",
+                  },
+                }}
+                multiline
+                minRows={4}
+                maxRows={6}
+                placeholder="Eg. Bonus Commission, Salary in Local Currency, etc."
+                error={!!errors?.title?.message}
+              />
+            )}
+          />
+          {errors.title && (
+            <p className="mt-2 text-sm text-red-500">{errors.title.message}</p>
+          )}
+        </div>
+      </div>
+      {/* Number of Vacancies */}
+      <div className="mb-6 md:w-1/2 md:pr-3">
+        <label className="mb-1 text-lg font-semibold text-main">
+          Number of Vacancies *
+        </label>
+        <Controller
+          name="availableVacancies"
+          control={control}
+          defaultValue={0}
+          rules={{
+            required: "Vacancy is required",
+            min: {
+              value: 1,
+              message: "Vacancy must be at least 1",
+            },
+          }}
+          render={({ field }) => (
+            <FormControl
+              component="fieldset"
+              error={!!errors?.availableVacancies?.message}
+              fullWidth
+            >
+              <div className="flex gap-5">
+                <Button
+                  variant="outlined"
+                  color={errors?.availableVacancies ? "error" : "primary"}
+                  onClick={() => field.onChange((field.value || 0) - 1)}
+                  disabled={!field.value || field.value <= 1} // Disable the minus button when count is 1
+                >
+                  <Remove />
+                </Button>
+                <p
+                  className={`rounded-base border p-4 px-8 text-center text-xl ${errors?.availableVacancies ? "border-red-500 text-red-500" : ""}`}
+                >
+                  {field.value}
+                </p>
+                <Button
+                  variant="outlined"
+                  color={errors?.availableVacancies ? "error" : "primary"}
+                  onClick={() => field.onChange((field.value || 0) + 1)}
+                >
+                  <Add />
+                </Button>
+              </div>
+
+              {errors.availableVacancies && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.availableVacancies.message}
+                </p>
+              )}
+            </FormControl>
+          )}
+        />
+      </div>
+
       <Divider className="my-2" />
-      <h5 className="mb-2 text-3xl font-bold text-main">About The Job</h5>
-      <div className="w-full">
+      {/* Job Details */}
+      <h5 className="mb-12 mt-4 text-3xl font-bold text-main">About The Job</h5>
+      <div className="mb-4 w-full">
         <h6 className="mb-2 text-xl font-bold text-main">Job Description</h6>
         <TextEditor
-          value={"<p>replace your text with this ...</p>"}
+          value={"<p>Write your job description ...</p>"}
           onChange={handelJobDescription}
         />
       </div>
       <div className="w-full">
         <h6 className="mb-2 text-xl font-bold text-main">Job Requirements</h6>
         <TextEditor
-          value={"<p>replace your text with this ... </p>"}
+          value={"<p>Write your job requirements ... </p>"}
           onChange={handelJobDescription}
         />
       </div>
+
+      {/* Skills */}
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
         <h6 className="text-xl font-semibold text-main">
           Skills related to the job post{" "}
         </h6>
         <div className="mt-2 flex flex-wrap">
-          {job.skills.map((skill, i) => (
+          {["React", "Angular", "Vue"].map((skill, i) => (
             <div
               key={i}
               className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
@@ -574,6 +688,8 @@ const JobDetailsStep: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Keywords */}
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
         <h6 className="text-xl font-semibold text-main">Keywords</h6>
         <p className="text-secondary">
@@ -581,12 +697,12 @@ const JobDetailsStep: React.FC = () => {
           keywords the candidate should have in his CV.
         </p>
         <div className="mt-2 flex flex-wrap">
-          {job.relatedSearch.map((keyWord, i) => (
+          {["React", "Angular", "Vue"].map((skill, i) => (
             <div
               key={i}
               className="mr-2 mt-2 rounded-[5px] border border-primary px-4 py-2 text-secondary focus:ring-2 focus:ring-primary md:mr-4"
             >
-              {keyWord}
+              {skill}
               <IconButton size="small" color="error">
                 <Close />
               </IconButton>
@@ -594,9 +710,18 @@ const JobDetailsStep: React.FC = () => {
           ))}
         </div>
       </div>
-
+      {/* Navigation Buttons */}
+      <div className="space-between mt-5 flex gap-2 md:justify-end">
+        {/* <Button variant="outlined" >Back</Button> */}
+        <Button className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]">
+          Save and Publish Later
+        </Button>
+        <Button type="submit" variant="contained">
+          next
+        </Button>
+      </div>
       {/* //////////////////////// */}
-    </Box>
+    </form>
   );
 };
 

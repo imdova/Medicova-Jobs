@@ -12,10 +12,20 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import pdf from "@/components/icons/pdf.png";
 import Image from "next/image";
+import { UserState } from "@/types";
 
-const Resume: React.FC = () => {
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+const getFileNameFromUrl = (url: string): string => {
+  const urlSplit = url.split("/");
+  return urlSplit[urlSplit.length - 1];
+};
+const myCv = "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf";
+const Resume: React.FC<{
+  user: UserState;
+  isMe: boolean;
+  isLocked: boolean;
+}> = ({ user, isMe, isLocked }) => {
+  const [fileName, setFileName] = useState<string | null>(getFileNameFromUrl(myCv));
+  const [fileUrl, setFileUrl] = useState<string | null>(myCv);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -56,8 +66,14 @@ const Resume: React.FC = () => {
     }
   };
 
+  if (!isMe && !fileUrl) {
+    return null;
+  }
+  if (!isMe && isLocked) {
+    return null;
+  }
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
       {/* Title and Description */}
       <h3 className="mb-2 text-2xl font-bold text-main">Resume</h3>
 
@@ -77,65 +93,61 @@ const Resume: React.FC = () => {
           height={40}
           className="rounded-xl object-cover"
         />
-        <Typography
-          sx={{
-            fontWeight: "400",
-            color: "#555",
-            fontSize: "14px",
-          }}
-        >
+        <p className="flex-1 font-semibold text-main">
           {fileName || "No file uploaded"}
-        </Typography>
-        <IconButton
-          color="error"
-          onClick={handleFileRemove}
-          disabled={!fileName}
-        >
-          <DeleteIcon />
-        </IconButton>
+        </p>
+        {isMe && (
+          <IconButton
+            color="error"
+            onClick={handleFileRemove}
+            disabled={!fileName}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
       </div>
 
       {/* Buttons */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "16px",
-        }}
-      >
+      <div className="flex justify-between gap-3">
         <Button
           variant="outlined"
-          sx={{
-            textTransform: "none",
-            fontWeight: "500",
-            borderColor: "#03353C",
-            flex: 1,
-          }}
-          disabled={!fileName}
+          disabled={!fileUrl}
           onClick={handleReviewCV}
+          className="flex-1"
         >
           Review CV
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          component="label"
-          sx={{
-            textTransform: "none",
-            fontWeight: "500",
-            flex: 1,
-          }}
-        >
-          Upload CV
-          <input
-            type="file"
-            accept=".pdf, .doc, .docx"
-            hidden
-            onChange={handleFileUpload}
-            ref={fileInputRef}
-          />
-        </Button>
-      </Box>
+        {isMe ? (
+          <Button
+            variant="contained"
+            className="flex-1 text-nowrap"
+            color="primary"
+            component="label"
+          >
+            Upload CV
+            <input
+              type="file"
+              accept=".pdf, .doc, .docx"
+              hidden
+              onChange={handleFileUpload}
+              ref={fileInputRef}
+            />
+          </Button>
+        ) : (
+          fileUrl && (
+            <Button
+              href={fileUrl}
+              className="flex-1 text-nowrap"
+              variant="contained"
+              color="primary"
+              component="a"
+              download
+            >
+              Download CV
+            </Button>
+          )
+        )}
+      </div>
     </div>
   );
 };

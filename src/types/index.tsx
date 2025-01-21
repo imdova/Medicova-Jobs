@@ -1,8 +1,46 @@
+import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { RoleState } from "./next-auth";
+import { Permission } from "./permissions";
+import { Gender } from "@/constants/enums/gender.enum";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
+import { StartDateType } from "@/constants/enums/start-type.enum";
+import { SalaryCurrency } from "@/constants/enums/currency.enum";
+import { CompanyStatus } from "@/constants/enums/company-status.enum";
+import { CompanySize } from "@/constants/enums/company-size.enum";
 
-interface Country {
+export type Country = {
+  name: string;
+  isoCode: string;
+  flag: string;
+  phonecode: string;
+  currency: string;
+  latitude: string;
+  longitude: string;
+};
+export type CountryMin = {
   name: string;
   code: string;
+};
+
+export type State = {
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+};
+export type City = {
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+};
+
+export interface Result<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
 }
 
 export interface UserState {
@@ -10,18 +48,11 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
-  //
-  role?: RoleState;
-  //
-  roles: string[];
-  active: boolean;
-  photo?: string;
-  birth: string | null;
+  type: RoleState;
+  photo: string | null;
   phone: string | null;
   companyId: string | null;
-  created_at: string | null;
-  deleted_at: string | null;
-  updated_at: string | null;
+  permissions: Permission[];
 }
 
 export interface registerData {
@@ -47,14 +78,14 @@ export interface Notification {
 
 export interface Experience {
   name: string;
-  country: Country;
+  country: CountryMin;
   startDate: string;
   endDate: string;
 }
 
 export interface Education {
   name: string;
-  country: Country;
+  country: CountryMin;
   specialty: string;
   degree: string;
   startDate: string;
@@ -81,13 +112,49 @@ export interface Doctor {
   education: Education[];
   available: boolean;
 }
+
 export interface Company {
+  id: string;
+  name: string;
+  about?: string;
+  isPrivate?: boolean;
+  isProfitable?: boolean;
+  status?: CompanyStatus | null;
+  country?: string;
+  state?: string | null;
+  city?: string;
+  size?: CompanySize | null;
+  phone?: string;
+  email?: string;
+  yearFounded?: number | string;
+  photo?: string;
+  socialLinks?: {
+    linkedin?: string;
+  };
+  visible?: boolean;
+  profileUrl?: string;
+  typeId: string;
+  sectorId?: string | null;
+  type: {
+    id: string;
+    name: string;
+    sector: {
+      id: string;
+      name: string;
+    };
+  };
+}
+export interface MiniCompany {
   name: string;
   industry: string;
   website: string;
   contact: string;
 }
 
+export type Sector = {
+  id: string;
+  name: string;
+};
 export interface Job {
   id: string;
   title: string;
@@ -101,7 +168,54 @@ export interface Job {
   additionalDetails: string;
   skills: string[];
   relatedSearch: string[];
-  company: Company;
+  company: MiniCompany;
+}
+export interface JobCategory { id: string; name: string }
+
+export interface Industry {
+  id: string;
+  name: string;
+  categories: JobCategory;
+}
+
+export interface JobData {
+  id?: string;
+  companyId: string;
+  title: string;
+  jobIndustryId: string;
+  jobSectorId: string | null;
+  jobSpecialityId: string | null;
+  jobCategoryId: string | null;
+  jobCareerLevelId: string | null;
+  jobEmploymentTypeId: string | null;
+  jobWorkPlace: JobWorkPlace | null;
+  gender: Gender | null;
+  minAge: number | null;
+  maxAge: number | null;
+  educationLevel: EducationLevel | null;
+  countryCode: string | null;
+  city: string | null;
+  maxExpYears: number | null;
+  minExpYears: number | null;
+  hideSalary: boolean | null;
+  salaryRangeStart: number | null;
+  salaryRangeEnd: number | null;
+  salaryCurrency: SalaryCurrency | null;
+  availableVacancies: number | null;
+  description: string | null;
+  requirements: string | null;
+  salaryDetails: string | null;
+  keywords: string[] | null;
+  skills: string[] | null;
+  questions: string[] | null;
+  showCompany: boolean | null;
+  recieveEmails: boolean | null;
+  jobEmail: string | null;
+  draft: boolean | null;
+  active: boolean | null;
+  closed: boolean | null;
+  validTo: string | null; // ISO date string
+  startDateType: StartDateType | null;
 }
 
 export interface FilterOption {
@@ -176,6 +290,10 @@ export type NavItem = {
   path?: string;
   notifications?: number;
   section?: string; // Optional section header
-  type?: "divider" | "text" | "collapse" | "supLink";
+  type?: "divider" | "text" | "collapse" | "supLink" | "profile";
   links?: NavItem[];
+};
+
+export type Role = {
+  permissions: { name: Permission }[];
 };

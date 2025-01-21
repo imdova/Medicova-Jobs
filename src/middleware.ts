@@ -11,16 +11,19 @@ export default withAuth(function middleware(req) {
   if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
-  const role = token.role as RoleState;
-  const name = token.firstName;
+  const userType = token.type as RoleState;
   if (path == "/me") {
-    if(role === "seeker"){
-      return NextResponse.redirect(new URL(`/me/${name}`, req.url));
-    }else{
-      return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+    if (userType === "seeker") {
+      return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
+    } else {
+      if (token.companyId) {
+        return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
+      } else {
+        return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
+      }
     }
   }
-  let haveAccess = doesRoleHaveAccessToURL(role, path);
+  let haveAccess = doesRoleHaveAccessToURL(userType, path);
   if (!haveAccess) {
     // Redirect to login page if user has no access to that particular page
     return NextResponse.rewrite(new URL("/403", req.url));
@@ -54,8 +57,8 @@ const roleAccessMap: Record<string, string[]> = {
   ],
 };
 
-function doesRoleHaveAccessToURL(role: string, url: string): boolean {
-  const accessibleRoutes = roleAccessMap[role] || [];
+function doesRoleHaveAccessToURL(userType: string, url: string): boolean {
+  const accessibleRoutes = roleAccessMap[userType] || [];
   // return accessibleRoutes.some((route) => {
   //   // Create a regex from the route by replacing dynamic segments
   //   const regexPattern = route.replace(/\[.*?\]/g, "[^/]+").replace("/", "\\/");

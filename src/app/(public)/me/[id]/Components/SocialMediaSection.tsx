@@ -14,9 +14,20 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
 import AddModal from "./Modals/AddModal";
-import { Edit } from "@mui/icons-material";
+import { Edit, LanguageOutlined, LinkOutlined } from "@mui/icons-material";
+import { UserState } from "@/types";
+import Link from "next/link";
 
-const SocialMediaSection: React.FC = () => {
+const socialMedia: { url: string; name: string; icon: React.ElementType }[] = [
+  { name: "Instagram", icon: InstagramIcon, url: "https://www.instagram.com/" },
+  { name: "Twitter", icon: TwitterIcon, url: "https://www.instagram.com/" },
+  { name: "Website", icon: LanguageIcon, url: "https://www.instagram.com/" },
+];
+const SocialMediaSection: React.FC<{
+  user: UserState;
+  isMe: boolean;
+  isLocked: boolean;
+}> = ({ user, isMe, isLocked }) => {
   const [openModal, setOpenModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [fields, setFields] = useState<JSX.Element[]>([]);
@@ -31,18 +42,24 @@ const SocialMediaSection: React.FC = () => {
     setOpenModal(false);
   };
 
+  if ((!isMe && socialMedia.length === 0) || isLocked) {
+    return null;
+  }
+
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">Social Links</h3>
-        <IconButton
-          className="rounded border border-solid border-gray-300 p-2"
-          onClick={() =>
-            handleOpenModal("Add Social Media", getSocialMediaFields)
-          }
-        >
-          <Edit />
-        </IconButton>
+        {isMe && (
+          <IconButton
+            className="rounded border border-solid border-gray-300 p-2"
+            onClick={() =>
+              handleOpenModal("Add Social Media", getSocialMediaFields)
+            }
+          >
+            <Edit />
+          </IconButton>
+        )}
       </div>
       <AddModal
         open={openModal}
@@ -50,28 +67,18 @@ const SocialMediaSection: React.FC = () => {
         modalTitle={modalTitle}
         fields={fields}
       />
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 2,
-          marginTop: 2,
-        }}
-      >
-        {/* Social Media Icons */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-          }}
-        >
-          <InstagramIcon color="primary" />
-          <TwitterIcon color="primary" />
-          <LanguageIcon color="primary" />
-        </Box>
-      </Box>
+      {!isLocked && (
+        <div className="flex gap-4">
+          {socialMedia.map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <Link key={index} href={item.url} className="text-primary">
+                {IconComponent ? <IconComponent /> : <LanguageOutlined />}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,465 +1,224 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
+import { Company, UserState } from "@/types";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+  createCompany,
+  getCompanyById,
+  updateCompany,
+} from "@/lib/actions/employer.actions";
+import { useSession } from "next-auth/react";
+import LocationSelection from "./LocationSelection";
+import SectorSelection from "./SectorSelection";
+import { hasDataChanged } from "@/util";
+import { usePrompt } from "@/hooks/usePrompt";
+import MainInformation from "./Main-Information";
+import CompanyOwnership from "./CompanyOwnership";
+import CompanyContactInputs from "./CompanyContacInputs";
+import { CompanyStatus } from "@/constants/enums/company-status.enum";
+
 
 const CompanyInfoForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    phone: "",
-  });
+  const [company, setCompany] = useState<Company | null>(null);
+  console.log("🚀 ~ company:", company)
+  const [data, setData] = useState<Company>({} as Company);
+  const [isDirty, setIsDirty] = useState(false); // Tracks if the form has unsaved changes.
 
+  const { data: session, status, update } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId;
+
+  const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
   const [errors, setErrors] = useState({
     email: "",
     phone: "",
+    typeId: "",
+    name: "",
   });
-
-  const [year, setYear] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [phone, setPhone] = useState<string | undefined>("");
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputYear = parseInt(e.target.value, 10);
-    const currentYear = new Date().getFullYear();
-
-    if (inputYear < 1970) {
-      setError("Year must be 1970 or later.");
-    } else if (inputYear > currentYear) {
-      setError(`Year cannot exceed ${currentYear}.`);
-    } else {
-      setError(null);
-    }
-
-    setYear(e.target.value);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value ?? checked,
-    });
+  const handleChange = <K extends keyof Company>(
+    name: K,
+    value: Company[K],
+  ) => {
+    setErrors({ ...errors, [name]: "" });
+    setData({ ...data, [name]: value });
   };
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const { email, phone, typeId, name } = data;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Enter a valid email address";
-    }
+    const error = {
+      email: "",
+      name: "",
+      phone: "",
+      typeId: "",
+    };
 
+    if (!emailRegex.test(email || "")) {
+      error.email = "Enter a valid email address";
+    }
     if (!phone) {
-      newErrors.phone = "Phone number is required";
+      error.phone = "Phone number is required";
+    }
+    if (!name) {
+      error.name = "name is required";
+    }
+    if (!typeId) {
+      error.typeId = "Type is required";
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(error);
+    return Object.keys(error).every(
+      (key) => error[key as keyof typeof error] === "",
+    );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Effect to determine if the form data has been modified.
+  usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
+  useEffect(() => {
+    if (company && data) {
+      setIsDirty(hasDataChanged(company, data));
+    }
+  }, [data, company]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     if (validateForm()) {
-      console.log("Form submitted:", formData);
+      setLoading(true);
+      if (companyId) {
+        handleUpdate();
+      } else {
+        handleCreate();
+      }
     }
   };
+
+  const handleCreate = async () => {
+    const result = await createCompany(data, user?.id || "");
+    if (result.success && result.data) {
+      const newCompany = result.data;
+      setData(newCompany); // Set the form data with the fetched company data
+      setCompany(newCompany);
+      setIsDirty(false);
+      update({
+        companyId: newCompany.id,
+      });
+      reloadSession();
+      setLoading(false);
+      console.log("Company created successfully");
+    } else {
+      setLoading(false);
+      setError(result.message);
+    }
+  };
+  const handleUpdate = async () => {
+    const result = await updateCompany(data);
+    if (result.success && result.data) {
+      const newCompany = result.data;
+      setData(newCompany); // Set the form data with the fetched company data
+      setCompany(newCompany);
+      setIsDirty(false);
+      setLoading(false);
+      console.log("Company Updated successfully");
+    } else {
+      setLoading(false);
+      setError(result.message);
+    }
+  };
+
+  const reloadSession = () => {
+    const event = new Event("visibilitychange");
+    document.dispatchEvent(event);
+  };
+
+  const fetchCompanyData = async (id: string) => {
+    setFormLoading(true);
+    try {
+      const result = await getCompanyById(id);
+      if (result.success && result.data) {
+        const newCompany = result.data;
+        setData(newCompany); // Set the form data with the fetched company data
+        setCompany(newCompany);
+        setIsDirty(false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch company data", error);
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (companyId) {
+      fetchCompanyData(companyId);
+    }
+  }, [companyId]);
+
+  if (formLoading || status === "loading") {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <CircularProgress />
+        <h6 className="ml-4">Loading...</h6>
+      </div>
+    );
+  }
 
   return (
-    <Grid item xs={8}>
-      <Card>
-        <CardContent>
-          <h5 className="text-main mb-2 text-2xl font-semibold">
-            Company Main Information
-          </h5>
-          <form onSubmit={handleSubmit} noValidate>
-            {/* Company Sector and Company Type Selectors */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", md: "nowrap" },
-                gap: 1,
-                marginBottom: 2,
-              }}
-            >
-              {/* Company Sector Selector */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Company Sector
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
-                      height: "40px",
-                      width: { xs: "100%", md: "250px" },
-                      fontSize: "14px",
-                    }}
-                    defaultValue="Healthcare"
-                  >
-                    <MenuItem value="Healthcare">Healthcare</MenuItem>
-                    <MenuItem value="Technology">Technology</MenuItem>
-                    <MenuItem value="Finance">Finance</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
+    <form
+      className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      {/* <Alert severity="warning" sx={{ mb: 2 }}>
+                You cannot save an empty value for a question!
+              </Alert> */}
+      {/* Main Information Form Fields */}
+      <MainInformation
+        data={data}
+        handleChange={handleChange}
+        errors={errors}
+      />
 
-              {/* Company Type Selector */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Company Type
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
-                      height: "40px",
-                      width: { xs: "100%", md: "250px" },
-                      fontSize: "14px",
-                    }}
-                    defaultValue="Hospital"
-                  >
-                    <MenuItem value="Hospital">Hospital</MenuItem>
-                    <MenuItem value="Clinic">Clinic</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
+      {/* Company Sector and Company Type Selectors */}
+      <SectorSelection data={data} setData={setData} errors={errors} />
 
-            {/* Radio Group Section */}
-            <Box sx={{ marginBottom: 2 }}>
-              {/* Title for the Radio Group */}
+      {/* Location Selection */}
+      <LocationSelection data={data} setData={setData} errors={errors} />
 
-              <h5 className="text-main mb-2 text-2xl font-semibold">
-                Company Ownership Type
-              </h5>
+      {/* Company Ownership Form Fields */}
+      <CompanyOwnership
+        data={data}
+        handleChange={handleChange}
+        errors={errors}
+      />
 
-              <FormControl component="fieldset" fullWidth>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* First Radio Group */}
-                  <RadioGroup row defaultValue="private">
-                    <FormControlLabel
-                      value="private"
-                      sx={{ fontSize: "14px" }}
-                      control={
-                        <Radio
-                          sx={{
-                            "&.Mui-checked": { color: "#2EAE7D" },
-                            fontSize: "14px",
-                          }}
-                        />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Private</span>}
-                    />
-                    <FormControlLabel
-                      value="governmental"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>Governmental</span>
-                      }
-                    />
-                  </RadioGroup>
+      {/* Company Contact Information Form Fields */}
+      <CompanyContactInputs
+        data={data}
+        handleChange={handleChange}
+        errors={errors}
+      />
 
-                  {/* Typography with "&" */}
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    &
-                  </Typography>
-
-                  {/* Second Radio Group */}
-                  <RadioGroup row defaultValue="profit">
-                    <FormControlLabel
-                      value="profit"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>Profit Org</span>
-                      }
-                    />
-                    <FormControlLabel
-                      value="non-profit"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>
-                          Non-Profit Org
-                        </span>
-                      }
-                    />
-                  </RadioGroup>
-                </Box>
-              </FormControl>
-            </Box>
-
-            {/* Additional Form Fields */}
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Country
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                defaultValue="Egypt"
-              />
-            </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                City
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                defaultValue="Cairo"
-              />
-            </Box>
-
-            <Box sx={{ marginBottom: 2 }}>
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Company Size
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
-                      height: "40px",
-                      fontSize: "14px",
-                    }}
-                    defaultValue="1-10"
-                  >
-                    <MenuItem value="1-10">1-10 employees</MenuItem>
-                    <MenuItem value="11-50">11-50 employees</MenuItem>
-                    <MenuItem value="51-200">51-200 employees</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Email
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                name="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-                error={!!errors.email}
-                helperText={errors.email}
-              />
-            </Box>
-            <Box sx={{ marginBottom: 2 }}>
-              <InputLabel
-                sx={{
-                  marginBottom: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Year Founded
-              </InputLabel>
-              <TextField
-                sx={{
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "& .MuiOutlinedInput-root": {
-                    height: "40px",
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth
-                type="number"
-                placeholder="Enter year"
-                value={year}
-                onChange={handleYearChange}
-                InputProps={{
-                  inputProps: {
-                    min: 1990,
-                    max: new Date().getFullYear(),
-                  },
-                }}
-                error={!!error} // Shows red border if there's an error
-                helperText={error} // Displays the error message below the text field
-              />
-            </Box>
-            <Box
-              sx={{
-                mb: 2,
-                "& .PhoneInput": {
-                  display: "flex",
-                  paddingY: "10px",
-                  gap: "5px",
-                },
-                "& .PhoneInputInput": {
-                  border: "1px solid #ccc",
-                  padding: "15px",
-                  fontSize: "14px",
-                  height: "40px",
-                  width: "100%",
-                  backgroundColor: "rgba(214, 221, 235, 0.18)",
-                  "&::placeholder": {
-                    color: "#000", // Set placeholder color to black
-                    opacity: 0.7, // Ensure full opacity
-                  },
-                },
-                "& .PhoneInputCountrySelect": {
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "5px",
-                  fontSize: "14px",
-                  height: "35px",
-                  backgroundColor: "#f9f9f9",
-                },
-                "& .PhoneInputCountrySelect:hover": {
-                  backgroundColor: "#eaeaea",
-                },
-                "& .PhoneInputCountrySelect:focus": {
-                  outline: "none",
-                  borderColor: "#2EAE7D",
-                },
-                "& .PhoneInputCountrySelectDropdown": {
-                  maxHeight: "150px",
-                  overflowY: "auto",
-                },
-                "& .PhoneInputCountrySelectDropdownItem": {
-                  padding: "6px 10px",
-                },
-              }}
-            >
-              <InputLabel
-                sx={{
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Phone Number
-              </InputLabel>
-              <PhoneInput
-                defaultCountry="EG"
-                value={phone}
-                onChange={setPhone}
-                placeholder="Enter phone number"
-              />
-              {errors.phone && (
-                <Typography sx={{ color: "red", fontSize: "12px" }}>
-                  {errors.phone}
-                </Typography>
-              )}
-            </Box>
-
-            {/* Centered Save Button */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 4,
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  width: "204.16px",
-                  height: "46px",
-                  borderRadius: "3px",
-                  textTransform: "capitalize",
-                  fontWeight: "600",
-                }}
-              >
-                Save
-              </Button>
-            </Box>
-          </form>
-        </CardContent>
-      </Card>
-    </Grid>
+      <p className="text-center text-red-500">{error}</p>
+      {/* Centered Save Button */}
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          disabled={loading || (company?.id ? !isDirty : false)}
+          variant="contained"
+          className="text-lg"
+        >
+          {loading
+            ? "Loading..."
+            : company?.id
+              ? "Update Company"
+              : "Create Company"}
+        </Button>
+      </div>
+    </form>
   );
 };
 

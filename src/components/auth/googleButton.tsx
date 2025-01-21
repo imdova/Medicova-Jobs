@@ -19,8 +19,11 @@ const GoogleButton = ({
       onClick={() =>
         signIn(
           "google",
-          { callbackUrl: "/" },
-          userType ? { role: userType } : {},
+          {
+            callbackUrl: "/",
+            state: JSON.stringify({ customKey: userType }),
+          },
+          userType ? { type: userType } : {},
         )
       }
     >

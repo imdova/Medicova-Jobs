@@ -18,6 +18,7 @@ export async function changePasswordWithOTP(credentials: any) {
       newPassword: credentials.password,
       otp: credentials.otp,
     });
+    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data)
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -27,7 +28,7 @@ export async function changePasswordWithOTP(credentials: any) {
 export async function authenticateRegister(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
   try {
-    const response = await register(credentials, credentials.role);
+    const response = await register(credentials, credentials.type);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
