@@ -18,7 +18,7 @@ const CompanyContactInputs: React.FC<SectorSelectionProps> = ({
     <div className="mb-4 flex flex-wrap gap-5">
       <div className="min-w-[250px] flex-1">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
-          Email
+          Email *
         </InputLabel>
         <TextField
           name="email"

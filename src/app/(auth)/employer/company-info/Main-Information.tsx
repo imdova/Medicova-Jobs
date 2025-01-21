@@ -19,7 +19,7 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
       </h5>
       <div className="mb-4 md:w-1/2 md:pr-5">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
-          Name
+          Name *
         </InputLabel>
         <TextField
           className="w-full"

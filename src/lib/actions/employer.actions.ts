@@ -58,6 +58,8 @@ export const createCompany = async (
     });
     if (response.ok) {
       const data = await response.json();
+      data.typeId = data.type.id;
+      data.sectorId = data.type.sector.id;
       return {
         success: true,
         message: "Company created successfully",
@@ -89,6 +91,8 @@ export const updateCompany = async (companyData: Company): Promise<Result> => {
     });
     if (response.ok) {
       const data = await response.json();
+      data.typeId = data.type.id;
+      data.sectorId = data.type.sector.id;
       return {
         success: true,
         message: "Company updated successfully",

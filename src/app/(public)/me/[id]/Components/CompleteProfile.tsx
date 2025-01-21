@@ -2,9 +2,11 @@ import React from "react";
 import { Typography, Grid, Card, Box, CircularProgress } from "@mui/material";
 import Link from "next/link";
 
-const CompleteProfile: React.FC = () => {
-  const value = 80;
+type CompleteProfileProps = {
+  percentage?: number;
+};
 
+const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
   // Function to determine color based on value
   const getProgressColor = (progress: number): string => {
     if (progress >= 80) return "var(--primary)";
@@ -12,7 +14,9 @@ const CompleteProfile: React.FC = () => {
     return "#ff0000";
   };
 
-  const progressColor = getProgressColor(value);
+  if (!percentage || percentage === 100) return null;
+
+  const progressColor = getProgressColor(percentage);
 
   return (
     <div className="mb-5 flex rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
@@ -32,7 +36,7 @@ const CompleteProfile: React.FC = () => {
       <div className="grid h-[70px] w-[70px] grid-cols-1 grid-rows-1">
         <CircularProgress
           variant="determinate"
-          value={value}
+          value={percentage}
           size={70}
           sx={{
             color: progressColor,
@@ -40,7 +44,9 @@ const CompleteProfile: React.FC = () => {
           className="col-start-1 row-start-1"
         />
         <div className="col-start-1 row-start-1 flex items-center justify-center">
-          <span className="text-xl font-black text-primary">80%</span>
+          <span className="text-xl font-black" style={{ color: progressColor }}>
+            {percentage}%
+          </span>
         </div>
       </div>
     </div>

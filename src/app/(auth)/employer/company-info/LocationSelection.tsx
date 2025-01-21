@@ -9,7 +9,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface LocationSelectionProps {
   data: Company;
@@ -81,7 +81,7 @@ const LocationSelection = ({
               onChange={(e) => {
                 setData({ ...data, country: e.target.value });
               }}
-              value={countries.length > 0 ? data.country : ""}
+              value={countries && countries.length > 0 ? data.country || "" : ""}
             >
               <MenuItem value="" disabled>
                 <em>Select Sector</em>

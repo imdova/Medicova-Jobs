@@ -52,7 +52,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
       {/* Company Sector Selector */}
       <div className="min-w-[250px] flex-1">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
-          Company Sector
+          Company Sector *
         </InputLabel>
         <FormControl fullWidth error={Boolean(errors.typeId) && !data.sectorId}>
           <Select
@@ -96,7 +96,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
       {/* Company Type Selector */}
       <div className="min-w-[250px] flex-1">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
-          Company Type
+          Company Type *
         </InputLabel>
         <FormControl fullWidth error={Boolean(errors.typeId) && !data.typeId}>
           <Tooltip

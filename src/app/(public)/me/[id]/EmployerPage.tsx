@@ -27,7 +27,7 @@ const EmployerPage = ({ user, isMe }: { user: UserState; isMe: boolean }) => {
   useEffect(() => {
     if (user?.companyId && !company) {
       initCompany(user?.companyId);
-    } else if(!user?.companyId) {
+    } else if (!user?.companyId) {
       redirect("/employer/company-info");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,9 +49,11 @@ const EmployerPage = ({ user, isMe }: { user: UserState; isMe: boolean }) => {
           {/* Right Sections */}
           <div className="hidden min-w-80 max-w-80 md:block">
             {/* Public Profile Section */}
-            {isMe && <CompleteProfile />}
+            {isMe && (
+              <CompleteProfile percentage={company?.completencePercent} />
+            )}
             {isMe && <PostYourFirstJob />}
-            <EmployerSocialMedia />
+            <EmployerSocialMedia data={company.socialLinks} />
             {/* Complete Profile Section */}
             {/* Public Profile Section */}
             {/* <PublicProfile /> */}

@@ -2,6 +2,7 @@ import { IconButton } from "@mui/material";
 import { Edit, PendingActions } from "@mui/icons-material";
 import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
+import Link from "next/link";
 
 const AboutCompany: React.FC<{
   data?: string;
@@ -16,7 +17,7 @@ const AboutCompany: React.FC<{
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
         {isMe && (
-          <IconButton className="rounded border border-solid border-gray-300 p-2">
+          <IconButton LinkComponent={Link} href="/employer/company-info" className="rounded border border-solid border-gray-300 p-2">
             <Edit />
           </IconButton>
         )}
@@ -29,8 +30,8 @@ const AboutCompany: React.FC<{
       ) : isMe ? (
         <EmptyCard
           src={"/images/activities.png"}
-          description={" Your volunteering and student activities."}
-          buttonText="Add Activities / Achievements"
+          description={" Tell us about your company."}
+          buttonText="Add About Company"
           onClick={() => {}}
         />
       ) : null}

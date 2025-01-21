@@ -3,6 +3,7 @@ import { userReducer } from "./slices/userSlice";
 import { resetReducer } from "./slices/resetSlice";
 import { companyReducer } from "./slices/companySlice";
 import { locationReducer } from "./slices/locationSlice";
+import { modalReducer } from "./slices/modalSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       resetEmail: resetReducer,
       company: companyReducer,
       location: locationReducer,
+      modal: modalReducer,
     },
   });
 };

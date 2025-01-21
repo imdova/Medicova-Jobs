@@ -47,7 +47,7 @@ const SeekerPage = ({
           {/* Public Profile Section */}
           {isMe && (
             <>
-              <CompleteProfile />
+              <CompleteProfile percentage={20} />
               {/* Public Profile Section */}
               <PublicProfile />
             </>

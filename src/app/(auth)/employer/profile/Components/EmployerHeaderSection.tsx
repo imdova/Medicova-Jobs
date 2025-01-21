@@ -102,7 +102,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    Hospital
+                    {data.type.name}
                   </Typography>
                 </Box>
                 {(data.country || data.state || data.city) && (

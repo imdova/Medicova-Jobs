@@ -117,6 +117,7 @@ export interface Company {
   id: string;
   name: string;
   about?: string;
+  completencePercent?: number;
   isPrivate?: boolean;
   isProfitable?: boolean;
   status?: CompanyStatus | null;
@@ -128,9 +129,7 @@ export interface Company {
   email?: string;
   yearFounded?: number | string;
   photo?: string;
-  socialLinks?: {
-    linkedin?: string;
-  };
+  socialLinks?: { [key: string]: string };
   visible?: boolean;
   profileUrl?: string;
   typeId: string;
@@ -170,7 +169,10 @@ export interface Job {
   relatedSearch: string[];
   company: MiniCompany;
 }
-export interface JobCategory { id: string; name: string }
+export interface JobCategory {
+  id: string;
+  name: string;
+}
 
 export interface Industry {
   id: string;
@@ -297,3 +299,18 @@ export type NavItem = {
 export type Role = {
   permissions: { name: Permission }[];
 };
+
+export type ModalActionType = 'STAY' | 'LEAVE' | 'CUSTOM';
+
+export interface ModalButton {
+  label: string;
+  actionType: ModalActionType;
+  variant?: 'primary' | 'secondary';
+}
+
+export interface ModalState {
+  isOpen: boolean;
+  message: string;
+  buttons: ModalButton[];
+  navigationUrl?: string;
+}
