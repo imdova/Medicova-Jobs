@@ -9,44 +9,26 @@ import {
   Checkbox,
   FormControlLabel,
   Divider,
-  IconButton,
   InputAdornment,
 } from "@mui/material";
 import TextEditor from "@/components/editor/editor";
-import { JobData, UserState } from "@/types";
+import { JobData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { Gender } from "@/constants/enums/gender.enum";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries } from "@/store/slices/locationSlice";
-import { Add, Close, Remove } from "@mui/icons-material";
+import { Add, Remove } from "@mui/icons-material";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
-import { useSession } from "next-auth/react";
 import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
-
-const employmentTypes = [
-  { id: "Full Time", label: "Full Time" },
-  { id: "Part Time", label: "Part Time" },
-  { id: "Freelance", label: "Freelance" },
-  { id: "Volunteer", label: "Volunteer" },
-];
-const jobWorkPlaceOptions = [
-  { id: JobWorkPlace.ONSITE, label: "Onsite" },
-  { id: JobWorkPlace.REMOTE, label: "Remote" },
-  { id: JobWorkPlace.HYBRID, label: "Hybrid" },
-];
-const genderOptions = [
-  { id: Gender.ANY, label: "Any" },
-  { id: Gender.FEMALE, label: "Female" },
-  { id: Gender.MALE, label: "Male" },
-];
-const educationOptions = [
-  { id: EducationLevel.HIGH_SCHOOL, label: "High School" },
-  { id: EducationLevel.BACHELORS, label: "bachelors" },
-  { id: EducationLevel.MASTERS, label: "Master's" },
-  { id: EducationLevel.PHD, label: "PHD" },
-];
+import EmploymentTypeSelect from "../employmentType";
+import {
+  educationOptions,
+  genderOptions,
+  jobWorkPlaceOptions,
+} from "@/constants/job";
+import { disableEnterKey } from "@/util";
 
 interface JobDetailProps {
   jobData: JobData;
@@ -58,10 +40,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
   onSubmit,
   onDraft,
 }) => {
-  const { data: session } = useSession();
-  const user = session?.user as UserState;
-  const companyId = user?.companyId || "";
-
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
 
@@ -72,12 +50,12 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     watch,
     setValue,
   } = useForm({
-    defaultValues: { ...jobData, companyId },
+    defaultValues: jobData,
   });
 
   const onDraftSubmit = () => {
     const data = watch();
-    onDraft({ ...data, companyId, draft: true });
+    onDraft({ ...data, draft: true });
   };
 
   const handleFetchCountries = async () => {
@@ -90,8 +68,14 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+ 
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onKeyDown={disableEnterKey}
+      noValidate
+    >
       {/* Job Title */}
       <div className="mb-6 md:w-1/2 md:pr-3">
         <label className="mb-2 text-lg font-semibold text-main">Title *</label>
@@ -124,43 +108,12 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
 
       {/* Dropdowns employment type - education level  */}
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
-        <div className="min-w-[150px] flex-1">
-          <label className="mb-1 text-lg font-semibold text-main">
-            Type of Employment *
-          </label>
-          <Controller
-            name="jobEmploymentTypeId"
-            control={control}
-            defaultValue=""
-            rules={{ required: "industry is required" }}
-            render={({ field }) => (
-              <FormControl
-                component="fieldset"
-                error={!!errors?.jobEmploymentTypeId?.message}
-                fullWidth
-              >
-                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                  {employmentTypes.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => field.onChange(item.id)}
-                      className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobEmploymentTypeId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                    >
-                      {item.id}
-                    </button>
-                  ))}
-                </div>
-
-                {errors.jobEmploymentTypeId && (
-                  <p className="mt-2 text-sm text-red-500">
-                    {errors.jobEmploymentTypeId.message}
-                  </p>
-                )}
-              </FormControl>
-            )}
-          />
-        </div>
+        <EmploymentTypeSelect
+          control={control}
+          errors={errors}
+          watch={watch}
+          setValue={setValue}
+        />
         <div className="min-w-[150px] flex-1">
           <label className="mb-1 text-lg font-semibold text-main">
             Education Level *
@@ -637,7 +590,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         {/* Additional Salary Details */}
         <div className="min-w-[150px] flex-1">
           <label className="mb-2 text-lg font-semibold text-main">
-            Additional Salary Details *
+            Additional Salary Details
           </label>
           <Controller
             name="salaryDetails"

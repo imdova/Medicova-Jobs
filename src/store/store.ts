@@ -4,6 +4,8 @@ import { resetReducer } from "./slices/resetSlice";
 import { companyReducer } from "./slices/companySlice";
 import { locationReducer } from "./slices/locationSlice";
 import { modalReducer } from "./slices/modalSlice";
+import { industryReducer } from "./slices/industrySlice";
+import { employmentTypeReducer } from "./slices/employmentTypeSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -12,6 +14,8 @@ export const makeStore = () => {
       resetEmail: resetReducer,
       company: companyReducer,
       location: locationReducer,
+      industry: industryReducer,
+      employmentType:employmentTypeReducer,
       modal: modalReducer,
     },
   });

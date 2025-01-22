@@ -4,7 +4,9 @@ import { Typography, Stepper, Step, StepLabel } from "@mui/material";
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
-import { JobData } from "@/types";
+import { JobData, UserState } from "@/types";
+import { useSession } from "next-auth/react";
+import { createJob } from "@/lib/actions/job.actions";
 
 const steps = [
   "Job Details",
@@ -16,10 +18,15 @@ const initialJob: JobData = {
   companyId: "",
   title: "",
   jobIndustryId: "",
+  jobIndustryName: "",
   jobSpecialityId: "",
+  jobSpecialityName: "",
   jobCategoryId: "",
+  jobCategoryName: "",
   jobCareerLevelId: "",
+  jobCareerLevelName: "",
   jobEmploymentTypeId: "",
+  jobEmploymentTypeName: "",
   jobWorkPlace: null,
   gender: null,
   minAge: null,
@@ -47,12 +54,57 @@ const initialJob: JobData = {
   active: true,
   closed: false,
   startDateType: null,
-  jobSectorId: "",
   validTo: null,
 };
+// const initialJob: JobData = {
+//   companyId: "",
+//   title: "",
+//   jobIndustryId: "",
+//   jobSpecialityId: "",
+//   jobCategoryId: "",
+//   jobCareerLevelId: "",
+//   jobEmploymentTypeId: "",
+//   jobWorkPlace: null,
+//   gender: null,
+//   minAge: null,
+//   maxAge: null,
+//   educationLevel: null,
+//   country: "",
+//   city: null,
+//   maxExpYears: null,
+//   minExpYears: null,
+//   hideSalary: true,
+//   salaryRangeStart: null,
+//   salaryRangeEnd: null,
+//   salaryCurrency: null,
+//   availableVacancies: null,
+//   description: null,
+//   requirements: null,
+//   salaryDetails: null,
+//   keywords: [],
+//   skills: [],
+//   questions: [],
+//   showCompany: true,
+//   recieveEmails: true,
+//   jobEmail: null,
+//   draft: false,
+//   active: true,
+//   closed: false,
+//   startDateType: null,
+//   jobSectorId: "",
+//   validTo: null,
+// };
 const PostJobForm: React.FC = () => {
+  const { data: session } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId || "";
+
   const [activeStep, setActiveStep] = useState(0);
   const [jobData, setJobData] = useState(initialJob);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+
   const handleNext = () => {
     if (activeStep !== null && activeStep < steps.length - 1) {
       setActiveStep((prevStep) => (prevStep !== null ? prevStep + 1 : 0));
@@ -66,24 +118,39 @@ const PostJobForm: React.FC = () => {
   };
 
   const onFirstStepSubmit = (data: JobData) => {
-    const newData = { ...jobData, ...data };
+    const newData = { ...jobData, ...data, companyId };
     handleNext();
     setJobData(newData);
     console.log(newData);
   };
   const onSecondStepSubmit = (data: Partial<JobData>) => {
-    const newData = { ...jobData, ...data };
+    const newData = { ...jobData, ...data, companyId };
     handleNext();
     setJobData(newData);
     console.log(newData);
   };
-  const publish = () => {
+  const publish = async () => {
     console.log(jobData);
+    handleCreate(jobData);
   };
+
+  const handleCreate = async (data: JobData) => {
+    const result = await createJob(data);
+    if (result.success && result.data) {
+      const newCompany = result.data;
+      setLoading(false);
+      console.log("Company created successfully");
+    } else {
+      setLoading(false);
+      setError(result.message);
+    }
+  };
+
   const onDraft = (data?: Partial<JobData>) => {
     const newData = {
       ...jobData,
       ...data,
+      companyId,
       draft: true,
     };
     console.log(newData);
@@ -172,8 +239,10 @@ const PostJobForm: React.FC = () => {
           <ReviewPublishStep
             onBack={handleBack}
             jobData={jobData}
-            onDraft={handleNext}
+            onDraft={onDraft}
             onSubmit={publish}
+            loading={loading}
+            error={error}
           />
         )}
       </div>

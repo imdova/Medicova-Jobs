@@ -171,18 +171,22 @@ export interface Job {
 }
 
 export type SpecialtyItem = {
-  id:string;
-  name:string
-}
+  id: string;
+  name: string;
+};
 export type CareerLevels = {
-  id:string;
-  name:string
-}
+  id: string;
+  name: string;
+};
 export interface JobCategory {
   id: string;
   name: string;
   specialities: SpecialtyItem[];
-  careerLevels: CareerLevels[]
+  careerLevels: CareerLevels[];
+}
+export interface EmploymentType {
+  id: string;
+  name: string;
 }
 
 export interface Industry {
@@ -196,11 +200,15 @@ export interface JobData {
   companyId: string;
   title: string;
   jobIndustryId: string;
-  jobSectorId: string | null;
+  jobIndustryName: string;
   jobSpecialityId: string | null;
+  jobSpecialityName: string | null;
   jobCategoryId: string | null;
+  jobCategoryName: string | null;
   jobCareerLevelId: string | null;
+  jobCareerLevelName: string | null;
   jobEmploymentTypeId: string | null;
+  jobEmploymentTypeName: string | null;
   jobWorkPlace: JobWorkPlace | null | "";
   gender: Gender | null;
   minAge: number | null;
@@ -229,6 +237,26 @@ export interface JobData {
   closed: boolean | null;
   validTo: string | null; // ISO date string
   startDateType: StartDateType | null | "";
+  jobIndustry?: {
+    id: string;
+    name: string;
+  };
+  jobSpeciality?: {
+    id: string;
+    name: string;
+  };
+  jobCategory?: {
+    id: string;
+    name: string;
+  };
+  jobCareerLevel?: {
+    id: string;
+    name: string;
+  };
+  jobEmploymentType?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface FilterOption {
@@ -311,12 +339,12 @@ export type Role = {
   permissions: { name: Permission }[];
 };
 
-export type ModalActionType = 'STAY' | 'LEAVE' | 'CUSTOM';
+export type ModalActionType = "STAY" | "LEAVE" | "CUSTOM";
 
 export interface ModalButton {
   label: string;
   actionType: ModalActionType;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
 }
 
 export interface ModalState {

@@ -1,13 +1,11 @@
 import React from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import JobOverview from "@/components/UI/JobOverview";
 import {
-  BookmarkBorder,
   LocationOnOutlined,
   MedicalServicesOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
-import ShareMenu from "@/components/UI/ShareMenu";
 import { JobData } from "@/types";
 
 interface ReviewPublishStepProps {
@@ -15,12 +13,16 @@ interface ReviewPublishStepProps {
   onDraft: (data?: Partial<JobData>) => void;
   onSubmit: () => void;
   onBack: () => void;
+  loading: boolean;
+  error: string;
 }
 const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
   jobData,
   onBack,
   onDraft,
   onSubmit,
+  loading,
+  error,
 }) => {
   return (
     <div>
@@ -49,24 +51,10 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
               <div className="rounded-md text-sm text-gray-500">
                 <MedicalServicesOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                 <span className="ml-2 text-xs md:text-base">
-                  {jobData.jobSpecialityId}
+                  {jobData.jobSpecialityName}
                 </span>
               </div>
             </div>
-          </div>
-          <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col">
-            <div className="flex justify-end">
-              <IconButton size="medium">
-                <BookmarkBorder className="h-8 w-8" />
-              </IconButton>
-              <ShareMenu
-                link={`https://www.example.com/jobData/${jobData.id}`}
-                className="h-12 w-12"
-              />
-            </div>
-            <button className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit">
-              Apply Now
-            </button>
           </div>
         </div>
         <div className="mt-16 flex flex-col sm:flex-row sm:gap-8">
@@ -102,15 +90,12 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
                 />
               </>
             )}
-            {jobData.description && (
+            {jobData.salaryDetails && (
               <>
                 <h3 className="mt-8 text-2xl font-bold text-main">
                   Additional Details
                 </h3>
-                <div
-                  className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl"
-                  dangerouslySetInnerHTML={{ __html: jobData.description }}
-                />
+                <p>{jobData.salaryDetails}</p>
               </>
             )}
 
@@ -152,6 +137,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
           />
         </div>
       </div>
+      <p className="text-red-500"> {error}</p>
       <div className="space-between mt-5 flex gap-2 md:justify-end">
         <Button onClick={onBack} variant="outlined">
           Back
@@ -163,7 +149,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
           Save and Publish Later
         </Button>
         <Button onClick={onSubmit} type="submit" variant="contained">
-          Publish
+          {loading ? "Loading..." : "Publish"}
         </Button>
       </div>
     </div>

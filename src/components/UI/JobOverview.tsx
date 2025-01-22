@@ -1,8 +1,16 @@
+import { Gender } from "@/constants/enums/gender.enum";
+import {
+  educationOptions,
+  genderOptions,
+  jobWorkPlaceOptions,
+} from "@/constants/job";
 import { JobData } from "@/types";
 import {
   AccessTimeOutlined,
   AccountBalanceWalletOutlined,
+  FemaleOutlined,
   FmdGoodOutlined,
+  MaleOutlined,
   PaidOutlined,
   PersonOutlineOutlined,
   SchoolOutlined,
@@ -14,6 +22,11 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
   className,
   data,
 }) => {
+  const workPlace =
+    jobWorkPlaceOptions.find((x) => x.id === data?.jobWorkPlace)?.label || "";
+  const gender = genderOptions.find((x) => x.id === data?.gender)?.label || "";
+  const education =
+    educationOptions.find((x) => x.id === data?.educationLevel)?.label || "";
   return (
     <div className={className}>
       <h4 className="mb-4 text-lg font-semibold text-main">Job Overview</h4>
@@ -22,7 +35,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <PersonOutlineOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Career Level </h5>
-            <p className="text-secondary"> {data?.jobCareerLevelId} </p>
+            <p className="text-secondary"> {data?.jobCareerLevelName} </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -31,7 +44,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
             <h5 className="font-semibold text-main"> Job Type </h5>
             <p className="text-secondary">
               {" "}
-              {data?.jobEmploymentTypeId} {data?.jobWorkPlace}{" "}
+              {data?.jobEmploymentTypeName} {workPlace}{" "}
             </p>
           </div>
         </div>
@@ -39,7 +52,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <WorkOutlineOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Category </h5>
-            <p className="text-secondary"> {data?.jobCategoryId} </p>
+            <p className="text-secondary"> {data?.jobCategoryName} </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -53,10 +66,22 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {data?.gender === Gender.MALE ? (
+            <MaleOutlined fontSize="medium" className="text-primary" />
+          ) : (
+            <FemaleOutlined fontSize="medium" className="text-primary" />
+          )}
+          <div className="flex flex-col">
+            <h5 className="font-semibold text-main"> Gender </h5>
+            <p className="text-secondary"> {gender} </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
           <SchoolOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Degree </h5>
-            <p className="text-secondary"> {data?.educationLevel} Degree </p>
+            <p className="text-secondary"> {education} Degree </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -86,7 +111,10 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <FmdGoodOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Location </h5>
-            <p className="text-secondary"> {data?.country}, {data?.city} </p>
+            <p className="text-secondary">
+              {" "}
+              {data?.country}, {data?.city}{" "}
+            </p>
           </div>
         </div>
       </div>

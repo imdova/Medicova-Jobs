@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { Add, Close, Delete, Edit, FormatSize } from "@mui/icons-material";
 import { JobData } from "@/types";
+import { disableEnterKey } from "@/util";
 
 interface ScreenQuestionsProps {
   onSubmit: (data: Partial<JobData>) => void;
@@ -166,7 +167,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} onKeyDown={disableEnterKey}>
       <div className="bg-primary-100 p-3">
         <div className="m-4">
           <label className="mb-2 text-lg font-semibold text-main">

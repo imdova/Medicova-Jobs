@@ -126,3 +126,10 @@ export function getPermissionNames(roles: Role[]): Permission[] {
 export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {
   return JSON.stringify(originalData) !== JSON.stringify(currentData);
 };
+
+
+export const disableEnterKey = (event: React.KeyboardEvent) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent form submission
+  }
+};
