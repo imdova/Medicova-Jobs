@@ -250,43 +250,6 @@ export const getTypeById = async (
 
 /// jobs actions
 
-export const getJobsByCompanyId = async (
-  companyId: string,
-  page: number = 1,
-  limit: number = 10,
-): Promise<Result<{ data: Job[]; total: number }>> => {
-  try {
-    const response = await fetch(
-      `${API_GET_JOBS}?page=${page}&limit=${limit}&companyId=${companyId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      },
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return {
-        success: true,
-        message: "Jobs list fetched successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "An error occurred",
-    };
-  }
-};
 export const getIndustries = async (
   page: number = 1,
   limit: number = 10,

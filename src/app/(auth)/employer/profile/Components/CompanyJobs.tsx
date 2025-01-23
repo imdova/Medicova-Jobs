@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import MinJobCard from "@/components/UI/job-card-min";
 import { Button, IconButton, Tooltip } from "@mui/material";
 import { Add } from "@mui/icons-material";
-import { Company, Job } from "@/types";
-import { getJobsByCompanyId } from "@/lib/actions/employer.actions";
+import { Company,  JobData } from "@/types";
 import Link from "next/link";
+import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 
 const INITIAL_VISIBLE_ITEMS = 4;
 const CompanyJobs: React.FC<{
   company: Company;
   isMe: boolean;
 }> = ({ company, isMe }) => {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<JobData[]>([]);
 
   const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS);
   const [isExpanded, setIsExpanded] = useState(false);

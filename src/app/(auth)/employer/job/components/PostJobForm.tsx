@@ -153,6 +153,7 @@ const PostJobForm: React.FC = () => {
       companyId,
       draft: true,
     };
+    handleCreate(newData);
     console.log(newData);
   };
 

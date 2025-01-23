@@ -106,7 +106,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                 placement="bottom"
               >
                 <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                  {industryLoading
+                  {industryLoading || industries.length === 0
                     ? [1, 2, 3, 4].map((i) => (
                         <div
                           key={i}

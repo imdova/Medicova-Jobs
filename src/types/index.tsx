@@ -198,6 +198,7 @@ export interface Industry {
 export interface JobData {
   id?: string;
   companyId: string;
+  company?: Company;
   title: string;
   jobIndustryId: string;
   jobIndustryName: string;
@@ -257,6 +258,8 @@ export interface JobData {
     id: string;
     name: string;
   };
+  createdAt?: string | null; // ISO date string
+  updatedAt?: string | null; // ISO date string
 }
 
 export interface FilterOption {

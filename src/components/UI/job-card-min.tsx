@@ -1,20 +1,25 @@
-import { jobs, notifications } from "@/constants";
-import { Job } from "@/types";
+import { notifications } from "@/constants";
+import { JobData } from "@/types";
 import { getFullLastEdit } from "@/util";
 import {
   AccessTimeOutlined,
   LocationOnOutlined,
-  MedicalServicesOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
+import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
+import { StartDateType } from "@/constants/enums/start-type.enum";
 interface JobCardProps {
-  job: Job;
+  job: JobData;
   className?: string;
 }
 
 const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
+  const workPlace =
+    jobWorkPlaceOptions.find((x) => x.id === job?.jobWorkPlace)?.label || "";
+  const education =
+    educationOptions.find((x) => x.id === job?.educationLevel)?.label || "";
   return (
     <Link
       href={`/job/${job.id}`}
@@ -25,55 +30,68 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       </h6>
       <div className="flex items-center gap-2">
         <Image
-          src={notifications[3].image}
-          alt="company logo"
+          src={job.company?.photo || "/images/placeholder-avatar.svg"}
+          alt={job.title}
           width={45}
           height={45}
-          className="h-[45px] rounded-md border  object-cover"
+          className="h-[45px] rounded-md border object-cover"
         />
         <div className="flex flex-wrap gap-2 text-secondary">
           <div className="mb-1 mr-2 flex gap-1 md:mb-0">
             <LocationOnOutlined className="h-4 w-4 text-light-primary" />
-            <p className="text-xs">{job.location}</p>
+            <p className="text-xs">
+              {job.country}, {job.city}{" "}
+            </p>
           </div>
 
           <div className="mb-1 mr-2 flex gap-1 md:mb-0">
             <SchoolOutlined className="h-4 w-4 text-light-primary" />
-            <p className="text-xs">{job.education}</p>
+            <p className="text-xs">
+              {education} Degree at {job.jobSpeciality?.name}{" "}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="mb-2 ml-[6px] mt-3 flex max-w-[500px] flex-wrap text-secondary">
-        {job.features.map((feature, index) => (
-          <div
-            key={index}
-            className="mr-2 mt-2 flex items-center gap-1 text-xs"
-          >
-            <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
-            {feature}
-          </div>
-        ))}
-        <div className="mr-2 mt-2 flex items-center gap-1">
+        <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
           <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
-          <span className="rounded-base bg-red-100/60 px-2 py-1 text-xs text-red-600">
-            Urgently hiring
+          {job.jobEmploymentType?.name} | {workPlace}
+        </div>
+        <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
+          <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
+          EX ({job.minExpYears} - {job.maxExpYears})
+        </div>
+        <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
+          <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
+          Age ({job.minAge} - {job.maxAge})
+        </div>
+        <div className="mr-2 mt-2 flex items-center gap-1">
+          <span
+            className={`h-[4px] w-[4px] rounded-full ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-600" : "bg-primary"}`}
+          ></span>
+          <span
+            className={`rounded-base px-2 py-1 text-xs ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-100/60 text-red-600" : "bg-primary-100 text-primary"}`}
+          >
+            {job.startDateType === StartDateType.IMMEDIATE
+              ? "Urgently hiring"
+              : "Flexible start date"}
           </span>
         </div>
       </div>
       <div className="mb-1 mr-2 flex gap-1 md:mb-0">
         <AccessTimeOutlined className="h-4 w-4 text-light-primary" />
-        <p className="text-xs">{getFullLastEdit(job.timeStamps)}</p>
+        <p className="text-xs">{getFullLastEdit(job.createdAt || "")}</p>
       </div>
       <div className="mt-auto flex gap-3">
         <button className="mt-3 text-sm text-primary underline hover:no-underline">
-          #Healthcare
+          #{job.jobIndustry?.name}
         </button>
         <button className="mt-3 text-sm text-primary underline hover:no-underline">
-          #Doctors
+          #{job.jobCategory?.name}
         </button>
         <button className="mt-3 text-sm text-primary underline hover:no-underline">
-          #Egypt
+          #{job.country}
         </button>
       </div>
     </Link>

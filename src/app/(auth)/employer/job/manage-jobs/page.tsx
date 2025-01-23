@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   TextField,
@@ -12,13 +12,51 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import JobCard from "@/components/UI/job-card";
-import { jobs } from "@/constants";
+import { useSession } from "next-auth/react";
+import { JobData, UserState } from "@/types";
+import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 
 const ManageJobs: React.FC = () => {
+  const { data: session } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId || "";
+
   const [activeTab, setActiveTab] = React.useState(0);
+  const [jobs, setJobs] = React.useState<JobData[]>([]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+  };
+
+  const fetchJobHandler = async () => {
+    const result = await getJobsByCompanyId(companyId);
+    if (result.success && result.data) {
+      setJobs(result.data.data);
+    }
+  };
+
+  useEffect(() => {
+    if (companyId && !jobs.length) {
+      fetchJobHandler();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
+
+  const filteredJobs = () => {
+    switch (activeTab) {
+      case 0: // All
+        return jobs;
+      case 1: // Active
+        return jobs.filter((job) => job.active && !job.closed && !job.draft);
+      case 2: // Closed
+        return jobs.filter((job) => job.closed);
+      case 3: // Expired (based on validity date)
+        return jobs.filter((job) => job.validTo && new Date(job.validTo) < new Date());
+      case 4: // Draft
+        return jobs.filter((job) => job.draft);
+      default:
+        return jobs;
+    }
   };
 
   return (
@@ -92,17 +130,21 @@ const ManageJobs: React.FC = () => {
             },
           }}
         >
-          <Tab label="All (20)" />
-          <Tab label="Active (5)" />
-          <Tab label="Closed (12)" />
-          <Tab label="Expired (1)" />
-          <Tab label="Draft (2)" />
+          <Tab label={`All (${jobs.length})`} />
+          <Tab
+            label={`Active (${jobs.filter((job) => job.active && !job.closed && !job.draft).length})`}
+          />
+          <Tab label={`Closed (${jobs.filter((job) => job.closed).length})`} />
+          <Tab
+            label={`Expired (${jobs.filter((job) => job.validTo && new Date(job.validTo) < new Date()).length})`}
+          />
+          <Tab label={`Draft (${jobs.filter((job) => job.draft).length})`} />
         </Tabs>
       </div>
 
       {/* Job Listings */}
       <div className="flex flex-col gap-4 p-2">
-        {jobs.slice(0, 4).map((job) => (
+        {filteredJobs().map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />
         ))}
       </div>

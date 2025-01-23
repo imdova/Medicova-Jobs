@@ -48,9 +48,11 @@ export function getLastEdit(date: Date): string {
 
   return formatDate(date);
 }
-export function getFullLastEdit(date: Date): string {
+export function getFullLastEdit(date: Date | string | null): string {
+  if (!date) return "";
   const currentDate = new Date();
-  const diffTime = Math.abs(currentDate.getTime() - date.getTime());
+  const lastDate = new Date(date);
+  const diffTime = Math.abs(currentDate.getTime() - lastDate.getTime());
   const diffMinutes = Math.floor(diffTime / (1000 * 60));
   const diffDays = Math.floor(diffMinutes / (60 * 24));
 
@@ -74,7 +76,7 @@ export function getFullLastEdit(date: Date): string {
     return `${diffDays} d`;
   }
 
-  return formatDate(date);
+  return formatDate(lastDate);
 }
 
 export function getLastSegment(url?: string) {
@@ -126,7 +128,6 @@ export function getPermissionNames(roles: Role[]): Permission[] {
 export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {
   return JSON.stringify(originalData) !== JSON.stringify(currentData);
 };
-
 
 export const disableEnterKey = (event: React.KeyboardEvent) => {
   if (event.key === "Enter") {

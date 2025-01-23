@@ -1,5 +1,6 @@
 import { EducationLevel } from "./enums/education-level.enum";
 import { Gender } from "./enums/gender.enum";
+import { StartDateType } from "./enums/start-type.enum";
 import { JobWorkPlace } from "./enums/work-place.enum";
 
 export const jobWorkPlaceOptions = [
@@ -17,4 +18,9 @@ export const educationOptions = [
   { id: EducationLevel.BACHELORS, label: "bachelors" },
   { id: EducationLevel.MASTERS, label: "Master's" },
   { id: EducationLevel.PHD, label: "PHD" },
+];
+
+export const startDateTypeOptions = [
+  { id: StartDateType.IMMEDIATE, label: "Urgently hiring" },
+  { id: StartDateType.NEGOTIABLE, label: "Flexible start date" },
 ];

@@ -14,12 +14,9 @@ import {
 import TextEditor from "@/components/editor/editor";
 import { JobData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
-import { JobWorkPlace } from "@/constants/enums/work-place.enum";
-import { Gender } from "@/constants/enums/gender.enum";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries } from "@/store/slices/locationSlice";
 import { Add, Remove } from "@mui/icons-material";
-import { EducationLevel } from "@/constants/enums/education-level.enum";
 import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
 import EmploymentTypeSelect from "../employmentType";
@@ -27,6 +24,7 @@ import {
   educationOptions,
   genderOptions,
   jobWorkPlaceOptions,
+  startDateTypeOptions,
 } from "@/constants/job";
 import { disableEnterKey } from "@/util";
 
@@ -67,8 +65,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-
- 
 
   return (
     <form
@@ -620,58 +616,101 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         </div>
       </div>
       {/* Number of Vacancies */}
-      <div className="mb-6 md:w-1/2 md:pr-3">
-        <label className="mb-1 text-lg font-semibold text-main">
-          Number of Vacancies *
-        </label>
-        <Controller
-          name="availableVacancies"
-          control={control}
-          defaultValue={0}
-          rules={{
-            required: "Vacancy is required",
-            min: {
-              value: 1,
-              message: "Vacancy must be at least 1",
-            },
-          }}
-          render={({ field }) => (
-            <FormControl
-              component="fieldset"
-              error={!!errors?.availableVacancies?.message}
-              fullWidth
-            >
-              <div className="flex gap-5">
-                <Button
-                  variant="outlined"
-                  color={errors?.availableVacancies ? "error" : "primary"}
-                  onClick={() => field.onChange((field.value || 0) - 1)}
-                  disabled={!field.value || field.value <= 1} // Disable the minus button when count is 1
-                >
-                  <Remove />
-                </Button>
-                <p
-                  className={`rounded-base border p-4 px-8 text-center text-xl ${errors?.availableVacancies ? "border-red-500 text-red-500" : ""}`}
-                >
-                  {field.value}
-                </p>
-                <Button
-                  variant="outlined"
-                  color={errors?.availableVacancies ? "error" : "primary"}
-                  onClick={() => field.onChange((field.value || 0) + 1)}
-                >
-                  <Add />
-                </Button>
-              </div>
+      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+        <div className="mb-6 md:w-1/2 md:pr-3">
+          <label className="mb-1 text-lg font-semibold text-main">
+            Number of Vacancies *
+          </label>
+          <Controller
+            name="availableVacancies"
+            control={control}
+            defaultValue={0}
+            rules={{
+              required: "Vacancy is required",
+              min: {
+                value: 1,
+                message: "Vacancy must be at least 1",
+              },
+            }}
+            render={({ field }) => (
+              <FormControl
+                component="fieldset"
+                error={!!errors?.availableVacancies?.message}
+                fullWidth
+              >
+                <div className="flex gap-5">
+                  <Button
+                    variant="outlined"
+                    color={errors?.availableVacancies ? "error" : "primary"}
+                    onClick={() => field.onChange((field.value || 0) - 1)}
+                    disabled={!field.value || field.value <= 1} // Disable the minus button when count is 1
+                  >
+                    <Remove />
+                  </Button>
+                  <TextField
+                    {...field}
+                    name="Number of Vacancies"
+                    className="h-14 w-24"
+                    type="number"
+                    placeholder="Num of Vacancies"
+                    error={!!errors?.availableVacancies?.message}
+                  />
 
-              {errors.availableVacancies && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.availableVacancies.message}
-                </p>
-              )}
-            </FormControl>
-          )}
-        />
+                  <Button
+                    variant="outlined"
+                    color={errors?.availableVacancies ? "error" : "primary"}
+                    onClick={() => field.onChange((field.value || 0) + 1)}
+                  >
+                    <Add />
+                  </Button>
+                </div>
+
+                {errors.availableVacancies && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.availableVacancies.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
+        <div className="mb-6 md:w-1/2 md:pr-3">
+          <label className="mb-1 text-lg font-semibold text-main">
+            start date *
+          </label>
+          <Controller
+            name="startDateType"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "industry is required" }}
+            render={({ field }) => (
+              <FormControl
+                component="fieldset"
+                error={!!errors?.startDateType?.message}
+                fullWidth
+              >
+                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                  {startDateTypeOptions.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => field.onChange(item.id)}
+                      className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.startDateType ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                    >
+                      {item.id}
+                    </button>
+                  ))}
+                </div>
+
+                {errors.startDateType && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.startDateType.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
       </div>
 
       <Divider className="my-2" />
