@@ -12,6 +12,8 @@ declare module "next-auth" {
     photo: string | null;
     phone: string | null;
     companyId: string | null;
+    companyName: string | null;
+    companyPhoto: string | null;
     permissions: Permission[];
   }
 

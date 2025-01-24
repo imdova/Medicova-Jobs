@@ -106,6 +106,8 @@ const CompanyInfoForm: React.FC = () => {
       markAsClean();
       update({
         companyId: newCompany.id,
+        companyName: newCompany.name,
+        companyPhoto: newCompany.logo,
       });
       reloadSession();
       setLoading(false);
@@ -118,9 +120,13 @@ const CompanyInfoForm: React.FC = () => {
   const handleUpdate = async () => {
     const result = await updateCompany(data);
     if (result.success && result.data) {
-      const newCompany = result.data;
-      setData(newCompany); // Set the form data with the fetched company data
-      setCompany(newCompany);
+      const updatedCompany = result.data;
+      setData(updatedCompany); // Set the form data with the fetched company data
+      setCompany(updatedCompany);
+      update({
+        companyName: updatedCompany.name,
+        companyPhoto: updatedCompany.logo,
+      });
       markAsClean();
       setLoading(false);
       console.log("Company Updated successfully");

@@ -81,7 +81,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       </div>
       <div className="mb-1 mr-2 flex gap-1 md:mb-0">
         <AccessTimeOutlined className="h-4 w-4 text-light-primary" />
-        <p className="text-xs">{getFullLastEdit(job.createdAt || "")}</p>
+        <p className="text-xs">{getFullLastEdit(job.created_at || "")}</p>
       </div>
       <div className="mt-auto flex gap-3">
         <button className="mt-3 text-sm text-primary underline hover:no-underline">

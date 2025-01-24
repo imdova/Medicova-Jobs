@@ -126,3 +126,35 @@ html,
   scrollbar-width: none;
   /* Firefox */
 }
+
+.prose.custom-list ul li {
+  list-style-type: none; /* Remove default bullets */
+  margin-left: 5px;
+}
+.custom-list ul {
+  list-style: none !important; /* Remove default bullets */
+  padding-left: 0; /* Remove default indentation */
+}
+
+.custom-list ul li {
+  position: relative;
+  padding-left: 2rem; /* Add space for the icon */
+}
+
+.custom-list ul li::before {
+  content: '\2713'; /* Unicode checkmark as placeholder */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--light-primary); /* Change this to match your design */
+  font-size: 10px; /* Adjust the size */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 14px; /* Adjust the size */
+  width: 14px; /* Adjust the size */
+  border: 1px solid var(--light-primary);
+  border-radius: 50%;
+}

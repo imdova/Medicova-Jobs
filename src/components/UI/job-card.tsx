@@ -49,7 +49,7 @@ const JobCard: React.FC<JobCardProps> = ({
             alt={job.title}
             width={60}
             height={60}
-            className={`h-[60px] w-[60px] rounded-base border border-gray-100 object-cover transition-transform duration-150`}
+            className={`h-[60px] w-[60px] bg-primary-100 rounded-base border border-gray-100 object-cover transition-transform duration-150`}
           />
           <div>
             <div className="flex items-center gap-2">
@@ -57,9 +57,12 @@ const JobCard: React.FC<JobCardProps> = ({
                 <h6 className="text-lg font-semibold text-main">{job.title}</h6>
               ) : isEdit ? (
                 <div className="flex items-center gap-2">
-                  <h6 className="text-lg font-semibold text-main">
+                  <Link
+                    href={`/job/${job.id}`}
+                    className="text-lg font-semibold text-main hover:underline"
+                  >
                     {job.title}
-                  </h6>
+                  </Link>
                   <IconButton size="small" aria-label="edit">
                     <Edit className="h-5 w-5 hover:text-light-primary" />
                   </IconButton>
@@ -75,7 +78,7 @@ const JobCard: React.FC<JobCardProps> = ({
               <div className="ml-3 flex items-center gap-1">
                 <AccessTimeOutlined className="m-0 h-4 w-4 p-0 text-secondary" />
                 <span className="text-xs text-secondary">
-                  {getFullLastEdit(job.createdAt || "")}
+                  {getFullLastEdit(job.created_at || "")}
                 </span>
               </div>
             </div>

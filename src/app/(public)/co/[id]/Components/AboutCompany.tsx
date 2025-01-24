@@ -6,9 +6,9 @@ import Link from "next/link";
 
 const AboutCompany: React.FC<{
   data?: string;
-  isMe: boolean;
-}> = ({ data, isMe }) => {
-  if (!isMe && data?.length === 0) {
+  isEmployee: boolean;
+}> = ({ data, isEmployee }) => {
+  if (!isEmployee && data?.length === 0) {
     return null;
   }
   return (
@@ -16,7 +16,7 @@ const AboutCompany: React.FC<{
       {/* Title */}
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
-        {isMe && (
+        {isEmployee && (
           <IconButton LinkComponent={Link} href="/employer/company-info" className="rounded border border-solid border-gray-300 p-2">
             <Edit />
           </IconButton>
@@ -27,7 +27,7 @@ const AboutCompany: React.FC<{
           <PendingActions className="-ml-1 mr-2 inline text-primary" />
           {data}
         </ClampedText>
-      ) : isMe ? (
+      ) : isEmployee ? (
         <EmptyCard
           src={"/images/activities.png"}
           description={" Tell us about your company."}

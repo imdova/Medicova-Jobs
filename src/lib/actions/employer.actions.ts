@@ -6,13 +6,22 @@ import {
   API_GET_COMPANY_TYPE_BY_ID,
   API_GET_COMPANY_TYPES,
   API_GET_EMPLOYEE_BY_ID,
+  API_GET_EMPLOYEES,
   API_GET_JOB_CATEGORIES,
   API_GET_JOB_EMPLOYMENT_TYPES,
   API_GET_JOB_INDUSTRIES,
   API_GET_JOBS,
   API_UPDATE_COMPANY,
 } from "@/api/employer";
-import { Company, EmploymentType, Industry, Job, JobCategory, Result, Sector } from "@/types";
+import {
+  Company,
+  EmploymentType,
+  Industry,
+  Job,
+  JobCategory,
+  Result,
+  Sector,
+} from "@/types";
 
 export const getEmployerWithID = async (id: string): Promise<Result> => {
   try {
@@ -29,6 +38,43 @@ export const getEmployerWithID = async (id: string): Promise<Result> => {
         success: true,
         message: "Role fetched successfully",
         data: data.company,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getEmployeeOfCompany = async (
+  companyId: string,
+  page: number = 1,
+  limit: number = 10,
+): Promise<Result<{ data: { id: string }[]; total: number }>> => {
+  try {
+    const response = await fetch(
+      API_GET_EMPLOYEES + `?page=${page}&limit=${limit}&companyId=${companyId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      },
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        message: "Roles fetched successfully",
+        data: data,
       };
     } else {
       const errorData = await response.json();
@@ -312,7 +358,8 @@ export const getEmploymentTypes = async (
       },
     );
     if (response.ok) {
-      const data: { total: number; data: EmploymentType[] } = await response.json();
+      const data: { total: number; data: EmploymentType[] } =
+        await response.json();
       return {
         success: true,
         message: "Employment types list fetched successfully",
@@ -382,18 +429,16 @@ export const getSpecialtyFromCategoryId = async (
   }>
 > => {
   try {
-    const response = await fetch(
-      `${API_GET_JOBS}?categoryIds=${categoryId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
+    const response = await fetch(`${API_GET_JOBS}?categoryIds=${categoryId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
       },
-    );
+    });
     if (response.ok) {
-      const data: { total: number; data: JobCategory[] } = await response.json();
+      const data: { total: number; data: JobCategory[] } =
+        await response.json();
       return {
         success: true,
         message: "Speciality list fetched successfully",
@@ -413,5 +458,3 @@ export const getSpecialtyFromCategoryId = async (
     };
   }
 };
-
-

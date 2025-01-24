@@ -170,7 +170,9 @@ const ProfileTab = ({
   activeTab: number | null;
   onTabChange: (index: number) => void;
 }) => {
+  const isEmployer = user.type === "employer";
   const isActive = activeTab === 0;
+
   return (
     <Tab
       className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
@@ -179,23 +181,35 @@ const ProfileTab = ({
       value={0}
       onClick={() => onTabChange(0)}
       component={Link}
-      href={user.firstName ? `/me/${user.firstName}` : "#"}
+      href={
+        isEmployer
+          ? `/co/${user?.companyId}`
+          : user.firstName
+            ? `/me/${user.firstName}`
+            : "#"
+      }
       label={
         <div className="flex items-center gap-1">
           <Image
-            src={user?.photo || "/images/placeholder-avatar.svg"}
-            alt={user.firstName + "photo"}
+            src={
+              user.companyPhoto ||
+              user?.photo ||
+              "/images/placeholder-avatar.svg"
+            }
+            alt={(user?.companyName || user.firstName) + "photo"}
             width={40}
             height={40}
-            className={`${isActive ? "border-white" : "border-gray-300"} object-cover" rounded-full border-2 bg-white`}
+            className={`${isActive ? "border-white" : "border-gray-300"} aspect-square h-full max-h-[40px] w-full max-w-[40px] rounded-full border-2 bg-white object-cover`}
           />
           <div>
             <h6 className="text-left text-sm normal-case">
-              {user.firstName + " ." + user.lastName?.[0]}
+              {user?.companyName || user.firstName + " ." + user.lastName?.[0]}
             </h6>
-            <p className="max-w-full text-left text-xs normal-case">
-              {user.email}
-            </p>
+            {!isEmployer && (
+              <p className="max-w-full text-left text-xs normal-case">
+                {user.email}
+              </p>
+            )}
           </div>
         </div>
       }

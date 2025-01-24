@@ -5,10 +5,15 @@ import { Ellipse5, GridIcon } from "@/components/icons/icons";
 import EastIcon from "@mui/icons-material/East";
 import JobCard from "@/components/UI/job-card";
 import { GroupAddOutlined, Search, WorkOutline } from "@mui/icons-material";
-import { folders, jobs } from "@/constants";
+import { folders } from "@/constants";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import FolderMainCard from "@/components/UI/folder-main-card";
+import { useSession } from "next-auth/react";
+import { JobData, UserState } from "@/types";
+import { getJobsByCompanyId } from "@/lib/actions/job.actions";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchJobs } from "@/store/slices/jobSlice";
 
 interface Card {
   title: string;
@@ -23,7 +28,22 @@ const cards: Card[] = [
   { title: "New Applicants", content: "120", icon: GroupAddOutlined, url: "" },
 ];
 
-const page = () => {
+const Page = () => {
+  const { data: session } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId || "";
+
+  const {
+    jobs: { data: jobs, loading: jobsLoading, error },
+  } = useAppSelector((state) => state.companyJobs);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (jobs.length === 0 && companyId) {
+      dispatch(fetchJobs(companyId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, companyId]);
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
       <div className="flex-1">
@@ -58,23 +78,42 @@ const page = () => {
           </span>
         </h2>
 
-        <div>
-          <div className="flex flex-col gap-4">
-            {jobs.slice(0, 4).map((job) => (
-              <JobCard key={job.id} job={job} isEdit={true} />
-            ))}
-          </div>
+        {jobsLoading ? (
+          <div>Loading...</div>
+        ) : jobs.length > 0 ? (
+          <div>
+            <div className="flex flex-col gap-4">
+              {jobs.slice(0, 4).map((job) => (
+                <JobCard key={job.id} job={job} isEdit={true} />
+              ))}
+            </div>
 
-          <div className="flex w-full justify-center">
-            <Link
-              href="/employer/job/manage-jobs"
-              className="group my-2 mt-5 text-xl text-primary hover:underline"
-            >
-              All Jobs
-              <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
-            </Link>
+            {jobs.length > 4 && (
+              <div className="flex w-full justify-center">
+                <Link
+                  href="/employer/job/manage-jobs"
+                  className="group my-2 mt-5 text-xl text-primary hover:underline"
+                >
+                  All Jobs
+                  <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
+                </Link>
+              </div>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="mt-5 flex flex-col items-center justify-center gap-4 rounded-base border border-gray-100 bg-white p-5 shadow-lg">
+            <h6 className="text-2xl font-semibold text-secondary">
+              You haven&apos;t posted any jobs yet.
+            </h6>
+            <Button
+              LinkComponent={Link}
+              href="/employer/job/posted"
+              variant="contained"
+            >
+              Post Job Now
+            </Button>
+          </div>
+        )}
         <div>
           <h2 className="mb-5 mt-10 text-3xl font-semibold text-main">
             CV Search{" "}
@@ -137,7 +176,7 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
 
 const StatusCard: React.FC<{ lastOne: boolean; card: Card }> = ({
   card,

@@ -128,7 +128,7 @@ const SearchPage: React.FC = ({
           </div>
           {/* Applicant Cards */}
 
-          {view === "list" ? (
+          {/* {view === "list" ? (
             <div className="mb-8 flex flex-col gap-4">
               {jobs.map((job) => (
                 <JobCard
@@ -145,7 +145,7 @@ const SearchPage: React.FC = ({
                 <MinJobCard key={job.id} job={job} />
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Pagination */}
           <CustomPagination

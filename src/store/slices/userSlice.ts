@@ -11,6 +11,8 @@ const InitialUserData: UserState = {
   permissions: [],
   photo: null,
   type: "seeker",
+  companyName: null,
+  companyPhoto: null,
 };
 interface UserReducerState {
   loading: boolean;

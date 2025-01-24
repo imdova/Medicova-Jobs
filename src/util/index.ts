@@ -1,4 +1,6 @@
-import { Role } from "@/types";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
+import { educationOptions } from "@/constants/job";
+import { JobData, Role } from "@/types";
 import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -68,7 +70,7 @@ export function getFullLastEdit(date: Date | string | null): string {
       return `${diffMinutes} min`;
     }
 
-    return `${diffHours} d`;
+    return `${diffHours} h`;
   }
 
   // Check if it's within the last 15 days
@@ -132,5 +134,27 @@ export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {
 export const disableEnterKey = (event: React.KeyboardEvent) => {
   if (event.key === "Enter") {
     event.preventDefault(); // Prevent form submission
+  }
+};
+
+export const formatEducationAndSpecialty = (job: JobData): string | null => {
+  const education = educationOptions.find(
+    (option) => option.id === job.educationLevel,
+  );
+
+  if (!education) {
+    return null;
+  }
+  switch (education.id) {
+    case EducationLevel.HIGH_SCHOOL:
+      return `A High School Diploma in ${job.jobSpecialityName}`;
+    case EducationLevel.BACHELORS:
+      return `A Bachelor's Degree in ${job.jobSpecialityName}`;
+    case EducationLevel.MASTERS:
+      return `A Master's Degree in ${job.jobSpecialityName}`;
+    case EducationLevel.PHD:
+      return `A PhD in ${job.jobSpecialityName}`;
+    default:
+      return null;
   }
 };

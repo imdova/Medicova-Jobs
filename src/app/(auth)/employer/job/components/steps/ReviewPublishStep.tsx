@@ -7,6 +7,8 @@ import {
   SchoolOutlined,
 } from "@mui/icons-material";
 import { JobData } from "@/types";
+import { educationOptions } from "@/constants/job";
+import { formatEducationAndSpecialty } from "@/util";
 
 interface ReviewPublishStepProps {
   jobData: JobData;
@@ -24,6 +26,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
   loading,
   error,
 }) => {
+  const education = formatEducationAndSpecialty(jobData);
   return (
     <div>
       <div className="w-full px-2 md:px-6">
@@ -42,16 +45,16 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
                   {jobData.country + ", " + jobData.city}
                 </span>
               </div>
-              <div className="rounded-md text-sm text-gray-500">
-                <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
-                <span className="ml-2 text-xs md:text-base">
-                  {jobData.educationLevel}
-                </span>
-              </div>
+              {education && (
+                <div className="rounded-md text-sm text-gray-500">
+                  <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                  <span className="ml-2 text-xs md:text-base">{education}</span>
+                </div>
+              )}
               <div className="rounded-md text-sm text-gray-500">
                 <MedicalServicesOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                 <span className="ml-2 text-xs md:text-base">
-                  {jobData.jobSpecialityName}
+                  {jobData.jobCategoryName}
                 </span>
               </div>
             </div>

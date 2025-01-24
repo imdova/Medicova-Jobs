@@ -7,6 +7,9 @@ import ReviewPublishStep from "./steps/ReviewPublishStep";
 import { JobData, UserState } from "@/types";
 import { useSession } from "next-auth/react";
 import { createJob } from "@/lib/actions/job.actions";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store/hooks";
+import { clearCompanyJobs } from "@/store/slices/jobSlice";
 
 const steps = [
   "Job Details",
@@ -95,9 +98,11 @@ const initialJob: JobData = {
 //   validTo: null,
 // };
 const PostJobForm: React.FC = () => {
+  const route = useRouter();
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
+  const dispatch = useAppDispatch();
 
   const [activeStep, setActiveStep] = useState(0);
   const [jobData, setJobData] = useState(initialJob);
@@ -137,9 +142,11 @@ const PostJobForm: React.FC = () => {
   const handleCreate = async (data: JobData) => {
     const result = await createJob(data);
     if (result.success && result.data) {
-      const newCompany = result.data;
+      const job = result.data;
+      route.push(`/job/${job.id}`);
+      dispatch(clearCompanyJobs());
       setLoading(false);
-      console.log("Company created successfully");
+      console.log("Job Created successfully");
     } else {
       setLoading(false);
       setError(result.message);

@@ -1,63 +1,38 @@
 "use client";
 import React, { useEffect } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  IconButton,
-  Grid,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import { Box, TextField, IconButton, Tabs, Tab } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import JobCard from "@/components/UI/job-card";
 import { useSession } from "next-auth/react";
-import { JobData, UserState } from "@/types";
-import { getJobsByCompanyId } from "@/lib/actions/job.actions";
+import { JobsTabs, UserState } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchJobs } from "@/store/slices/jobSlice";
+import { filteredJobs } from "@/lib/auth/utils";
+
+const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
 
 const ManageJobs: React.FC = () => {
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
 
-  const [activeTab, setActiveTab] = React.useState(0);
-  const [jobs, setJobs] = React.useState<JobData[]>([]);
+  const {
+    jobs: { data: jobs, loading, error },
+  } = useAppSelector((state) => state.companyJobs);
+  const dispatch = useAppDispatch();
 
+  const [activeTab, setActiveTab] = React.useState(0);
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
-  const fetchJobHandler = async () => {
-    const result = await getJobsByCompanyId(companyId);
-    if (result.success && result.data) {
-      setJobs(result.data.data);
-    }
-  };
-
   useEffect(() => {
-    if (companyId && !jobs.length) {
-      fetchJobHandler();
+    if (jobs.length === 0 && companyId) {
+      dispatch(fetchJobs(companyId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyId]);
-
-  const filteredJobs = () => {
-    switch (activeTab) {
-      case 0: // All
-        return jobs;
-      case 1: // Active
-        return jobs.filter((job) => job.active && !job.closed && !job.draft);
-      case 2: // Closed
-        return jobs.filter((job) => job.closed);
-      case 3: // Expired (based on validity date)
-        return jobs.filter((job) => job.validTo && new Date(job.validTo) < new Date());
-      case 4: // Draft
-        return jobs.filter((job) => job.draft);
-      default:
-        return jobs;
-    }
-  };
+  }, [dispatch, companyId]);
 
   return (
     <Box sx={{ padding: { xs: "14px", md: "40px" } }}>
@@ -130,21 +105,18 @@ const ManageJobs: React.FC = () => {
             },
           }}
         >
-          <Tab label={`All (${jobs.length})`} />
-          <Tab
-            label={`Active (${jobs.filter((job) => job.active && !job.closed && !job.draft).length})`}
-          />
-          <Tab label={`Closed (${jobs.filter((job) => job.closed).length})`} />
-          <Tab
-            label={`Expired (${jobs.filter((job) => job.validTo && new Date(job.validTo) < new Date()).length})`}
-          />
-          <Tab label={`Draft (${jobs.filter((job) => job.draft).length})`} />
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              label={`${tab} (${filteredJobs(jobs, tabs[index]).length})`}
+            />
+          ))}
         </Tabs>
       </div>
 
       {/* Job Listings */}
       <div className="flex flex-col gap-4 p-2">
-        {filteredJobs().map((job) => (
+        {filteredJobs(jobs, tabs[activeTab]).map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />
         ))}
       </div>

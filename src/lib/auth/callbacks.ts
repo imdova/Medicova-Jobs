@@ -27,13 +27,15 @@ export const callbacks = {
       token.photo = user.photo || user.image;
       token.phone = user.phone;
       token.companyId = user.companyId;
+      token.companyName = user.companyName;
+      token.companyPhoto = user.companyPhoto;
       token.permissions = user.permissions;
       token.type = user.type;
     }
     if (trigger === "update") {
-      if (session?.companyId) {
-        token.companyId = session.companyId;
-      }
+      token.companyId = session?.companyId || token.companyId;
+      token.companyName = session?.companyName || token.companyName;
+      token.companyPhoto = session?.companyPhoto || token.companyPhoto;
     }
     return token;
   },
@@ -47,6 +49,8 @@ export const callbacks = {
       session.user.photo = token.photo as string | null;
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;
+      session.user.companyName = token.companyName as string | null;
+      session.user.companyPhoto = token.companyPhoto as string | null;
       session.user.permissions = token.permissions as Permission[];
       session.user.type = token.type as RoleState;
     }

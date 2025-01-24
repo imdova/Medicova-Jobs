@@ -1,3 +1,4 @@
+import { JobData, JobsTabs } from "@/types";
 import { forgetPassword, register, serverSignIn } from "../access";
 
 export async function authenticateUser(credentials: any) {
@@ -55,3 +56,23 @@ export async function handleSocialLogin(user: any, account: any) {
     return false;
   }
 }
+
+
+export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
+  switch (activeTab) {
+    case "all": // All
+      return jobs;
+    case "active": // Active
+      return jobs.filter((job) => job.active && !job.closed && !job.draft);
+    case "closed": // Closed
+      return jobs.filter((job) => job.closed);
+    case "expired": // Expired (based on validity date)
+      return jobs.filter(
+        (job) => job.validTo && new Date(job.validTo) < new Date(),
+      );
+    case "draft": // Draft
+      return jobs.filter((job) => job.draft);
+    default:
+      return [];
+  }
+};

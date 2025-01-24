@@ -52,6 +52,8 @@ export interface UserState {
   photo: string | null;
   phone: string | null;
   companyId: string | null;
+  companyName: string | null;
+  companyPhoto: string | null;
   permissions: Permission[];
 }
 
@@ -194,6 +196,7 @@ export interface Industry {
   name: string;
   categories: JobCategory[];
 }
+export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
 export interface JobData {
   id?: string;
@@ -258,7 +261,7 @@ export interface JobData {
     id: string;
     name: string;
   };
-  createdAt?: string | null; // ISO date string
+  created_at?: string | null; // ISO date string
   updatedAt?: string | null; // ISO date string
 }
 
