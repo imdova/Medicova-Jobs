@@ -24,12 +24,14 @@ interface ScreenQuestionsProps {
   onSubmit: (data: Partial<JobData>) => void;
   onDraft: (data: Partial<JobData>) => void;
   onBack: () => void;
+  draftLoading: boolean;
 }
 
 const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   onBack,
   onDraft,
   onSubmit,
+  draftLoading
 }) => {
   const [questions, setQuestions] = useState<string[]>([]);
   const [showCompany, setShowCompany] = useState(true);
@@ -310,7 +312,8 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
           Back
         </Button>
         <Button onClick={handleDraft} className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]">
-          Save and Publish Later
+        {draftLoading ? "Loading... " : "Save and Publish Later"}
+          
         </Button>
         <Button  type="submit" variant="contained">
           next

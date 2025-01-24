@@ -3,7 +3,14 @@ import { Box, IconButton, Button } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
 import post from "@/components/images/post.svg";
-import { Edit, Instagram, Language, LinkedIn, LinkOutlined, Twitter } from "@mui/icons-material";
+import {
+  Edit,
+  Instagram,
+  Language,
+  LinkedIn,
+  LinkOutlined,
+  Twitter,
+} from "@mui/icons-material";
 
 export const PostYourFirstJob = () => {
   return (
@@ -48,6 +55,7 @@ export const PostYourFirstJob = () => {
 
 type Props = {
   data?: { [key: string]: string }; // Optional prop
+  isEmployee?: boolean;
 };
 
 const socialMediaIcons: { [key: string]: JSX.Element } = {
@@ -57,28 +65,25 @@ const socialMediaIcons: { [key: string]: JSX.Element } = {
   website: <Language sx={{ color: "rgba(46, 174, 125, 1)" }} />,
 };
 
-export const EmployerSocialMedia: React.FC<Props> = ({ data = {} }) => {
+export const EmployerSocialMedia: React.FC<Props> = ({
+  data = {},
+  isEmployee,
+}) => {
   // If the data object is empty or undefined
   if (!data || Object.keys(data).length === 0) {
-    return (
+    return isEmployee ? (
       <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div className="justify-space flex items-center">
           <h6 className="mb-2 text-2xl font-semibold text-main">
             Social Links
           </h6>
           <IconButton className="rounded border border-solid border-gray-300 p-2">
             <Edit />
           </IconButton>
-        </Box>
+        </div>
         <p className="text-gray-500">No social media links provided.</p>
       </div>
-    );
+    ) : null;
   }
 
   return (
@@ -91,9 +96,11 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data = {} }) => {
         }}
       >
         <h6 className="mb-2 text-2xl font-semibold text-main">Social Links</h6>
-        <IconButton className="rounded border border-solid border-gray-300 p-2">
-          <Edit />
-        </IconButton>
+        {isEmployee && (
+          <IconButton className="rounded border border-solid border-gray-300 p-2">
+            <Edit />
+          </IconButton>
+        )}
       </Box>
 
       <div className="flex gap-4">

@@ -8,13 +8,16 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+const domain = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 const ShareMenu: React.FC<
-  { link: string } & React.ComponentProps<typeof IconButton>
-> = ({ link, ...props }) => {
+  { link?: string; path?: string } & React.ComponentProps<typeof IconButton>
+> = ({ link, path, ...props }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const open = Boolean(anchorEl);
+
+  const url = link ? link : domain ? domain + path : "";
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -25,22 +28,22 @@ const ShareMenu: React.FC<
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(url);
     setShowCopyAlert(true);
     handleClose();
   };
 
   const shareUrls = {
-    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(link)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-      link,
+      url,
     )}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      link,
+      url,
     )}`,
     instagram: `https://www.instagram.com/share?url=${encodeURIComponent(
-      link,
+      url,
     )}`,
   };
 

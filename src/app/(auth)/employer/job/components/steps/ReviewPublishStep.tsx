@@ -7,7 +7,6 @@ import {
   SchoolOutlined,
 } from "@mui/icons-material";
 import { JobData } from "@/types";
-import { educationOptions } from "@/constants/job";
 import { formatEducationAndSpecialty } from "@/util";
 
 interface ReviewPublishStepProps {
@@ -16,6 +15,7 @@ interface ReviewPublishStepProps {
   onSubmit: () => void;
   onBack: () => void;
   loading: boolean;
+  draftLoading: boolean;
   error: string;
 }
 const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
@@ -24,6 +24,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
   onDraft,
   onSubmit,
   loading,
+  draftLoading,
   error,
 }) => {
   const education = formatEducationAndSpecialty(jobData);
@@ -149,7 +150,8 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
           onClick={() => onDraft()}
           className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
         >
-          Save and Publish Later
+                   {draftLoading ? "Loading... " : "Save and Publish Later"}
+
         </Button>
         <Button onClick={onSubmit} type="submit" variant="contained">
           {loading ? "Loading..." : "Publish"}

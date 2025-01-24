@@ -17,15 +17,39 @@ import { formatEducationAndSpecialty, getFullLastEdit } from "@/util";
 import { useSession } from "next-auth/react";
 import { JobData, UserState } from "@/types";
 import { notFound } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useEffect } from "react";
+import { fetchJobs } from "@/store/slices/jobSlice";
+import Loading from "@/components/loading/loading";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
 
   const education = formatEducationAndSpecialty(job);
 
   const isOwner = job.companyId === companyId;
+  console.log("🚀 ~ job.companyId:", job.companyId)
+  console.log("🚀 ~ companyId:", companyId)
+  console.log("🚀 ~ isOwner:", isOwner)
+  console.log("🚀 ~ job.draft:", job.draft)
+
+  const {
+    jobs: { data: jobs, loading: jobsLoading, error },
+  } = useAppSelector((state) => state.companyJobs);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (jobs.length === 0 && companyId) {
+      dispatch(fetchJobs(companyId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, companyId]);
+
+  if(status === "loading" || jobsLoading) {
+    return <Loading />;
+  }
 
   if (!isOwner && job.draft) {
     return notFound();
@@ -161,7 +185,10 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
 
           {/* company details */}
           {job.company && (
-            <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div
+              className={`mt-8 grid grid-cols-1 gap-4 ${false ? "md:grid-cols-2" : ""}`}
+            >
+              {/* <div className={`mt-8 grid grid-cols-1 gap-4 ${job.company.images "md:grid-cols-2"}`}> */}
               {/* company details */}
               <div>
                 <div className="flex items-center gap-2">
@@ -170,8 +197,12 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                     alt="company logo"
                     width={100}
                     height={100}
+                    className=" rounded-md object-cover"
                   />
-                  <Link href={"/co/" + job.company.id} className="group flex items-center gap-2">
+                  <Link
+                    href={"/co/" + job.company.id}
+                    className="group flex items-center gap-2"
+                  >
                     <span className="text-lg font-bold text-main group-hover:underline">
                       {job.company.name}
                     </span>
@@ -232,9 +263,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
 
             <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
               {/* card  */}
-              {/* {jobs.map((job, i) => (
+              {jobs.map((job, i) => (
                 <MinJobCard job={job} key={i} />
-              ))} */}
+              ))}
             </div>
             <div className="mt-8 flex justify-center">
               <Link

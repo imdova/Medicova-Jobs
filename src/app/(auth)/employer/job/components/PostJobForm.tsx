@@ -1,15 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Stepper, Step, StepLabel } from "@mui/material";
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
 import { JobData, UserState } from "@/types";
 import { useSession } from "next-auth/react";
-import { createJob } from "@/lib/actions/job.actions";
+import { createJob, updateJob } from "@/lib/actions/job.actions";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
 import { clearCompanyJobs } from "@/store/slices/jobSlice";
+import { useFormDirty } from "@/hooks/useFormDirty";
+import { usePrompt } from "@/hooks/usePrompt";
+import { hasDataChanged } from "@/util";
 
 const steps = [
   "Job Details",
@@ -97,17 +100,23 @@ const initialJob: JobData = {
 //   jobSectorId: "",
 //   validTo: null,
 // };
-const PostJobForm: React.FC = () => {
+type PostJobFormProps = {
+  job?: JobData;
+};
+const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   const route = useRouter();
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
+
   const dispatch = useAppDispatch();
+  const { isDirty, markAsDirty, markAsClean } = useFormDirty();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [jobData, setJobData] = useState(initialJob);
+  const [jobData, setJobData] = useState(job ? job : initialJob);
 
   const [loading, setLoading] = useState(false);
+  const [draftLoading, setDraftLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
   const handleNext = () => {
@@ -135,34 +144,74 @@ const PostJobForm: React.FC = () => {
     console.log(newData);
   };
   const publish = async () => {
-    console.log(jobData);
-    handleCreate(jobData);
-  };
-
-  const handleCreate = async (data: JobData) => {
-    const result = await createJob(data);
-    if (result.success && result.data) {
-      const job = result.data;
-      route.push(`/job/${job.id}`);
-      dispatch(clearCompanyJobs());
-      setLoading(false);
-      console.log("Job Created successfully");
+    const newData = {
+      ...jobData,
+      companyId,
+      draft: false,
+    };
+    setLoading(true);
+    if (jobData.id) {
+      await handleUpdate(newData);
     } else {
-      setLoading(false);
-      setError(result.message);
+      await handleCreate(newData);
     }
+    setLoading(false);
   };
 
-  const onDraft = (data?: Partial<JobData>) => {
+  const onDraft = async (data?: Partial<JobData>) => {
     const newData = {
       ...jobData,
       ...data,
       companyId,
       draft: true,
     };
-    handleCreate(newData);
-    console.log(newData);
+    setDraftLoading(true);
+    console.log("🚀 ~ onDraft ~ jobData.id:", jobData.id)
+    if (jobData.id) {
+      await handleUpdate(newData);
+    } else {
+      await handleCreate(newData);
+    }
+    setDraftLoading(false);
   };
+  const handleCreate = async (data: JobData) => {
+    const result = await createJob(data);
+    if (result.success && result.data) {
+      const job = result.data;
+      route.push(`/job/${job.id}`);
+      dispatch(clearCompanyJobs());
+      markAsClean();
+      console.log("Job Created successfully");
+    } else {
+      setError(result.message);
+    }
+    return result;
+  };
+  const handleUpdate = async (data: JobData) => {
+    console.log("🚀 ~ handleUpdate ~ data:", data)
+    const result = await updateJob(data);
+    if (result.success && result.data) {
+      const job = result.data;
+      route.push(`/job/${job.id}`);
+      dispatch(clearCompanyJobs());
+      markAsClean();
+      console.log("Job Updated successfully");
+    } else {
+      setError(result.message);
+    }
+    return result;
+  };
+
+  // Effect to determine if the form data has been modified.
+  usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
+  useEffect(() => {
+    if (job && jobData) {
+      if (hasDataChanged(job, jobData)) {
+        markAsDirty();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job, jobData]);
 
   if (activeStep === null) {
     // Prevent rendering until `activeStep` is initialized
@@ -234,6 +283,7 @@ const PostJobForm: React.FC = () => {
             jobData={jobData}
             onDraft={onDraft}
             onSubmit={onFirstStepSubmit}
+            draftLoading={draftLoading}
           />
         )}
         {activeStep === 1 && (
@@ -241,6 +291,7 @@ const PostJobForm: React.FC = () => {
             onBack={handleBack}
             onDraft={onDraft}
             onSubmit={onSecondStepSubmit}
+            draftLoading={draftLoading}
           />
         )}
         {activeStep === 2 && (
@@ -250,6 +301,7 @@ const PostJobForm: React.FC = () => {
             onDraft={onDraft}
             onSubmit={publish}
             loading={loading}
+            draftLoading={draftLoading}
             error={error}
           />
         )}

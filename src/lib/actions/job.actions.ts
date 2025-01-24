@@ -1,10 +1,13 @@
 "use server";
+import { TAGS } from "@/api";
 import {
   API_CREATE_JOB,
   API_GET_JOB_BY_ID,
   API_GET_JOBS,
+  API_UPDATE_JOB,
 } from "@/api/employer";
 import { JobData, Result } from "@/types";
+import { revalidateTag } from "next/cache";
 
 export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
   try {
@@ -18,10 +21,43 @@ export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
     });
     if (response.ok) {
       const data = await response.json();
-      console.log("🚀 ~ createJob ~ data:", data);
+      revalidateTag(TAGS.jobs);
       return {
         success: true,
         message: "Job created successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const updateJob = async (jobData: JobData): Promise<Result<JobData>> => {
+  console.log("🚀 ~ updateJob ~ jobData:", jobData)
+  try {
+    const response = await fetch(API_UPDATE_JOB + jobData.id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify(jobData),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      revalidateTag(TAGS.jobs);
+      return {
+        success: true,
+        message: "Job updated successfully",
         data: data,
       };
     } else {
@@ -53,6 +89,7 @@ export const getJobsByCompanyId = async (
           "Content-Type": "application/json",
           accept: "application/json",
         },
+        next: { tags: [TAGS.jobs] },
       },
     );
     if (response.ok) {
@@ -84,14 +121,20 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
         "Content-Type": "application/json",
         accept: "application/json",
       },
+      next: { tags: [TAGS.jobs] },
     });
     if (response.ok) {
       const data: JobData = await response.json();
       data.companyId = data.company?.id || "";
+      data.jobCategoryId = data.jobCategory?.id || "";
       data.jobCategoryName = data.jobCategory?.name || "";
+      data.jobIndustryId = data.jobIndustry?.id || "";
       data.jobIndustryName = data.jobIndustry?.name || "";
+      data.jobSpecialityId = data.jobSpeciality?.id || "";
       data.jobSpecialityName = data.jobSpeciality?.name || "";
+      data.jobCareerLevelId = data.jobCareerLevel?.id || "";
       data.jobCareerLevelName = data.jobCareerLevel?.name || "";
+      data.jobEmploymentTypeId = data.jobEmploymentType?.id || "";
       data.jobEmploymentTypeName = data.jobEmploymentType?.name || "";
       console.log("🚀 ~ getJobById ~ data:", data);
       return {

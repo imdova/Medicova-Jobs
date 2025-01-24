@@ -1,4 +1,5 @@
 "use server";
+import { TAGS } from "@/api";
 import {
   API_CREATE_COMPANY,
   API_GET_COMPANY_BY_ID,
@@ -22,6 +23,7 @@ import {
   Result,
   Sector,
 } from "@/types";
+import { revalidateTag } from "next/cache";
 
 export const getEmployerWithID = async (id: string): Promise<Result> => {
   try {
@@ -141,6 +143,7 @@ export const updateCompany = async (companyData: Company): Promise<Result> => {
       const data = await response.json();
       data.typeId = data.type.id;
       data.sectorId = data.type.sector.id;
+      revalidateTag(TAGS.company);
       return {
         success: true,
         message: "Company updated successfully",
@@ -170,6 +173,7 @@ export const getCompanyById = async (
         "Content-Type": "application/json",
         accept: "application/json",
       },
+      next: { tags: [TAGS.company] }
     });
     if (response.ok) {
       const data: Company = await response.json();
@@ -194,7 +198,7 @@ export const getCompanyById = async (
     };
   }
 };
-
+ 
 export const getSectorList = async (): Promise<Result<Sector[]>> => {
   try {
     const response = await fetch(API_GET_COMPANY_SECTORS, {

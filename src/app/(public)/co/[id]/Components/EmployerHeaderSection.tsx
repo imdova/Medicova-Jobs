@@ -11,6 +11,8 @@ import { Verified } from "@mui/icons-material";
 import { Company } from "@/types";
 import { companySizeList } from "@/constants";
 import Avatar from "@/components/UI/Avatar";
+import Image from "next/image";
+import ShareMenu from "@/components/UI/ShareMenu";
 
 interface EmployerHeaderSectionProps {
   isEmployee: boolean;
@@ -46,17 +48,28 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
         }}
       >
         {/* Avatar Positioned on Background Image */}
-
-        <Avatar
-          currentImageUrl={image ? URL.createObjectURL(image) : data.photo || ""}
-          size="xLarge"
-          onImageUpdate={updateImage}
-          onImageRemove={removeImage}
-          maxFileSizeMB={5}
-          imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
-          containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
-          acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
-        />
+        {isEmployee ? (
+          <Avatar
+            currentImageUrl={
+              image ? URL.createObjectURL(image) : data.photo || ""
+            }
+            size="xLarge"
+            onImageUpdate={updateImage}
+            onImageRemove={removeImage}
+            maxFileSizeMB={5}
+            imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
+            containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
+            acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
+          />
+        ) : (
+          <Image
+            src={data.photo || "/image/placeholder-avatar.svg"}
+            alt="avatar"
+            width={100}
+            height={100}
+            className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white bg-white object-cover shadow-md hover:bg-gray-50 md:h-[120px] md:w-[120px]"
+          />
+        )}
       </Box>
       {/* Profile Section */}
       <Box
@@ -144,9 +157,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 </IconButton>
               )}
               {/* Share Button */}
-              <IconButton>
-                <ShareIcon />
-              </IconButton>
+              <ShareMenu path={`/co/${data.id}`} />
             </Box>
           </Grid>
         </Grid>

@@ -33,9 +33,9 @@ export const callbacks = {
       token.type = user.type;
     }
     if (trigger === "update") {
-      token.companyId = session?.companyId || token.companyId;
-      token.companyName = session?.companyName || token.companyName;
-      token.companyPhoto = session?.companyPhoto || token.companyPhoto;
+      if (session?.companyId) token.companyId = session.companyId;
+      if (session?.companyName) token.companyName = session.companyName;
+      if (session?.companyPhoto) token.companyPhoto = session.companyPhoto;
     }
     return token;
   },

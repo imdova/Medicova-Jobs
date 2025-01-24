@@ -32,11 +32,13 @@ interface JobDetailProps {
   jobData: JobData;
   onSubmit: (data: JobData) => void;
   onDraft: (data: Partial<JobData>) => void;
+  draftLoading: boolean;
 }
 const JobDetailsStep: React.FC<JobDetailProps> = ({
   jobData,
   onSubmit,
   onDraft,
+  draftLoading,
 }) => {
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
@@ -763,7 +765,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           onClick={onDraftSubmit}
           className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
         >
-          Save and Publish Later
+          {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>
         <Button type="submit" variant="contained">
           next
