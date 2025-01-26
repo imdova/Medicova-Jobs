@@ -13,6 +13,7 @@ import { companySizeList } from "@/constants";
 import Avatar from "@/components/UI/Avatar";
 import Image from "next/image";
 import ShareMenu from "@/components/UI/ShareMenu";
+import Link from "next/link";
 
 interface EmployerHeaderSectionProps {
   isEmployee: boolean;
@@ -63,11 +64,11 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
           />
         ) : (
           <Image
-            src={data.photo || "/image/placeholder-avatar.svg"}
+            src={data.photo || "/images/placeholder-avatar.svg"}
             alt="avatar"
             width={100}
             height={100}
-            className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white bg-white object-cover shadow-md hover:bg-gray-50 md:h-[120px] md:w-[120px]"
+            className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white bg-white object-cover shadow-md  md:h-[120px] md:w-[120px]"
           />
         )}
       </Box>
@@ -115,14 +116,14 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {data.type.name}
+                    {data.type?.name}
                   </Typography>
                 </Box>
                 {(data.country || data.state || data.city) && (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PlaceIcon className="text-primary" />
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      {data.country + ", " + data.state + ", " + data.city}
+                      {data.country?.name + ", " + data.state?.name + ", " + data.city}
                     </Typography>
                   </Box>
                 )}
@@ -152,7 +153,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
             >
               {/* Edit Button */}
               {isEmployee && (
-                <IconButton>
+                <IconButton LinkComponent={Link} href="/employer/company-info" >
                   <EditIcon />
                 </IconButton>
               )}

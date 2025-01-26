@@ -93,7 +93,6 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
         <Controller
           name="jobIndustryId"
           control={control}
-          defaultValue=""
           rules={{ required: "industry is required" }}
           render={({ field }) => (
             <FormControl
@@ -151,14 +150,13 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
           <Controller
             name="jobCategoryId"
             control={control}
-            defaultValue=""
             rules={{ required: "Category is required" }}
             render={({ field }) => (
               <FormControl error={Boolean(errors.jobCategoryId)} fullWidth>
                 <Tooltip
                   title={
                     selectedIndustry
-                      ? undefined
+                      ? categoriesLoading ? "loading...":undefined
                       : "Please select industry first"
                   }
                   placement="bottom"
@@ -178,7 +176,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                         sx: { maxHeight: 300 },
                       },
                     }}
-                    disabled={!selectedIndustry}
+                    disabled={!selectedIndustry || categoriesLoading}
                     renderValue={(selected) => {
                       const category = categories.find(
                         (i) => i.id === selected,
@@ -216,7 +214,6 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
           <Controller
             name="jobSpecialityId"
             control={control}
-            defaultValue=""
             rules={{ required: "Specialty is required" }}
             render={({ field }) => (
               <FormControl fullWidth error={Boolean(errors.jobSpecialityId)}>
@@ -282,7 +279,6 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
           <Controller
             name="jobCareerLevelId"
             control={control}
-            defaultValue=""
             rules={{ required: "Career Level is required" }}
             render={({ field }) => (
               <FormControl fullWidth error={Boolean(errors.jobCareerLevelId)}>

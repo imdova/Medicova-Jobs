@@ -10,7 +10,7 @@ interface MultiTextInputProps {
 
 const MultiTextInput = ({
   defaultValue = [],
-  placeholder = "Type a skill and press Enter",
+  placeholder = "Type skills and press Enter",
   onChange,
 }: MultiTextInputProps) => {
   const [items, setItems] = useState<string[]>(defaultValue);
@@ -19,7 +19,8 @@ const MultiTextInput = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
-      const newItems = [...items, inputValue.trim()];
+      const newEntries = inputValue.split(",").map((item) => item.trim()).filter(Boolean);
+      const newItems = [...items, ...newEntries];
       setItems(newItems);
       setInputValue("");
       onChange?.(newItems);

@@ -49,80 +49,106 @@ const JobCard: React.FC<JobCardProps> = ({
             alt={job.title}
             width={60}
             height={60}
-            className={`h-[60px] w-[60px] bg-primary-100 rounded-base border border-gray-100 object-cover transition-transform duration-150`}
+            className={`h-[60px] w-[60px] rounded-base border border-gray-100 bg-primary-100 object-cover transition-transform duration-150`}
           />
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-start">
               {isApply ? (
-                <h6 className="text-lg font-semibold text-main">{job.title}</h6>
+                <h6 className="font-semibold text-main">{job.title}</h6>
               ) : isEdit ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-start gap-2">
                   <Link
                     href={`/job/${job.id}`}
-                    className="text-lg font-semibold text-main hover:underline"
+                    className="w-fit font-semibold text-main hover:underline"
                   >
                     {job.title}
                   </Link>
-                  <IconButton size="small" aria-label="edit">
+                  <IconButton
+                    LinkComponent={Link}
+                    href={`/employer/job/posted/${job.id}`}
+                    size="small"
+                    className="p-0"
+                    aria-label="edit"
+                  >
                     <Edit className="h-5 w-5 hover:text-light-primary" />
                   </IconButton>
                 </div>
               ) : (
                 <Link
                   href={`/job/${job.id}`}
-                  className="text-lg font-semibold text-main hover:underline"
+                  className="font-semibold text-main hover:underline"
                 >
                   {job.title}
                 </Link>
               )}
-              <div className="ml-3 flex items-center gap-1">
+              <div className="ml-3 flex items-center gap-1 py-1">
                 <AccessTimeOutlined className="m-0 h-4 w-4 p-0 text-secondary" />
-                <span className="text-xs text-secondary">
+                <span className="text-nowrap text-xs text-secondary">
                   {getFullLastEdit(job.created_at || "")}
                 </span>
               </div>
             </div>
             <div className="flex flex-wrap text-secondary">
-              <div className="mr-2 flex items-center gap-1 text-secondary md:mb-0">
-                <LocationOnOutlined className="-ml-1 h-4 w-4 text-light-primary md:h-5 md:w-5" />
-                <p className="text-xs md:text-base">
-                  {job.country}, {job.city}{" "}
-                </p>
-              </div>
-              <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
-                <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
-                <p className="text-xs md:text-base">
-                  {education} Degree at {job.jobSpeciality?.name}{" "}
-                </p>
-              </div>
-              {/* <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
-              <MedicalServicesOutlined className="h-4 w-4 text-secondary md:h-5 md:w-5" />
-              <p className="text-xs md:text-base">{job.specialty}</p>
-            </div> */}
+              {(job?.country || job?.city) && (
+                <div className="mr-2 flex items-center gap-1 text-secondary md:mb-0">
+                  <LocationOnOutlined className="-ml-1 h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                  <p className="text-xs md:text-base">
+                    {job?.country?.name ? `${job.country.name}, ` : ""}
+                    {job?.city}{" "}
+                  </p>
+                </div>
+              )}
+              {education && (
+                <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
+                  <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                  <p className="text-xs md:text-base">
+                    {education} Degree at {job.jobSpeciality?.name}{" "}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
         <div>
           <div className="mb-2 flex max-w-[600px] flex-wrap text-secondary">
             {/* /// */}
-            <div className="flex items-center gap-1 text-xs md:text-base">
-              <div>
-                <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+            {job.jobEmploymentType?.name && (
+              <div className="flex items-center gap-1 text-xs md:text-base">
+                <div>
+                  <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+                </div>
+                {job.jobEmploymentType?.name} | {workPlace}
               </div>
-              {job.jobEmploymentType?.name} | {workPlace}
-            </div>
-            <div className="flex items-center gap-1 text-xs md:text-base">
-              <div>
-                <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+            )}
+            {(job.minExpYears || job.maxExpYears) && (
+              <div className="flex items-center gap-1 text-xs md:text-base">
+                <div>
+                  <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+                </div>
+                {job.minExpYears && job.maxExpYears
+                  ? `EX (${job.minExpYears} - ${job.maxExpYears})`
+                  : job.minExpYears
+                    ? `EX (${job.minExpYears}+)`
+                    : job.maxExpYears
+                      ? `EX (${job.maxExpYears}-)`
+                      : null}
               </div>
-              EX ({job.minExpYears} - {job.maxExpYears})
-            </div>
-            <div className="flex items-center gap-1 text-xs md:text-base">
-              <div>
-                <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+            )}
+            {(job.minAge || job.maxAge) && (
+              <div className="flex items-center gap-1 text-xs md:text-base">
+                <div>
+                  <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
+                </div>
+                Age{" "}
+                {job.minAge && job.maxAge
+                  ? `(${job.minAge} - ${job.maxAge})`
+                  : job.minAge
+                    ? `(${job.minAge}+)`
+                    : job.maxAge
+                      ? `(${job.maxAge}-)`
+                      : null}
               </div>
-              Age ({job.minAge} - {job.maxAge})
-            </div>
+            )}
             {/* <div className="flex items-center gap-1 text-xs md:text-base">
               <div>
                 <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
@@ -131,32 +157,40 @@ const JobCard: React.FC<JobCardProps> = ({
                 Urgently hiring
               </span>
             </div> */}
-            <div className="flex items-center gap-1 text-xs md:text-base">
-              <div>
-                <span
-                  className={`mx-[4px] block h-[6px] w-[6px] rounded-full md:mx-[5px] ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-600" : "bg-primary"}`}
-                ></span>
-              </div>
+            {job.startDateType && (
+              <div className="flex items-center gap-1 text-xs md:text-base">
+                <div>
+                  <span
+                    className={`mx-[4px] block h-[6px] w-[6px] rounded-full md:mx-[5px] ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-600" : "bg-primary"}`}
+                  ></span>
+                </div>
 
-              <span
-                className={`rounded-base px-2 py-1 text-xs ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-100/60 text-red-600" : "bg-primary-100 text-primary"}`}
-              >
-                {job.startDateType === StartDateType.IMMEDIATE
-                  ? "Urgently hiring"
-                  : "Flexible start date"}
-              </span>
-            </div>
+                <span
+                  className={`rounded-base px-2 py-1 text-xs ${job.startDateType === StartDateType.IMMEDIATE ? "bg-red-100/60 text-red-600" : "bg-primary-100 text-primary"}`}
+                >
+                  {job.startDateType === StartDateType.IMMEDIATE
+                    ? "Urgently hiring"
+                    : "Flexible start date"}
+                </span>
+              </div>
+            )}
           </div>
           <div className="ml-5 flex gap-3">
-            <button className="text-sm text-primary underline hover:no-underline">
-              #{job.jobIndustry?.name}
-            </button>
-            <button className="text-sm text-primary underline hover:no-underline">
-              #{job.jobCategory?.name}
-            </button>
-            <button className="text-sm text-primary underline hover:no-underline">
-              #{job.country}
-            </button>
+            {job.jobIndustry?.name && (
+              <button className="text-sm text-primary underline hover:no-underline">
+                #{job.jobIndustry?.name}
+              </button>
+            )}
+            {job.jobCategory?.name && (
+              <button className="text-sm text-primary underline hover:no-underline">
+                #{job.jobCategory?.name}
+              </button>
+            )}
+            {job.country?.name && (
+              <button className="text-sm text-primary underline hover:no-underline">
+                #{job.country?.name}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -168,7 +202,7 @@ const JobCard: React.FC<JobCardProps> = ({
               link={`https://www.example.com/job/${job.id}`}
               className="h-12 w-12"
             />
-            <DropdownMenu />
+            <DropdownMenu job={job} />
           </div>
         ) : (
           <div className="flex justify-end">

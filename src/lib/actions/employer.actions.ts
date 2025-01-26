@@ -9,6 +9,7 @@ import {
   API_GET_EMPLOYEE_BY_ID,
   API_GET_EMPLOYEES,
   API_GET_JOB_CATEGORIES,
+  API_GET_JOB_CATEGORIES_BY_INDUSTRY,
   API_GET_JOB_EMPLOYMENT_TYPES,
   API_GET_JOB_INDUSTRIES,
   API_GET_JOBS,
@@ -129,7 +130,7 @@ export const createCompany = async (
     };
   }
 };
-export const updateCompany = async (companyData: Company): Promise<Result> => {
+export const updateCompany = async (companyData: Partial<Company>): Promise<Result> => {
   try {
     const response = await fetch(API_UPDATE_COMPANY + companyData.id, {
       method: "PATCH",
@@ -177,8 +178,8 @@ export const getCompanyById = async (
     });
     if (response.ok) {
       const data: Company = await response.json();
-      data.typeId = data.type.id;
-      data.sectorId = data.type.sector.id;
+      data.typeId = data.type?.id || "";
+      data.sectorId = data.type?.sector?.id;
       return {
         success: true,
         message: "Company fetched successfully",
@@ -393,7 +394,7 @@ export const getCategoryFromIndustryId = async (
 > => {
   try {
     const response = await fetch(
-      `${API_GET_JOB_CATEGORIES}?industryIds=${industryId}`,
+      `${API_GET_JOB_CATEGORIES_BY_INDUSTRY}?industryIds=${industryId}`,
       {
         method: "GET",
         headers: {

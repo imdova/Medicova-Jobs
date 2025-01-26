@@ -12,7 +12,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { clearCompanyJobs } from "@/store/slices/jobSlice";
 import { useFormDirty } from "@/hooks/useFormDirty";
 import { usePrompt } from "@/hooks/usePrompt";
-import { hasDataChanged } from "@/util";
+import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
 
 const steps = [
   "Job Details",
@@ -21,24 +21,24 @@ const steps = [
 ];
 
 const initialJob: JobData = {
-  companyId: "",
+  companyId: null,
   title: "",
-  jobIndustryId: "",
-  jobIndustryName: "",
-  jobSpecialityId: "",
-  jobSpecialityName: "",
-  jobCategoryId: "",
-  jobCategoryName: "",
-  jobCareerLevelId: "",
-  jobCareerLevelName: "",
-  jobEmploymentTypeId: "",
-  jobEmploymentTypeName: "",
+  jobIndustryId: null,
+  jobIndustryName: null,
+  jobSpecialityId: null,
+  jobSpecialityName: null,
+  jobCategoryId: null,
+  jobCategoryName: null,
+  jobCareerLevelId: null,
+  jobCareerLevelName: null,
+  jobEmploymentTypeId: null,
+  jobEmploymentTypeName: null,
   jobWorkPlace: null,
   gender: null,
   minAge: null,
   maxAge: null,
   educationLevel: null,
-  country: "",
+  country: null,
   city: null,
   maxExpYears: null,
   minExpYears: null,
@@ -166,7 +166,6 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
       draft: true,
     };
     setDraftLoading(true);
-    console.log("🚀 ~ onDraft ~ jobData.id:", jobData.id)
     if (jobData.id) {
       await handleUpdate(newData);
     } else {
@@ -175,7 +174,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     setDraftLoading(false);
   };
   const handleCreate = async (data: JobData) => {
-    const result = await createJob(data);
+    const result = await createJob(convertEmptyStringsToNull(data));
     if (result.success && result.data) {
       const job = result.data;
       route.push(`/job/${job.id}`);
@@ -188,8 +187,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     return result;
   };
   const handleUpdate = async (data: JobData) => {
-    console.log("🚀 ~ handleUpdate ~ data:", data)
-    const result = await updateJob(data);
+    const result = await updateJob(convertEmptyStringsToNull(data));
     if (result.success && result.data) {
       const job = result.data;
       route.push(`/job/${job.id}`);

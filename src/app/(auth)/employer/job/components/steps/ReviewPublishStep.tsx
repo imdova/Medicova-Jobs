@@ -43,7 +43,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
               <div className="rounded-md text-sm text-gray-500">
                 <LocationOnOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                 <span className="ml-2 text-xs md:text-base">
-                  {jobData.country + ", " + jobData.city}
+                  {jobData.country?.name + ", " + jobData.city}
                 </span>
               </div>
               {education && (
@@ -105,7 +105,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
 
             {/* Skills related to the jobData post */}
             <h3 className="mt-8 text-2xl font-bold text-main">
-              Skills related to the jobData post{" "}
+              Skills related to the job post{" "}
             </h3>
             <div className="mt-2 flex flex-wrap">
               {jobData.skills?.map((skill, i) => (
@@ -150,8 +150,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
           onClick={() => onDraft()}
           className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
         >
-                   {draftLoading ? "Loading... " : "Save and Publish Later"}
-
+          {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>
         <Button onClick={onSubmit} type="submit" variant="contained">
           {loading ? "Loading..." : "Publish"}

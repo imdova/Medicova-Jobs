@@ -336,14 +336,20 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
               Job Location *
             </label>
             <Controller
-              name="country"
+              name="country.name"
               control={control}
-              defaultValue=""
               rules={{ required: "country is required" }}
               render={({ field }) => (
                 <FormControl error={Boolean(errors.country)} fullWidth>
                   <Select
                     {...field}
+                    onChange={(e) => {
+                      const country = countries.data.find(
+                        (country) => country.name === e.target.value,
+                      );
+                      field.onChange(e.target.value);
+                      setValue("country.code", country?.isoCode || "");
+                    }}
                     displayEmpty
                     MenuProps={{
                       disableScrollLock: true,

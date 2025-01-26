@@ -53,6 +53,7 @@ export const API_DELETE_JOB_INDUSTRY = JOB_INDUSTRIES + "/"; // DELETE + [id]
 export const JOB_CATEGORIES = API_EMPLOYER_BASE + "/job-categories";
 export const API_CREATE_JOB_CATEGORY = JOB_CATEGORIES; // POST
 export const API_GET_JOB_CATEGORIES = JOB_CATEGORIES; // GET
+export const API_GET_JOB_CATEGORIES_BY_INDUSTRY = JOB_CATEGORIES + "/industries"; // GET
 export const API_GET_JOB_CATEGORY_BY_ID = JOB_CATEGORIES + "/"; // GET + [id]
 export const API_UPDATE_JOB_CATEGORY = JOB_CATEGORIES + "/"; // PATCH + [id]
 export const API_DELETE_JOB_CATEGORY = JOB_CATEGORIES + "/"; // DELETE + [id]
@@ -80,7 +81,6 @@ export const API_GET_JOB_EMPLOYMENT_TYPES = JOB_EMPLOYMENT_TYPES; // GET
 export const API_GET_JOB_EMPLOYMENT_TYPE_BY_ID = JOB_EMPLOYMENT_TYPES + "/"; // GET + [id]
 export const API_UPDATE_JOB_EMPLOYMENT_TYPE = JOB_EMPLOYMENT_TYPES + "/"; // PATCH + [id]
 export const API_DELETE_JOB_EMPLOYMENT_TYPE = JOB_EMPLOYMENT_TYPES + "/"; // DELETE + [id]
-
 
 // Location
 export const LOCATION = API_EMPLOYER_BASE + "/location";

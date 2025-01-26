@@ -158,3 +158,34 @@ export const formatEducationAndSpecialty = (job: JobData): string | null => {
       return null;
   }
 };
+
+
+export function convertEmptyStringsToNull<T>(data: T): T {
+  if (data === null || data === undefined) return data;
+
+  if (typeof data === 'string' && data.trim() === '') {
+    return null as T;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map(item => convertEmptyStringsToNull(item)) as T;
+  }
+
+  if (typeof data === 'object') {
+    const convertedEntries = Object.entries(data).map(([key, value]) => [
+      key, 
+      convertEmptyStringsToNull(value)
+    ]);
+    
+    const convertedObject = Object.fromEntries(convertedEntries);
+    
+    // Check if all values are null
+    if (Object.values(convertedObject).every(value => value === null)) {
+      return null as T;
+    }
+    
+    return convertedObject as T;
+  }
+
+  return data;
+}

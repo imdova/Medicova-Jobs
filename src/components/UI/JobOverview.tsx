@@ -113,7 +113,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
             <h5 className="font-semibold text-main"> Location </h5>
             <p className="text-secondary">
               {" "}
-              {data?.country}, {data?.city}{" "}
+              {data?.country?.name ? `${data.country.name}, ` : ""}{data?.city}{" "}
             </p>
           </div>
         </div>

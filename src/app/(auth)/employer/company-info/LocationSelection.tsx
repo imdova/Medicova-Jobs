@@ -46,7 +46,7 @@ const LocationSelection = ({
   useEffect(() => {
     if (data.country) {
       const countryCode = countries.find(
-        (c) => c.name === data.country,
+        (c) => c.isoCode === data.country?.code,
       )?.isoCode;
       if (countryCode) {
         handleFetchStates(countryCode);
@@ -79,9 +79,22 @@ const LocationSelection = ({
                 return <span>{selected}</span>;
               }}
               onChange={(e) => {
-                setData({ ...data, country: e.target.value });
+                const country = countries.find(
+                  (c) => c.name === e.target.value,
+                );
+                setData({
+                  ...data,
+                  country: {
+                    name: e.target.value || "",
+                    code: country?.isoCode || "",
+                  },
+                });
               }}
-              value={countries && countries.length > 0 ? data.country || "" : ""}
+              value={
+                countries && countries.length > 0
+                  ? data.country?.name || ""
+                  : ""
+              }
             >
               <MenuItem value="" disabled>
                 <em>Select Sector</em>
@@ -124,9 +137,16 @@ const LocationSelection = ({
                   return <span>{selected}</span>;
                 }}
                 onChange={(e) => {
-                  setData({ ...data, state: e.target.value });
+                  const state = states.find((s) => s.name === e.target.value);
+                  setData({
+                    ...data,
+                    state: {
+                      name: e.target.value || "",
+                      code: state?.isoCode || "",
+                    },
+                  });
                 }}
-                value={states.length > 0 ? (data.state ?? "") : ""}
+                value={states.length > 0 ? (data.state?.name ?? "") : ""}
               >
                 <MenuItem value="" disabled>
                   <em>Select State</em>

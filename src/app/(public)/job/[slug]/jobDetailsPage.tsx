@@ -30,10 +30,6 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const education = formatEducationAndSpecialty(job);
 
   const isOwner = job.companyId === companyId;
-  console.log("🚀 ~ job.companyId:", job.companyId)
-  console.log("🚀 ~ companyId:", companyId)
-  console.log("🚀 ~ isOwner:", isOwner)
-  console.log("🚀 ~ job.draft:", job.draft)
 
   const {
     jobs: { data: jobs, loading: jobsLoading, error },
@@ -68,7 +64,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             <div className="rounded-md text-sm text-gray-500">
               <LocationOnOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
               <span className="ml-2 text-xs md:text-base">
-                {job.country + ", " + job.city}
+              {job?.country?.name ? `${job.country.name}, ` : ""}{job?.city}{" "}
               </span>
             </div>
             {education && (

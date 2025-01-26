@@ -115,6 +115,10 @@ export interface Doctor {
   available: boolean;
 }
 
+type CountryInData = {
+  name: string;
+  code: string;
+};
 export interface Company {
   id: string;
   name: string;
@@ -123,8 +127,8 @@ export interface Company {
   isPrivate?: boolean;
   isProfitable?: boolean;
   status?: CompanyStatus | null;
-  country?: string;
-  state?: string | null;
+  country?: CountryInData | null;
+  state?: CountryInData | null;
   city?: string;
   size?: CompanySize | null;
   phone?: string;
@@ -143,7 +147,7 @@ export interface Company {
       id: string;
       name: string;
     };
-  };
+  } | null;
 }
 export interface MiniCompany {
   name: string;
@@ -200,11 +204,11 @@ export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
 export interface JobData {
   id?: string;
-  companyId: string;
+  companyId: string | null;
   company?: Company;
   title: string;
-  jobIndustryId: string;
-  jobIndustryName: string;
+  jobIndustryId: string | null;
+  jobIndustryName: string | null;
   jobSpecialityId: string | null;
   jobSpecialityName: string | null;
   jobCategoryId: string | null;
@@ -218,7 +222,7 @@ export interface JobData {
   minAge: number | null;
   maxAge: number | null;
   educationLevel: EducationLevel | null | "";
-  country: string | null | "";
+  country: CountryInData | null;
   city: string | null;
   maxExpYears: number | null;
   minExpYears: number | null;
@@ -244,23 +248,23 @@ export interface JobData {
   jobIndustry?: {
     id: string;
     name: string;
-  };
+  } | null;
   jobSpeciality?: {
     id: string;
     name: string;
-  };
+  } | null;
   jobCategory?: {
     id: string;
     name: string;
-  };
+  } | null;
   jobCareerLevel?: {
     id: string;
     name: string;
-  };
+  } | null;
   jobEmploymentType?: {
     id: string;
     name: string;
-  };
+  } | null;
   created_at?: string | null; // ISO date string
   updatedAt?: string | null; // ISO date string
 }
@@ -358,4 +362,15 @@ export interface ModalState {
   message: string;
   buttons: ModalButton[];
   navigationUrl?: string;
+}
+
+export type FieldType = "text" | "number" | "email" | "password";
+
+// Field configuration interface
+export interface FieldConfig {
+  name: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  validation?: any;
 }

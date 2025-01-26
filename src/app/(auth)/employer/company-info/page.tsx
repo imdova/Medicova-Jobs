@@ -159,7 +159,7 @@ const CompanyInfoForm: React.FC = () => {
   };
 
   useEffect(() => {
-    if (companyId) {
+    if (companyId && !company) {
       fetchCompanyData(companyId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
