@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 import { fetchJobs } from "@/store/slices/jobSlice";
 import Loading from "@/components/loading/loading";
+import JobApplicationButton from "@/components/UI/JobApplicationButton";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
@@ -43,7 +44,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, companyId]);
 
-  if(status === "loading" || jobsLoading) {
+  if (status === "loading" || jobsLoading) {
     return <Loading />;
   }
 
@@ -64,7 +65,8 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             <div className="rounded-md text-sm text-gray-500">
               <LocationOnOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
               <span className="ml-2 text-xs md:text-base">
-              {job?.country?.name ? `${job.country.name}, ` : ""}{job?.city}{" "}
+                {job?.country?.name ? `${job.country.name}, ` : ""}
+                {job?.city}{" "}
               </span>
             </div>
             {education && (
@@ -86,14 +88,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             <IconButton size="medium">
               <BookmarkBorder className="h-8 w-8" />
             </IconButton>
-            <ShareMenu
-              link={`https://www.example.com/job/${job.id}`}
-              className="h-12 w-12"
-            />
+            <ShareMenu path={`/job/${job.id}`} className="h-12 w-12" />
           </div>
-          <button className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit">
-            Apply Now
-          </button>
+          <JobApplicationButton job={job} user={user} />
         </div>
       </div>
       {/* <JobCard key={0} job={job} isApply={true} /> */}
@@ -193,7 +190,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                     alt="company logo"
                     width={100}
                     height={100}
-                    className=" rounded-md object-cover"
+                    className="rounded-md object-cover"
                   />
                   <Link
                     href={"/co/" + job.company.id}

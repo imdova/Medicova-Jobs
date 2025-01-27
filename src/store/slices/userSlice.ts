@@ -6,6 +6,7 @@ const InitialUserData: UserState = {
   email: null,
   firstName: null,
   lastName: null,
+  userName: null,
   phone: null,
   companyId: null,
   permissions: [],

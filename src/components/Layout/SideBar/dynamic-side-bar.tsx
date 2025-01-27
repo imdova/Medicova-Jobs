@@ -21,8 +21,7 @@ export default function DynamicSideBar({
   status,
   pathname,
 }: SideBarProps) {
-  const userType = user?.type;
-  const initialLinks = getSideBarLinks(userType, pathname);
+  const initialLinks = getSideBarLinks(user, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
 
   const [activeTab, setActiveTab] = useState<number | null>(null);
@@ -81,6 +80,7 @@ export default function DynamicSideBar({
               key={item.id}
               user={user}
               pathname={pathname}
+              activeTab={activeTab}
               onTabChange={setActiveTab}
             />
           );
@@ -130,7 +130,7 @@ const CollapseTab = ({
   setLinks,
   links,
   updateActiveTab,
-  setActiveTab
+  setActiveTab,
 }: {
   item: NavItem;
   index: number;
@@ -180,15 +180,18 @@ const CollapseTab = ({
 const ProfileTab = ({
   user,
   pathname,
+  activeTab,
   onTabChange,
 }: {
   user: UserState;
   pathname: string;
+  activeTab: number | null;
   onTabChange: (index: number) => void;
 }) => {
   const isEmployer = user.type === "employer";
-  const path = isEmployer ? `/co/${user?.companyId}` : `/me/${user.firstName}`;
-  const isActive = isCurrentPage(pathname, path);
+  const path = isEmployer ? `/co/${user?.companyId}` : `/me/${user.userName}`;
+  const isActive =
+    activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
 
   return (
     <Tab
@@ -201,8 +204,8 @@ const ProfileTab = ({
       href={
         isEmployer
           ? `/co/${user?.companyId}`
-          : user.firstName
-            ? `/me/${user.firstName}`
+          : user.userName
+            ? `/me/${user.userName}`
             : "#"
       }
       label={
@@ -223,7 +226,7 @@ const ProfileTab = ({
               {user?.companyName || user.firstName + " ." + user.lastName?.[0]}
             </h6>
             {!isEmployer && (
-              <p className="max-w-full text-left text-xs normal-case">
+              <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
                 {user.email}
               </p>
             )}

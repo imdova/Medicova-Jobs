@@ -352,13 +352,7 @@ const BrowseCompaniesPage = () => {
         ))}
       </Grid>
       {/* Pagination */}
-      <CustomPagination
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalItems={totalItems}
-      />
+      <CustomPagination totalItems={100} />
     </Box>
   );
 };

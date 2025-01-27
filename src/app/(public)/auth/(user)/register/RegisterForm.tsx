@@ -47,41 +47,9 @@ const RegisterForm: React.FC = () => {
     },
   });
 
-  // const validateForm = () => {
-  //   const { firstName, lastName, email, password, companyName, phone } =
-  //     watch();
-  //   let error = "";
-  //   if (!firstName) {
-  //     error = "First name is required";
-  //   }
-  //   if (!lastName) {
-  //     error = "Last name is required";
-  //   }
-  //   if (!email) {
-  //     error = "Email is required";
-  //   }
-  //   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  //   if (!emailPattern.test(email)) {
-  //     error = "Enter a valid email address";
-  //   }
-  //   if (!password) {
-  //     error = "Password is required";
-  //   }
-  //   const passwordPattern =
-  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-  //   if (!passwordPattern.test(password)) {
-  //     error =
-  //       "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol";
-  //   }
-  //   if (!phone) {
-  //     error = "Phone number is required";
-  //   }
-  //   setError(error);
-  //   return !error;
-  // };
-
   const onSubmit = async (data: registerData) => {
     setLoading(true);
+    setError("");
     try {
       const result = await signIn("register", {
         ...data,
@@ -197,6 +165,7 @@ const RegisterForm: React.FC = () => {
                   id="firstName"
                   error={!!errors.firstName}
                   helperText={errors.firstName?.message}
+                  onChange={(e) => field.onChange(e.target.value.trim())}
                 />
               )}
               rules={{
@@ -224,6 +193,7 @@ const RegisterForm: React.FC = () => {
                   fullWidth
                   error={!!errors.lastName}
                   helperText={errors.lastName?.message}
+                  onChange={(e) => field.onChange(e.target.value.trim())}
                 />
               )}
               rules={{

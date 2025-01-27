@@ -116,11 +116,13 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
             </MenuItem>
             {Array.from({
               length: new Date().getFullYear() - 1800 + 1,
-            }).map((_, i) => (
-              <MenuItem key={i + 1800} value={i + 1800}>
-                {i + 1800}
-              </MenuItem>
-            ))}
+            })
+              .reverse()
+              .map((_, i) => (
+                <MenuItem key={new Date().getFullYear() - i} value={new Date().getFullYear() - i}>
+                  {new Date().getFullYear() - i}
+                </MenuItem>
+              ))}
           </Select>
         </div>
       </div>

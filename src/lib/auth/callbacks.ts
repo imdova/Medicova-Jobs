@@ -4,7 +4,6 @@ import { handleSocialLogin } from "./utils";
 import { divideName } from "@/util";
 import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
-import { UserState } from "@/types";
 
 export const callbacks = {
   jwt: async ({
@@ -25,6 +24,7 @@ export const callbacks = {
       token.firstName = user.firstName || firstName;
       token.lastName = user.lastName || lastName;
       token.photo = user.photo || user.image;
+      token.userName = user.userName;
       token.phone = user.phone;
       token.companyId = user.companyId;
       token.companyName = user.companyName;
@@ -48,6 +48,7 @@ export const callbacks = {
       session.user.email = token.email as string | null;
       session.user.firstName = token.firstName as string | null;
       session.user.lastName = token.lastName as string | null;
+      session.user.userName = token.userName as string | null;
       session.user.photo = token.photo as string | null;
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;

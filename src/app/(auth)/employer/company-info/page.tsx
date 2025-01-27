@@ -111,6 +111,7 @@ const CompanyInfoForm: React.FC = () => {
       });
       reloadSession();
       setLoading(false);
+      window.location.href = "/co/" + newCompany.id;
       console.log("Company created successfully");
     } else {
       setLoading(false);
@@ -163,7 +164,7 @@ const CompanyInfoForm: React.FC = () => {
     if (companyId && !company) {
       fetchCompanyData(companyId);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId]);
 
   if (formLoading || status === "loading") {

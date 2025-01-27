@@ -20,7 +20,7 @@ import {
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
-  [key in RoleState]: NavItem[];
+  [key: string]: NavItem[];
 };
 export type CommonLinks = {
   [key in CommonLinksType]: NavItem[];
@@ -32,6 +32,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 0,
       type: "profile",
+      path: "/co/[id]",
     },
     {
       id: 1,
@@ -142,22 +143,25 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: HelpOutline,
     },
   ],
+  unEmployee: [
+    {
+      id: 2,
+      label: "Company Info",
+      icon: BusinessOutlined,
+      path: "/employer/company-info",
+    },
+  ],
   seeker: [
     {
       id: 0,
       type: "profile",
+      path: "/me/[id]",
     },
     {
       id: 18,
       icon: HomeOutlined,
       label: "Home",
       path: "/",
-    },
-    {
-      id: 19,
-      icon: InfoOutlined,
-      label: "My Personal Info",
-      path: "/job-seeker/setting?act=Profile",
     },
     {
       id: 20,

@@ -1,4 +1,5 @@
 import { roleBasedSideBarLinks } from "@/constants/side-bar";
+import { UserState } from "@/types";
 import { RoleState } from "@/types/next-auth";
 
 type SideBarType = "minimal" | "full" | "none";
@@ -69,11 +70,22 @@ export const matchRoute = (pathname: string) => {
   return wildcardMatch;
 };
 
-export function getSideBarLinks(userType?: RoleState, pathname?: string) {
+export function getSideBarLinks(user?: UserState, pathname?: string) {
+  const userType = user?.type as RoleState;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
     if (type === "userType" && userType) {
-      return roleBasedSideBarLinks[userType];
+      if (userType === "seeker") {
+        return roleBasedSideBarLinks.seeker;
+      } else if (userType === "employer") {
+        if (user?.companyId) {
+          return roleBasedSideBarLinks.employer;
+        } else {
+          return roleBasedSideBarLinks.unEmployee;
+        }
+      } else if (userType === "admin") {
+        return roleBasedSideBarLinks.admin;
+      }
     }
   }
   return [];

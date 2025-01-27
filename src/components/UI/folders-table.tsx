@@ -247,14 +247,7 @@ const CandidateTable: React.FC<FolderTableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomPagination
-        fixedNumberPerPage={fixedNumberPerPage}
-        currentPage={page}
-        itemsPerPage={rowsPerPage}
-        setCurrentPage={setPage}
-        totalItems={filteredAndSortedData.length}
-        setItemsPerPage={setRowsPerPage}
-      />
+      <CustomPagination totalItems={100} />
     </div>
   );
 };

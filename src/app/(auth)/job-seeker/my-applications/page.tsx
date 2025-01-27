@@ -315,12 +315,8 @@ const MyApplicationsPage = () => {
         </TableContainer>
 
         <CustomPagination
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={filteredApplications.length}
-        />
+        totalItems={100}
+      />
       </Box>
       <Menu
         anchorEl={anchorEl}

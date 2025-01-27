@@ -11,18 +11,18 @@ export default withAuth(function middleware(req) {
   if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
-  const userType = token.type as RoleState;
+  let userType = token.type as string;
+  if (userType === "employer" && !token.companyId) userType = "unEmployee";
   if (path == "/me") {
     if (userType === "seeker") {
-      return NextResponse.redirect(new URL(`/me/${token.id}`, req.url));
-    } else {
-      if (token.companyId) {
-        return NextResponse.redirect(new URL(`/employer/dashboard`, req.url));
-      } else {
-        return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
-      }
+      return NextResponse.redirect(new URL(`/me/${token.userName}`, req.url));
+    } else if (userType === "employer") {
+      return NextResponse.redirect(new URL(`/co/${token.companyId}`, req.url));
+    } else if (userType === "unEmployee") {
+      return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
     }
   }
+
   let haveAccess = doesRoleHaveAccessToURL(userType, path);
   if (!haveAccess) {
     // Redirect to login page if user has no access to that particular page
@@ -55,15 +55,16 @@ const roleAccessMap: Record<string, string[]> = {
     "/employer/subscription-plans",
     "/employer/search/saved-search/[id]",
   ],
+  unEmployee: ["/employer/company-info"],
 };
 
 function doesRoleHaveAccessToURL(userType: string, url: string): boolean {
   const accessibleRoutes = roleAccessMap[userType] || [];
-  // return accessibleRoutes.some((route) => {
-  //   // Create a regex from the route by replacing dynamic segments
-  //   const regexPattern = route.replace(/\[.*?\]/g, "[^/]+").replace("/", "\\/");
-  //   const regex = new RegExp(`^${regexPattern}$`);
-  //   return regex.test(url);
-  // });
+  return accessibleRoutes.some((route) => {
+    // Create a regex from the route by replacing dynamic segments
+    const regexPattern = route.replace(/\[.*?\]/g, "[^/]+").replace("/", "\\/");
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test(url);
+  });
   return true;
 }

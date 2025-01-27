@@ -48,6 +48,7 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
+  userName: string | null;
   type: RoleState;
   photo: string | null;
   phone: string | null;

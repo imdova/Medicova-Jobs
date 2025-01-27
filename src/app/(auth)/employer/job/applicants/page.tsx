@@ -133,8 +133,6 @@ const ApplicantsPage: React.FC = () => {
       {/* Left Column: Filter Section */}
       <JobFilter
         sections={filterSections}
-        selectedFilters={selectedFilters}
-        setSelectedFilters={setSelectedFilters}
         searchKeys={["Residency (Location)"]}
       />
       {/* Right Column: Results Section */}
@@ -333,13 +331,7 @@ const ApplicantsPage: React.FC = () => {
         ))}
 
         {/* Pagination */}
-        <CustomPagination
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={doctors.length} // Pass the total items count
-        />
+        <CustomPagination totalItems={100} />
       </div>
       <Snackbar
         open={showCopyAlert}
