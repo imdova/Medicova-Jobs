@@ -9,10 +9,7 @@ import { useSession } from "next-auth/react";
 import { createJob, updateJob } from "@/lib/actions/job.actions";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
-import {
-  addNewJob,
-  updateJobOptimistic,
-} from "@/store/slices/jobSlice";
+import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
 import { useFormDirty } from "@/hooks/useFormDirty";
 import { usePrompt } from "@/hooks/usePrompt";
 import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
@@ -49,7 +46,7 @@ const initialJob: JobData = {
   salaryRangeStart: null,
   salaryRangeEnd: null,
   salaryCurrency: null,
-  availableVacancies: null,
+  availableVacancies: 1,
   description: null,
   requirements: null,
   salaryDetails: null,
@@ -65,7 +62,6 @@ const initialJob: JobData = {
   startDateType: null,
   validTo: null,
 };
-// const initialJob: JobData = {
 //   companyId: "",
 //   title: "",
 //   jobIndustryId: "",
@@ -289,6 +285,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         )}
         {activeStep === 1 && (
           <ScreeningQuestionsStep
+            jobData={jobData}
             onBack={handleBack}
             onDraft={onDraft}
             onSubmit={onSecondStepSubmit}

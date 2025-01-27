@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { KeyboardEvent, useState } from "react";
 import {
   Box,
   Typography,
@@ -21,6 +21,7 @@ import { JobData } from "@/types";
 import { disableEnterKey } from "@/util";
 
 interface ScreenQuestionsProps {
+  jobData: JobData;
   onSubmit: (data: Partial<JobData>) => void;
   onDraft: (data: Partial<JobData>) => void;
   onBack: () => void;
@@ -28,14 +29,19 @@ interface ScreenQuestionsProps {
 }
 
 const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
+  jobData,
   onBack,
   onDraft,
   onSubmit,
-  draftLoading
+  draftLoading,
 }) => {
-  const [questions, setQuestions] = useState<string[]>([]);
+  const [questions, setQuestions] = useState<string[]>(jobData.questions || []);
   const [showCompany, setShowCompany] = useState(true);
   const [recieveEmails, setRecieveEmails] = useState(true);
+
+  const [email, setEmail] = useState(jobData.jobEmail || "");
+  const [isEditing, setIsEditing] = useState(jobData.jobEmail ? false : true); // To toggle the editing state
+  const [emailError, setEmailError] = useState("");
 
   const [newQuestion, setNewQuestion] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -161,11 +167,50 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    onSubmit({ questions: questions, showCompany, recieveEmails });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateEmail()) {
+      onSubmit({
+        questions: questions,
+        showCompany,
+        recieveEmails,
+        jobEmail: email,
+      });
+    } else {
+      setIsEditing(true);
+    }
   };
   const handleDraft = () => {
-    onDraft({ questions: questions, showCompany, recieveEmails });
+    onDraft({
+      questions: questions,
+      showCompany,
+      recieveEmails,
+      jobEmail: email,
+    });
+  };
+
+  const validateEmail = (): boolean => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let errorMessage = "";
+
+    if (!email.trim()) {
+      errorMessage = "Job email is required";
+    } else if (!re.test(email.trim())) {
+      errorMessage = "Job email is not valid";
+    }
+
+    setEmailError(errorMessage);
+    return errorMessage === "";
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && email.trim()) {
+      e.preventDefault();
+      if (validateEmail()) {
+        setIsEditing(false);
+      }
+    }
   };
 
   return (
@@ -298,11 +343,30 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
               <FormControlLabel value="no" control={<Radio />} label="No" />
             </RadioGroup>
 
-            <p>
-              Recipient Email: <span>imetacademy@gmail.com</span>
-            </p>
-            <Button variant="text" className="p-0 text-main hover:underline">
-              change email address
+            <div className="flex items-center gap-2">
+              <p>Recipient Email: </p>
+              {isEditing ? (
+                <TextField
+                  value={email}
+                  sx={{ height: 35, bgcolor: "white" }}
+                  onChange={(e) => setEmail(e.target.value)}
+                  size="small"
+                  onKeyDown={handleKeyDown}
+                  variant="outlined"
+                  className="w-full sm:w-56"
+                />
+              ) : (
+                <span>{email}</span>
+              )}
+            </div>
+            <p className="text-xs text-red-500">{emailError}</p>
+
+            <Button
+              variant="text"
+              className="p-0 text-main hover:underline"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Save email address" : "Change email address"}
             </Button>
           </div>
         </div>
@@ -311,11 +375,13 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         <Button onClick={onBack} variant="outlined">
           Back
         </Button>
-        <Button onClick={handleDraft} className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]">
-        {draftLoading ? "Loading... " : "Save and Publish Later"}
-          
+        <Button
+          onClick={handleDraft}
+          className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
+        >
+          {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>
-        <Button  type="submit" variant="contained">
+        <Button type="submit" variant="contained">
           next
         </Button>
       </div>
