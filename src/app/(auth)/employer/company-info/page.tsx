@@ -126,6 +126,7 @@ const CompanyInfoForm: React.FC = () => {
       update({
         companyName: updatedCompany.name,
         companyPhoto: updatedCompany.logo,
+        companyEmail: updatedCompany.email,
       });
       markAsClean();
       setLoading(false);

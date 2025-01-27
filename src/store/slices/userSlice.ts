@@ -13,6 +13,7 @@ const InitialUserData: UserState = {
   type: "seeker",
   companyName: null,
   companyPhoto: null,
+  companyEmail: null,
 };
 interface UserReducerState {
   loading: boolean;

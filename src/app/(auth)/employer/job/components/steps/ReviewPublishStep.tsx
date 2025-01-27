@@ -153,7 +153,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
           {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>
         <Button onClick={onSubmit} type="submit" variant="contained">
-          {loading ? "Loading..." : "Publish"}
+          {loading ? "Loading..." : jobData.id ? "Update" : "Publish"}
         </Button>
       </div>
     </div>

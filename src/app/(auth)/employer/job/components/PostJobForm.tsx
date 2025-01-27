@@ -107,6 +107,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
+  const companyEmail = user?.companyEmail || "";
 
   const dispatch = useAppDispatch();
   const { isDirty, markAsDirty, markAsClean } = useFormDirty();
@@ -285,7 +286,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         )}
         {activeStep === 1 && (
           <ScreeningQuestionsStep
-            jobData={jobData}
+            jobData={{ ...jobData, jobEmail: companyEmail }}
             onBack={handleBack}
             onDraft={onDraft}
             onSubmit={onSecondStepSubmit}

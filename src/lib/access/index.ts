@@ -103,10 +103,17 @@ export const serverSignIn = async ({
             const companyId = response.data.id;
             const companyName = response.data.name;
             const companyPhoto = response.data.photo;
+            const companyEmail = response.data.email;
             return {
               success: true,
               message: user.type + " Registered successfully",
-              data: { ...user, companyId, companyName, companyPhoto },
+              data: {
+                ...user,
+                companyId,
+                companyName,
+                companyPhoto,
+                companyEmail,
+              },
             };
           }
           return {

@@ -120,7 +120,7 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
         <MenuItem>
           <Link
             className="flex w-60 items-center gap-2"
-            href={`/employer/job/posted/${job.id}`}
+            href={`/employer/job/posted/${job.id}?duplicate=true`}
             onClick={handleClose}
           >
             <ContentCopy color="primary" fontSize="small" />
