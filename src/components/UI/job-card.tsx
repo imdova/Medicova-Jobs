@@ -44,13 +44,15 @@ const JobCard: React.FC<JobCardProps> = ({
     <div className="grid w-full grid-cols-1 flex-wrap justify-between gap-5 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg sm:flex-nowrap md:grid-cols-4 md:p-5">
       <div className="flex flex-col gap-1 md:col-span-3 md:flex-nowrap md:justify-normal">
         <div className="flex items-center gap-2">
-          <Image
-            src={job.company?.photo || "/images/placeholder-avatar.svg"}
-            alt={job.title}
-            width={60}
-            height={60}
-            className={`h-[60px] w-[60px] rounded-base border border-gray-100 bg-primary-100 object-cover transition-transform duration-150`}
-          />
+          <Link href={`/co/${job.company?.id}`}>
+            <Image
+              src={job.company?.photo || "/images/placeholder-avatar.svg"}
+              alt={job.title}
+              width={60}
+              height={60}
+              className={`h-[60px] w-[60px] rounded-base border border-gray-100 bg-primary-100 object-cover transition-transform duration-150`}
+            />
+          </Link>
           <div>
             <div className="flex items-start">
               {isApply ? (

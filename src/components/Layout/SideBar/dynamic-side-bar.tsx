@@ -31,6 +31,13 @@ export default function DynamicSideBar({
     setActiveTab(newTab);
   };
 
+  const updateActiveTab = (links: NavItem[]) => {
+    const activeTabIndex = links.findIndex((link) =>
+      link.path ? isCurrentPage(pathname, link.path) : false,
+    );
+    setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
+  };
+
   useEffect(() => {
     if (links.length === 0 && initialLinks.length > 0) {
       setLinks(initialLinks);
@@ -40,10 +47,7 @@ export default function DynamicSideBar({
       setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
     }
     if (links.length > 0) {
-      const activeTabIndex = links.findIndex((link) =>
-        link.path ? isCurrentPage(pathname, link.path) : false,
-      );
-      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
+      updateActiveTab(links);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLinks, pathname]);
@@ -76,7 +80,7 @@ export default function DynamicSideBar({
             <ProfileTab
               key={item.id}
               user={user}
-              activeTab={activeTab}
+              pathname={pathname}
               onTabChange={setActiveTab}
             />
           );
@@ -95,8 +99,11 @@ export default function DynamicSideBar({
               key={item.id}
               item={item}
               index={index}
-              activeTab={activeTab}
+              links={links}
               setLinks={setLinks}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              updateActiveTab={updateActiveTab}
             />
           );
         }
@@ -121,11 +128,17 @@ const CollapseTab = ({
   index,
   activeTab,
   setLinks,
+  links,
+  updateActiveTab,
+  setActiveTab
 }: {
   item: NavItem;
   index: number;
   activeTab: number | null;
+  links: NavItem[];
   setLinks: React.Dispatch<React.SetStateAction<NavItem[]>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
+  updateActiveTab: (links: NavItem[]) => void;
 }) => {
   const isActive = activeTab === index;
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -136,8 +149,11 @@ const CollapseTab = ({
     setIsOpen(!isOpen);
     if (isOpen) {
       setLinks((e) => removeItems(e, index + 1, item.links?.length || 0));
+      setActiveTab(null);
     } else {
-      setLinks((e) => insertItemsAfterIndex(e, item.links || [], index));
+      const newLinks = insertItemsAfterIndex(links, item.links || [], index);
+      setLinks(newLinks);
+      updateActiveTab(newLinks);
     }
   };
   // import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -163,15 +179,16 @@ const CollapseTab = ({
 };
 const ProfileTab = ({
   user,
-  activeTab,
+  pathname,
   onTabChange,
 }: {
   user: UserState;
-  activeTab: number | null;
+  pathname: string;
   onTabChange: (index: number) => void;
 }) => {
   const isEmployer = user.type === "employer";
-  const isActive = activeTab === 0;
+  const path = isEmployer ? `/co/${user?.companyId}` : `/me/${user.firstName}`;
+  const isActive = isCurrentPage(pathname, path);
 
   return (
     <Tab

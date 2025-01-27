@@ -32,7 +32,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 0,
       type: "profile",
-      path: "/co/[id]",
     },
     {
       id: 1,
@@ -147,7 +146,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 0,
       type: "profile",
-      path: "/me/[id]",
     },
     {
       id: 18,
