@@ -16,9 +16,16 @@ import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
 import { deleteJob } from "@/lib/actions/job.actions";
 import { JobData } from "@/types";
-import { fetchJobs } from "@/store/slices/jobSlice";
+import {
+  fetchJobs,
+  removeCompanyJob,
+  removeJobOptimistic,
+  updateCompanyJob,
+  updateJobOptimistic,
+} from "@/store/slices/jobSlice";
 import { useAppDispatch } from "@/store/hooks";
-import { ContentCopy } from "@mui/icons-material";
+import { ContentCopy, Pause, PlayArrow } from "@mui/icons-material";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 const Controls: React.FC = () => {
   return (
@@ -44,8 +51,8 @@ const Controls: React.FC = () => {
 
 export const DropdownMenu = ({ job }: { job: JobData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const dispatch = useAppDispatch();
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: any) => {
@@ -54,21 +61,27 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setOpenDialog(false);
+  };
+  const toggleActive = () => {
+    setAnchorEl(null);
+    if (job.id) {
+      dispatch(updateJobOptimistic({ id: job.id, active: !job.active }));
+      dispatch(updateCompanyJob({ id: job.id, active: !job.active }));
+    }
   };
   const handleDelete = async () => {
-    setDeleteLoading(true);
     if (job.id) {
-      const result = await deleteJob(job.id);
-      if (result.success) {
-        if (job.companyId || job.company?.id) {
-          dispatch(fetchJobs(job.companyId || job.company?.id || ""));
-        }
-      }
+      dispatch(removeJobOptimistic(job.id));
+      dispatch(removeCompanyJob(job.id));
     }
-    setDeleteLoading(false);
     setAnchorEl(null);
+    setOpenDialog(false);
   };
 
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
   return (
     <React.Fragment>
       <IconButton
@@ -80,6 +93,13 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
       >
         <MoreVertIcon className="h-7 w-7" />
       </IconButton>
+      <DeleteConfirmationDialog
+        open={openDialog}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete "${job.title}"? This action cannot be undone.`}
+        onDelete={handleDelete}
+        onClose={handleClose}
+      />
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -109,14 +129,18 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
         </MenuItem>
         <Divider className="!m-0" />
         <Divider className="!m-0" />
-        <MenuItem onClick={handleClose} className="flex items-center gap-2">
-          <PauseIcon color="warning" fontSize="small" />
-          <span>Close Job</span>
+        <MenuItem onClick={toggleActive} className="flex items-center gap-2">
+          {job.active ? (
+            <Pause color="warning" fontSize="small" />
+          ) : (
+            <PlayArrow color="primary" fontSize="small" />
+          )}
+          <span>{job.active ? "Close Job" : "Open Job"}</span>
         </MenuItem>
         <Divider className="!m-0" />
-        <MenuItem onClick={handleDelete} className="flex items-center gap-2">
+        <MenuItem onClick={handleClickOpen} className="flex items-center gap-2">
           <DeleteIcon color="error" fontSize="small" />
-          <span>{deleteLoading ? "Removing..." : "Remove"}</span>
+          <span>Remove</span>
         </MenuItem>
       </Menu>
     </React.Fragment>

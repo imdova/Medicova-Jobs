@@ -9,6 +9,7 @@ import { JobsTabs, UserState } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchJobs } from "@/store/slices/jobSlice";
 import { filteredJobs } from "@/lib/auth/utils";
+import Loading from "@/components/loading/loading";
 
 const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
 
@@ -115,6 +116,7 @@ const ManageJobs: React.FC = () => {
       </div>
 
       {/* Job Listings */}
+      {loading && <Loading />}
       <div className="flex flex-col gap-4 p-2">
         {filteredJobs(jobs, tabs[activeTab]).map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />

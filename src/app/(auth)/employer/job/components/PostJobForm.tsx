@@ -9,7 +9,10 @@ import { useSession } from "next-auth/react";
 import { createJob, updateJob } from "@/lib/actions/job.actions";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
-import { clearCompanyJobs } from "@/store/slices/jobSlice";
+import {
+  addNewJob,
+  updateJobOptimistic,
+} from "@/store/slices/jobSlice";
 import { useFormDirty } from "@/hooks/useFormDirty";
 import { usePrompt } from "@/hooks/usePrompt";
 import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
@@ -177,9 +180,9 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     const result = await createJob(convertEmptyStringsToNull(data));
     if (result.success && result.data) {
       const job = result.data;
-      route.push(`/job/${job.id}`);
-      dispatch(clearCompanyJobs());
+      dispatch(addNewJob(job));
       markAsClean();
+      route.push(`/job/${job.id}`);
       console.log("Job Created successfully");
     } else {
       setError(result.message);
@@ -191,7 +194,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     if (result.success && result.data) {
       const job = result.data;
       route.push(`/job/${job.id}`);
-      dispatch(clearCompanyJobs());
+      dispatch(updateJobOptimistic(job));
       markAsClean();
       console.log("Job Updated successfully");
     } else {

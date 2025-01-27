@@ -16,6 +16,7 @@ import { getFullLastEdit } from "@/util";
 import Image from "next/image";
 import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
+import JobSwitch from "./JobSwitch";
 
 interface JobCardProps {
   job: JobData;
@@ -199,7 +200,8 @@ const JobCard: React.FC<JobCardProps> = ({
       <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col">
         {isEdit ? (
           <div className="flex justify-end">
-            <Switch defaultChecked />
+            <JobSwitch job={job} />
+            {/* <Switch defaultChecked /> */}
             <ShareMenu
               link={`https://www.example.com/job/${job.id}`}
               className="h-12 w-12"

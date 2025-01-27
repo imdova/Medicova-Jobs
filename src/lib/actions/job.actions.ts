@@ -41,8 +41,10 @@ export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
       message: error.message || "An error occurred",
     };
   }
-}; 
-export const updateJob = async (jobData: JobData): Promise<Result<JobData>> => {
+};
+export const updateJob = async (
+  jobData: Partial<JobData>,
+): Promise<Result<JobData>> => {
   try {
     const response = await fetch(API_UPDATE_JOB + jobData.id, {
       method: "PATCH",
@@ -79,7 +81,7 @@ export const deleteJob = async (jobId: string): Promise<Result<null>> => {
     const response = await fetch(API_DELETE_JOB + jobId, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
         accept: "application/json",
       },
     });
