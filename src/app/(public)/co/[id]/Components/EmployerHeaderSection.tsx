@@ -30,10 +30,6 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
   const updateImage = async (file: File) => {
     setImage(file);
   };
-  const removeImage = async () => {
-    console.log("remove image");
-  };
-
   return (
     <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
       {/* Background Cover Image */}
@@ -56,7 +52,6 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
             }
             size="xLarge"
             onImageUpdate={updateImage}
-            onImageRemove={removeImage}
             maxFileSizeMB={5}
             imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
             containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"

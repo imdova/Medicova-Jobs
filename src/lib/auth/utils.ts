@@ -19,7 +19,7 @@ export async function changePasswordWithOTP(credentials: any) {
       newPassword: credentials.password,
       otp: credentials.otp,
     });
-    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data)
+    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -57,7 +57,6 @@ export async function handleSocialLogin(user: any, account: any) {
   }
 }
 
-
 export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
   switch (activeTab) {
     case "all": // All
@@ -76,3 +75,8 @@ export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
       return [];
   }
 };
+
+export function expandItems<T>(array: T[], initial: number, expand: boolean): T[] {
+  return expand ? array : array.slice(0, initial);
+}
+

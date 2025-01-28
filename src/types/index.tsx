@@ -7,6 +7,7 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
+import { TextFieldProps } from "@mui/material";
 
 export type Country = {
   name: string;
@@ -57,6 +58,26 @@ export interface UserState {
   companyEmail: string | null;
   companyPhoto: string | null;
   permissions: Permission[];
+}
+
+export interface UserProfile extends UserState {
+  about: string | null;
+  title: string | null;
+  age: number | null;
+  languages: string[] | null;
+  resume: string | null;
+  socialLinks: { [key: string]: string } | null;
+  whatsapp: string | null;
+  nationality: string | null;
+  maritalStatus: string | null;
+  hasDrivingLicence: boolean | null;
+  country: CountryMin | null;
+  state: State | null;
+  city: City | null;
+  isPublic: boolean | null;
+  category: string | null;
+  speciality: string | null;
+  careerLevel: string | null;
 }
 
 export interface registerData {
@@ -366,13 +387,31 @@ export interface ModalState {
   navigationUrl?: string;
 }
 
-export type FieldType = "text" | "number" | "email" | "password";
+export type FieldType =
+  | "text"
+  | "number"
+  | "email"
+  | "password"
+  | "date"
+  | "textEditor"
+  | "select"
+  | "checkbox";
 
-// Field configuration interface
-export interface FieldConfig {
-  name: string;
-  label: string;
+// Updated FieldConfig to support multiple hidden fields
+export interface FieldConfig<T = any> {
+  name: keyof T;
+  label?: string;
   type: FieldType;
   required?: boolean;
   validation?: any;
+  gridProps?: {
+    xs?: number;
+    sm?: number;
+    md?: number;
+  };
+  textFieldProps?: Partial<TextFieldProps>;
+  component?: React.ComponentType<any>;
+  componentProps?: Record<string, any>;
+  options?: { label: string; value: string | number }[];
+  hideFieldNames?: (keyof T)[];
 }

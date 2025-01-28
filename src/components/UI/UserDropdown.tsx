@@ -19,7 +19,7 @@ interface UserDropdownProps {
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
   const userAvatar = user.photo;
-  const userName = user.firstName || "User Image";
+  const userName = user.userName || user.id;
   const isEmployer = user.type === "employer";
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

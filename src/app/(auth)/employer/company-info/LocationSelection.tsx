@@ -28,17 +28,10 @@ const LocationSelection = ({
   } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
 
-  const handleFetchCountries = async () => {
-    await dispatch(fetchCountries());
-  };
-
-  const handleFetchStates = async (countryCode: string) => {
-    await dispatch(fetchStates(countryCode));
-  };
 
   useEffect(() => {
     if (countries.length === 0) {
-      handleFetchCountries();
+      dispatch(fetchCountries());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
@@ -49,7 +42,7 @@ const LocationSelection = ({
         (c) => c.isoCode === data.country?.code,
       )?.isoCode;
       if (countryCode) {
-        handleFetchStates(countryCode);
+        dispatch(fetchStates(countryCode))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

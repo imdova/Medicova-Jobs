@@ -1,94 +1,85 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Avatar, Button, IconButton } from "@mui/material";
-import { useRouter } from "next/navigation";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FlagIcon from "@mui/icons-material/Flag";
+import { useState } from "react";
+import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Verified } from "@mui/icons-material";
 import ShareMenu from "@/components/UI/ShareMenu";
-import { UserState } from "@/types";
-
-interface HeaderData {
-  name: string | null;
-  isVerified: boolean;
-  title: string | null;
-  location: string | null;
-  age: number | null;
-  nationality: string | null;
-  maritalStatus: string | null;
-  field: string | null;
-  yearsOfExperience: number | null;
-  isAvailable: boolean ;
-}
-
+import { UserProfile } from "@/types";
+import Link from "next/link";
+import Avatar from "@/components/UI/Avatar";
+import Image from "next/image";
 
 const HeaderSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const router = useRouter();
+  const [image, setImage] = useState<File | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-    }
-  }, []);
-
-  const handleEditProfileClick = () => {
-    router.push("/job-seeker/setting");
+  const updateImage = async (file: File) => {
+    setImage(file);
   };
-
-  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
-
-  // Handle deleting the avatar image
-  const handleDeleteImage = () => {
-    setAvatarImage(undefined);
-  };
-
-  // Handle selecting a new image
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarImage(imageUrl);
-    }
+  const removeImage = async () => {
+    console.log("remove image");
   };
 
   return (
-    <div className="flex h-fit min-h-[200px] gap-8 w-full flex-col items-center overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
-      <Avatar
+    <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
+      {/* <Avatar
         alt="Profile"
         src={avatarImage || undefined}
-        className="lg:ml-8 xl:ml-14  min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl"
-      />
+        className="min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
+      /> */}
+      {isMe ? (
+        <Avatar
+          currentImageUrl={
+            image ? URL.createObjectURL(image) : user.photo || ""
+          }
+          size="xLarge"
+          onImageUpdate={updateImage}
+          maxFileSizeMB={5}
+          imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
+          containerClassName="rounded-full h-[100px] w-[100px] object-cover border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
+          acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
+        />
+      ) : (
+        <Image
+          src={user.photo || "/images/placeholder-avatar.svg"}
+          alt="avatar"
+          width={100}
+          height={100}
+          className="min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
+        />
+      )}
       <div className="flex">
         <div className="mr-5">
           <h5 className="text-xl font-bold text-main">
-            Jake Gyll <Verified color="primary" className="ml-1 h-6 w-6" />
+            {user.userName}{" "}
+            <Verified color="primary" className="ml-1 h-6 w-6" />
           </h5>
-          <p className="text-sm text-secondary">
-            Cardiology Consultant at{" "}
-            <span className="font-bold text-main">Saudi German Hospital</span>
-          </p>
+          <p className="text-sm text-secondary">{user.title}</p>
           <div>
             <p className="text-sm text-secondary">
-              35 years old - Egyptian - Married - Cardiology - 10 years
-              Experience
+              {user.age ? `${user.age} years old` : ""}{" "}
+              {user.nationality ? `- ${user.nationality}` : ""}{" "}
+              {/* {user.isMarried ? `- ${user.isMarried}` : ""}{" "} */}
+              {user.speciality ? `- ${user.speciality}` : ""}{" "}
+              {user.careerLevel
+                ? `- Ex ${user.careerLevel} years`
+                : ""}{" "}
             </p>
-            <p className="text-sm text-secondary">
-              <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> Cairo,
-              Egypt
-            </p>
-            <Button variant="text" className="p-1">
+            {/* <p className="text-sm text-secondary">
+              <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> {user.location}
+            </p> */}
+            {/* <Button variant="text" className="p-1">
               <FlagIcon color="primary" sx={{ fontSize: { xs: 18, sm: 20 } }} />
               Open For Opportunities
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className="fex h-full flex-col items-center justify-center gap-1">
           {/* Edit Button */}
           {isMe && (
-            <IconButton onClick={handleEditProfileClick}>
+            <IconButton LinkComponent={Link} href="/job-seeker/setting">
               <EditIcon />
             </IconButton>
           )}

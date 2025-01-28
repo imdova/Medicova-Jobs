@@ -1,24 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Typography,
-  Button,
-  Box,
-  InputLabel,
-  TextField,
-  MenuItem,
-  Select,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, IconButton } from "@mui/material";
 import Image from "next/image";
-import experience from "@/components/icons/briefcase.png";
+import experiencesImage from "@/components/icons/briefcase.png";
 import EditIcon from "@mui/icons-material/Edit";
-import AddModal from "./Modals/AddModal";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
+import { FieldConfig, UserProfile, UserState } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
+import { expandItems } from "@/lib/auth/utils";
+import DynamicFormModal from "@/components/form/DynamicFormModal";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCountries } from "@/store/slices/locationSlice";
+import { fetchIndustries } from "@/store/slices/industrySlice";
 
 export interface ExperienceData {
   company: string;
@@ -26,67 +19,166 @@ export interface ExperienceData {
   years: string;
   location: string;
 }
-const experienceData: ExperienceData[] = [
+
+const years = Array.from(
+  { length: new Date().getFullYear() - 1980 + 1 },
+  (v, k) => k + 1980,
+).reverse();
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const fields: FieldConfig[] = [
   {
-    company: "Google",
-    position: "Senior Software Engineer",
-    years: "2015 - 2020",
-    location: "Mountain View, CA", // Company location
+    name: "jobTitle",
+    type: "text",
+    label: "Job Title",
+    textFieldProps: { placeholder: "Enter Job Title" },
+    required: true,
   },
   {
-    company: "Google",
-    position: "Senior Software Engineer",
-    years: "2015 - 2020",
-    location: "Mountain View, CA", // Company location
+    name: "company",
+    type: "text",
+    label: "Company/Organization",
+    textFieldProps: { placeholder: "Enter Company" },
+  },
+  {
+    name: "startYear",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "Start Year" },
+    options: years.map((year) => ({
+      value: year.toString(),
+      label: year.toString(),
+    })),
+    required: true,
+  },
+  {
+    name: "startMonth",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "Start Month" },
+    options: months.map((month) => ({
+      value: month,
+      label: month,
+    })),
+    required: true,
+  },
+  {
+    name: "endYear",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "End Year" },
+    options: years.map((year) => ({
+      value: year.toString(),
+      label: year.toString(),
+    })),
+    required: true,
+  },
+  {
+    name: "endMonth",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "End Month" },
+    options: months.map((month) => ({
+      value: month,
+      label: month,
+    })),
+    required: true,
+  },
+  {
+    name: "currentlyWorking",
+    label: "I currently work there",
+    type: "checkbox",
+    hideFieldNames: ["endYear", "endMonth"], // Multiple fields to hide
   },
 ];
+
 const INITIAL_VISIBLE_ITEMS = 2;
 const ExperienceSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS);
+  const { industries } = useAppSelector((state) => state.industry);
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+
+  const experiences: ExperienceData[] = [];
   const [isExpanded, setIsExpanded] = useState(false);
+  const toggle = () => setIsExpanded(!isExpanded);
 
-  const handleToggle = () => {
-    if (isExpanded) {
-      setVisibleItems(INITIAL_VISIBLE_ITEMS);
-    } else {
-      setVisibleItems(experienceData.length);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const open = () => setIsModalOpen(true);
+  const close = () => setIsModalOpen(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (data: { [key: string]: string }) => {
+    console.log("🚀 ~ handleSubmit ~ data:", data);
+    setLoading(true);
+  };
+
+  const remainingItems = experiences.length - INITIAL_VISIBLE_ITEMS;
+
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      dispatch(fetchCountries());
     }
-    setIsExpanded(!isExpanded);
-  };
+    if (industries.data.length === 0) {
+      dispatch(fetchIndustries());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
-  const [openModal, setOpenModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [fields, setFields] = useState<JSX.Element[]>([]);
-
-  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
-    setModalTitle(title);
-    setFields(getFields());
-    setOpenModal(true);
-  };
-
-  // Calculate how many more items are left to show
-  const remainingItems = experienceData.length - visibleItems;
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  if (!isMe && experienceData.length === 0) {
+  if (!isMe && experiences.length === 0) {
     return null;
   }
-
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+      <DynamicFormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleSubmit}
+        fields={[
+          {
+            name: "industry",
+            type: "select",
+            textFieldProps: { placeholder: "Select Industry" },
+            options: industries.data.map((industry) => ({
+              value: industry.id,
+              label: industry.name,
+            })),
+            required: true,
+          },
+          ...fields,
+          {
+            name: "country",
+            type: "select",
+            textFieldProps: { placeholder: "Select Country" },
+            options: countries.data.map((country) => ({
+              value: country.isoCode,
+              label: country.name,
+            })),
+            required: true,
+          },
+        ]}
+        title="Add Experience to Your Profile"
+      />
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">Experience</h3>
         {isMe && (
           <IconButton
-            onClick={() =>
-              handleOpenModal("Add Experiences", getExperienceFields)
-            }
+            onClick={open}
             className="rounded border border-solid border-gray-300 p-2"
           >
             <Add />
@@ -94,65 +186,59 @@ const ExperienceSection: React.FC<{
         )}
       </div>
 
-      <AddModal
-        open={openModal}
-        onClose={handleCloseModal}
-        modalTitle={modalTitle}
-        fields={fields}
-      />
-      {experienceData.length > 0 ? (
+      {experiences.length > 0 ? (
         <div className="my-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-          {experienceData.slice(0, visibleItems).map((item, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-3 rounded-base border p-2"
-            >
-              <Image
-                src={experience}
-                alt="Experience"
-                width={70}
-                height={70}
-                className=""
-              />
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h6 className="text-lg font-semibold text-main">
-                    {item.company}
-                  </h6>
-                  {isMe && (
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                </div>
-                <p className="text-sm text-secondary">{item.position}</p>
-                <p className="text-sm text-secondary">{item.years}</p>
-                <div className="flex text-sm text-secondary">
-                  <LocationOnOutlined className="-ml-1 text-base" />
-                  <p className="text-sm text-secondary">{item.location}</p>
+          {expandItems(experiences, INITIAL_VISIBLE_ITEMS, isExpanded).map(
+            (item, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-3 rounded-base border p-2"
+              >
+                <Image
+                  src={experiencesImage}
+                  alt="Experience"
+                  width={70}
+                  height={70}
+                  className=""
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h6 className="text-lg font-semibold text-main">
+                      {item.company}
+                    </h6>
+                    {isMe && (
+                      <IconButton>
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                  </div>
+                  <p className="text-sm text-secondary">{item.position}</p>
+                  <p className="text-sm text-secondary">{item.years}</p>
+                  <div className="flex text-sm text-secondary">
+                    <LocationOnOutlined className="-ml-1 text-base" />
+                    <p className="text-sm text-secondary">{item.location}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       ) : isMe ? (
         <EmptyCard
           src={"/images/activities.png"}
           description={"Your Experiences will appear here."}
           buttonText="Add Experience"
-          onClick={() =>
-            handleOpenModal("Add Experiences", getExperienceFields)
-          }
+          onClick={open}
         />
       ) : null}
 
       {/* Show More / Show Less Button */}
-      {experienceData.length > INITIAL_VISIBLE_ITEMS ? (
+      {experiences.length > INITIAL_VISIBLE_ITEMS ? (
         <div className="flex items-center justify-center">
-          <Button className="mt-2 p-0" variant="text" onClick={handleToggle}>
+          <Button className="mt-2 p-0" variant="text" onClick={toggle}>
             {isExpanded
-              ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
-              : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}
+              ? `Show less experiencess${remainingItems > 1 ? "s" : ""}`
+              : `Show ${remainingItems} more experiences${remainingItems > 1 ? "s" : ""}`}
           </Button>
         </div>
       ) : null}
@@ -161,276 +247,3 @@ const ExperienceSection: React.FC<{
 };
 
 export default ExperienceSection;
-
-const getExperienceFields = (): JSX.Element[] => [
-  <Box key="industry">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Industry *
-    </InputLabel>
-    <Select
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        height: "40px",
-        fontSize: "14px",
-      }}
-      required
-      defaultValue="Healthcare professionals"
-    >
-      <MenuItem value="Healthcare professionals">
-        Healthcare professionals
-      </MenuItem>
-    </Select>
-  </Box>,
-
-  <Box key="jobTitle">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Job Title *
-    </InputLabel>
-    <TextField
-      placeholder="Enter Job Title"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="company">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Company/Organization *
-    </InputLabel>
-    <TextField
-      placeholder="Enter Company"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box
-    key="dateMonth"
-    sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
-  >
-    <Box>
-      <InputLabel
-        sx={{
-          marginBottom: 0.2,
-          fontWeight: 600,
-          color: "#000",
-          fontSize: "14px",
-        }}
-      >
-        Start Date
-      </InputLabel>
-      <Select
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          height: "40px",
-          fontSize: "14px",
-        }}
-        defaultValue="Start Month"
-      >
-        <MenuItem value="Start Month" disabled sx={{ color: "#888" }}>
-          Start Month
-        </MenuItem>
-        {[
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ].map((month) => (
-          <MenuItem key={month} value={month}>
-            {month}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
-
-    <Box>
-      <InputLabel
-        sx={{
-          marginBottom: 0.2,
-          fontWeight: 600,
-          color: "#000",
-          fontSize: "14px",
-        }}
-      >
-        End Date
-      </InputLabel>
-      <Select
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          height: "40px",
-          fontSize: "14px",
-        }}
-        defaultValue="End Month"
-      >
-        <MenuItem value="End Month" disabled sx={{ color: "#888" }}>
-          End Month
-        </MenuItem>
-        {[
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ].map((month) => (
-          <MenuItem key={month} value={month}>
-            {month}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
-  </Box>,
-
-  <Box
-    key="dateYear"
-    sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
-  >
-    <Box>
-      <Select
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          height: "40px",
-          fontSize: "14px",
-        }}
-        required
-        defaultValue="Start Year"
-      >
-        <MenuItem value="Start Year" disabled>
-          Start Year
-        </MenuItem>
-        {Array.from(
-          { length: new Date().getFullYear() - 1980 + 1 },
-          (_, index) => 1980 + index,
-        ).map((year) => (
-          <MenuItem key={year} value={year}>
-            {year}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
-
-    <Box>
-      <Select
-        fullWidth
-        sx={{
-          backgroundColor: "rgba(214, 221, 235, 0.18)",
-          height: "40px",
-          fontSize: "14px",
-        }}
-        required
-        defaultValue="End Year"
-      >
-        <MenuItem value="End Year" disabled>
-          End Year
-        </MenuItem>
-        {Array.from(
-          { length: new Date().getFullYear() - 1980 + 1 },
-          (_, index) => 1980 + index,
-        ).map((year) => (
-          <MenuItem key={year} value={year}>
-            {year}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
-  </Box>,
-
-  <Box key="currentWork">
-    <FormControlLabel
-      control={
-        <Checkbox
-          sx={{
-            color: "rgba(46, 174, 125, 1)",
-            "&.Mui-checked": {
-              color: "rgba(46, 174, 125, 1)",
-            },
-            "& .MuiSvgIcon-root": {
-              fontSize: 34,
-            },
-          }}
-        />
-      }
-      label={
-        <Typography sx={{ color: "#515B6F", fontWeight: "700" }}>
-          I currently work there
-        </Typography>
-      }
-    />
-  </Box>,
-
-  <Box key="country">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Country *
-    </InputLabel>
-    <Select
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        height: "40px",
-        fontSize: "14px",
-      }}
-      required
-      defaultValue="Egypt"
-    >
-      <MenuItem value="Egypt">Egypt</MenuItem>
-    </Select>
-  </Box>,
-];

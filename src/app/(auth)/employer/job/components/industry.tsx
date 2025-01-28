@@ -74,12 +74,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
   }, [selectedIndustry]);
 
 
-  const handleFetchIndustries = async () => {
-    await dispatch(fetchIndustries());
-  };
   useEffect(() => {
     if (industries.length === 0) {
-      handleFetchIndustries();
+      dispatch(fetchIndustries())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);

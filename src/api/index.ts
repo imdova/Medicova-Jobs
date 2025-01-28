@@ -5,6 +5,7 @@ export const TAGS = {
   company : "company",
   employers: "employers",
   users: "users",
+  profile: "profile",
   roles: "roles",
   permissions: "permissions",
   locations: "locations",

@@ -1,24 +1,29 @@
 "use server";
 
-import { API_CREATE_JOB_APPLICATION } from "@/api/seeker";
+import { TAGS } from "@/api";
+import {
+  API_CREATE_JOB_APPLICATION,
+  API_GET_SEEKER_BY_IDENTIFIER,
+} from "@/api/seeker";
 import { API_GET_USER_BY_ID } from "@/api/users";
-import { Result, UserState } from "@/types";
+import { Result, UserProfile, UserState } from "@/types";
 import { ApplicationType } from "@/types/seeker";
 
-export const getUser = async (id: string): Promise<Result<UserState>> => {
-  // console.log("🚀 ~ getUser ~ id:", id);
+export const getUser = async (
+  identifier: string,
+): Promise<Result<UserProfile>> => {
   try {
-    const response = await fetch(API_GET_USER_BY_ID + id, {
+    const response = await fetch(API_GET_SEEKER_BY_IDENTIFIER + identifier, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
       },
       credentials: "include",
+      next: { tags: [TAGS.profile] },
     });
-    // console.log("🚀 ~ getMe ~ response:", response);
     if (response.ok) {
-      const data: UserState = await response.json();
+      const data: UserProfile = await response.json();
       return {
         success: true,
         message: "User fetched successfully",
@@ -39,7 +44,6 @@ export const getUser = async (id: string): Promise<Result<UserState>> => {
   }
 };
 
-
 export const createJobApplication = async (
   applicationData: ApplicationType,
 ): Promise<Result> => {
@@ -53,7 +57,7 @@ export const createJobApplication = async (
       credentials: "include",
       body: JSON.stringify(applicationData),
     });
-    console.log("🚀 ~ response:", response)
+    console.log("🚀 ~ response:", response);
 
     if (response.ok) {
       const data = await response.json();

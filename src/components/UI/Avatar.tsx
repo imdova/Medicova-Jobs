@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Modal,
@@ -13,12 +13,11 @@ import Image from "next/image";
 import clsx from "clsx";
 import { CloudUpload, Delete } from "@mui/icons-material";
 
-// Types
 interface AvatarProps extends React.HTMLAttributes<HTMLButtonElement> {
   currentImageUrl?: string;
   size?: "small" | "medium" | "large" | "xLarge";
   onImageUpdate: (file: File) => Promise<void>;
-  onImageRemove: () => Promise<void>;
+  onImageRemove?: () => Promise<void>; // Made optional
   maxFileSizeMB?: number;
   acceptedFileTypes?: string[];
   // Style props
@@ -87,9 +86,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(
-    null,
-  );
+  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -149,6 +146,8 @@ export const Avatar: React.FC<AvatarProps> = ({
   };
 
   const handleRemove = async () => {
+    if (!onImageRemove) return;
+    
     setIsUploading(true);
     setError(null);
 
@@ -249,12 +248,12 @@ export const Avatar: React.FC<AvatarProps> = ({
           )}
 
           <div className="mt-4 flex justify-between gap-2">
-            {selectedFile && (
+            {selectedFile && onImageRemove && currentImageUrl && (
               <Button
                 variant="text"
                 color="error"
                 onClick={handleRemove}
-                disabled={isUploading || !currentImageUrl}
+                disabled={isUploading}
                 startIcon={<Delete />}
                 className={buttonClassName}
               >
