@@ -15,6 +15,7 @@ import {
   API_GET_JOBS,
   API_UPDATE_COMPANY,
 } from "@/api/employer";
+import { API_GET_SEEKERS } from "@/api/seeker";
 import {
   Company,
   EmploymentType,
@@ -23,6 +24,7 @@ import {
   JobCategory,
   Result,
   Sector,
+  UserState,
 } from "@/types";
 import { revalidateTag } from "next/cache";
 
@@ -463,3 +465,42 @@ export const getSpecialtyFromCategoryId = async (
     };
   }
 };
+export const getPaginatedSeekers = async (
+  page: number = 1,
+  limit: number = 10,
+): Promise<
+  Result<{
+    data: UserState[];
+    total: number;
+  }>
+> => {
+  try {
+    const response = await fetch(`${API_GET_SEEKERS}?page=${page}&limit=${limit}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    });
+    if (response.ok) {
+      const data: { total: number; data: UserState[] } = await response.json();
+      return {
+        success: true,
+        message: "Seekers list fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+

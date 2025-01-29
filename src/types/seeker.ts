@@ -1,6 +1,6 @@
-export type ApplicationType = {
+export type JobApplicationData = {
+  id:string;
   seekerId: string;
   jobId: string;
-  companyId: string;
   answers?: { [key: string]: string };
 };

@@ -145,6 +145,7 @@ type CountryInData = {
 export interface Company {
   id: string;
   name: string;
+  title?: string | null;
   about?: string;
   completencePercent?: number;
   isPrivate?: boolean;
@@ -267,6 +268,7 @@ export interface JobData {
   active: boolean | null;
   closed: boolean | null;
   validTo: string | null; // ISO date string
+  applications?: number | null;
   startDateType: StartDateType | null | "";
   jobIndustry?: {
     id: string;

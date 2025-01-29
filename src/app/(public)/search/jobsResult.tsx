@@ -5,14 +5,14 @@ import { useState } from "react";
 import { JobData } from "@/types";
 import JobCard from "@/components/UI/job-card";
 import MinJobCard from "@/components/UI/job-card-min";
-const JobsResult: React.FC<{ jobs: JobData[] }> = ({ jobs }) => {
+const JobsResult: React.FC<{ jobs: JobData[],total: number }> = ({ jobs,total }) => {
   const [view, setView] = useState("list");
   return (
     <div>
       <div className="mb-9 flex flex-wrap-reverse items-center justify-between md:flex-nowrap">
         <div>
           <h3 className="text-[24px] font-bold text-main">Search Results</h3>
-          <p className="text-sm text-secondary">Showing 2500 Results</p>
+          <p className="text-sm text-secondary">{total === 0 ? "No results" : `Showing ${total} Results`} </p>
         </div>
         <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-normal">
           <div className="flex items-baseline gap-1">
@@ -52,7 +52,7 @@ const JobsResult: React.FC<{ jobs: JobData[] }> = ({ jobs }) => {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-3">
+        <div className="mb-8 grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-3">
           {jobs.map((job) => (
             <MinJobCard key={job.id} job={job} />
           ))}

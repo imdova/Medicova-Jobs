@@ -24,7 +24,7 @@ export const routeConfigs: RouteConfig[] = [
   //employer
   { pattern: "/employer/search", sideBarType: "none", linksType: "userType" },
   {
-    pattern: "/employer/job/applicants",
+    pattern: "/employer/job/applicants/[id]",
     sideBarType: "none",
     linksType: "userType",
   },

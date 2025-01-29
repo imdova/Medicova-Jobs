@@ -2,7 +2,6 @@
 import {
   ArrowForward,
   BookmarkBorder,
-  CheckCircleOutline,
   LocationOnOutlined,
   MedicalServicesOutlined,
   SchoolOutlined,
@@ -11,23 +10,28 @@ import Image from "next/image";
 import Link from "next/link";
 import JobOverview from "@/components/UI/JobOverview";
 import MinJobCard from "@/components/UI/job-card-min";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { formatEducationAndSpecialty, getFullLastEdit } from "@/util";
 import { useSession } from "next-auth/react";
 import { JobData, UserState } from "@/types";
 import { notFound } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchJobs } from "@/store/slices/jobSlice";
 import Loading from "@/components/loading/loading";
-import JobApplicationButton from "@/components/UI/JobApplicationButton";
+import {
+  fetchSeekerApplications,
+  submitJobApplication,
+} from "@/store/slices/applications.slice";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
+  const isEmployer = user.type === "employer"
 
+  const [isApplied, setIsApplied] = useState(false);
   const education = formatEducationAndSpecialty(job);
 
   const isOwner = job.companyId === companyId;
@@ -36,15 +40,47 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
     jobs: { data: jobs, loading: jobsLoading, error },
   } = useAppSelector((state) => state.companyJobs);
   const dispatch = useAppDispatch();
+  const {
+    applications: {
+      data: applications,
+      applying,
+      loading: applicationsLoading,
+    },
+  } = useAppSelector((state) => state.jobApplications);
+  console.log("🚀 ~ applications:", applications);
+
+  const applyForJob = () => {
+    if (user.id && job.id) {
+      dispatch(
+        submitJobApplication({
+          seekerId: user.id,
+          jobId: job.id,
+        }),
+      );
+    }
+  };
 
   useEffect(() => {
-    if (jobs.length === 0 && companyId) {
-      dispatch(fetchJobs(companyId));
+    if (jobs.length === 0 && job.companyId) {
+      dispatch(fetchJobs(job.companyId));
+    }
+    if (applications.length === 0 && user?.id) {
+      dispatch(fetchSeekerApplications(user.id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, companyId]);
+  }, [dispatch, companyId, user?.id]);
 
-  if (status === "loading" || jobsLoading) {
+  useEffect(() => {
+    if (applications.length > 0) {
+      const application = applications.find((app) => app.jobId === job.id);
+      if (application) {
+        setIsApplied(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applications]);
+
+  if (status === "loading" || jobsLoading || applicationsLoading) {
     return <Loading />;
   }
 
@@ -52,6 +88,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
     return notFound();
   }
 
+  const relatedJobs = jobs.filter((j) => j.id !== job.id);
   return (
     <div>
       {/* Applicant Cards */}
@@ -90,7 +127,14 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             </IconButton>
             <ShareMenu path={`/job/${job.id}`} className="h-12 w-12" />
           </div>
-          <JobApplicationButton job={job} user={user} />
+          <Button
+            onClick={applyForJob}
+            disabled={isApplied || applying || isEmployer}
+            className="text-lg font-semibold text-nowrap"
+            variant="contained"
+          >
+            {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
+          </Button>
         </div>
       </div>
       {/* <JobCard key={0} job={job} isApply={true} /> */}
@@ -186,11 +230,11 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
               <div>
                 <div className="flex items-center gap-2">
                   <Image
-                    src={job.company.photo || "/images/company-logo.png"}
+                    src={job.company.photo || "/images/placeholder-avatar.svg"}
                     alt="company logo"
-                    width={100}
-                    height={100}
-                    className="rounded-md object-cover"
+                    width={70}
+                    height={70}
+                    className="rounded-md bg-primary-100 object-cover"
                   />
                   <Link
                     href={"/co/" + job.company.id}
@@ -240,37 +284,40 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
       </div>
       {/* recent jobs */}
 
-      <div className="mt-4 bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
-        <div className="bg-white/80 shadow-md">
-          <div className="container mx-auto p-4 lg:max-w-[1170px]">
-            <h2 className="my-6 text-center text-[45px] font-bold leading-none text-light-primary md:text-[60px]">
-              <span className="text-[45px] font-bold text-main md:text-[60px]">
-                Related
-              </span>{" "}
-              Jobs
-            </h2>
-            <p className="mx-auto mb-8 max-w-[700px] text-center text-2xl text-secondary">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&apos;s standard dummy
-            </p>
+      {relatedJobs.length > 0 && (
+        <div className="mt-4 bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
+          <div className="bg-white/80 shadow-md">
+            <div className="container mx-auto p-4 lg:max-w-[1170px]">
+              <h2 className="my-6 text-center text-[45px] font-bold leading-none text-light-primary md:text-[60px]">
+                <span className="text-[45px] font-bold text-main md:text-[60px]">
+                  Related
+                </span>{" "}
+                Jobs
+              </h2>
+              <p className="mx-auto mb-8 max-w-[700px] text-center text-2xl text-secondary">
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry&apos;s standard
+                dummy
+              </p>
 
-            <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
-              {/* card  */}
-              {jobs.map((job, i) => (
-                <MinJobCard job={job} key={i} />
-              ))}
-            </div>
-            <div className="mt-8 flex justify-center">
-              <Link
-                href="#"
-                className="rounded-[8px] bg-primary px-6 py-3 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-white"
-              >
-                Explore All
-              </Link>
+              <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+                {/* card  */}
+                {relatedJobs.map((job, i) => (
+                  <MinJobCard job={job} key={i} />
+                ))}
+              </div>
+              <div className="mt-8 flex justify-center">
+                <Link
+                  href="#"
+                  className="rounded-[8px] bg-primary px-6 py-3 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-white"
+                >
+                  Explore All
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

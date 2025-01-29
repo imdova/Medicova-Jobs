@@ -42,19 +42,7 @@ export const config = {
 };
 
 const roleAccessMap: Record<string, string[]> = {
-  employer: [
-    "/employer/company-info",
-    "/employer/dashboard",
-    "/employer/job/applicants",
-    "/employer/job/manage-jobs",
-    "/employer/job/posted",
-    "/employer/profile",
-    "/employer/search",
-    "/employer/search/saved-search",
-    "/employer/setting",
-    "/employer/subscription-plans",
-    "/employer/search/saved-search/[id]",
-  ],
+  employer: ["/employer/*"],
   unEmployee: ["/employer/company-info"],
   seeker: ["/job-seeker/*"],
 };

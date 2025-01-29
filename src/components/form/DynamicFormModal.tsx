@@ -45,7 +45,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
   const getDefaultValues = () => {
     const defaults: Record<string, any> = {};
     fields.forEach((field) => {
-      defaults[field.name] = field.type === "checkbox" ? false : "";
+      defaults[String(field.name)] = field.type === "checkbox" ? false : "";
     });
     return { ...defaults, ...initialValues };
   };
@@ -110,8 +110,8 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
           if (event.target.checked) {
             const newHiddenFields = [...prev];
             field.hideFieldNames!.forEach((fieldName) => {
-              if (!prev.includes(fieldName)) {
-                newHiddenFields.push(fieldName);
+              if (!prev.includes(String(fieldName))) {
+                newHiddenFields.push(String(fieldName));
               }
             });
             return newHiddenFields;
@@ -123,17 +123,17 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
     };
 
   const renderField = (field: FieldConfig) => {
-    if (hiddenFields.includes(field.name)) {
+    if (hiddenFields.includes(String(field.name))) {
       return null;
     }
 
     return (
       <Controller
-        key={field.name}
-        name={field.name}
+        key={String(field.name)}
+        name={String(field.name)}
         control={control}
         rules={{
-          required: field.required ? `${field.label || field.name } is required` : false,
+          required: field.required ? `${field.label || String(field.name) } is required` : false,
           ...field.validation,
         }}
         render={({ field: controllerField, fieldState: { error } }) => {
@@ -267,7 +267,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
                 xs={field.gridProps?.xs ?? 12}
                 sm={field.gridProps?.sm}
                 md={field.gridProps?.md}
-                key={field.name}
+                key={String(field.name)}
               >
                 {renderField(field)}
               </Grid>

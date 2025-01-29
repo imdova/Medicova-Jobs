@@ -18,15 +18,15 @@ import {
   WorkOutlineOutlined,
 } from "@mui/icons-material";
 
-const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
+const JobOverview: React.FC<{ className: string; data: JobData }> = ({
   className,
   data,
 }) => {
   const workPlace =
-    jobWorkPlaceOptions.find((x) => x.id === data?.jobWorkPlace)?.label || "";
-  const gender = genderOptions.find((x) => x.id === data?.gender)?.label || "";
+    jobWorkPlaceOptions.find((x) => x.id === data.jobWorkPlace)?.label || "";
+  const gender = genderOptions.find((x) => x.id === data.gender)?.label || "";
   const education =
-    educationOptions.find((x) => x.id === data?.educationLevel)?.label || "";
+    educationOptions.find((x) => x.id === data.educationLevel)?.label || "";
   return (
     <div className={className}>
       <h4 className="mb-4 text-lg font-semibold text-main">Job Overview</h4>
@@ -35,7 +35,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <PersonOutlineOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Career Level </h5>
-            <p className="text-secondary"> {data?.jobCareerLevelName} </p>
+            <p className="text-secondary"> {data.jobCareerLevelName} </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -43,8 +43,8 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Job Type </h5>
             <p className="text-secondary">
-              {" "}
-              {data?.jobEmploymentTypeName} {workPlace}{" "}
+              {data.jobEmploymentTypeName ? data.jobEmploymentTypeName : ""}{" "}
+              {workPlace ? `| ${workPlace}` : ""}
             </p>
           </div>
         </div>
@@ -52,7 +52,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <WorkOutlineOutlined fontSize="medium" className="text-primary" />
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Category </h5>
-            <p className="text-secondary"> {data?.jobCategoryName} </p>
+            <p className="text-secondary"> {data.jobCategoryName} </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -60,13 +60,20 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
           <div className="flex flex-col">
             <h5 className="font-semibold text-main"> Experience </h5>
             <p className="text-secondary">
-              {" "}
-              ({data?.minExpYears}-{data?.maxExpYears}) Years{" "}
+              {data.minExpYears === 0 && data.maxExpYears
+                ? `(0 - ${data.maxExpYears}) years`
+                : data.minExpYears && data.maxExpYears
+                  ? `(${data.minExpYears} - ${data.maxExpYears}) years`
+                  : data.minExpYears
+                    ? `(${data.minExpYears}+) years`
+                    : data.maxExpYears
+                      ? `(${data.maxExpYears}-) years`
+                      : null}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {data?.gender === Gender.MALE ? (
+          {data.gender === Gender.MALE ? (
             <MaleOutlined fontSize="medium" className="text-primary" />
           ) : (
             <FemaleOutlined fontSize="medium" className="text-primary" />
@@ -93,7 +100,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
             <h5 className="font-semibold text-main"> Required Age </h5>
             <p className="text-secondary">
               {" "}
-              ({data?.minAge}-{data?.maxAge}) Years{" "}
+              ({data.minAge}-{data.maxAge}) Years{" "}
             </p>
           </div>
         </div>
@@ -103,7 +110,7 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
             <h5 className="font-semibold text-main"> Offered Salary </h5>
             <p className="text-secondary">
               {" "}
-              ${data?.salaryRangeStart}-${data?.salaryRangeEnd}{" "}
+              ${data.salaryRangeStart}-${data.salaryRangeEnd}{" "}
             </p>
           </div>
         </div>
@@ -113,7 +120,8 @@ const JobOverview: React.FC<{ className: string; data?: JobData }> = ({
             <h5 className="font-semibold text-main"> Location </h5>
             <p className="text-secondary">
               {" "}
-              {data?.country?.name ? `${data.country.name}, ` : ""}{data?.city}{" "}
+              {data.country?.name ? `${data.country.name}, ` : ""}
+              {data.city}{" "}
             </p>
           </div>
         </div>

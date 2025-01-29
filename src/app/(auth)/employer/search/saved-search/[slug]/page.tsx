@@ -320,7 +320,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
           </div>
         </div>
         {/* Applicant Cards */}
-        {doctors.map((doctor, index) => (
+        {/* {doctors.map((doctor, index) => (
           <DoctorCard
             key={index}
             doctor={doctor}
@@ -331,7 +331,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
             setAvailableApplicants={setAvailableApplicants}
             selectedApplicants={selectedApplicants}
           />
-        ))}
+        ))} */}
 
         {/* Pagination */}
         <CustomPagination totalItems={100} />

@@ -7,6 +7,7 @@ import { modalReducer } from "./slices/modalSlice";
 import { industryReducer } from "./slices/industrySlice";
 import { employmentTypeReducer } from "./slices/employmentTypeSlice";
 import { companyJobsReducer } from "./slices/jobSlice";
+import { jobApplicationsReducer } from "./slices/applications.slice";
 
 export const makeStore = () => {
   return configureStore({
@@ -18,7 +19,8 @@ export const makeStore = () => {
       industry: industryReducer,
       employmentType:employmentTypeReducer,
       modal: modalReducer,
-      companyJobs: companyJobsReducer
+      companyJobs: companyJobsReducer,
+      jobApplications: jobApplicationsReducer
     },
   });
 };

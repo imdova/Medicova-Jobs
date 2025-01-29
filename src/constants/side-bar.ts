@@ -66,13 +66,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           path: "/employer/job/posted",
           type: "supLink",
         },
-        {
-          id: 6,
-          label: "Applicants",
-          icon: WorkOutline,
-          path: "/employer/job/applicants",
-          type: "supLink",
-        },
       ],
     },
     {

@@ -23,15 +23,12 @@ export const formatDate = (date: Date): string => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
 
-export function formatName(fullName: string): string {
-  const nameParts = fullName.trim().split(" ");
-  if (nameParts.length < 2) {
-    return fullName;
-  }
-  const firstName = nameParts[0];
-  const lastNameInitial = nameParts[nameParts.length - 1]
-    .charAt(0)
-    .toUpperCase();
+export function formatName(
+  firstName: string | null,
+  lastName?: string | null,
+): string {
+  if (!firstName || !lastName) return "";
+  const lastNameInitial = lastName.charAt(0).toUpperCase();
   return `${firstName} .${lastNameInitial}`;
 }
 export function getLastEdit(date: Date): string {
@@ -147,43 +144,42 @@ export const formatEducationAndSpecialty = (job: JobData): string | null => {
   }
   switch (education.id) {
     case EducationLevel.HIGH_SCHOOL:
-      return `A High School Diploma in ${job.jobSpecialityName}`;
+      return `High School Diploma in ${job.jobSpecialityName}`;
     case EducationLevel.BACHELORS:
-      return `A Bachelor's Degree in ${job.jobSpecialityName}`;
+      return `Bachelor's Degree in ${job.jobSpecialityName}`;
     case EducationLevel.MASTERS:
-      return `A Master's Degree in ${job.jobSpecialityName}`;
+      return `Master's Degree in ${job.jobSpecialityName}`;
     case EducationLevel.PHD:
-      return `A PhD in ${job.jobSpecialityName}`;
+      return `PhD in ${job.jobSpecialityName}`;
     default:
       return null;
   }
 };
 
-
 export function convertEmptyStringsToNull<T>(data: T): T {
   if (data === null || data === undefined) return data;
 
-  if (typeof data === 'string' && data.trim() === '') {
+  if (typeof data === "string" && data.trim() === "") {
     return null as T;
   }
 
   if (Array.isArray(data)) {
-    return data.map(item => convertEmptyStringsToNull(item)) as T;
+    return data.map((item) => convertEmptyStringsToNull(item)) as T;
   }
 
-  if (typeof data === 'object') {
+  if (typeof data === "object") {
     const convertedEntries = Object.entries(data).map(([key, value]) => [
-      key, 
-      convertEmptyStringsToNull(value)
+      key,
+      convertEmptyStringsToNull(value),
     ]);
-    
+
     const convertedObject = Object.fromEntries(convertedEntries);
-    
+
     // Check if all values are null
-    if (Object.values(convertedObject).every(value => value === null)) {
+    if (Object.values(convertedObject).every((value) => value === null)) {
       return null as T;
     }
-    
+
     return convertedObject as T;
   }
 

@@ -230,10 +230,10 @@ const JobCard: React.FC<JobCardProps> = ({
           </button>
         ) : isEdit ? (
           <Link
-            href={`/employer/job/applicants`}
+            href={`/employer/job/applicants/${job.id}`}
             className="w-full text-nowrap rounded-[10px] bg-primary px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-primary-900 focus:ring-2 focus:ring-white md:w-fit"
           >
-            View Applicants (0)
+            View Applicants ({job.applications || 0})
           </Link>
         ) : (
           <Link
