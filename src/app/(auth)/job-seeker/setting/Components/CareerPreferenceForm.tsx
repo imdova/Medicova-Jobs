@@ -15,7 +15,6 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import "react-phone-number-input/style.css";
 import { Dayjs } from "dayjs";
 
 const CareerPreferenceForm: React.FC = () => {

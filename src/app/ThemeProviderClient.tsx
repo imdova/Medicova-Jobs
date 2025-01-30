@@ -27,7 +27,11 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          height: "50px",
+          height: "42px",
+          "& .MuiOutlinedInput-input": {
+            padding: "9px 14px", // Reduce input padding
+            height: "24px", // Adjust input element height
+          },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "var(--light-primary)", // Focused border color
           },
@@ -41,9 +45,14 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
+          fontSize: "14px", // Custom font size
+          top: "-5px", // Adjust label position when not focused
           "&.Mui-focused": {
             color: "black", // Set the label color when focused
           },
+        },
+        shrink: {
+          top: "0px", // Adjust position when label shrinks
         },
       },
     },

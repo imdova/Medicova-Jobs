@@ -106,7 +106,7 @@ const LoginForm: React.FC = () => {
 
       <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Email Field */}
-        <Box sx={{ mb: 2 }}>
+        <div className="mb-2">
           <Controller
             name="email"
             control={control}
@@ -129,7 +129,7 @@ const LoginForm: React.FC = () => {
               />
             )}
           />
-        </Box>
+        </div>
 
         {/* Password Field */}
         <div className="mb-2">

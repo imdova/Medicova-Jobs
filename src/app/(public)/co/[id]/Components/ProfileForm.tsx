@@ -16,8 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+import PhoneNumberInput from "@/components/UI/phoneNumber";
 
 const ProfileForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -85,7 +84,7 @@ const ProfileForm: React.FC = () => {
     <Grid item xs={12}>
       <Card>
         <CardContent>
-          <h5 className="text-main mb-2 text-2xl font-semibold">
+          <h5 className="mb-2 text-2xl font-semibold text-main">
             Company Main Information
           </h5>
           <form onSubmit={handleSubmit} noValidate>
@@ -160,7 +159,7 @@ const ProfileForm: React.FC = () => {
             <Box sx={{ marginBottom: 2 }}>
               {/* Title for the Radio Group */}
 
-              <h5 className="text-main mb-2 text-2xl font-semibold">
+              <h5 className="mb-2 text-2xl font-semibold text-main">
                 Company Ownership Type
               </h5>
 
@@ -422,10 +421,9 @@ const ProfileForm: React.FC = () => {
               >
                 Phone Number
               </InputLabel>
-              <PhoneInput
-                defaultCountry="EG"
+              <PhoneNumberInput
                 value={phone}
-                onChange={setPhone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter phone number"
               />
               {errors.phone && (
