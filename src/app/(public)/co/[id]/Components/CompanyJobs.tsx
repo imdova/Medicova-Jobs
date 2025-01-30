@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import MinJobCard from "@/components/UI/job-card-min";
 import { Button, IconButton, Tooltip } from "@mui/material";
 import { Add } from "@mui/icons-material";
-import { Company, Job } from "@/types";
-import { getJobsByCompanyId } from "@/lib/actions/employer.actions";
+import { Company } from "@/types";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchJobs } from "@/store/slices/jobSlice";
+import { filteredJobs } from "@/lib/auth/utils";
 
 const INITIAL_VISIBLE_ITEMS = 4;
 const CompanyJobs: React.FC<{
   company: Company;
-  isMe: boolean;
-}> = ({ company, isMe }) => {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  isEmployee: boolean;
+}> = ({ company, isEmployee }) => {
+  const {
+    jobs: { data: jobs, loading, error },
+  } = useAppSelector((state) => state.companyJobs);
+  const dispatch = useAppDispatch();
 
   const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,52 +31,54 @@ const CompanyJobs: React.FC<{
   };
   const remainingItems = jobs.length - visibleItems;
 
-  const initJobs = async (id: string) => {
-    const result = await getJobsByCompanyId(id);
-    if (result.success && result.data) {
-      setJobs(result.data.data);
-    } else {
-      console.error(result.message);
-    }
-  };
-
   useEffect(() => {
-    if (company.id && jobs.length === 0) {
-      initJobs(company.id);
+    if (jobs.length === 0 && company?.id) {
+      dispatch(fetchJobs(company?.id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, company?.id]);
 
-  if (!isMe && jobs.length === 0) {
+  if (!isEmployee && jobs.length === 0) {
     return null;
   }
+  const filJobs = filteredJobs(jobs, isEmployee ? "all" : "active");
   return (
     <div className="mt-5">
       {/* Title */}
       <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
         <h3 className="text-2xl font-bold text-main">Latest jobs:</h3>
-        {isMe && (
+        {isEmployee && (
           <Tooltip title="Post New Job">
-            <IconButton LinkComponent={Link} href="/employer/job/posted" className="rounded border border-solid border-gray-300 p-2">
+            <IconButton
+              LinkComponent={Link}
+              href="/employer/job/posted"
+              className="rounded border border-solid border-gray-300 p-2"
+            >
               <Add />
             </IconButton>
           </Tooltip>
         )}
       </div>
       {/* Loop through MinJobCard 8 times */}
-      {jobs.length > 0 ? (
-        <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
+      {filJobs.length > 0 ? (
+        <div
+          className={`mt-4 grid ${filJobs.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}
+        >
           {/* card  */}
-          {jobs.slice(0, visibleItems).map((job, i) => (
+          {filJobs.slice(0, visibleItems).map((job, i) => (
             <MinJobCard key={i} job={job} />
           ))}
         </div>
-      ) : isMe ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-base border border-gray-100 bg-white mt-5 p-5 shadow-lg">
+      ) : isEmployee ? (
+        <div className="mt-5 flex flex-col items-center justify-center gap-4 rounded-base border border-gray-100 bg-white p-5 shadow-lg">
           <h6 className="text-2xl font-semibold text-secondary">
             You haven&apos;t posted any jobs yet.
           </h6>
-          <Button LinkComponent={Link} href="/employer/job/posted" variant="contained">
+          <Button
+            LinkComponent={Link}
+            href="/employer/job/posted"
+            variant="contained"
+          >
             Post Job Now
           </Button>
         </div>

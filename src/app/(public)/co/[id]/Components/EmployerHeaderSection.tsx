@@ -11,15 +11,18 @@ import { Verified } from "@mui/icons-material";
 import { Company } from "@/types";
 import { companySizeList } from "@/constants";
 import Avatar from "@/components/UI/Avatar";
+import Image from "next/image";
+import ShareMenu from "@/components/UI/ShareMenu";
+import Link from "next/link";
 
 interface EmployerHeaderSectionProps {
-  isMe: boolean;
+  isEmployee: boolean;
   data: Company;
 }
 
 const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
   data,
-  isMe,
+  isEmployee,
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const size = companySizeList.find((item) => item.value === data.size);
@@ -27,10 +30,6 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
   const updateImage = async (file: File) => {
     setImage(file);
   };
-  const removeImage = async () => {
-    console.log("remove image");
-  };
-
   return (
     <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
       {/* Background Cover Image */}
@@ -46,17 +45,27 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
         }}
       >
         {/* Avatar Positioned on Background Image */}
-
-        <Avatar
-          currentImageUrl={""}
-          size="medium"
-          onImageUpdate={updateImage}
-          onImageRemove={removeImage}
-          maxFileSizeMB={5}
-          imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50" 
-          containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
-          acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
-        />
+        {isEmployee ? (
+          <Avatar
+            currentImageUrl={
+              image ? URL.createObjectURL(image) : data.photo || ""
+            }
+            size="xLarge"
+            onImageUpdate={updateImage}
+            maxFileSizeMB={5}
+            imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
+            containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
+            acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
+          />
+        ) : (
+          <Image
+            src={data.photo || "/images/placeholder-avatar.svg"}
+            alt="avatar"
+            width={100}
+            height={100}
+            className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white bg-white object-cover shadow-md md:h-[120px] md:w-[120px]"
+          />
+        )}
       </Box>
       {/* Profile Section */}
       <Box
@@ -71,61 +80,46 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
           {/* Text Section */}
           <Grid item xs={12} sm={9}>
             <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  color: "#000",
-                  marginBottom: "4px",
-                  fontSize: { xs: "1.2rem", sm: "1.5rem" },
-                }}
-              >
+              <h3 className="mb-2 text-main text-2xl font-bold">
                 {data.name}
                 <Verified className="ml-3 text-primary" />
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
-              >
-                Healthcare: Medical Services and Education healthcare
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 3,
-                  alignItems: "center",
-                  justifyContent: "start",
-                  my: { xs: 1, sm: 2 },
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              </h3>
+              {data.title && (
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#666", fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                >
+                  {data.title}
+                </Typography>
+              )}
+              <div className="mt-3 flex flex-wrap items-center justify-start">
+                <div className="mr-3 flex items-center gap-1">
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    Hospital
+                    {data.type?.name}
                   </Typography>
-                </Box>
+                </div>
                 {(data.country || data.state || data.city) && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <div className="mr-3 flex items-center gap-1">
                     <PlaceIcon className="text-primary" />
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      {data.country +
+                      {data.country?.name +
                         ", " +
-                        data.state +
+                        data.state?.name +
                         ", " +
                         data.city}
                     </Typography>
-                  </Box>
+                  </div>
                 )}
                 {size && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <div className="mr-3 flex items-center gap-1">
                     <GroupsIcon className="text-primary" />
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                       {size?.name}
                     </Typography>
-                  </Box>
+                  </div>
                 )}
-              </Box>
+              </div>
             </Box>
           </Grid>
 
@@ -142,15 +136,13 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
               }}
             >
               {/* Edit Button */}
-              {isMe && (
-                <IconButton>
+              {isEmployee && (
+                <IconButton LinkComponent={Link} href="/employer/company-info">
                   <EditIcon />
                 </IconButton>
               )}
               {/* Share Button */}
-              <IconButton>
-                <ShareIcon />
-              </IconButton>
+              <ShareMenu path={`/co/${data.id}`} />
             </Box>
           </Grid>
         </Grid>

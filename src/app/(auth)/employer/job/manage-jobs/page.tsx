@@ -1,25 +1,39 @@
 "use client";
-import React from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  IconButton,
-  Grid,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import React, { useEffect } from "react";
+import { Box, TextField, IconButton, Tabs, Tab } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import JobCard from "@/components/UI/job-card";
-import { jobs } from "@/constants";
+import { useSession } from "next-auth/react";
+import { JobsTabs, UserState } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchJobs } from "@/store/slices/jobSlice";
+import { filteredJobs } from "@/lib/auth/utils";
+import Loading from "@/components/loading/loading";
+
+const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
 
 const ManageJobs: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const { data: session } = useSession();
+  const user = session?.user as UserState;
+  const companyId = user?.companyId || "";
 
+  const {
+    jobs: { data: jobs, loading, error },
+  } = useAppSelector((state) => state.companyJobs);
+  const dispatch = useAppDispatch();
+
+  const [activeTab, setActiveTab] = React.useState(0);
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
+
+  useEffect(() => {
+    if (jobs.length === 0 && companyId) {
+      dispatch(fetchJobs(companyId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, companyId]);
 
   return (
     <Box sx={{ padding: { xs: "14px", md: "40px" } }}>
@@ -92,17 +106,19 @@ const ManageJobs: React.FC = () => {
             },
           }}
         >
-          <Tab label="All (20)" />
-          <Tab label="Active (5)" />
-          <Tab label="Closed (12)" />
-          <Tab label="Expired (1)" />
-          <Tab label="Draft (2)" />
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              label={`${tab} (${filteredJobs(jobs, tabs[index]).length})`}
+            />
+          ))}
         </Tabs>
       </div>
 
       {/* Job Listings */}
+      {loading && <Loading />}
       <div className="flex flex-col gap-4 p-2">
-        {jobs.slice(0, 4).map((job) => (
+        {filteredJobs(jobs, tabs[activeTab]).map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />
         ))}
       </div>

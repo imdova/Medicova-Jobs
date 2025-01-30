@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import {
   Box,
   Grid,
@@ -352,13 +352,9 @@ const BrowseCompaniesPage = () => {
         ))}
       </Grid>
       {/* Pagination */}
-      <CustomPagination
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalItems={totalItems}
-      />
+      <Suspense>
+        <CustomPagination totalItems={100} />
+      </Suspense>
     </Box>
   );
 };

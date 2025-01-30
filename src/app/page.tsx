@@ -257,9 +257,9 @@ const HomePage = () => {
 
               <div className="mg:gap-5 mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
                 {/* card  */}
-                {jobs.map((job, i) => (
+                {/* {jobs.map((job, i) => (
                   <MinJobCard key={i} job={job} />
-                ))}
+                ))} */}
               </div>
               <div className="mt-8 flex justify-center">
                 <Link

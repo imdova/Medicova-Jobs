@@ -21,14 +21,20 @@ export default function DynamicSideBar({
   status,
   pathname,
 }: SideBarProps) {
-  const userType = user?.type;
-  const initialLinks = getSideBarLinks(userType, pathname);
+  const initialLinks = getSideBarLinks(user, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
 
   const [activeTab, setActiveTab] = useState<number | null>(null);
 
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     setActiveTab(newTab);
+  };
+
+  const updateActiveTab = (links: NavItem[]) => {
+    const activeTabIndex = links.findIndex((link) =>
+      link.path ? isCurrentPage(pathname, link.path) : false,
+    );
+    setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
   };
 
   useEffect(() => {
@@ -40,10 +46,7 @@ export default function DynamicSideBar({
       setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
     }
     if (links.length > 0) {
-      const activeTabIndex = links.findIndex((link) =>
-        link.path ? isCurrentPage(pathname, link.path) : false,
-      );
-      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
+      updateActiveTab(links);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLinks, pathname]);
@@ -76,6 +79,7 @@ export default function DynamicSideBar({
             <ProfileTab
               key={item.id}
               user={user}
+              pathname={pathname}
               activeTab={activeTab}
               onTabChange={setActiveTab}
             />
@@ -95,8 +99,11 @@ export default function DynamicSideBar({
               key={item.id}
               item={item}
               index={index}
-              activeTab={activeTab}
+              links={links}
               setLinks={setLinks}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              updateActiveTab={updateActiveTab}
             />
           );
         }
@@ -121,11 +128,17 @@ const CollapseTab = ({
   index,
   activeTab,
   setLinks,
+  links,
+  updateActiveTab,
+  setActiveTab,
 }: {
   item: NavItem;
   index: number;
   activeTab: number | null;
+  links: NavItem[];
   setLinks: React.Dispatch<React.SetStateAction<NavItem[]>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
+  updateActiveTab: (links: NavItem[]) => void;
 }) => {
   const isActive = activeTab === index;
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -136,8 +149,11 @@ const CollapseTab = ({
     setIsOpen(!isOpen);
     if (isOpen) {
       setLinks((e) => removeItems(e, index + 1, item.links?.length || 0));
+      setActiveTab(null);
     } else {
-      setLinks((e) => insertItemsAfterIndex(e, item.links || [], index));
+      const newLinks = insertItemsAfterIndex(links, item.links || [], index);
+      setLinks(newLinks);
+      updateActiveTab(newLinks);
     }
   };
   // import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -163,14 +179,20 @@ const CollapseTab = ({
 };
 const ProfileTab = ({
   user,
+  pathname,
   activeTab,
   onTabChange,
 }: {
   user: UserState;
+  pathname: string;
   activeTab: number | null;
   onTabChange: (index: number) => void;
 }) => {
-  const isActive = activeTab === 0;
+  const isEmployer = user.type === "employer";
+  const path = isEmployer ? `/co/${user?.companyId}` : `/me/${user.userName}`;
+  const isActive =
+    activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
+
   return (
     <Tab
       className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
@@ -179,23 +201,35 @@ const ProfileTab = ({
       value={0}
       onClick={() => onTabChange(0)}
       component={Link}
-      href={user.firstName ? `/me/${user.firstName}` : "#"}
+      href={
+        isEmployer
+          ? `/co/${user?.companyId}`
+          : user.userName
+            ? `/me/${user.userName}`
+            : "#"
+      }
       label={
         <div className="flex items-center gap-1">
           <Image
-            src={user?.photo || "/images/placeholder-avatar.svg"}
-            alt={user.firstName + "photo"}
+            src={
+              user.companyPhoto ||
+              user?.photo ||
+              "/images/placeholder-avatar.svg"
+            }
+            alt={(user?.companyName || user.firstName) + "photo"}
             width={40}
             height={40}
-            className={`${isActive ? "border-white" : "border-gray-300"} object-cover" rounded-full border-2 bg-white`}
+            className={`${isActive ? "border-white" : "border-gray-300"} aspect-square h-full max-h-[40px] w-full max-w-[40px] rounded-full border-2 bg-white object-cover`}
           />
           <div>
             <h6 className="text-left text-sm normal-case">
-              {user.firstName + " ." + user.lastName?.[0]}
+              {user?.companyName || user.firstName + " ." + user.lastName?.[0]}
             </h6>
-            <p className="max-w-full text-left text-xs normal-case">
-              {user.email}
-            </p>
+            {!isEmployer && (
+              <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
+                {user.email}
+              </p>
+            )}
           </div>
         </div>
       }

@@ -4,7 +4,6 @@ import { handleSocialLogin } from "./utils";
 import { divideName } from "@/util";
 import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
-import { UserState } from "@/types";
 
 export const callbacks = {
   jwt: async ({
@@ -25,15 +24,20 @@ export const callbacks = {
       token.firstName = user.firstName || firstName;
       token.lastName = user.lastName || lastName;
       token.photo = user.photo || user.image;
+      token.userName = user.userName;
       token.phone = user.phone;
       token.companyId = user.companyId;
+      token.companyName = user.companyName;
+      token.companyPhoto = user.companyPhoto;
+      token.companyEmail = user.companyEmail;
       token.permissions = user.permissions;
       token.type = user.type;
     }
     if (trigger === "update") {
-      if (session?.companyId) {
-        token.companyId = session.companyId;
-      }
+      if (session?.companyId) token.companyId = session.companyId;
+      if (session?.companyName) token.companyName = session.companyName;
+      if (session?.companyPhoto) token.companyPhoto = session.companyPhoto;
+      if (session?.companyEmail) token.companyEmail = session.companyEmail;
     }
     return token;
   },
@@ -44,9 +48,13 @@ export const callbacks = {
       session.user.email = token.email as string | null;
       session.user.firstName = token.firstName as string | null;
       session.user.lastName = token.lastName as string | null;
+      session.user.userName = token.userName as string | null;
       session.user.photo = token.photo as string | null;
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;
+      session.user.companyName = token.companyName as string | null;
+      session.user.companyPhoto = token.companyPhoto as string | null;
+      session.user.companyEmail = token.companyEmail as string | null;
       session.user.permissions = token.permissions as Permission[];
       session.user.type = token.type as RoleState;
     }

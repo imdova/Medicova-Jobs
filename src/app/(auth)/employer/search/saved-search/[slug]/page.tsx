@@ -29,9 +29,7 @@ import JobFilter from "@/app/(public)/search/filter";
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
   const folderId = params.slug;
-  console.log("🚀 ~ ApplicantsPage ~ folderId:", folderId);
   const folder = folders.find((f) => f.id === parseInt(folderId));
-  console.log("🚀 ~ ApplicantsPage ~ folder:", folder);
   const [doctors, setDoctors] = useState(doctorsBase);
   const [selectedTab, setSelectedTab] = useState<TapType>("all");
   const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
@@ -138,8 +136,6 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
       {/* Left Column: Filter Section */}
       <JobFilter
         sections={filterSections}
-        selectedFilters={selectedFilters}
-        setSelectedFilters={setSelectedFilters}
         searchKeys={["Residency (Location)"]}
       />
       {/* Right Column: Results Section */}
@@ -324,7 +320,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
           </div>
         </div>
         {/* Applicant Cards */}
-        {doctors.map((doctor, index) => (
+        {/* {doctors.map((doctor, index) => (
           <DoctorCard
             key={index}
             doctor={doctor}
@@ -335,16 +331,10 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
             setAvailableApplicants={setAvailableApplicants}
             selectedApplicants={selectedApplicants}
           />
-        ))}
+        ))} */}
 
         {/* Pagination */}
-        <CustomPagination
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={doctors.length} // Pass the total items count
-        />
+        <CustomPagination totalItems={100} />
       </div>
       <Snackbar
         open={showCopyAlert}

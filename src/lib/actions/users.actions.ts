@@ -1,20 +1,26 @@
-import { API_GET_USER_BY_ID } from "@/api/users";
-import { Result, UserState } from "@/types";
+"use server";
 
-export const getUser = async (id: string): Promise<Result<UserState>> => {
-  // console.log("🚀 ~ getUser ~ id:", id);
+import { TAGS } from "@/api";
+import {
+  API_GET_SEEKER_BY_IDENTIFIER,
+} from "@/api/seeker";
+import { Result, UserProfile, UserState } from "@/types";
+
+export const getUser = async (
+  identifier: string,
+): Promise<Result<UserProfile>> => {
   try {
-    const response = await fetch(API_GET_USER_BY_ID + id, {
+    const response = await fetch(API_GET_SEEKER_BY_IDENTIFIER + identifier, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
       },
       credentials: "include",
+      next: { tags: [TAGS.profile] },
     });
-    // console.log("🚀 ~ getMe ~ response:", response);
     if (response.ok) {
-      const data: UserState = await response.json();
+      const data: UserProfile = await response.json();
       return {
         success: true,
         message: "User fetched successfully",

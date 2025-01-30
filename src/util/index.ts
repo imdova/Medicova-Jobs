@@ -1,4 +1,6 @@
-import { Role } from "@/types";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
+import { educationOptions } from "@/constants/job";
+import { JobData, Role } from "@/types";
 import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -21,15 +23,12 @@ export const formatDate = (date: Date): string => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
 
-export function formatName(fullName: string): string {
-  const nameParts = fullName.trim().split(" ");
-  if (nameParts.length < 2) {
-    return fullName;
-  }
-  const firstName = nameParts[0];
-  const lastNameInitial = nameParts[nameParts.length - 1]
-    .charAt(0)
-    .toUpperCase();
+export function formatName(
+  firstName: string | null,
+  lastName?: string | null,
+): string {
+  if (!firstName || !lastName) return "";
+  const lastNameInitial = lastName.charAt(0).toUpperCase();
   return `${firstName} .${lastNameInitial}`;
 }
 export function getLastEdit(date: Date): string {
@@ -48,9 +47,11 @@ export function getLastEdit(date: Date): string {
 
   return formatDate(date);
 }
-export function getFullLastEdit(date: Date): string {
+export function getFullLastEdit(date: Date | string | null): string {
+  if (!date) return "";
   const currentDate = new Date();
-  const diffTime = Math.abs(currentDate.getTime() - date.getTime());
+  const lastDate = new Date(date);
+  const diffTime = Math.abs(currentDate.getTime() - lastDate.getTime());
   const diffMinutes = Math.floor(diffTime / (1000 * 60));
   const diffDays = Math.floor(diffMinutes / (60 * 24));
 
@@ -66,7 +67,7 @@ export function getFullLastEdit(date: Date): string {
       return `${diffMinutes} min`;
     }
 
-    return `${diffHours} d`;
+    return `${diffHours} h`;
   }
 
   // Check if it's within the last 15 days
@@ -74,7 +75,7 @@ export function getFullLastEdit(date: Date): string {
     return `${diffDays} d`;
   }
 
-  return formatDate(date);
+  return formatDate(lastDate);
 }
 
 export function getLastSegment(url?: string) {
@@ -126,3 +127,61 @@ export function getPermissionNames(roles: Role[]): Permission[] {
 export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {
   return JSON.stringify(originalData) !== JSON.stringify(currentData);
 };
+
+export const disableEnterKey = (event: React.KeyboardEvent) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent form submission
+  }
+};
+
+export const formatEducationAndSpecialty = (job: JobData): string | null => {
+  const education = educationOptions.find(
+    (option) => option.id === job.educationLevel,
+  );
+
+  if (!education) {
+    return null;
+  }
+  switch (education.id) {
+    case EducationLevel.HIGH_SCHOOL:
+      return `High School Diploma in ${job.jobSpecialityName}`;
+    case EducationLevel.BACHELORS:
+      return `Bachelor's Degree in ${job.jobSpecialityName}`;
+    case EducationLevel.MASTERS:
+      return `Master's Degree in ${job.jobSpecialityName}`;
+    case EducationLevel.PHD:
+      return `PhD in ${job.jobSpecialityName}`;
+    default:
+      return null;
+  }
+};
+
+export function convertEmptyStringsToNull<T>(data: T): T {
+  if (data === null || data === undefined) return data;
+
+  if (typeof data === "string" && data.trim() === "") {
+    return null as T;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map((item) => convertEmptyStringsToNull(item)) as T;
+  }
+
+  if (typeof data === "object") {
+    const convertedEntries = Object.entries(data).map(([key, value]) => [
+      key,
+      convertEmptyStringsToNull(value),
+    ]);
+
+    const convertedObject = Object.fromEntries(convertedEntries);
+
+    // Check if all values are null
+    if (Object.values(convertedObject).every((value) => value === null)) {
+      return null as T;
+    }
+
+    return convertedObject as T;
+  }
+
+  return data;
+}

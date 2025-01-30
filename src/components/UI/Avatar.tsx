@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Modal,
@@ -13,12 +13,11 @@ import Image from "next/image";
 import clsx from "clsx";
 import { CloudUpload, Delete } from "@mui/icons-material";
 
-// Types
 interface AvatarProps extends React.HTMLAttributes<HTMLButtonElement> {
   currentImageUrl?: string;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "xLarge";
   onImageUpdate: (file: File) => Promise<void>;
-  onImageRemove: () => Promise<void>;
+  onImageRemove?: () => Promise<void>; // Made optional
   maxFileSizeMB?: number;
   acceptedFileTypes?: string[];
   // Style props
@@ -49,6 +48,7 @@ const sizeMap = {
   small: { width: 32, height: 32 },
   medium: { width: 48, height: 48 },
   large: { width: 64, height: 64 },
+  xLarge: { width: 96, height: 96 },
 };
 
 // Styled components
@@ -86,9 +86,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(
-    null,
-  );
+  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -148,6 +146,8 @@ export const Avatar: React.FC<AvatarProps> = ({
   };
 
   const handleRemove = async () => {
+    if (!onImageRemove) return;
+    
     setIsUploading(true);
     setError(null);
 
@@ -167,7 +167,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       <button
         onClick={() => setIsModalOpen(true)}
         className={clsx(
-          "relative overflow-hidden rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+          "relative h-full w-full overflow-hidden rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
           className,
         )}
         style={avatarStyle}
@@ -179,7 +179,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           alt="Profile picture"
           width={sizeMap[size].width}
           height={sizeMap[size].height}
-          className={clsx("object-cover", imageClassName)}
+          className={imageClassName || "object-cover"}
           style={imageStyle}
         />
       </button>
@@ -193,7 +193,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       >
         <Box
           className={clsx(
-            "mx-4 w-full max-w-[600px] max-h-[80vh] rounded-lg bg-white p-6",
+            "mx-4 max-h-[80vh] w-full max-w-[600px] rounded-lg bg-white p-6",
             modalClassName,
           )}
         >
@@ -204,7 +204,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           <div
             {...getRootProps()}
             className={clsx(
-              "cursor-pointer rounded-lg border-2 border-dashed p-4 text-center max-h-full transition-colors",
+              "max-h-full cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors",
               isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300",
               error ? "border-red-500" : "",
               dropzoneClassName,
@@ -219,7 +219,7 @@ export const Avatar: React.FC<AvatarProps> = ({
                 width={200}
                 height={200}
                 className={clsx(
-                  "mx-auto rounded-lg object-cover max-h-[200px] max-w-[200px]",
+                  "mx-auto max-h-[200px] max-w-[200px] rounded-lg object-cover",
                   imageClassName,
                 )}
                 style={imageStyle}
@@ -248,16 +248,18 @@ export const Avatar: React.FC<AvatarProps> = ({
           )}
 
           <div className="mt-4 flex justify-between gap-2">
-            <Button
-              variant="text"
-              color="error"
-              onClick={handleRemove}
-              disabled={isUploading || !currentImageUrl}
-              startIcon={<Delete />}
-              className={buttonClassName}
-            >
-              {removeButtonText}
-            </Button>
+            {selectedFile && onImageRemove && currentImageUrl && (
+              <Button
+                variant="text"
+                color="error"
+                onClick={handleRemove}
+                disabled={isUploading}
+                startIcon={<Delete />}
+                className={buttonClassName}
+              >
+                {removeButtonText}
+              </Button>
+            )}
             <div className="flex gap-2">
               <Button
                 onClick={() => setIsModalOpen(false)}

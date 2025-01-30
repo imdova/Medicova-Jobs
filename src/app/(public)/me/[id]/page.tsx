@@ -3,10 +3,9 @@ import ProfileMe from "./profileMe";
 import { notFound } from "next/navigation";
 
 const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
-  const { data: profileUser } = await getUser(id);
-  // if(!profileUser) {
-  //   return notFound();
-  // }
+  const result = await getUser(id);
+  if (!result.success || !result.data) return notFound();
+  const profileUser = result.data;
   return <ProfileMe profileUser={profileUser} />;
 };
 

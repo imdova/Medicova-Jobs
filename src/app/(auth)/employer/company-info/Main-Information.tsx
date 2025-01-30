@@ -19,7 +19,7 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
       </h5>
       <div className="mb-4 md:w-1/2 md:pr-5">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
-          Name
+          Name *
         </InputLabel>
         <TextField
           className="w-full"
@@ -29,6 +29,20 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
           onChange={(e) => handleChange("name", e.target.value)}
           error={!!errors.name}
           helperText={errors.name}
+        />
+      </div>
+      <div className="mb-4 md:w-1/2 md:pr-5">
+        <InputLabel className="mb-2 text-lg font-semibold text-main">
+          Title
+        </InputLabel>
+        <TextField
+          className="w-full"
+          name="Title"
+          placeholder="Enter your title"
+          value={data.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          error={!!errors.title}
+          helperText={errors.title}
         />
       </div>
       <div className="mb-4">

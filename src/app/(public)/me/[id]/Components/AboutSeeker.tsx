@@ -1,66 +1,76 @@
 "use client";
 import React, { useState } from "react";
-import { Box,  IconButton, TextField } from "@mui/material";
+import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import AddModal from "./Modals/AddModal";
-import { UserState } from "@/types";
+import { FieldConfig, UserProfile } from "@/types";
 import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
+import DynamicFormModal from "@/components/form/DynamicFormModal";
+import TextEditor from "@/components/editor/editor";
 
-const about = "Dedicated pediatrician with a decade of experience caring for children's health and wellness. Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.Dedicated pediatrician with a decade of experience caring for children's health and wellness.";
+const fields: FieldConfig[] = [
+  {
+    name: "about",
+    type: "textEditor",
+    component: TextEditor,
+  },
+];
+
 const AboutSeeker: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [fields, setFields] = useState<JSX.Element[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const open = () => setIsModalOpen(true);
+  const close = () => setIsModalOpen(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
-    setModalTitle(title);
-    setFields(getFields());
-    setOpenModal(true);
+  const handleSubmit = (data: { [key: string]: string }) => {
+    console.log("🚀 ~ handleSubmit ~ data:", data);
+    setLoading(true);
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  const openModalHandler = () => {
-    handleOpenModal("Introduce Yourself to Employers", getAboutFields);
-  };
-  if (!isMe && about.length === 0) {
+  if (!isMe && user.about?.length === 0) {
     return null;
   }
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <AddModal
-        open={openModal}
-        onClose={handleCloseModal}
-        modalTitle={modalTitle}
+      <DynamicFormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleSubmit}
         fields={fields}
-      />
+        title="Introduce Yourself to Employers"
+        description="Highlight your skills, experience, and commitment. Let potential employers know why you are the right fit to make a difference in their team!"
+        initialValues={{ about: user.about }}
+      >
+        <p className="mt-2 rounded bg-primary-100 p-2 text-sm font-normal text-secondary">
+          <strong className="text-main">Note:</strong> Please avoid sharing any
+          contact information or external links in this section.
+        </p>
+      </DynamicFormModal>
+
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">About</h3>
         {isMe && (
           <IconButton
             className="rounded border border-solid border-gray-300 p-2"
-            onClick={openModalHandler}
+            onClick={open}
           >
             <EditIcon />
           </IconButton>
         )}
       </div>
-      {about ? (
+      {user.about ? (
         <ClampedText className="px-2 text-secondary" lines={3}>
-          {about}
+          {user.about}
         </ClampedText>
       ) : isMe ? (
         <EmptyCard
           src={"/images/activities.png"}
-          description={" Your volunteering and student activities."}
-          buttonText="Add Activities / Achievements"
-          onClick={openModalHandler}
+          description={" Your About Section is empty."}
+          buttonText="Write About Yourself"
+          onClick={open}
         />
       ) : null}
     </div>
@@ -68,37 +78,3 @@ const AboutSeeker: React.FC<{
 };
 
 export default AboutSeeker;
-
-const getAboutFields = (): JSX.Element[] => [
-  <Box key="aboutInfo">
-    <p className="mb-2 text-secondary">
-      Highlight your skills, experience, and commitment. Let potential employers
-      know why you are the right fit to make a difference in their team!
-    </p>
-  </Box>,
-
-  <Box key="description">
-    <TextField
-      placeholder="E.g., 'Hi, I’m ....., a dedicated in ....... with ...... years of experience in ....."
-      fullWidth
-      multiline
-      minRows={3}
-      maxRows={4}
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          fontSize: "14px",
-          maxHeight: "120px",
-          overflow: "auto",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="note">
-    <p className="mt-2 rounded bg-primary-100 p-2 text-main">
-      <strong>Note:</strong> Please avoid sharing any contact information or
-      external links in this section.
-    </p>
-  </Box>,
-];

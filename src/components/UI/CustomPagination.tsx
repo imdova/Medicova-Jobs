@@ -1,34 +1,57 @@
 "use client";
 
+import { useCallback, useEffect } from "react";
 import { Select, MenuItem, Pagination, SelectChangeEvent } from "@mui/material";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface CustomPaginationProps {
   fixedNumberPerPage?: number;
-  itemsPerPage: number;
-  setItemsPerPage: (value: number) => void;
-  currentPage: number;
-  setCurrentPage: (value: number) => void;
-  totalItems: number;
+  totalItems?: number;
 }
 
 const CustomPagination: React.FC<CustomPaginationProps> = ({
-  fixedNumberPerPage,
-  itemsPerPage,
-  setItemsPerPage,
-  currentPage,
-  setCurrentPage,
-  totalItems,
+  fixedNumberPerPage = 10,
+  totalItems = 20,
 }) => {
-  const totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total pages
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
+  // Get current values from search params
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const itemsPerPage =
+    fixedNumberPerPage || Number(searchParams.get("limit")) || 10;
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Create URL search params utility function
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  // Handle items per page change
   const handleItemsPerPageChange = (event: SelectChangeEvent<number>) => {
-    setItemsPerPage(event.target.value as number);
-    setCurrentPage(1); // Reset to the first page whenever items per page changes
+    const newLimit = event.target.value as number;
+    router.push(
+      `?${createQueryString("limit", newLimit.toString())}&${createQueryString("page", "1")}`,
+    );
   };
 
+  // Handle page change
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
+    router.push(`?${createQueryString("page", value.toString())}`);
   };
+
+  // Validate current page on total items change
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      router.push(`?${createQueryString("page", totalPages.toString())}`);
+    }
+  }, [totalItems, currentPage, totalPages, router, createQueryString]);
 
   return (
     <div
@@ -54,7 +77,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
 
       {/* Pagination Component */}
       <Pagination
-        count={totalPages} // Dynamically set total pages
+        count={totalPages}
         page={currentPage}
         color="primary"
         onChange={handlePageChange}
@@ -63,7 +86,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
             borderRadius: "4px",
           },
           "& .MuiPaginationItem-root.Mui-selected": {
-            color: "white", // Text color for selected page
+            color: "white",
           },
         }}
       />

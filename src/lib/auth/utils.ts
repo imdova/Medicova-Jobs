@@ -1,3 +1,4 @@
+import { JobData, JobsTabs } from "@/types";
 import { forgetPassword, register, serverSignIn } from "../access";
 
 export async function authenticateUser(credentials: any) {
@@ -18,7 +19,7 @@ export async function changePasswordWithOTP(credentials: any) {
       newPassword: credentials.password,
       otp: credentials.otp,
     });
-    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data)
+    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -55,3 +56,27 @@ export async function handleSocialLogin(user: any, account: any) {
     return false;
   }
 }
+
+export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
+  switch (activeTab) {
+    case "all": // All
+      return jobs;
+    case "active": // Active
+      return jobs.filter((job) => job.active && !job.draft);
+    case "closed": // Closed
+      return jobs.filter((job) => !job.active);
+    case "expired": // Expired (based on validity date)
+      return jobs.filter(
+        (job) => job.validTo && new Date(job.validTo) < new Date(),
+      );
+    case "draft": // Draft
+      return jobs.filter((job) => job.draft);
+    default:
+      return [];
+  }
+};
+
+export function expandItems<T>(array: T[], initial: number, expand: boolean): T[] {
+  return expand ? array : array.slice(0, initial);
+}
+

@@ -13,8 +13,10 @@ interface RouteConfig {
 export const routeConfigs: RouteConfig[] = [
   // default
   { pattern: "/", headerType: "transparent", linksType: "default" },
+  { pattern: "/blog", headerType: "transparent", linksType: "default" },
   { pattern: "/search", headerType: "transparent", linksType: "userType" },
   { pattern: "/me/[id]", headerType: "full", linksType: "userType" },
+  { pattern: "/co/[id]", headerType: "full", linksType: "userType" },
   { pattern: "/job/[slug]", headerType: "full", linksType: "userType" },
 
   { pattern: "/chat", headerType: "full", linksType: "userType" },

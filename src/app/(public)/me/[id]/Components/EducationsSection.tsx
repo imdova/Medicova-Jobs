@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -14,59 +14,135 @@ import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import education from "@/components/icons/education.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
+import { FieldConfig, UserState } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
+import { expandItems } from "@/lib/auth/utils";
+import DynamicFormModal from "@/components/form/DynamicFormModal";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCountries } from "@/store/slices/locationSlice";
 
 interface Education {
-  institution: string;
+  seekerId: string;
+  inistitute: string;
   degree: string;
-  years: string;
-  location: string;
+  countryCode: string;
+  startYear: number;
+  endYear: number;
+  grade: string;
 }
 
-const educationData: Education[] = [
-  // {
-  //   institution: "Harvard University",
-  //   degree: "Postgraduate degree, Applied Psychology",
-  //   years: "2010 - 2012",
-  //   location: "Cambridge, MA", // Add location
-  // },
+const years = Array.from(
+  { length: new Date().getFullYear() - 1980 + 1 },
+  (v, k) => k + 1980,
+).reverse();
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
+
+const fields: FieldConfig<Education>[] = [
+  {
+    name: "inistitute",
+    type: "text",
+    label: "College and University name",
+    textFieldProps: { placeholder: "Enter Job Title" },
+    required: true,
+  },
+  {
+    name: "degree",
+    type: "select",
+    textFieldProps: { placeholder: "What is your degree" },
+    options: [
+      { value: "Bachelors", label: "Bachelors" },
+      { value: "Masters", label: "Masters" },
+      { value: "PhD", label: "PhD" },
+    ],
+  },
+  {
+    name: "startYear",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "Start Year" },
+    options: years.map((year) => ({
+      value: year.toString(),
+      label: year.toString(),
+    })),
+    required: true,
+  },
+  {
+    name: "endYear",
+    type: "select",
+    gridProps: { xs: 12, sm: 6 },
+    textFieldProps: { placeholder: "End Year" },
+    options: years.map((year) => ({
+      value: year.toString(),
+      label: year.toString(),
+    })),
+    required: true,
+  },
+  {
+    name: "grade",
+    type: "select",
+    textFieldProps: { placeholder: "What is your grade" },
+    options: [
+      { value: "A", label: "A" },
+      { value: "B", label: "B" },
+      { value: "C", label: "C" },
+      { value: "D", label: "D" },
+      { value: "E", label: "E" },
+      { value: "F", label: "F" },
+      { value: "G", label: "G" },
+      { value: "H", label: "H" },
+      { value: "I", label: "I" },
+      { value: "J", label: "J" },
+      { value: "K", label: "K" },
+      { value: "L", label: "L" },
+      { value: "M", label: "M" },
+    ],
+  },
+];
+
 const INITIAL_VISIBLE_ITEMS = 2;
 
 const EducationsSection: React.FC<{
   user: UserState;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS); // Initially show INITIAL_VISIBLE_ITEMS items
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+
+  const educationData: Education[] = [];
   const [isExpanded, setIsExpanded] = useState(false); // Track whether the list is expanded
+  const toggle = () => setIsExpanded(!isExpanded);
 
-  const handleToggle = () => {
-    if (isExpanded) {
-      setVisibleItems(INITIAL_VISIBLE_ITEMS); // Show only 2 items if expanded
-    } else {
-      setVisibleItems(educationData.length); // Show all items if collapsed
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const open = () => setIsModalOpen(true);
+  const close = () => setIsModalOpen(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (data: { [key: string]: string }) => {
+    console.log("🚀 ~ handleSubmit ~ data:", data);
+    setLoading(true);
+  };
+
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      dispatch(fetchCountries());
     }
-    setIsExpanded(!isExpanded); // Toggle expanded state
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
-  // Calculate how many more items are left to show
-  const remainingItems = educationData.length - visibleItems;
-
-  const [openModal, setOpenModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [fields, setFields] = useState<JSX.Element[]>([]);
-
-  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
-    setModalTitle(title);
-    setFields(getFields());
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
+  const remainingItems = educationData.length - INITIAL_VISIBLE_ITEMS;
   if (!isMe && educationData.length === 0) {
     return null;
   }
@@ -77,69 +153,81 @@ const EducationsSection: React.FC<{
         <h3 className="mb-2 text-2xl font-bold text-main">Educations</h3>
         {isMe && (
           <IconButton
-            onClick={() =>
-              handleOpenModal("Add Educations", getEducationFields)
-            }
+            onClick={open}
             className="rounded border border-solid border-gray-300 p-2"
           >
             <Add />
           </IconButton>
         )}
       </div>
-      <AddModal
-        open={openModal}
-        onClose={handleCloseModal}
-        modalTitle={modalTitle}
-        fields={fields}
+      <DynamicFormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleSubmit}
+        fields={[
+          ...fields,
+          {
+            name: "country",
+            type: "select",
+            textFieldProps: { placeholder: "Select Country" },
+            options: countries.data.map((country) => ({
+              value: country.isoCode,
+              label: country.name,
+            })),
+            required: true,
+          },
+        ]}
+        title="Add Education to Your Profile"
       />
-
       {/* Title and Description */}
       {educationData.length > 0 ? (
         <div className="my-2 grid grid-cols-1 gap-2">
-          {educationData.slice(0, visibleItems).map((item, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-3 rounded-base border p-2"
-            >
-              <Image
-                src={education}
-                alt="Experience"
-                width={70}
-                height={70}
-                className=""
-              />
-              <div className="flex-1">
-                <h6 className="text-lg font-semibold text-main">
-                  {item.institution}
-                </h6>
-                <p className="text-sm text-secondary">{item.degree}</p>
-                <p className="text-sm text-secondary">{item.years}</p>
-                <div className="flex text-sm text-secondary">
-                  <LocationOnOutlined className="-ml-1 text-base" />
-                  <p className="text-sm text-secondary">{item.location}</p>
+          {expandItems(educationData, INITIAL_VISIBLE_ITEMS, isExpanded).map(
+            (item, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-3 rounded-base border p-2"
+              >
+                <Image
+                  src={education}
+                  alt="Experience"
+                  width={70}
+                  height={70}
+                  className=""
+                />
+                <div className="flex-1">
+                  <h6 className="text-lg font-semibold text-main">
+                    {item.inistitute}
+                  </h6>
+                  <p className="text-sm text-secondary">{item.degree}</p>
+                  <p className="text-sm text-secondary">{item.endYear}</p>
+                  <div className="flex text-sm text-secondary">
+                    <LocationOnOutlined className="-ml-1 text-base" />
+                    <p className="text-sm text-secondary">{item.countryCode}</p>
+                  </div>
                 </div>
+                {isMe && (
+                  <IconButton>
+                    <EditIcon />
+                  </IconButton>
+                )}
               </div>
-              {isMe && (
-                <IconButton>
-                  <EditIcon />
-                </IconButton>
-              )}
-            </div>
-          ))}
+            ),
+          )}
         </div>
       ) : isMe ? (
         <EmptyCard
           src={"/images/activities.png"}
           description={"Your Educations will appear here."}
           buttonText="Add Educations"
-          onClick={() => handleOpenModal("Add Educations", getEducationFields)}
+          onClick={open}
         />
       ) : null}
 
       {/* Show More / Show Less Button */}
       {educationData.length > INITIAL_VISIBLE_ITEMS ? (
         <div className="flex items-center justify-center">
-          <Button variant="text" className="mt-2 p-0" onClick={handleToggle}>
+          <Button variant="text" className="mt-2 p-0" onClick={toggle}>
             {isExpanded
               ? `Show less experiences${remainingItems > 1 ? "s" : ""}`
               : `Show ${remainingItems} more experience${remainingItems > 1 ? "s" : ""}`}

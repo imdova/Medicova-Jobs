@@ -15,14 +15,12 @@ import { usePrompt } from "@/hooks/usePrompt";
 import MainInformation from "./Main-Information";
 import CompanyOwnership from "./CompanyOwnership";
 import CompanyContactInputs from "./CompanyContacInputs";
-import { CompanyStatus } from "@/constants/enums/company-status.enum";
-
+import { useFormDirty } from "@/hooks/useFormDirty";
 
 const CompanyInfoForm: React.FC = () => {
+  const { isDirty, markAsDirty, markAsClean } = useFormDirty();
   const [company, setCompany] = useState<Company | null>(null);
-  console.log("🚀 ~ company:", company)
   const [data, setData] = useState<Company>({} as Company);
-  const [isDirty, setIsDirty] = useState(false); // Tracks if the form has unsaved changes.
 
   const { data: session, status, update } = useSession();
   const user = session?.user as UserState;
@@ -59,8 +57,8 @@ const CompanyInfoForm: React.FC = () => {
     if (!emailRegex.test(email || "")) {
       error.email = "Enter a valid email address";
     }
-    if (!phone) {
-      error.phone = "Phone number is required";
+    if (phone && phone.length < 10) {
+      error.phone = "Phone number is invalid";
     }
     if (!name) {
       error.name = "name is required";
@@ -79,8 +77,11 @@ const CompanyInfoForm: React.FC = () => {
   usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
   useEffect(() => {
     if (company && data) {
-      setIsDirty(hasDataChanged(company, data));
+      if (hasDataChanged(company, data)) {
+        markAsDirty();
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, company]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,12 +103,15 @@ const CompanyInfoForm: React.FC = () => {
       const newCompany = result.data;
       setData(newCompany); // Set the form data with the fetched company data
       setCompany(newCompany);
-      setIsDirty(false);
+      markAsClean();
       update({
         companyId: newCompany.id,
+        companyName: newCompany.name,
+        companyPhoto: newCompany.logo,
       });
       reloadSession();
       setLoading(false);
+      window.location.href = "/co/" + newCompany.id;
       console.log("Company created successfully");
     } else {
       setLoading(false);
@@ -117,10 +121,15 @@ const CompanyInfoForm: React.FC = () => {
   const handleUpdate = async () => {
     const result = await updateCompany(data);
     if (result.success && result.data) {
-      const newCompany = result.data;
-      setData(newCompany); // Set the form data with the fetched company data
-      setCompany(newCompany);
-      setIsDirty(false);
+      const updatedCompany = result.data;
+      setData(updatedCompany); // Set the form data with the fetched company data
+      setCompany(updatedCompany);
+      update({
+        companyName: updatedCompany.name,
+        companyPhoto: updatedCompany.logo,
+        companyEmail: updatedCompany.email,
+      });
+      markAsClean();
       setLoading(false);
       console.log("Company Updated successfully");
     } else {
@@ -142,7 +151,7 @@ const CompanyInfoForm: React.FC = () => {
         const newCompany = result.data;
         setData(newCompany); // Set the form data with the fetched company data
         setCompany(newCompany);
-        setIsDirty(false);
+        markAsClean();
       }
     } catch (error) {
       console.error("Failed to fetch company data", error);
@@ -152,9 +161,10 @@ const CompanyInfoForm: React.FC = () => {
   };
 
   useEffect(() => {
-    if (companyId) {
+    if (companyId && !company) {
       fetchCompanyData(companyId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId]);
 
   if (formLoading || status === "loading") {

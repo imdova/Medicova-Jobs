@@ -101,10 +101,19 @@ export const serverSignIn = async ({
           const response = await getEmployerWithID(user.id);
           if (response.success) {
             const companyId = response.data.id;
+            const companyName = response.data.name;
+            const companyPhoto = response.data.photo;
+            const companyEmail = response.data.email;
             return {
               success: true,
               message: user.type + " Registered successfully",
-              data: { ...user, companyId },
+              data: {
+                ...user,
+                companyId,
+                companyName,
+                companyPhoto,
+                companyEmail,
+              },
             };
           }
           return {

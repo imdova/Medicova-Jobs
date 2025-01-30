@@ -8,10 +8,14 @@ declare module "next-auth" {
     email: string | null;
     firstName: string | null;
     lastName: string | null;
+    userName: string | null;
     type: RoleState;
     photo: string | null;
     phone: string | null;
     companyId: string | null;
+    companyName: string | null;
+    companyEmail: string | null;
+    companyPhoto: string | null;
     permissions: Permission[];
   }
 

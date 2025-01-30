@@ -7,6 +7,7 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
+import { TextFieldProps } from "@mui/material";
 
 export type Country = {
   name: string;
@@ -48,11 +49,35 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
+  userName: string | null;
   type: RoleState;
   photo: string | null;
   phone: string | null;
   companyId: string | null;
+  companyName: string | null;
+  companyEmail: string | null;
+  companyPhoto: string | null;
   permissions: Permission[];
+}
+
+export interface UserProfile extends UserState {
+  about: string | null;
+  title: string | null;
+  age: number | null;
+  languages: string[] | null;
+  resume: string | null;
+  socialLinks: { [key: string]: string } | null;
+  whatsapp: string | null;
+  nationality: string | null;
+  maritalStatus: string | null;
+  hasDrivingLicence: boolean | null;
+  country: CountryMin | null;
+  state: State | null;
+  city: City | null;
+  isPublic: boolean | null;
+  category: string | null;
+  speciality: string | null;
+  careerLevel: string | null;
 }
 
 export interface registerData {
@@ -113,24 +138,28 @@ export interface Doctor {
   available: boolean;
 }
 
+type CountryInData = {
+  name: string;
+  code: string;
+};
 export interface Company {
   id: string;
   name: string;
+  title?: string | null;
   about?: string;
+  completencePercent?: number;
   isPrivate?: boolean;
   isProfitable?: boolean;
   status?: CompanyStatus | null;
-  country?: string;
-  state?: string | null;
+  country?: CountryInData | null;
+  state?: CountryInData | null;
   city?: string;
   size?: CompanySize | null;
   phone?: string;
   email?: string;
   yearFounded?: number | string;
   photo?: string;
-  socialLinks?: {
-    linkedin?: string;
-  };
+  socialLinks?: { [key: string]: string };
   visible?: boolean;
   profileUrl?: string;
   typeId: string;
@@ -142,7 +171,7 @@ export interface Company {
       id: string;
       name: string;
     };
-  };
+  } | null;
 }
 export interface MiniCompany {
   name: string;
@@ -170,37 +199,61 @@ export interface Job {
   relatedSearch: string[];
   company: MiniCompany;
 }
-export interface JobCategory { id: string; name: string }
+
+export type SpecialtyItem = {
+  id: string;
+  name: string;
+};
+export type CareerLevels = {
+  id: string;
+  name: string;
+};
+export interface JobCategory {
+  id: string;
+  name: string;
+  specialities: SpecialtyItem[];
+  careerLevels: CareerLevels[];
+}
+export interface EmploymentType {
+  id: string;
+  name: string;
+}
 
 export interface Industry {
   id: string;
   name: string;
-  categories: JobCategory;
+  categories: JobCategory[];
 }
+export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
 export interface JobData {
   id?: string;
-  companyId: string;
+  companyId: string | null;
+  company?: Company;
   title: string;
-  jobIndustryId: string;
-  jobSectorId: string | null;
+  jobIndustryId: string | null;
+  jobIndustryName: string | null;
   jobSpecialityId: string | null;
+  jobSpecialityName: string | null;
   jobCategoryId: string | null;
+  jobCategoryName: string | null;
   jobCareerLevelId: string | null;
+  jobCareerLevelName: string | null;
   jobEmploymentTypeId: string | null;
-  jobWorkPlace: JobWorkPlace | null;
+  jobEmploymentTypeName: string | null;
+  jobWorkPlace: JobWorkPlace | null | "";
   gender: Gender | null;
   minAge: number | null;
   maxAge: number | null;
-  educationLevel: EducationLevel | null;
-  countryCode: string | null;
+  educationLevel: EducationLevel | null | "";
+  country: CountryInData | null;
   city: string | null;
   maxExpYears: number | null;
   minExpYears: number | null;
   hideSalary: boolean | null;
   salaryRangeStart: number | null;
   salaryRangeEnd: number | null;
-  salaryCurrency: SalaryCurrency | null;
+  salaryCurrency: SalaryCurrency | null | "";
   availableVacancies: number | null;
   description: string | null;
   requirements: string | null;
@@ -215,7 +268,30 @@ export interface JobData {
   active: boolean | null;
   closed: boolean | null;
   validTo: string | null; // ISO date string
-  startDateType: StartDateType | null;
+  applications?: number | null;
+  startDateType: StartDateType | null | "";
+  jobIndustry?: {
+    id: string;
+    name: string;
+  } | null;
+  jobSpeciality?: {
+    id: string;
+    name: string;
+  } | null;
+  jobCategory?: {
+    id: string;
+    name: string;
+  } | null;
+  jobCareerLevel?: {
+    id: string;
+    name: string;
+  } | null;
+  jobEmploymentType?: {
+    id: string;
+    name: string;
+  } | null;
+  created_at?: string | null; // ISO date string
+  updatedAt?: string | null; // ISO date string
 }
 
 export interface FilterOption {
@@ -297,3 +373,47 @@ export type NavItem = {
 export type Role = {
   permissions: { name: Permission }[];
 };
+
+export type ModalActionType = "STAY" | "LEAVE" | "CUSTOM";
+
+export interface ModalButton {
+  label: string;
+  actionType: ModalActionType;
+  variant?: "primary" | "secondary";
+}
+
+export interface ModalState {
+  isOpen: boolean;
+  message: string;
+  buttons: ModalButton[];
+  navigationUrl?: string;
+}
+
+export type FieldType =
+  | "text"
+  | "number"
+  | "email"
+  | "password"
+  | "date"
+  | "textEditor"
+  | "select"
+  | "checkbox";
+
+// Updated FieldConfig to support multiple hidden fields
+export interface FieldConfig<T = any> {
+  name: keyof T;
+  label?: string;
+  type: FieldType;
+  required?: boolean;
+  validation?: any;
+  gridProps?: {
+    xs?: number;
+    sm?: number;
+    md?: number;
+  };
+  textFieldProps?: Partial<TextFieldProps>;
+  component?: React.ComponentType<any>;
+  componentProps?: Record<string, any>;
+  options?: { label: string; value: string | number }[];
+  hideFieldNames?: (keyof T)[];
+}

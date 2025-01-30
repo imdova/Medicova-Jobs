@@ -19,8 +19,8 @@ interface UserDropdownProps {
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
   const userAvatar = user.photo;
-  const userName = user.firstName || "User Image";
-  const userType = user.type;
+  const userName = user.userName || user.id;
+  const isEmployer = user.type === "employer";
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -61,7 +61,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
       >
         <MenuItem>
           <Link
-            href={`/me/${userName}`}
+            href={isEmployer ? `/co/${user.companyId}` : `/me/${userName}`}
             className="min-w-40 text-base text-secondary transition-colors hover:text-primary"
           >
             Profile
@@ -69,9 +69,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         </MenuItem>
         <MenuItem>
           <Link
-            href={
-              userType == "seeker" ? "/job-seeker/setting " : "/employer/setting"
-            }
+            href={isEmployer ? "/employer/setting" : "/job-seeker/setting"}
             className="w-full text-base text-secondary transition-colors hover:text-primary"
           >
             Settings
