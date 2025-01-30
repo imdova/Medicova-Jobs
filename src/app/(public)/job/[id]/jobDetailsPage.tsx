@@ -27,9 +27,9 @@ import {
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
-  const user = session?.user as UserState;
+  const user = session?.user 
   const companyId = user?.companyId || "";
-  const isEmployer = user.type === "employer"
+  const isEmployer = user?.type === "employer";
 
   const [isApplied, setIsApplied] = useState(false);
   const education = formatEducationAndSpecialty(job);
@@ -50,7 +50,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   console.log("🚀 ~ applications:", applications);
 
   const applyForJob = () => {
-    if (user.id && job.id) {
+    if (user?.id && job.id) {
       dispatch(
         submitJobApplication({
           seekerId: user.id,
@@ -130,7 +130,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           <Button
             onClick={applyForJob}
             disabled={isApplied || applying || isEmployer}
-            className="text-lg font-semibold text-nowrap"
+            className="text-nowrap text-lg font-semibold"
             variant="contained"
           >
             {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
