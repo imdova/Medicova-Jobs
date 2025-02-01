@@ -204,7 +204,7 @@ const LoginForm: React.FC = () => {
 
         {/* Submit Button */}
         <Button
-          className="mb-1 h-[50px] w-full text-lg font-semibold capitalize"
+          className="mb-1 h-[42px] w-full text-lg font-semibold capitalize"
           type="submit"
           variant="contained"
           disabled={loading}

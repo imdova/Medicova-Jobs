@@ -74,7 +74,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
       onKeyDown={disableEnterKey}
       noValidate
     >
-      {/* Job Title */}
+      <h5 className="mb-12 mt-4 text-3xl font-bold text-main">Job Details</h5>
       <div className="mb-6 md:w-1/2 md:pr-3">
         <label className="mb-2 text-lg font-semibold text-main">Title *</label>
         <Controller
@@ -103,7 +103,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         watch={watch}
         setValue={setValue}
       />
-
       {/* Dropdowns employment type - education level  */}
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
         <EmploymentTypeSelect
@@ -162,82 +161,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             )}
           />
         </div>
-      </div>
-
-      {/* Work Place */}
-      <div className="mb-6 md:w-1/2 md:pr-3">
-        <label className="mb-1 text-lg font-semibold text-main">
-          Work Place *
-        </label>
-        <Controller
-          name="jobWorkPlace"
-          control={control}
-          defaultValue={null}
-          rules={{ required: "industry is required" }}
-          render={({ field }) => (
-            <FormControl
-              component="fieldset"
-              error={!!errors?.jobWorkPlace?.message}
-              fullWidth
-            >
-              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                {jobWorkPlaceOptions.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => field.onChange(item.id)}
-                    className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobWorkPlace ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                  >
-                    {item.id}
-                  </button>
-                ))}
-              </div>
-
-              {errors.jobWorkPlace && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.jobWorkPlace.message}
-                </p>
-              )}
-            </FormControl>
-          )}
-        />
-      </div>
-
-      {/* Gender */}
-      <div className="mb-6 md:w-1/2 md:pr-3">
-        <label className="mb-1 text-lg font-semibold text-main">Gender *</label>
-        <Controller
-          name="gender"
-          control={control}
-          defaultValue={null}
-          rules={{ required: "gender is required" }}
-          render={({ field }) => (
-            <FormControl
-              component="fieldset"
-              error={!!errors?.gender?.message}
-              fullWidth
-            >
-              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                {genderOptions.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => field.onChange(item.id)}
-                    className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.gender ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                  >
-                    {item.id}
-                  </button>
-                ))}
-              </div>
-
-              {errors.gender && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.gender.message}
-                </p>
-              )}
-            </FormControl>
-          )}
-        />
       </div>
 
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
@@ -328,8 +251,46 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             )}
           </div>
         </div>
+        {/* Work Place */}
+        <div className="mb-6 md:w-1/2 md:pr-3">
+          <label className="mb-1 text-lg font-semibold text-main">
+            Work Place *
+          </label>
+          <Controller
+            name="jobWorkPlace"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "industry is required" }}
+            render={({ field }) => (
+              <FormControl
+                component="fieldset"
+                error={!!errors?.jobWorkPlace?.message}
+                fullWidth
+              >
+                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                  {jobWorkPlaceOptions.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => field.onChange(item.id)}
+                      className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobWorkPlace ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                    >
+                      {item.id}
+                    </button>
+                  ))}
+                </div>
 
-        {/* Job Location */}
+                {errors.jobWorkPlace && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.jobWorkPlace.message}
+                  </p>
+                )}
+              </FormControl>
+            )}
+          />
+        </div>
+      </div>
+      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
         <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
           <div className="min-w-[150px] flex-1">
             <label className="mb-2 text-lg font-semibold text-main">
@@ -408,91 +369,132 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             )}
           </div>
         </div>
-      </div>
+        <div className="mb-6 md:w-1/2 md:pr-3">
+          <label className="mb-1 text-lg font-semibold text-main">
+            Gender *
+          </label>
+          <Controller
+            name="gender"
+            control={control}
+            defaultValue={null}
+            rules={{ required: "gender is required" }}
+            render={({ field }) => (
+              <FormControl
+                component="fieldset"
+                error={!!errors?.gender?.message}
+                fullWidth
+              >
+                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                  {genderOptions.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => field.onChange(item.id)}
+                      className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.gender ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                    >
+                      {item.id}
+                    </button>
+                  ))}
+                </div>
 
-      {/* Years of Experience */}
-      <div className="mb-6 flex flex-wrap gap-5 md:w-1/2 md:flex-nowrap md:pr-3">
-        <div className="min-w-[150px] flex-1">
-          <label className="mb-2 text-lg font-semibold text-main">
-            Min Years Exp *
-          </label>
-          <Controller
-            name="minExpYears"
-            control={control}
-            defaultValue={null}
-            rules={{
-              required: "min experience years is required",
-              min: {
-                value: 0,
-                message: "min experience years must be greater than 0",
-              },
-            }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                className="w-full"
-                name="min experience years"
-                type="number"
-                inputProps={{ min: 0 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="start">y</InputAdornment>
-                  ),
-                }}
-                placeholder="Enter The Min Experience Years"
-                error={!!errors?.minExpYears?.message}
-              />
+                {errors.gender && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {errors.gender.message}
+                  </p>
+                )}
+              </FormControl>
             )}
           />
-          {errors.minExpYears && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.minExpYears.message}
-            </p>
-          )}
-        </div>
-        <div className="min-w-[150px] flex-1">
-          <label className="mb-2 text-lg font-semibold text-main">
-            Max Years Exp *
-          </label>
-          <Controller
-            name="maxExpYears"
-            control={control}
-            defaultValue={null}
-            rules={{
-              required: "max experience years is required",
-              min: {
-                value: 0,
-                message: "max experience years must be greater than 0",
-              },
-            }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                className="w-full"
-                name="max experience years"
-                type="number"
-                inputProps={{ min: 0 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">y</InputAdornment>
-                  ),
-                }}
-                placeholder="Enter The Max Experience Years"
-                error={!!errors?.maxExpYears?.message}
-              />
-            )}
-          />
-          {errors.maxExpYears && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.maxExpYears.message}
-            </p>
-          )}
         </div>
       </div>
+      {/* Years of Experience */}
+      <Divider className="my-6 mt-20" />
+      {/* Job Details */}
+      <h5 className="mb-12 mt-4 text-3xl font-bold text-main">
+        Experience & Salary Details
+      </h5>
 
       {/* Salary Details */}
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
         <div className="flex-1">
+          <div className="mb-4 flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+            <div className="min-w-[150px] flex-1">
+              <label className="mb-2 text-lg font-semibold text-main">
+                Min Years Exp *
+              </label>
+              <Controller
+                name="minExpYears"
+                control={control}
+                defaultValue={null}
+                rules={{
+                  required: "min experience years is required",
+                  min: {
+                    value: 0,
+                    message: "min experience years must be greater than 0",
+                  },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="w-full"
+                    name="min experience years"
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start">y</InputAdornment>
+                      ),
+                    }}
+                    placeholder="Enter The Min Experience Years"
+                    error={!!errors?.minExpYears?.message}
+                  />
+                )}
+              />
+              {errors.minExpYears && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.minExpYears.message}
+                </p>
+              )}
+            </div>
+            <div className="min-w-[150px] flex-1">
+              <label className="mb-2 text-lg font-semibold text-main">
+                Max Years Exp *
+              </label>
+              <Controller
+                name="maxExpYears"
+                control={control}
+                defaultValue={null}
+                rules={{
+                  required: "max experience years is required",
+                  min: {
+                    value: 0,
+                    message: "max experience years must be greater than 0",
+                  },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="w-full"
+                    name="max experience years"
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">y</InputAdornment>
+                      ),
+                    }}
+                    placeholder="Enter The Max Experience Years"
+                    error={!!errors?.maxExpYears?.message}
+                  />
+                )}
+              />
+              {errors.maxExpYears && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.maxExpYears.message}
+                </p>
+              )}
+            </div>
+          </div>
           <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
             <div className="min-w-[150px] flex-1">
               <label className="mb-2 text-lg font-semibold text-main">
@@ -515,6 +517,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                     className="w-full"
                     name="salary rang start"
                     type="number"
+                    inputProps={{ min: 0 }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">$</InputAdornment>
@@ -552,6 +555,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                     className="w-full"
                     name="salary range end"
                     type="number"
+                    inputProps={{ min: 0 }}
                     placeholder="Enter The Salary Range End"
                     InputProps={{
                       startAdornment: (
@@ -623,7 +627,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           )}
         </div>
       </div>
-      {/* Number of Vacancies */}
       <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
         <div className="mb-6 md:w-1/2 md:pr-3">
           <label className="mb-1 text-lg font-semibold text-main">
@@ -649,6 +652,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                 <div className="flex gap-5">
                   <Button
                     variant="outlined"
+                    className="h-[42px] w-[42px]"
                     color={errors?.availableVacancies ? "error" : "primary"}
                     onClick={() => field.onChange((field.value || 0) - 1)}
                     disabled={!field.value || field.value <= 1} // Disable the minus button when count is 1
@@ -658,7 +662,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                   <TextField
                     {...field}
                     name="Number of Vacancies"
-                    className="h-14 w-24"
+                    className="h-14 w-16"
                     type="number"
                     placeholder="Num of Vacancies"
                     error={!!errors?.availableVacancies?.message}
@@ -666,6 +670,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
 
                   <Button
                     variant="outlined"
+                    className="h-[42px] w-[42px]"
                     color={errors?.availableVacancies ? "error" : "primary"}
                     onClick={() => field.onChange((field.value || 0) + 1)}
                   >
@@ -703,7 +708,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                       key={item.id}
                       type="button"
                       onClick={() => field.onChange(item.id)}
-                      className={`h-[50px] w-full rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.startDateType ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                      className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.startDateType ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
                     >
                       {item.id}
                     </button>
@@ -720,8 +725,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           />
         </div>
       </div>
-
-      <Divider className="my-2" />
+      <Divider className="my-6 mt-20" />
       {/* Job Details */}
       <h5 className="mb-12 mt-4 text-3xl font-bold text-main">About The Job</h5>
       <div className="mb-4 w-full">
@@ -738,8 +742,13 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           onChange={(e) => setValue("requirements", e)}
         />
       </div>
-
       {/* Skills */}
+      <Divider className="my-6 mt-20" />
+      {/* Job Details */}
+      <h5 className="mb-12 mt-4 text-3xl font-bold text-main">
+        Skills & Keywords
+      </h5>
+
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
         <h6 className="mb-2 text-xl font-semibold text-main">
           Skills related to the job post{" "}
@@ -750,7 +759,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           onChange={(items) => setValue("skills", items)}
         />
       </div>
-
       {/* Keywords */}
       <div className="mt-8 rounded-[10px] bg-green-50 p-4">
         <h6 className="text-xl font-semibold text-main">Keywords</h6>
