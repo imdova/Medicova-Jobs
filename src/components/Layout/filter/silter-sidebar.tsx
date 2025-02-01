@@ -10,7 +10,7 @@ type Props<T extends Record<string, FilterOption[]>, K extends keyof T> = {
   searchKeys?: K[];
 };
 
-const JobFilter = <
+const FilterSideBar = <
   T extends Record<string, FilterOption[]>,
   K extends keyof T,
 >({
@@ -89,4 +89,4 @@ const JobFilter = <
   );
 };
 
-export default JobFilter;
+export default FilterSideBar;

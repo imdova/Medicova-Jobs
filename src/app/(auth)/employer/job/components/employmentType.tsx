@@ -54,7 +54,7 @@ const EmploymentTypeSelect: React.FC<IndustryFormProps> = ({
             fullWidth
           >
             <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-              {loading || employmentTypes.length === 0
+              {loading
                 ? [1, 2, 3, 4].map((i) => (
                     <div
                       key={i}

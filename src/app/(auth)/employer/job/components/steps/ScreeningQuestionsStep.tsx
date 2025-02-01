@@ -352,8 +352,8 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   size="small"
                   onKeyDown={handleKeyDown}
-                  variant="outlined"
-                  className="w-full sm:w-56"
+                  variant="standard"
+                  className="h-[35px] w-full sm:w-56"
                 />
               ) : (
                 <span>{email}</span>

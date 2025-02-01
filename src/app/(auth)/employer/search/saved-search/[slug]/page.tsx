@@ -24,7 +24,7 @@ import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import JobFilter from "@/app/(public)/search/filter";
+import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
@@ -134,7 +134,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
       {/* Left Column: Filter Section */}
-      <JobFilter
+      <FilterSideBar
         sections={filterSections}
         searchKeys={["Residency (Location)"]}
       />

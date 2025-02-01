@@ -1,10 +1,10 @@
 import SearchForm from "@/components/UI/search-form";
 import { Suspense } from "react";
-import JobFilter from "./filter";
 import { searchJopFilters } from "@/constants";
 import CountrySearchResult, {
   CountryHeading,
 } from "@/components/UI/CountrySearchResult";
+import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
 
 const layout: React.FC<{
   children: React.ReactNode;
@@ -47,7 +47,7 @@ const layout: React.FC<{
             </div>
           }
         >
-          <JobFilter sections={searchJopFilters} />
+          <FilterSideBar sections={searchJopFilters} />
         </Suspense>
         {/* Jobs result Section */}
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>

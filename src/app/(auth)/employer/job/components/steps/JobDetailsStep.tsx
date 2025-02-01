@@ -27,6 +27,7 @@ import {
   startDateTypeOptions,
 } from "@/constants/job";
 import { disableEnterKey } from "@/util";
+import SearchableSelect from "@/components/UI/SearchableSelect";
 
 interface JobDetailProps {
   jobData: JobData;
@@ -302,7 +303,11 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
               rules={{ required: "country is required" }}
               render={({ field }) => (
                 <FormControl error={Boolean(errors.country)} fullWidth>
-                  <Select
+                  <SearchableSelect
+                    options={countries.data.map((x) => ({
+                      value: x.name,
+                      label: x.name,
+                    }))}
                     {...field}
                     onChange={(e) => {
                       const country = countries.data.find(
@@ -312,12 +317,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                       setValue("country.code", country?.isoCode || "");
                     }}
                     displayEmpty
-                    MenuProps={{
-                      disableScrollLock: true,
-                      PaperProps: {
-                        sx: { maxHeight: 300 },
-                      },
-                    }}
                     renderValue={(selected) => {
                       if (!selected) {
                         return (
@@ -326,16 +325,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                       }
                       return selected;
                     }}
-                  >
-                    <MenuItem value="" disabled>
-                      <em>Select Job Location</em>
-                    </MenuItem>
-                    {countries.data.map((country) => (
-                      <MenuItem key={country.isoCode} value={country.name}>
-                        {country.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
                   {errors.country && (
                     <p className="mt-2 text-sm text-red-500">
                       {errors.country.message}
