@@ -142,7 +142,7 @@ html,
 }
 
 .custom-list ul li::before {
-  content: '\2713'; /* Unicode checkmark as placeholder */
+  content: "\2713"; /* Unicode checkmark as placeholder */
   position: absolute;
   left: 0;
   top: 50%;

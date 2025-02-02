@@ -133,7 +133,9 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
         name={String(field.name)}
         control={control}
         rules={{
-          required: field.required ? `${field.label || String(field.name) } is required` : false,
+          required: field.required
+            ? `${field.label || String(field.name)} is required`
+            : false,
           ...field.validation,
         }}
         render={({ field: controllerField, fieldState: { error } }) => {
@@ -260,7 +262,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-          <Grid container spacing={2}>
+          <Grid container className="mt-1" spacing={2}>
             {fields.map((field) => (
               <Grid
                 item

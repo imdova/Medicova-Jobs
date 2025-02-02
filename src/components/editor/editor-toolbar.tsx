@@ -76,3 +76,61 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
     </div>
   );
 }
+export function BlockEditorToolbar({ editor }: EditorToolbarProps) {
+  return (
+    <div className="absolute top-0 z-10 flex -translate-y-1/2 items-center gap-1">
+      <ToolbarButton
+        icon={FormatBold}
+        label="Bold"
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        isActive={editor.isActive("bold")}
+      />
+      <ToolbarButton
+        icon={FormatItalic}
+        label="Italic"
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        isActive={editor.isActive("italic")}
+      />
+      <ToolbarButton
+        icon={FormatUnderlined}
+        label="Underline"
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        isActive={editor.isActive("underline")}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={FormatListBulleted}
+        label="Bullet List"
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        isActive={editor.isActive("bulletList")}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={FormatAlignLeft}
+        label="Align Left"
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        isActive={editor.isActive({ textAlign: "left" })}
+      />
+      <ToolbarButton
+        icon={FormatAlignCenter}
+        label="Align Center"
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        isActive={editor.isActive({ textAlign: "center" })}
+      />
+      <ToolbarButton
+        icon={FormatAlignRight}
+        label="Align Right"
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        isActive={editor.isActive({ textAlign: "right" })}
+      />
+      <div className="flex-1" />
+      <ToolbarButton
+        icon={Rotate90DegreesCcw}
+        label="Clear Formatting"
+        onClick={() =>
+          editor.chain().focus().clearNodes().unsetAllMarks().run()
+        }
+      />
+    </div>
+  );
+}
