@@ -140,6 +140,66 @@ export default function PageBuilder() {
     setBlocks(items);
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
+
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    blockId: string,
+  ) => {
+    if (!isDragging) {
+      event.preventDefault();
+      event.stopPropagation();
+      setMenuAnchorEl(event.currentTarget);
+      setActiveBlockId(blockId);
+    }
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+    setActiveBlockId(null);
+  };
+
+  const removeBlock = (id: string) => {
+    setBlocks((pv) => pv.filter((x) => x.id !== id));
+  };
+  const splitBlock = (id: string) => {
+    setBlocks((pv) =>
+      pv.map((block) =>
+        block.id === id ? { ...block, gridProps: { xs: 12, sm: 6 } } : block,
+      ),
+    );
+  };
+  const fullWidthBlock = (id: string) => {
+    setBlocks((pv) =>
+      pv.map((block) =>
+        block.id === id ? { ...block, gridProps: {} } : block,
+      ),
+    );
+  };
+  const duplicate = (block: Block) => {
+    const newBlock: Block = {
+      ...block,
+      id: Math.random().toString(36).slice(2, 11),
+    };
+    setBlocks((blocks) => [...blocks, newBlock]);
+    setSelectedBlock(newBlock);
+  };
+
+  const handleMenuAction = (block: Block, action: string) => {
+    if (action === "Delete") {
+      removeBlock(block.id);
+    } else if (action === "Duplicate") {
+      duplicate(block);
+    } else if (action === "Split") {
+      splitBlock(block.id);
+    } else if (action === "Full-Width") {
+      fullWidthBlock(block.id);
+    }
+    handleMenuClose();
+  };
+
   return (
     <div className="bg-background flex h-screen">
       {/* // page  */}
@@ -200,13 +260,77 @@ export default function PageBuilder() {
                           index={index}
                         >
                           {(provided) => (
-                            <MainBlock
-                              block={block}
-                              setBlocks={setBlocks}
-                              provided={provided}
-                              selectedBlock={selectedBlock}
-                              setSelectedBlock={setSelectedBlock}
-                            />
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              onClick={() => setSelectedBlock(block)}
+                              className={`group relative flex items-start border p-4 pt-6 ${selectedBlock?.id === block.id ? "border-primary" : "border-neutral-200 hover:border-neutral-400"}`}
+                            >
+                              <div className="invisible mr-4 cursor-move rounded group-hover:visible">
+                                <IconButton
+                                  {...provided.dragHandleProps}
+                                  size="small"
+                                  className="p-0"
+                                  onClick={(e) => handleMenuClick(e, block.id)}
+                                >
+                                  <DragIndicator fontSize="small" />
+                                </IconButton>
+                              </div>
+                              {renderBlock({
+                                block: block,
+                                isSelected: selectedBlock?.id === block.id,
+                                setBlocks,
+                              })}
+                              <Menu
+                                anchorEl={menuAnchorEl}
+                                open={activeBlockId === block.id}
+                                onClose={handleMenuClose}
+                                anchorOrigin={{
+                                  vertical: "center",
+                                  horizontal: "left",
+                                }}
+                                transformOrigin={{
+                                  vertical: "center",
+                                  horizontal: "right",
+                                }}
+                              >
+                                {block.type === "image" && (
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleMenuAction(block, "Split")
+                                    }
+                                  ></MenuItem>
+                                )}
+                                <MenuItem
+                                  onClick={() =>
+                                    handleMenuAction(block, "Split")
+                                  }
+                                >
+                                  Split
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleMenuAction(block, "Full-Width")
+                                  }
+                                >
+                                  Full Width
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleMenuAction(block, "Delete")
+                                  }
+                                >
+                                  Delete
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleMenuAction(block, "Duplicate")
+                                  }
+                                >
+                                  Duplicate
+                                </MenuItem>
+                              </Menu>
+                            </div>
                           )}
                         </Draggable>
                       </Grid>
@@ -229,121 +353,3 @@ export default function PageBuilder() {
     </div>
   );
 }
-
-export const MainBlock: React.FC<{
-  block: Block;
-  selectedBlock: Block | null;
-  setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
-  setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
-  provided: DraggableProvided;
-}> = ({ block, provided, setSelectedBlock, setBlocks, selectedBlock }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
-
-  const handleMenuClick = (
-    event: React.MouseEvent<HTMLElement>,
-    blockId: string,
-  ) => {
-    if (!isDragging) {
-      event.preventDefault();
-      event.stopPropagation();
-      setMenuAnchorEl(event.currentTarget);
-      setActiveBlockId(blockId);
-    }
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-    setActiveBlockId(null);
-  };
-
-  const removeBlock = (id: string) => {
-    setBlocks((pv) => pv.filter((x) => x.id !== id));
-  };
-  const splitBlock = (id: string) => {
-    setBlocks((pv) =>
-      pv.map((block) =>
-        block.id === id ? { ...block, gridProps: { xs: 12, sm: 6 } } : block,
-      ),
-    );
-  };
-  const fullWidthBlock = (id: string) => {
-    setBlocks((pv) =>
-      pv.map((block) =>
-        block.id === id ? { ...block, gridProps: {} } : block,
-      ),
-    );
-  };
-  const duplicate = (block: Block) => {
-    const newBlock: Block = {
-      ...block,
-      id: Math.random().toString(36).slice(2, 11),
-    };
-    setBlocks((blocks) => [...blocks, newBlock]);
-    setSelectedBlock(newBlock);
-  };
-
-  const handleMenuAction = (action: string) => {
-    if (action === "Delete") {
-      removeBlock(block.id);
-    } else if (action === "Duplicate") {
-      duplicate(block);
-    } else if (action === "Split") {
-      splitBlock(block.id);
-    } else if (action === "Full-Width") {
-      fullWidthBlock(block.id);
-    }
-    handleMenuClose();
-  };
-
-  return (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      onClick={() => setSelectedBlock(block)}
-      className={`group relative flex items-start border p-4 pt-6 ${selectedBlock?.id === block.id ? "border-primary" : "border-neutral-200 hover:border-neutral-400"}`}
-    >
-      <div className="invisible mr-4 cursor-move rounded group-hover:visible">
-        <IconButton
-          {...provided.dragHandleProps}
-          size="small"
-          className="p-0"
-          onClick={(e) => handleMenuClick(e, block.id)}
-        >
-          <DragIndicator fontSize="small" />
-        </IconButton>
-      </div>
-      {renderBlock({
-        block: block,
-        isSelected: selectedBlock?.id === block.id,
-        setBlocks,
-      })}
-      <Menu
-        anchorEl={menuAnchorEl}
-        open={activeBlockId === block.id}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "center",
-          horizontal: "right",
-        }}
-      >
-        {block.type === "image" && (
-          <MenuItem onClick={() => handleMenuAction("Split")}></MenuItem>
-        )}
-        <MenuItem onClick={() => handleMenuAction("Split")}>Split</MenuItem>
-        <MenuItem onClick={() => handleMenuAction("Full-Width")}>
-          Full Width
-        </MenuItem>
-        <MenuItem onClick={() => handleMenuAction("Delete")}>Delete</MenuItem>
-        <MenuItem onClick={() => handleMenuAction("Duplicate")}>
-          Duplicate
-        </MenuItem>
-      </Menu>
-    </div>
-  );
-};

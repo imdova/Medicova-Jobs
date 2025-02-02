@@ -206,13 +206,13 @@ const SettingsTab: React.FC<TabProps> = ({
                 onChange={(e) => setAuthor(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <input
                 type="file"
                 accept=".jpg, .jpeg, .png"
                 onChange={(e) => setCoverImage(e.target.files?.[0] || null)}
               />
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Button variant="contained" onClick={updateSettings}>
                 Save
