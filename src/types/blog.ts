@@ -8,16 +8,35 @@ import {
   Heading3,
 } from "lucide-react";
 
+export type BlockType =
+  | "h1"
+  | "h2"
+  | "h3"
+  | "paragraph"
+  | "image"
+  | "button"
+  | "html";
 export interface Block {
   id: string;
-  type: string;
+  type: BlockType;
   content: string;
+  imageUrl?: string;
+  linkUrl?: string;
   styles: {
     [key: string]: string;
   };
+  gridProps?: {
+    xs?: number;
+    sm?: number;
+    md?: number;
+  };
 }
 
-export const blockTypes = [
+export const blockTypes: {
+  id: BlockType;
+  icon: React.ElementType;
+  label: string;
+}[] = [
   { id: "h1", icon: Heading1, label: "Heading 1" },
   { id: "h2", icon: Heading2, label: "Heading 2" },
   { id: "h3", icon: Heading3, label: "Heading 3" },
