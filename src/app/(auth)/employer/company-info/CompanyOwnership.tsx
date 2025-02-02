@@ -1,4 +1,5 @@
 import DynamicRadioGroup from "@/components/form/DynamicRadioGroup";
+import SearchableSelect from "@/components/UI/SearchableSelect";
 import { companySizeList } from "@/constants";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { Company } from "@/types";
@@ -92,15 +93,18 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
           <InputLabel className="mb-2 text-lg font-semibold text-main">
             Year Founded
           </InputLabel>
-          <Select
+
+          <SearchableSelect
+            options={Array.from({
+              length: new Date().getFullYear() - 1800 + 1,
+            })
+              .reverse()
+              .map((_, i) => ({
+                value: String(new Date().getFullYear() - i),
+                label: String(new Date().getFullYear() - i),
+              }))}
             className="w-full"
             displayEmpty
-            MenuProps={{
-              disableScrollLock: true,
-              PaperProps: {
-                sx: { maxHeight: 300 },
-              },
-            }}
             name="yearFounded"
             value={data.yearFounded?.toString() || ""}
             onChange={(e) => handleChange("yearFounded", e.target.value)}
@@ -110,20 +114,7 @@ const CompanyOwnership: React.FC<SectorSelectionProps> = ({
               }
               return <span>{selected}</span>;
             }}
-          >
-            <MenuItem value="" disabled>
-              <em>Select Founded Year</em>
-            </MenuItem>
-            {Array.from({
-              length: new Date().getFullYear() - 1800 + 1,
-            })
-              .reverse()
-              .map((_, i) => (
-                <MenuItem key={new Date().getFullYear() - i} value={new Date().getFullYear() - i}>
-                  {new Date().getFullYear() - i}
-                </MenuItem>
-              ))}
-          </Select>
+          />
         </div>
       </div>
     </div>

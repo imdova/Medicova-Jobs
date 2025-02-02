@@ -1,6 +1,5 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import { RoleState } from "./types/next-auth";
 import { UserState } from "./types";
 
 export default withAuth(function middleware(req) {

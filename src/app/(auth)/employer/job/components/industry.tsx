@@ -61,8 +61,6 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, categories]);
 
-
-
   const handleFetchCategories = async (selectedIndustry: string) => {
     await dispatch(fetchCategories(selectedIndustry));
   };
@@ -73,10 +71,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedIndustry]);
 
-
   useEffect(() => {
     if (industries.length === 0) {
-      dispatch(fetchIndustries())
+      dispatch(fetchIndustries());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
@@ -102,11 +99,11 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                 placement="bottom"
               >
                 <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                  {industryLoading || industries.length === 0
+                  {industryLoading
                     ? [1, 2, 3, 4].map((i) => (
                         <div
                           key={i}
-                          className="flex h-[50px] w-full max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
+                          className="flex h-[42px] max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
                         >
                           <span className="rounded-md bg-gray-300 text-transparent">
                             Demo Industry
@@ -124,7 +121,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                             field.onChange(item.id);
                             setValue("jobIndustryName", item.name);
                           }}
-                          className={`h-[50px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                          className={`h-[42px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
                         >
                           {item.name}
                         </button>
@@ -153,7 +150,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                 <Tooltip
                   title={
                     selectedIndustry
-                      ? categoriesLoading ? "loading...":undefined
+                      ? categoriesLoading
+                        ? "loading..."
+                        : undefined
                       : "Please select industry first"
                   }
                   placement="bottom"

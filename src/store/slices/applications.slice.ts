@@ -1,5 +1,8 @@
-import { applyForJob, getApplicationsBySeekerId } from "@/lib/actions/applications.actions";
-import { JobApplicationData } from "@/types/seeker";
+import {
+  applyForJob,
+  getApplications,
+} from "@/lib/actions/applications.actions";
+import { ApplicationsFilter, JobApplicationData } from "@/types/seeker";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface JobApplicationState {
@@ -23,7 +26,7 @@ const initialState: JobApplicationState = {
 // Async thunk for applying to a job
 export const submitJobApplication = createAsyncThunk(
   "jobApplication/submitApplication",
-  async (applicationData: Partial<JobApplicationData> , { rejectWithValue }) => {
+  async (applicationData: Partial<JobApplicationData>, { rejectWithValue }) => {
     try {
       const result = await applyForJob(applicationData);
       if (result.success && result.data) {
@@ -41,13 +44,11 @@ export const submitJobApplication = createAsyncThunk(
 );
 
 // Async thunk for fetching seeker's applications
-export const fetchSeekerApplications = createAsyncThunk(
-  "jobApplication/fetchSeekerApplications",
-  async (seekerId: string, { rejectWithValue }) => {
-    console.log("🚀 ~ seekerId:", seekerId)
+export const fetchApplications = createAsyncThunk(
+  "jobApplication/fetchApplications",
+  async (filter: ApplicationsFilter, { rejectWithValue }) => {
     try {
-      
-      const result = await getApplicationsBySeekerId(seekerId);
+      const result = await getApplications(filter);
       if (result.success && result.data) {
         return result.data.data;
       }
@@ -86,16 +87,16 @@ const jobApplicationSlice = createSlice({
         state.applications.error = action.payload as string;
       })
       // Fetch seeker's applications
-      .addCase(fetchSeekerApplications.pending, (state) => {
+      .addCase(fetchApplications.pending, (state) => {
         state.applications.loading = true;
         state.applications.error = null;
       })
-      .addCase(fetchSeekerApplications.fulfilled, (state, action) => {
+      .addCase(fetchApplications.fulfilled, (state, action) => {
         state.applications.loading = false;
         state.applications.data = action.payload;
         state.applications.error = null;
       })
-      .addCase(fetchSeekerApplications.rejected, (state, action) => {
+      .addCase(fetchApplications.rejected, (state, action) => {
         state.applications.loading = false;
         state.applications.error = action.payload as string;
       });

@@ -69,7 +69,7 @@ export const commonLinks: CommonLinks = {
     },
     {
       title: "Blog",
-      url: "#",
+      url: "/blog",
     },
     {
       title: "Courses",

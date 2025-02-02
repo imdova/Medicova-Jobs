@@ -1,6 +1,5 @@
 "use client";
 import {
-  Box,
   Tabs,
   Tab,
   Select,
@@ -11,7 +10,6 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -20,13 +18,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 import { doctorsBase, filterSections } from "@/constants";
-import CustomPagination from "@/components/UI/CustomPagination";
 import DoctorCard from "@/components/UI/DoctorCard";
 import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-import JobFilter from "@/app/(public)/search/filter";
 import { Doctor, JobData, UserState } from "@/types";
-import { JobApplicationData } from "@/types/seeker";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const JobApplicantsResult: React.FC<{
@@ -79,8 +74,6 @@ const JobApplicantsResult: React.FC<{
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
-
-  // add to available
 
   return (
     <div className="w-full p-2 md:p-4 lg:w-[80%]">

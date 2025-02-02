@@ -40,9 +40,9 @@ const Flag: React.FC<FlagProps> = ({
   return (
     <Image
       src={`https://flagcdn.com/${code}.svg`}
+      alt={name || "flag"}
       width={width}
       height={height}
-      alt={name || "flag"}
       className={className}
       {...props} // Pass remaining props to the Image component
     />

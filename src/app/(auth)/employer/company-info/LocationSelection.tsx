@@ -1,3 +1,5 @@
+import Flag from "@/components/UI/flagitem";
+import SearchableSelect from "@/components/UI/SearchableSelect";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
 import { Company } from "@/types";
@@ -28,7 +30,6 @@ const LocationSelection = ({
   } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
     if (countries.length === 0) {
       dispatch(fetchCountries());
@@ -42,7 +43,7 @@ const LocationSelection = ({
         (c) => c.isoCode === data.country?.code,
       )?.isoCode;
       if (countryCode) {
-        dispatch(fetchStates(countryCode))
+        dispatch(fetchStates(countryCode));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,20 +57,24 @@ const LocationSelection = ({
             Country
           </InputLabel>
           <FormControl fullWidth>
-            <Select
+            <SearchableSelect
+              options={countries.map((x) => ({
+                value: x.name,
+                label: x.name,
+              }))}
               className="w-full"
               displayEmpty
-              MenuProps={{
-                disableScrollLock: true,
-                PaperProps: {
-                  sx: { maxHeight: 300 },
-                },
-              }}
               renderValue={(selected?: string) => {
-                if (!selected) {
+                const item = countries.find((x) => x.name === selected);
+                if (!item) {
                   return <em className="text-gray-400">Select Country</em>;
                 }
-                return <span>{selected}</span>;
+                return (
+                  <div className="flex items-center">
+                    <Flag code={item.isoCode.toLowerCase()} name={item.name} />
+                    <p className="ml-2 min-w-12">{selected}</p>
+                  </div>
+                );
               }}
               onChange={(e) => {
                 const country = countries.find(
@@ -88,19 +93,7 @@ const LocationSelection = ({
                   ? data.country?.name || ""
                   : ""
               }
-            >
-              <MenuItem value="" disabled>
-                <em>Select Sector</em>
-              </MenuItem>
-              {countries.map((country) => (
-                <MenuItem key={country.isoCode} value={country.name}>
-                  {country.name}
-                </MenuItem>
-              ))}
-            </Select>
-            {/* {Boolean(errors.typeId) && !sectorId && (
-              <FormHelperText>sector is required</FormHelperText>
-            )} */}
+            />
           </FormControl>
         </div>
         {/* Company Type Selector */}
@@ -113,16 +106,14 @@ const LocationSelection = ({
               title={data.country ? undefined : "Please select Country first"}
               placement="bottom"
             >
-              <Select
+              <SearchableSelect
+                options={states.map((x) => ({
+                  value: x.name,
+                  label: x.name,
+                }))}
                 className="w-full"
                 displayEmpty
                 disabled={data.country ? false : true}
-                MenuProps={{
-                  disableScrollLock: true,
-                  PaperProps: {
-                    sx: { maxHeight: 300 },
-                  },
-                }}
                 renderValue={(selected?: string) => {
                   if (!selected) {
                     return <em className="text-gray-400">Select State</em>;
@@ -140,16 +131,7 @@ const LocationSelection = ({
                   });
                 }}
                 value={states.length > 0 ? (data.state?.name ?? "") : ""}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select State</em>
-                </MenuItem>
-                {states.map((state) => (
-                  <MenuItem key={state.isoCode} value={state.name}>
-                    {state.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              />
             </Tooltip>
           </FormControl>
         </div>

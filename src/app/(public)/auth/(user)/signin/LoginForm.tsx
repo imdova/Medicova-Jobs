@@ -106,7 +106,7 @@ const LoginForm: React.FC = () => {
 
       <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Email Field */}
-        <Box sx={{ mb: 2 }}>
+        <div className="mb-2">
           <Controller
             name="email"
             control={control}
@@ -129,7 +129,7 @@ const LoginForm: React.FC = () => {
               />
             )}
           />
-        </Box>
+        </div>
 
         {/* Password Field */}
         <div className="mb-2">
@@ -204,7 +204,7 @@ const LoginForm: React.FC = () => {
 
         {/* Submit Button */}
         <Button
-          className="mb-1 h-[50px] w-full text-lg font-semibold capitalize"
+          className="mb-1 h-[42px] w-full text-lg font-semibold capitalize"
           type="submit"
           variant="contained"
           disabled={loading}

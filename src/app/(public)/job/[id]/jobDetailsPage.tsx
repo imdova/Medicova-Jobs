@@ -21,15 +21,15 @@ import { useEffect, useState } from "react";
 import { fetchJobs } from "@/store/slices/jobSlice";
 import Loading from "@/components/loading/loading";
 import {
-  fetchSeekerApplications,
+  fetchApplications,
   submitJobApplication,
 } from "@/store/slices/applications.slice";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
-  const user = session?.user as UserState;
+  const user = session?.user;
   const companyId = user?.companyId || "";
-  const isEmployer = user.type === "employer"
+  const isEmployer = user?.type === "employer";
 
   const [isApplied, setIsApplied] = useState(false);
   const education = formatEducationAndSpecialty(job);
@@ -47,10 +47,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
       loading: applicationsLoading,
     },
   } = useAppSelector((state) => state.jobApplications);
-  console.log("🚀 ~ applications:", applications);
 
   const applyForJob = () => {
-    if (user.id && job.id) {
+    if (user?.id && job.id) {
       dispatch(
         submitJobApplication({
           seekerId: user.id,
@@ -65,7 +64,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
       dispatch(fetchJobs(job.companyId));
     }
     if (applications.length === 0 && user?.id) {
-      dispatch(fetchSeekerApplications(user.id));
+      dispatch(fetchApplications({ seekerId: user.id }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, companyId, user?.id]);
@@ -127,14 +126,25 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             </IconButton>
             <ShareMenu path={`/job/${job.id}`} className="h-12 w-12" />
           </div>
-          <Button
-            onClick={applyForJob}
-            disabled={isApplied || applying || isEmployer}
-            className="text-lg font-semibold text-nowrap"
-            variant="contained"
-          >
-            {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
-          </Button>
+          {user?.id ? (
+            <Button
+              onClick={applyForJob}
+              disabled={isApplied || applying || isEmployer}
+              className="text-nowrap text-lg font-semibold"
+              variant="contained"
+            >
+              {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              LinkComponent={Link}
+              href="/auth/signin"
+              className="text-nowrap text-lg font-semibold"
+            >
+              Apply Now
+            </Button>
+          )}
         </div>
       </div>
       {/* <JobCard key={0} job={job} isApply={true} /> */}

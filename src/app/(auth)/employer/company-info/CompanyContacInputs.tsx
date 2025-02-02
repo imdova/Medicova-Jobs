@@ -1,7 +1,6 @@
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { FormControl, InputLabel, TextField } from "@mui/material";
 import { Company } from "@/types";
+import PhoneNumberInput from "@/components/UI/phoneNumber";
 
 interface SectorSelectionProps {
   data: Company;
@@ -82,13 +81,12 @@ const CompanyContactInputs: React.FC<SectorSelectionProps> = ({
             },
           }}
         >
-          <PhoneInput
-            defaultCountry="EG"
+          <PhoneNumberInput
+            fullWidth
             value={data.phone ?? ""}
-            labels={{ phone: "Enter Phone Number" }}
             placeholder="Enter phone number"
-            onChange={(value) => {
-              handleChange("phone", value);
+            onChange={(e) => {
+              handleChange("phone", e.target.value);
             }}
           />
         </FormControl>

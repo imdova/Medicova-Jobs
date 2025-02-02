@@ -10,18 +10,15 @@ import {
   IconButton,
 } from "@mui/material";
 import Link from "next/link";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { useForm, Controller } from "react-hook-form";
 import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
-import { register } from "@/lib/access";
-import { useRouter } from "next/navigation";
 import { registerData } from "@/types";
 import { RoleState } from "@/types/next-auth";
 import { signIn } from "next-auth/react";
+import PhoneNumberInput from "@/components/UI/phoneNumber";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -33,9 +30,6 @@ const RegisterForm: React.FC = () => {
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
-    clearErrors,
-    watch,
   } = useForm({
     defaultValues: {
       firstName: "",
@@ -280,76 +274,27 @@ const RegisterForm: React.FC = () => {
             }}
           />
         </Box>
-
-        <Box
-          sx={{
-            mb: 1,
-            "& .PhoneInput": {
-              display: "flex",
-              border: errors.phone ? "1px solid red" : "1px solid #ccc",
-              height: "50px",
-              borderRadius: "10px",
-            },
-            "& .PhoneInputInput": {
-              padding: "15px",
-              fontSize: "14px",
-              width: "100%",
-              borderRadius: "0 10px 10px 0",
-              border: "1px solid transparent",
-              backgroundColor: "transparent",
-              height: "50px",
-
-              "&::placeholder": {
-                color: errors.phone ? "red" : "GrayText", // Set placeholder color to black
-                opacity: 0.7, // Ensure full opacity
-              },
-              "&:hover": {
-                border: errors.phone ? "" : "1px solid black",
-              },
-              "&:focus": {
-                border: errors.phone ? "" : "1px solid var(--light-primary)",
-                outline: "2px solid transparent",
-              },
-            },
-            "& .PhoneInputCountry": {
-              borderRadius: "10px 0 0 10px",
-              border: "1px solid transparent",
-              display: "flex",
-              gap: "5px",
-              px: 1,
-              m: 0,
-            },
-            "& .PhoneInputCountry:hover": {
-              border: errors.phone ? "" : "1px solid black",
-            },
-          }}
-        >
+        <Box sx={{ mb: 1, position: "relative" }}>
           <Controller
             control={control}
             name="phone"
             render={({ field }) => (
-              <PhoneInput
+              <PhoneNumberInput
                 {...field}
-                defaultCountry="EG"
-                value={field.value ?? ""}
-                labels={{ phone: "Enter Phone Number" }}
-                placeholder="Enter phone number"
-                onChange={(value) => {
-                  clearErrors("phone");
-                  setValue("phone", value ?? "");
-                }}
+                placeholder="Enter Phone Number"
+                fullWidth
+                variant="outlined"
+                id="phone"
+                error={!!errors.phone}
+                helperText={errors.phone?.message}
               />
             )}
             rules={{
               required: "Phone number is required",
             }}
           />
-          {errors.phone && (
-            <Typography sx={{ color: "red", fontSize: "12px" }}>
-              {errors.phone.message}
-            </Typography>
-          )}
         </Box>
+
         <p className="my-1 text-red-500">{error}</p>
         <Button
           sx={{

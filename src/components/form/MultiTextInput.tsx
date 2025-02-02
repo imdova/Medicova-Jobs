@@ -1,5 +1,5 @@
-import { Close } from "@mui/icons-material";
-import { IconButton, TextField } from "@mui/material";
+import { Add, Close } from "@mui/icons-material";
+import { IconButton, TextField, Button } from "@mui/material";
 import { useState, KeyboardEvent } from "react";
 
 interface MultiTextInputProps {
@@ -19,12 +19,19 @@ const MultiTextInput = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
-      const newEntries = inputValue.split(",").map((item) => item.trim()).filter(Boolean);
-      const newItems = [...items, ...newEntries];
-      setItems(newItems);
-      setInputValue("");
-      onChange?.(newItems);
+      addItems(inputValue);
     }
+  };
+
+  const addItems = (input: string) => {
+    const newEntries = input
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    const newItems = [...items, ...newEntries];
+    setItems(newItems);
+    setInputValue("");
+    onChange?.(newItems);
   };
 
   const removeItem = (indexToRemove: number) => {
@@ -49,14 +56,23 @@ const MultiTextInput = ({
         ))}
       </div>
 
-      <TextField
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className="w-full"
-      />
+      <div className="flex w-full items-center gap-2">
+        <TextField
+          type="text"
+          fullWidth
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className="flex-grow"
+        />
+        <IconButton
+          className="block md:hidden"
+          onClick={() => inputValue.trim() && addItems(inputValue)}
+        >
+          <Add />
+        </IconButton>
+      </div>
 
       {items.length > 0 && (
         <div className="text-sm text-gray-500">

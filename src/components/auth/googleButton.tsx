@@ -13,7 +13,7 @@ const GoogleButton = ({
 }) => {
   return (
     <Button
-      className="h-[50px] w-full"
+      className="h-[42px] w-full"
       variant="outlined"
       disabled={true}
       onClick={() =>
