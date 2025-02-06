@@ -1,62 +1,40 @@
-import React, { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import {
-  Modal,
-  Button,
-  Box,
-  Typography,
-  CircularProgress,
-  Alert,
-  styled,
-} from "@mui/material";
+import React, { useState } from "react";
 import Image from "next/image";
+import { Menu, MenuItem } from "@mui/material";
+import { Camera, Trash } from "lucide-react";
 import clsx from "clsx";
-import { CloudUpload, Delete } from "@mui/icons-material";
+import { FileUploadModal } from "../form/FileUploadModal";
 
-interface AvatarProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface AvatarProps {
   currentImageUrl?: string;
   size?: "small" | "medium" | "large" | "xLarge";
   onImageUpdate: (file: File) => Promise<void>;
-  onImageRemove?: () => Promise<void>; // Made optional
+  onImageRemove?: () => Promise<void>;
   maxFileSizeMB?: number;
-  acceptedFileTypes?: string[];
   // Style props
   className?: string;
-  containerClassName?: string;
-  modalClassName?: string;
-  dropzoneClassName?: string;
   imageClassName?: string;
-  buttonClassName?: string;
   // Custom styling
   avatarStyle?: React.CSSProperties;
-  modalStyle?: React.CSSProperties;
-  dropzoneStyle?: React.CSSProperties;
   imageStyle?: React.CSSProperties;
-  // Modal customization
-  modalTitle?: string;
+  // Labels
+  uploadModalTitle?: string;
   uploadButtonText?: string;
-  cancelButtonText?: string;
   removeButtonText?: string;
 }
 
-interface FileWithPreview extends File {
-  preview?: string;
-}
-
-// Size mappings
-const sizeMap = {
+// constants.ts
+const SIZE_MAP = {
   small: { width: 32, height: 32 },
   medium: { width: 48, height: 48 },
   large: { width: 64, height: 64 },
   xLarge: { width: 96, height: 96 },
-};
+} as const;
 
-// Styled components
-const StyledModal = styled(Modal)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+const DEFAULT_IMAGE = "/images/placeholder-avatar.svg";
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
+// Avatar.tsx
 
 export const Avatar: React.FC<AvatarProps> = ({
   currentImageUrl,
@@ -64,229 +42,115 @@ export const Avatar: React.FC<AvatarProps> = ({
   onImageUpdate,
   onImageRemove,
   maxFileSizeMB = 5,
-  acceptedFileTypes = ["image/jpeg", "image/png", "image/gif"],
   // Style props
   className,
-  containerClassName,
-  modalClassName,
-  dropzoneClassName,
   imageClassName,
-  buttonClassName,
   // Custom styling
   avatarStyle,
-  modalStyle,
-  dropzoneStyle,
   imageStyle,
-  // Modal customization
-  modalTitle = "Update Profile Picture",
+  // Labels
+  uploadModalTitle = "Update Profile Picture",
   uploadButtonText = "Upload",
-  cancelButtonText = "Cancel",
   removeButtonText = "Remove",
-  // Rest props
-  ...props
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const defaultImage = "/images/placeholder-avatar.svg";
+  // Handlers
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      setError(null);
-      const file = acceptedFiles[0];
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-      if (file.size > maxFileSizeMB * 1024 * 1024) {
-        setError(`File size must be less than ${maxFileSizeMB}MB`);
-        return;
-      }
+  const handleUploadClick = () => {
+    handleMenuClose();
+    setIsUploadModalOpen(true);
+  };
 
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
-      setSelectedFile(file as FileWithPreview);
-    },
-    [maxFileSizeMB],
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: acceptedFileTypes.reduce(
-      (acc, curr) => ({ ...acc, [curr]: [] }),
-      {},
-    ),
-    maxFiles: 1,
-  });
-
-  React.useEffect(() => {
-    return () => {
-      if (selectedFile?.preview) {
-        URL.revokeObjectURL(selectedFile.preview);
-      }
-    };
-  }, [selectedFile]);
-
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-
-    setIsUploading(true);
-    setError(null);
-
-    try {
-      await onImageUpdate(selectedFile);
-      setIsModalOpen(false);
-      setSelectedFile(null);
-    } catch (err) {
-      setError("Failed to upload image. Please try again.");
-    } finally {
-      setIsUploading(false);
+  const handleRemoveClick = async () => {
+    handleMenuClose();
+    if (onImageRemove) {
+      await onImageRemove();
     }
   };
 
-  const handleRemove = async () => {
-    if (!onImageRemove) return;
-    
-    setIsUploading(true);
-    setError(null);
-
-    try {
-      await onImageRemove();
-      setIsModalOpen(false);
-      setSelectedFile(null);
-    } catch (err) {
-      setError("Failed to remove image. Please try again.");
-    } finally {
-      setIsUploading(false);
-    }
+  const handleUpload = async (files: File[]) => {
+    const file = files[0];
+    await onImageUpdate(file);
   };
 
   return (
-    <div className={clsx("block", containerClassName)}>
-      <button
-        onClick={() => setIsModalOpen(true)}
+    <div className="relative inline-block">
+      {/* Avatar Image */}
+      <div
         className={clsx(
-          "relative h-full w-full overflow-hidden rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+          "group relative overflow-hidden rounded-full",
           className,
         )}
         style={avatarStyle}
-        aria-label="Update profile picture"
-        {...props}
       >
         <Image
-          src={currentImageUrl || defaultImage}
+          src={currentImageUrl || DEFAULT_IMAGE}
           alt="Profile picture"
-          width={sizeMap[size].width}
-          height={sizeMap[size].height}
-          className={imageClassName || "object-cover"}
+          width={SIZE_MAP[size].width}
+          height={SIZE_MAP[size].height}
+          className={clsx("object-cover", imageClassName)}
           style={imageStyle}
         />
-      </button>
 
-      <StyledModal
-        open={isModalOpen}
-        onClose={() => !isUploading && setIsModalOpen(false)}
-        aria-labelledby="upload-avatar-modal"
-        className={modalClassName}
-        style={modalStyle}
-      >
-        <Box
-          className={clsx(
-            "mx-4 max-h-[80vh] w-full max-w-[600px] rounded-lg bg-white p-6",
-            modalClassName,
-          )}
+        {/* Overlay with camera icon */}
+        <button
+          onClick={handleMenuOpen}
+          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
+          aria-label="Update profile picture"
         >
-          <Typography variant="h6" component="h2" className="mb-4">
-            {modalTitle}
-          </Typography>
+          <Camera className="h-6 w-6 text-white" />
+        </button>
+      </div>
 
-          <div
-            {...getRootProps()}
-            className={clsx(
-              "max-h-full cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors",
-              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300",
-              error ? "border-red-500" : "",
-              dropzoneClassName,
-            )}
-            style={dropzoneStyle}
-          >
-            <input {...getInputProps()} />
-            {selectedFile?.preview ? (
-              <Image
-                src={selectedFile.preview}
-                alt="Preview"
-                width={200}
-                height={200}
-                className={clsx(
-                  "mx-auto max-h-[200px] max-w-[200px] rounded-lg object-cover",
-                  imageClassName,
-                )}
-                style={imageStyle}
-              />
-            ) : (
-              <div className="py-8">
-                <CloudUpload className="mx-auto h-12 w-12 text-gray-400" />
-                <Typography className="mt-2">
-                  Drag & drop an image here, or click to select
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  className="mt-1"
-                >
-                  Supported formats: JPG, PNG, GIF (max {maxFileSizeMB}MB)
-                </Typography>
-              </div>
-            )}
-          </div>
+      {/* Action Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <MenuItem onClick={handleUploadClick}>
+          <Camera className="mr-2 h-4 w-4" />
+          Update Photo
+        </MenuItem>
+        {onImageRemove && currentImageUrl && (
+          <MenuItem onClick={handleRemoveClick} className="text-red-600">
+            <Trash className="mr-2 h-4 w-4" />
+            Remove Photo
+          </MenuItem>
+        )}
+      </Menu>
 
-          {error && (
-            <Alert severity="error" className="mt-3">
-              {error}
-            </Alert>
-          )}
-
-          <div className="mt-4 flex justify-between gap-2">
-            {selectedFile && onImageRemove && currentImageUrl && (
-              <Button
-                variant="text"
-                color="error"
-                onClick={handleRemove}
-                disabled={isUploading}
-                startIcon={<Delete />}
-                className={buttonClassName}
-              >
-                {removeButtonText}
-              </Button>
-            )}
-            <div className="flex gap-2">
-              <Button
-                onClick={() => setIsModalOpen(false)}
-                disabled={isUploading}
-                className={buttonClassName}
-              >
-                {cancelButtonText}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleUpload}
-                disabled={!selectedFile || isUploading}
-                className={buttonClassName}
-              >
-                {isUploading ? (
-                  <>
-                    <CircularProgress size={16} className="mr-2" />
-                    Uploading...
-                  </>
-                ) : (
-                  uploadButtonText
-                )}
-              </Button>
-            </div>
-          </div>
-        </Box>
-      </StyledModal>
+      {/* Upload Modal */}
+      <FileUploadModal
+        open={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={handleUpload}
+        title={uploadModalTitle}
+        uploadButtonText={uploadButtonText}
+        maxFileSizeMB={maxFileSizeMB}
+        acceptedFileTypes={ACCEPTED_IMAGE_TYPES}
+        previewType="grid"
+        multiple={true}
+        description="Choose a new profile picture. Supported formats: JPG, PNG, GIF"
+      />
     </div>
   );
 };

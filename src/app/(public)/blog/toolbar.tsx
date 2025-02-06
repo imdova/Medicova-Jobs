@@ -1,4 +1,11 @@
 import DynamicFormModal from "@/components/form/DynamicFormModal";
+import {
+  buttonModal,
+  htmlModal,
+  imageModal,
+  ModalForm,
+} from "@/constants/pagebuilder/formFields";
+
 import { FieldConfig } from "@/types";
 import { Block, BlockType, blockTypes } from "@/types/blog";
 import { Button, Tab, Tabs, TextField } from "@mui/material";
@@ -10,49 +17,10 @@ interface TabProps {
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
 }
 
-const imageField: FieldConfig[] = [
-  {
-    name: "imageUrl",
-    label: "Enter Your Image Url",
-    type: "text",
-    textFieldProps: { placeholder: "Image Url" },
-    required: true,
-  },
-];
-const ButtonField: FieldConfig[] = [
-  {
-    name: "linkName",
-    label: "Enter Your Button labe",
-    type: "text",
-    textFieldProps: { placeholder: "button Label" },
-    required: true,
-  },
-  {
-    name: "linkUrl",
-    label: "Enter Your Link Url",
-    type: "text",
-    textFieldProps: { placeholder: "Link Url" },
-    required: true,
-  },
-];
-const HtmlField: FieldConfig[] = [
-  {
-    name: "Html",
-    label: "Enter Your Html Code",
-    type: "text",
-    textFieldProps: {
-      multiline: true,
-      minRows: 4,
-      sx: { height: "auto", "& .MuiOutlinedInput-root": { height: "auto" } },
-    },
-    required: true,
-  },
-];
 const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [title, setTitle] = useState("");
   const [onHoldBlock, setOnHoldBlock] = useState({} as Block);
-  const [fields, setFields] = useState<FieldConfig[]>([]);
+  const [modalData, setModalData] = useState<ModalForm | null>(null);
 
   const open = () => setIsModalOpen(true);
   const close = () => setIsModalOpen(false);
@@ -78,21 +46,18 @@ const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
     };
     if (type === "image") {
       open();
-      setFields(imageField);
+      setModalData(imageModal);
       setOnHoldBlock(newBlock);
-      setTitle("Set Image For You Image");
       return;
     } else if (type === "button") {
       open();
-      setFields(ButtonField);
+      setModalData(buttonModal);
       setOnHoldBlock(newBlock);
-      setTitle("Set Link For Your Button");
       return;
     } else if (type === "html") {
       open();
-      setFields(HtmlField);
+      setModalData(htmlModal);
       setOnHoldBlock(newBlock);
-      setTitle("Enter You Html Code");
       return;
     }
     setBlocks((blocks) => [...blocks, newBlock]);
@@ -101,13 +66,14 @@ const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
 
   return (
     <div className="mt-4">
-      <DynamicFormModal
-        open={isModalOpen}
-        onClose={close}
-        onSubmit={handleSubmit}
-        fields={fields}
-        title={title}
-      />
+      {modalData && (
+        <DynamicFormModal
+          open={isModalOpen}
+          onClose={close}
+          onSubmit={handleSubmit}
+          {...modalData}
+        />
+      )}
 
       <div className="h-[calc(100vh-12rem)]">
         <div className="grid grid-cols-2 gap-2">
@@ -242,7 +208,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
   return (
     <aside className="bg-muted/30 w-80 border-l p-6">
       <div>
-        <Tabs
+        {/* <Tabs
           value={selectedTab}
           onChange={(event, newValue) => setSelectedTab(newValue)}
           aria-label="block and style tabs"
@@ -250,21 +216,21 @@ const ToolBar: React.FC<ToolBarProps> = ({
         >
           <Tab label="Blocks" value="blocks" />
           <Tab label="Settings" value="settings" />
-        </Tabs>
-        {selectedTab === "blocks" && (
-          <BlocksTab
-            selectedBlock={selectedBlock}
-            setBlocks={setBlocks}
-            setSelectedBlock={setSelectedBlock}
-          />
-        )}
-        {selectedTab === "settings" && (
+        </Tabs> */}
+        <h4 className="text-xl font-semibold">Blocks</h4>
+        <BlocksTab
+          selectedBlock={selectedBlock}
+          setBlocks={setBlocks}
+          setSelectedBlock={setSelectedBlock}
+        />
+        {/* )} */}
+        {/* {selectedTab === "settings" && (
           <SettingsTab
             setBlocks={setBlocks}
             selectedBlock={selectedBlock}
             setSelectedBlock={setSelectedBlock}
           />
-        )}
+        )} */}
       </div>
     </aside>
   );

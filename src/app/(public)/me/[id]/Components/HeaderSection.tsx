@@ -38,8 +38,7 @@ const HeaderSection: React.FC<{
           onImageUpdate={updateImage}
           maxFileSizeMB={5}
           imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
-          containerClassName="rounded-full h-[100px] w-[100px] object-cover border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
-          acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
+          className="h-[100px] w-[100px] rounded-full border-[6px] border-white object-cover shadow-xl lg:ml-8 xl:ml-14"
         />
       ) : (
         <Image
@@ -63,9 +62,7 @@ const HeaderSection: React.FC<{
               {user.nationality ? `- ${user.nationality}` : ""}{" "}
               {/* {user.isMarried ? `- ${user.isMarried}` : ""}{" "} */}
               {user.speciality ? `- ${user.speciality}` : ""}{" "}
-              {user.careerLevel
-                ? `- Ex ${user.careerLevel} years`
-                : ""}{" "}
+              {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "}
             </p>
             {/* <p className="text-sm text-secondary">
               <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> {user.location}

@@ -53,9 +53,8 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
             size="xLarge"
             onImageUpdate={updateImage}
             maxFileSizeMB={5}
+            className="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
             imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
-            containerClassName="rounded-full absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
-            acceptedFileTypes={["image/jpeg", "image/png", "image/gif"]}
           />
         ) : (
           <Image
