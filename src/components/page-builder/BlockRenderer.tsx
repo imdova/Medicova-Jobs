@@ -27,14 +27,17 @@ export function BlockRenderer({
 
   // Helper function to update block styles
   const updateBlockStyles = (id: string, styles: Partial<Block["styles"]>) => {
-      setBlocks((pv) =>
-        pv.map((blc) =>
-          blc.id === id
-            ? { ...blc, styles: { ...blc.styles, ...styles } as { [key: string]: string } }
-            : blc,
-        ),
-      );
-    };
+    setBlocks((pv) =>
+      pv.map((blc) =>
+        blc.id === id
+          ? {
+              ...blc,
+              styles: { ...blc.styles, ...styles } as { [key: string]: string },
+            }
+          : blc,
+      ),
+    );
+  };
 
   // Render different block types
   switch (block.type) {
@@ -100,6 +103,7 @@ export function BlockRenderer({
             alt="Content"
             width={300}
             height={300}
+            className="h-full w-full object-cover"
           />
         </Resize>
       );

@@ -38,29 +38,18 @@ const Resize = ({ value, onChange, children }: ResizeProps) => {
   return (
     <div
       ref={divRef}
+      className="relative overflow-hidden border border-dashed border-light-primary p-2"
       style={{
         width: size.width,
         height: size.height,
-        position: "relative",
-        border: "1px solid black",
-        padding: "10px",
-        overflow: "hidden",
       }}
     >
       {children}
       {/* Resize handle */}
       <div
-        style={{
-          width: "10px",
-          height: "10px",
-          backgroundColor: "black",
-          position: "absolute",
-          bottom: "0",
-          right: "0",
-          cursor: "nwse-resize",
-        }}
+        className="absolute bottom-0 right-0 h-3 w-3 cursor-nwse-resize bg-primary"
         onMouseDown={handleMouseDown}
-      />
+      ></div>
     </div>
   );
 };

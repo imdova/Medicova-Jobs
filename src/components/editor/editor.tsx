@@ -58,7 +58,7 @@ export const BlockTextEditor: React.FC<{
   }
 
   return (
-    <div className="w-full">
+    <div className="mt-2 w-full">
       <div className={isSelected ? "block" : "hidden"}>
         <BlockEditorToolbar editor={editor} />
       </div>

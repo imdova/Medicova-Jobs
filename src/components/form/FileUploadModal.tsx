@@ -107,7 +107,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   uploadButtonText = "Upload",
   cancelButtonText = "Cancel",
   showPreview = true,
-  previewType = "list",
+  previewType = "image",
   className,
   modalStyle,
   dropzoneStyle,

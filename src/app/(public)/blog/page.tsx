@@ -6,17 +6,26 @@ import { Grid } from "@mui/material";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
-import { BlockMenu } from "@/components/page-builder/BlockMenu";
 import { Block } from "@/types/blog";
+import BlogHeader from "@/components/page-builder/BlogHeader";
 
+type ViewMode = "desktop" | "tablet" | "mobile";
+const getViewModeWidth = (viewMode: ViewMode) => {
+  switch (viewMode) {
+    case "desktop":
+      return "max-w-[1200px]";
+    case "tablet":
+      return "max-w-[768px]";
+    case "mobile":
+      return "max-w-[375px]";
+  }
+};
 
 export default function PageBuilder() {
   // State management
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
-  const [viewMode, setViewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("desktop");
 
   // Block manipulation functions
   const handleDragEnd = (result: any) => {
@@ -27,70 +36,23 @@ export default function PageBuilder() {
     setBlocks(items);
   };
 
-  const handleBlockAction = (block: Block, action: string) => {
-    switch (action) {
-      case "Delete":
-        setBlocks((prev) => prev.filter((x) => x.id !== block.id));
-        break;
-      case "Duplicate":
-        const newBlock = { ...block, id: Math.random().toString(36).slice(2, 11) };
-        setBlocks((prev) => [...prev, newBlock]);
-        setSelectedBlock(newBlock);
-        break;
-      case "Split":
-        setBlocks((prev) =>
-          prev.map((b) =>
-            b.id === block.id ? { ...b, gridProps: { xs: 12, sm: 6 } } : b
-          )
-        );
-        break;
-      case "Full-Width":
-        setBlocks((prev) =>
-          prev.map((b) => (b.id === block.id ? { ...b, gridProps: {} } : b))
-        );
-        break;
-    }
-    handleMenuClose();
-  };
-
-  // Menu handlers
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, blockId: string) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setMenuAnchorEl(event.currentTarget);
-    setActiveBlockId(blockId);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-    setActiveBlockId(null);
-  };
-
-  // View mode calculations
-  const getViewModeWidth = () => {
-    switch (viewMode) {
-      case "desktop":
-        return "max-w-[1200px]";
-      case "tablet":
-        return "max-w-[768px]";
-      case "mobile":
-        return "max-w-[375px]";
-    }
-  };
-
   return (
-    <div className="bg-background flex h-screen">
+    <div className="bg-background flex h-[calc(100vh-70px)]">
       <main className="scroll-bar-minimal flex-1 overflow-auto p-6">
         {/* Header Section */}
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Page Builder</h1>
-          <ViewModeSelector viewMode={viewMode} onViewModeChange={setViewMode} />
+          <h1 className="text-2xl font-bold">Post Your Blog Now</h1>
+          <ViewModeSelector
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
         </div>
 
         {/* Content Area */}
         <div
-          className={`mx-auto overflow-x-hidden rounded-lg border bg-white p-8 shadow-sm transition-all ${getViewModeWidth()}`}
+          className={`mx-auto rounded-lg border bg-white p-8 shadow-sm transition-all ${getViewModeWidth(viewMode)}`}
         >
+          <BlogHeader />
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="blocks">
               {(provided) => (
@@ -107,7 +69,6 @@ export default function PageBuilder() {
                         index={index}
                         isSelected={selectedBlock?.id === block.id}
                         onSelect={setSelectedBlock}
-                        onMenuOpen={handleMenuOpen}
                         setBlocks={setBlocks}
                       />
                     ))}
@@ -127,16 +88,6 @@ export default function PageBuilder() {
         selectedBlock={selectedBlock}
         setSelectedBlock={setSelectedBlock}
       />
-
-      {activeBlockId && (
-        <BlockMenu
-          block={blocks.find((b) => b.id === activeBlockId)!}
-          anchorEl={menuAnchorEl}
-          isOpen={Boolean(activeBlockId)}
-          onClose={handleMenuClose}
-          onAction={handleBlockAction}
-        />
-      )}
     </div>
   );
 }
