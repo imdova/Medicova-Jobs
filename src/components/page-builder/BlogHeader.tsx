@@ -1,12 +1,9 @@
 import { Menu, MenuItem, Select, TextareaAutosize } from "@mui/material";
-import { Trash } from "lucide-react";
 import Image from "next/image";
 import React, { memo, useState } from "react";
 import { FileUploadModal } from "../form/FileUploadModal";
-import { PhotoCamera } from "@mui/icons-material";
-
-const DEFAULT_IMAGE =
-  "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
+import { DeleteOutline, PhotoCamera } from "@mui/icons-material";
+import { DEFAULT_COVER_IMAGE } from "@/constants";
 
 const authors = [
   {
@@ -220,7 +217,7 @@ export const CoverImage = memo(
     return (
       <div className="group relative">
         <Image
-          src={currentImageUrl || DEFAULT_IMAGE}
+          src={currentImageUrl || DEFAULT_COVER_IMAGE}
           width={450}
           height={450}
           alt="cover Image"
@@ -255,7 +252,7 @@ export const CoverImage = memo(
           </MenuItem>
           {onImageRemove && currentImageUrl && (
             <MenuItem onClick={handleRemoveClick} className="text-red-600">
-              <Trash className="mr-2 h-4 w-4" />
+              <DeleteOutline className="mr-2 h-4 w-4" />
               Remove Photo
             </MenuItem>
           )}

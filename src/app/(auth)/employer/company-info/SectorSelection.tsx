@@ -48,7 +48,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
   }, [data.sectorId]);
 
   return (
-    <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
+    <div className="flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
       <div className="min-w-[250px] flex-1">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
@@ -76,7 +76,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
             onChange={(e) => {
               setData({ ...data, sectorId: e.target.value });
             }}
-            value={sectorList.length > 0 ? data.sectorId ?? "" : ""}
+            value={sectorList.length > 0 ? (data.sectorId ?? "") : ""}
           >
             <MenuItem value="" disabled>
               <em>Select Sector</em>
@@ -100,7 +100,9 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
         </InputLabel>
         <FormControl fullWidth error={Boolean(errors.typeId) && !data.typeId}>
           <Tooltip
-            title={data.sectorId ? undefined : "Please select company sector first"}
+            title={
+              data.sectorId ? undefined : "Please select company sector first"
+            }
             placement="bottom"
           >
             <Select
