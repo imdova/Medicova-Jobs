@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
   Dialog,
@@ -40,14 +40,19 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
   children,
 }) => {
   const [hiddenFields, setHiddenFields] = useState<string[]>([]);
+  const previousFieldsRef = useRef<FieldConfig[]>([]);
+  const previousInitialValuesRef = useRef<Record<string, any>>({});
 
   // Create default values by combining field defaults with initialValues
-  const getDefaultValues = () => {
+  const getDefaultValues = (
+    currentFields: FieldConfig[],
+    currentInitialValues: Record<string, any>,
+  ) => {
     const defaults: Record<string, any> = {};
-    fields.forEach((field) => {
+    currentFields.forEach((field) => {
       defaults[String(field.name)] = field.type === "checkbox" ? false : "";
     });
-    return { ...defaults, ...initialValues };
+    return { ...defaults, ...currentInitialValues };
   };
 
   const {
@@ -63,37 +68,64 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
     reset,
     watch,
     setValue,
+    getValues,
     formState: { isDirty },
   } = useForm({
-    defaultValues: getDefaultValues(),
+    defaultValues: getDefaultValues(fields, initialValues),
   });
 
+  // Handle initial modal open
   useEffect(() => {
     if (open) {
-      const values = getDefaultValues();
+      const values = getDefaultValues(fields, initialValues);
       reset(values);
       setHiddenFields([]);
+      previousFieldsRef.current = fields;
+      previousInitialValuesRef.current = initialValues;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, reset]);
+  }, [open]);
 
-  // Update form when initialValues change
+  // Handle fields or initialValues changes while maintaining existing values
   useEffect(() => {
-    if (open && Object.keys(initialValues).length > 0) {
-      reset(getDefaultValues());
+    if (
+      open &&
+      (JSON.stringify(fields) !== JSON.stringify(previousFieldsRef.current) ||
+        JSON.stringify(initialValues) !==
+          JSON.stringify(previousInitialValuesRef.current))
+    ) {
+      const currentValues = getValues();
+      const newDefaults = getDefaultValues(fields, initialValues);
+
+      // Merge existing values with new defaults
+      const mergedValues: Record<string, any> = {};
+
+      // Keep existing values for fields that still exist
+      fields.forEach((field) => {
+        const fieldName = String(field.name);
+        if (currentValues[fieldName] !== undefined) {
+          mergedValues[fieldName] = currentValues[fieldName];
+        } else if (initialValues[fieldName] !== undefined) {
+          mergedValues[fieldName] = initialValues[fieldName];
+        } else {
+          mergedValues[fieldName] = newDefaults[fieldName];
+        }
+      });
+
+      reset(mergedValues);
+      previousFieldsRef.current = fields;
+      previousInitialValuesRef.current = initialValues;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues, open]);
+  }, [fields, initialValues, open, reset, getValues]);
 
   const submitHandler: SubmitHandler<any> = (data) => {
     onSubmit(data);
     markAsClean();
     onClose();
-    reset(getDefaultValues());
+    reset(getDefaultValues(fields, initialValues));
   };
 
   const handleClose = () => {
-    reset(getDefaultValues());
+    reset(getDefaultValues(fields, initialValues));
     onClose();
   };
 
@@ -122,6 +154,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       }
     };
 
+  // Rest of the component remains the same...
   const renderField = (field: FieldConfig) => {
     if (hiddenFields.includes(String(field.name))) {
       return null;
@@ -178,6 +211,12 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
                     PaperProps: {
                       sx: { maxHeight: 300 },
                     },
+                  }}
+                  onChange={(event) => {
+                    controllerField.onChange(event);
+                    if (field.onChange) {
+                      field.onChange(event.target.value);
+                    }
                   }}
                   renderValue={(value) =>
                     value ? (

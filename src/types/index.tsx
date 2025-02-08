@@ -416,4 +416,5 @@ export interface FieldConfig<T = any> {
   componentProps?: Record<string, any>;
   options?: { label: string; value: string | number }[];
   hideFieldNames?: (keyof T)[];
+  onChange?: (value: any) => void; // Add this line
 }

@@ -71,12 +71,13 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
             {job.jobEmploymentType?.name} {workPlace ? " | " + workPlace : ""}
           </div>
         )}
-        {job.minExpYears && job.maxExpYears && (
+        {job.minExpYears !== null && job.maxExpYears !== null ? (
           <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
             <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
-            EX ({job.minExpYears} - {job.maxExpYears})
+            EX ({job.minExpYears || "0"} - {job.maxExpYears})
           </div>
-        )}
+        ) : null}
+
         {job.minAge && job.maxAge && (
           <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
             <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
