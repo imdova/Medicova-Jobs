@@ -191,7 +191,6 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
   }
 };
 
-
 export const getJobsByFilters = async (
   filters: {
     page?: number;
@@ -213,31 +212,28 @@ export const getJobsByFilters = async (
     maxExpYears?: number;
     salaryRangeStart?: number;
     salaryRangeEnd?: number;
-  } = {}
+  } = {},
 ): Promise<Result<{ data: JobData[]; total: number }>> => {
   try {
     const queryParams = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined) {
         if (Array.isArray(value)) {
-          value.forEach(v => queryParams.append(key, v));
+          value.forEach((v) => queryParams.append(key, v));
         } else {
           queryParams.append(key, value.toString());
         }
       }
     });
 
-    const response = await fetch(
-      `${API_GET_JOBS}?${queryParams.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        next: { tags: [TAGS.jobs] },
-      }
-    );
+    const response = await fetch(`${API_GET_JOBS}?${queryParams.toString()}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.jobs] },
+    });
 
     if (response.ok) {
       const data = await response.json();

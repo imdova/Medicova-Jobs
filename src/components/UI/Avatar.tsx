@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Menu, MenuItem } from "@mui/material";
-import { Camera, Trash } from "lucide-react";
 import clsx from "clsx";
 import { FileUploadModal } from "../form/FileUploadModal";
+import { DeleteOutline, PhotoCamera } from "@mui/icons-material";
 
 interface AvatarProps {
   currentImageUrl?: string;
@@ -108,7 +108,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
           aria-label="Update profile picture"
         >
-          <Camera className="h-6 w-6 text-white" />
+          <PhotoCamera className="h-6 w-6 text-white" />
         </button>
       </div>
 
@@ -127,12 +127,12 @@ export const Avatar: React.FC<AvatarProps> = ({
         }}
       >
         <MenuItem onClick={handleUploadClick}>
-          <Camera className="mr-2 h-4 w-4" />
+          <PhotoCamera className="mr-2 h-4 w-4" />
           Update Photo
         </MenuItem>
         {onImageRemove && currentImageUrl && (
           <MenuItem onClick={handleRemoveClick} className="text-red-600">
-            <Trash className="mr-2 h-4 w-4" />
+            <DeleteOutline className="mr-2 h-4 w-4" />
             Remove Photo
           </MenuItem>
         )}
@@ -147,8 +147,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         uploadButtonText={uploadButtonText}
         maxFileSizeMB={maxFileSizeMB}
         acceptedFileTypes={ACCEPTED_IMAGE_TYPES}
-        previewType="grid"
-        multiple={true}
+        previewType="image"
         description="Choose a new profile picture. Supported formats: JPG, PNG, GIF"
       />
     </div>

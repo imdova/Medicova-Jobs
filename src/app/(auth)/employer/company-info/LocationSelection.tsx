@@ -49,11 +49,11 @@ const LocationSelection = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.country]);
   return (
-    <div className="mb-8 flex flex-wrap gap-5 md:flex-nowrap">
+    <div className="flex flex-col">
       {/* Company Sector Selector */}
-      <div className="flex flex-1 gap-5">
-        <div className="min-w-[150px] flex-1">
-          <InputLabel className="mb-2 text-lg font-semibold text-main">
+      <div className="mb-2 flex flex-1 gap-1">
+        <div className="flex-1">
+          <InputLabel className="text-lg font-semibold text-main">
             Country
           </InputLabel>
           <FormControl fullWidth>
@@ -97,8 +97,8 @@ const LocationSelection = ({
           </FormControl>
         </div>
         {/* Company Type Selector */}
-        <div className="min-w-[150px] flex-1">
-          <InputLabel className="mb-2 text-lg font-semibold text-main">
+        <div className="flex-1">
+          <InputLabel className="text-lg font-semibold text-main">
             states
           </InputLabel>
           <FormControl fullWidth>
@@ -137,7 +137,7 @@ const LocationSelection = ({
         </div>
       </div>
       <div className="min-w-[250px] flex-1">
-        <InputLabel className="mb-2 text-lg font-semibold text-main">
+        <InputLabel className="text-lg font-semibold text-main">
           City
         </InputLabel>
         <TextField

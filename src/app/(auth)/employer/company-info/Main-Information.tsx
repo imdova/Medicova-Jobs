@@ -31,7 +31,7 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
           helperText={errors.name}
         />
       </div>
-      <div className="mb-4 md:w-1/2 md:pr-5">
+      <div className="mb-4">
         <InputLabel className="mb-2 text-lg font-semibold text-main">
           Title
         </InputLabel>
@@ -56,13 +56,14 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
           placeholder="Enter your company description"
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
+              p: 0,
+              borderRadius: "10px",
               height: "auto",
             },
           }}
           multiline
           minRows={4}
-          maxRows={6}
+          maxRows={4}
           onChange={(e) => handleChange("about", e.target.value)}
         />
       </div>

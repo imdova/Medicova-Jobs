@@ -1,5 +1,5 @@
+import { Laptop, Smartphone, Tablet } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { Laptop, Smartphone, Tablet } from "lucide-react";
 
 interface ViewModeSelectorProps {
   viewMode: "desktop" | "tablet" | "mobile";

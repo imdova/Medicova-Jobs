@@ -9,7 +9,10 @@ import EmployerHeaderSection from "./Components/EmployerHeaderSection";
 import AboutCompany from "./Components/AboutCompany";
 import CompanyJobs from "./Components/CompanyJobs";
 import CompleteProfile from "../../me/[id]/Components/CompleteProfile";
-import { EmployerSocialMedia, PostYourFirstJob } from "./Components/employer-RightSection";
+import {
+  EmployerSocialMedia,
+  PostYourFirstJob,
+} from "./Components/employer-RightSection";
 
 const CompanyPage = ({ company }: { company: Company }) => {
   const { data: session, status } = useSession();
@@ -28,7 +31,7 @@ const CompanyPage = ({ company }: { company: Company }) => {
 
   useEffect(() => {
     initData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const CompanyPage = ({ company }: { company: Company }) => {
           {/* Header Section */}
           <EmployerHeaderSection isEmployee={isEmployee} data={company} />
           {/* Left Section */}
-          <AboutCompany data={company.about} isEmployee={isEmployee} />
+          <AboutCompany company={company} isEmployee={isEmployee} />
           {/* Center Section + Profile Form */}
           <CompanyJobs isEmployee={isEmployee} company={company} />
         </div>

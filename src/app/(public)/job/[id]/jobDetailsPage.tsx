@@ -127,14 +127,16 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             <ShareMenu path={`/job/${job.id}`} className="h-12 w-12" />
           </div>
           {user?.id ? (
-            <Button
-              onClick={applyForJob}
-              disabled={isApplied || applying || isEmployer}
-              className="text-nowrap text-lg font-semibold"
-              variant="contained"
-            >
-              {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
-            </Button>
+            isEmployer ? null : (
+              <Button
+                onClick={applyForJob}
+                disabled={isApplied || applying}
+                className="text-nowrap text-lg font-semibold"
+                variant="contained"
+              >
+                {applying ? "Applying..." : isApplied ? "Applied" : "Apply Now"}
+              </Button>
+            )
           ) : (
             <Button
               variant="contained"

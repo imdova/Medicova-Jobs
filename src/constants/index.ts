@@ -15,6 +15,9 @@ import {
 } from "@mui/icons-material";
 import { CompanySize } from "./enums/company-size.enum";
 
+export const DEFAULT_COVER_IMAGE =
+  "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
+
 export const doctorsBase: Doctor[] = [
   {
     id: "doc-001", // Unique ID
@@ -1005,10 +1008,10 @@ export const notifications: NotificationItem[] = [
   },
 ];
 
-export const companySizeList: {name:string, value:CompanySize}[] = [
-  {name:"1 to 10 employees",value:CompanySize.MICRO},
-  {name:"11 to 50 employees",value:CompanySize.SMALL},
-  {name:"51 to 250 employees",value:CompanySize.MEDIUM},
-  {name:"251 to 1000 employees",value:CompanySize.LARGE},
-  {name:"1001+ employees",value:CompanySize.ENTERPRISE},
+export const companySizeList: { name: string; value: CompanySize }[] = [
+  { name: "1 to 10 employees", value: CompanySize.MICRO },
+  { name: "11 to 50 employees", value: CompanySize.SMALL },
+  { name: "51 to 250 employees", value: CompanySize.MEDIUM },
+  { name: "251 to 1000 employees", value: CompanySize.LARGE },
+  { name: "1001+ employees", value: CompanySize.ENTERPRISE },
 ];

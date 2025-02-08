@@ -16,11 +16,15 @@ import MainInformation from "./Main-Information";
 import CompanyOwnership from "./CompanyOwnership";
 import CompanyContactInputs from "./CompanyContacInputs";
 import { useFormDirty } from "@/hooks/useFormDirty";
+import CompanyImage from "./CompanyImage";
 
 const CompanyInfoForm: React.FC = () => {
   const { isDirty, markAsDirty, markAsClean } = useFormDirty();
   const [company, setCompany] = useState<Company | null>(null);
-  const [data, setData] = useState<Company>({} as Company);
+  const [data, setData] = useState<Company>({
+    isPrivate: true,
+    isProfitable: true,
+  } as Company);
 
   const { data: session, status, update } = useSession();
   const user = session?.user as UserState;
@@ -177,40 +181,48 @@ const CompanyInfoForm: React.FC = () => {
   }
 
   return (
-    <form
-      className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg"
-      onSubmit={handleSubmit}
-      noValidate
-    >
-      {/* <Alert severity="warning" sx={{ mb: 2 }}>
-                You cannot save an empty value for a question!
-              </Alert> */}
-      {/* Main Information Form Fields */}
-      <MainInformation
-        data={data}
-        handleChange={handleChange}
-        errors={errors}
-      />
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="mb-8 flex gap-4">
+        <div className="flex-1">
+          <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+            <MainInformation
+              data={data}
+              handleChange={handleChange}
+              errors={errors}
+            />
+            <SectorSelection data={data} setData={setData} errors={errors} />
+          </div>
+          <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+            <CompanyOwnership
+              data={data}
+              handleChange={handleChange}
+              errors={errors}
+            />
 
-      {/* Company Sector and Company Type Selectors */}
-      <SectorSelection data={data} setData={setData} errors={errors} />
-
-      {/* Location Selection */}
-      <LocationSelection data={data} setData={setData} errors={errors} />
-
-      {/* Company Ownership Form Fields */}
-      <CompanyOwnership
-        data={data}
-        handleChange={handleChange}
-        errors={errors}
-      />
-
-      {/* Company Contact Information Form Fields */}
-      <CompanyContactInputs
-        data={data}
-        handleChange={handleChange}
-        errors={errors}
-      />
+            {/* Company Contact Information Form Fields */}
+            <CompanyContactInputs
+              data={data}
+              handleChange={handleChange}
+              errors={errors}
+            />
+          </div>
+        </div>
+        <div className="w-80">
+          <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+            <h5 className="mb-4 text-2xl font-semibold text-main md:mt-4">
+              Company Images
+            </h5>
+            <CompanyImage />
+          </div>
+          {/* <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg"></div> */}
+          <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+            <h5 className="mb-8 text-2xl font-semibold text-main md:mt-4">
+              Company Location
+            </h5>
+            <LocationSelection data={data} setData={setData} errors={errors} />
+          </div>
+        </div>
+      </div>
 
       <p className="text-center text-red-500">{error}</p>
       {/* Centered Save Button */}

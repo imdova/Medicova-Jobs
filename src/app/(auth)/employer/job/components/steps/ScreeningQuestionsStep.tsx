@@ -15,6 +15,7 @@ import {
   Radio,
   Alert,
   FormControl,
+  TextareaAutosize,
 } from "@mui/material";
 import { Add, Close, Delete, Edit, FormatSize } from "@mui/icons-material";
 import { JobData } from "@/types";
@@ -269,14 +270,26 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
               <div className="mr-3 rounded-full bg-primary p-1 text-primary-foreground">
                 <FormatSize />
               </div>
-              <ListItemText secondary={formatQuestionText(question)} />
+              {/* <ListItemText secondary={formatQuestionText(question)} /> */}
+              <TextareaAutosize
+                minRows={1}
+                maxRows={10}
+                placeholder="Heading 1"
+                value={question}
+                onChange={(e) =>
+                  setQuestions((pv) =>
+                    pv.map((q, i) => (i === index ? e.target.value : q)),
+                  )
+                }
+                className="w-full resize-none tracking-tight focus:outline-none"
+              />
               <ListItemSecondaryAction>
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleEdit(index)}
                   className="m-1 rounded border border-solid border-gray-300 p-1 text-primary"
                 >
                   <Edit />
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                   color="error"
                   onClick={() => handleDelete(index)}
