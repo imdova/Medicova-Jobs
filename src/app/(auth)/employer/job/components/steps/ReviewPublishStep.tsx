@@ -142,7 +142,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
         </div>
       </div>
       <p className="text-red-500"> {error}</p>
-      <div className="space-between mt-5 flex gap-2 md:justify-end">
+      <div className="space-between sticky bottom-0 mt-5 flex gap-2 md:justify-end">
         <Button onClick={onBack} variant="outlined">
           Back
         </Button>

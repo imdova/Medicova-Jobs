@@ -21,6 +21,7 @@ import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
 import EmploymentTypeSelect from "../employmentType";
 import {
+  currencyOptions,
   educationOptions,
   genderOptions,
   jobWorkPlaceOptions,
@@ -28,6 +29,7 @@ import {
 } from "@/constants/job";
 import { disableEnterKey } from "@/util";
 import SearchableSelect from "@/components/UI/SearchableSelect";
+import { SalaryCurrency } from "@/constants/enums/currency.enum";
 
 interface JobDetailProps {
   jobData: JobData;
@@ -105,7 +107,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         setValue={setValue}
       />
       {/* Dropdowns employment type - education level  */}
-      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+      <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
         <EmploymentTypeSelect
           control={control}
           errors={errors}
@@ -164,9 +166,9 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         </div>
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+      <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
         {/* Age */}
-        <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+        <div className="flex min-w-[300px] flex-1 flex-wrap gap-2 md:flex-nowrap">
           <div className="min-w-[150px] flex-1">
             <label className="mb-2 text-lg font-semibold text-main">
               Min Age *
@@ -291,8 +293,8 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           />
         </div>
       </div>
-      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
-        <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+      <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
+        <div className="flex min-w-[300px] flex-1 flex-wrap gap-2 md:flex-nowrap">
           <div className="min-w-[150px] flex-1">
             <label className="mb-2 text-lg font-semibold text-main">
               Job Location *
@@ -382,7 +384,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                       onClick={() => field.onChange(item.id)}
                       className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.gender ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
                     >
-                      {item.id}
+                      {item.label}
                     </button>
                   ))}
                 </div>
@@ -405,9 +407,9 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
       </h5>
 
       {/* Salary Details */}
-      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+      <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
         <div className="flex-1">
-          <div className="mb-4 flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+          <div className="mb-4 flex min-w-[300px] flex-1 flex-wrap gap-2 md:flex-nowrap">
             <div className="min-w-[150px] flex-1">
               <label className="mb-2 text-lg font-semibold text-main">
                 Min Years Exp *
@@ -485,7 +487,51 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
               )}
             </div>
           </div>
-          <div className="flex min-w-[300px] flex-1 flex-wrap gap-5 md:flex-nowrap">
+          <div className="flex min-w-[300px] flex-1 flex-wrap gap-2 md:flex-nowrap">
+            <div className="w-[90px]">
+              <label className="mb-2 text-lg font-semibold text-main">
+                Currency*
+              </label>
+              <Controller
+                name="salaryCurrency"
+                defaultValue={SalaryCurrency.USD}
+                rules={{ required: "Currency is required" }}
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth error={Boolean(errors.educationLevel)}>
+                    <Select
+                      {...field}
+                      MenuProps={{
+                        disableScrollLock: true,
+                      }}
+                      displayEmpty
+                      renderValue={(selected) => {
+                        const selectedItem = currencyOptions.find(
+                          (c) => c.id === selected,
+                        );
+                        if (!selectedItem) {
+                          return (
+                            <span className="text-gray-400">Currency</span>
+                          );
+                        }
+                        return selectedItem.label;
+                      }}
+                    >
+                      {currencyOptions.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.educationLevel && (
+                      <p className="mt-2 text-sm text-red-500">
+                        {errors.educationLevel.message}
+                      </p>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </div>
             <div className="min-w-[150px] flex-1">
               <label className="mb-2 text-lg font-semibold text-main">
                 Salary start range *
@@ -510,7 +556,11 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                     inputProps={{ min: 0 }}
                     InputProps={{
                       startAdornment: (
-                        <InputAdornment position="start">$</InputAdornment>
+                        <InputAdornment position="start">
+                          {currencyOptions.find(
+                            (c) => c.id === watch("salaryCurrency"),
+                          )?.icon || "$"}
+                        </InputAdornment>
                       ),
                     }}
                     placeholder="Enter The Salary Range Start"
@@ -549,7 +599,11 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                     placeholder="Enter The Salary Range End"
                     InputProps={{
                       startAdornment: (
-                        <InputAdornment position="start">$</InputAdornment>
+                        <InputAdornment position="start">
+                          {currencyOptions.find(
+                            (c) => c.id === watch("salaryCurrency"),
+                          )?.icon || "$"}
+                        </InputAdornment>
                       ),
                     }}
                     // value={field.value ? Number(field.value).toLocaleString('en-US') : ''}
@@ -617,7 +671,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           )}
         </div>
       </div>
-      <div className="mb-6 flex flex-wrap gap-5 md:flex-nowrap">
+      <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
         <div className="mb-6 md:w-1/2 md:pr-3">
           <label className="mb-1 text-lg font-semibold text-main">
             Number of Vacancies *
@@ -639,7 +693,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                 error={!!errors?.availableVacancies?.message}
                 fullWidth
               >
-                <div className="flex gap-5">
+                <div className="flex gap-2">
                   <Button
                     variant="outlined"
                     className="h-[42px] w-[42px]"

@@ -13,6 +13,8 @@ import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
 import { useFormDirty } from "@/hooks/useFormDirty";
 import { usePrompt } from "@/hooks/usePrompt";
 import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
+import { SalaryCurrency } from "@/constants/enums/currency.enum";
+import useIsLeaving from "@/hooks/useIsLeaving";
 
 const steps = [
   "Job Details",
@@ -45,7 +47,7 @@ const initialJob: JobData = {
   hideSalary: true,
   salaryRangeStart: null,
   salaryRangeEnd: null,
-  salaryCurrency: null,
+  salaryCurrency: SalaryCurrency.USD,
   availableVacancies: 1,
   description: null,
   requirements: null,
@@ -111,6 +113,9 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
 
   const dispatch = useAppDispatch();
   const { isDirty, markAsDirty, markAsClean } = useFormDirty();
+  const { isLeaving, handleUserDecision } = useIsLeaving({
+    preventDefault: true,
+  });
 
   const [activeStep, setActiveStep] = useState(0);
   const [jobData, setJobData] = useState(job ? job : initialJob);
@@ -201,7 +206,8 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   };
 
   // Effect to determine if the form data has been modified.
-  usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
+  // usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
+
   useEffect(() => {
     if (job && jobData) {
       if (hasDataChanged(job, jobData)) {
@@ -219,6 +225,16 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   return (
     <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Header */}
+      {isLeaving && (
+        <div className="modal">
+          <h2>Are you sure you want to leave?</h2>
+          <p>You might have unsaved changes.</p>
+          <div>
+            <button onClick={() => handleUserDecision(true)}>Yes, Leave</button>
+            <button onClick={() => handleUserDecision(false)}>Stay</button>
+          </div>
+        </div>
+      )}
       <Typography
         className="text-main"
         variant="h4"
