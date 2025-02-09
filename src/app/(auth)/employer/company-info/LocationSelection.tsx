@@ -52,7 +52,7 @@ const LocationSelection = ({
     <div className="flex flex-col">
       {/* Company Sector Selector */}
       <div className="mb-2 flex flex-1 gap-1">
-        <div className="flex-1">
+        <div className="w-1/2">
           <InputLabel className="text-lg font-semibold text-main">
             Country
           </InputLabel>
@@ -86,6 +86,7 @@ const LocationSelection = ({
                     name: e.target.value || "",
                     code: country?.isoCode || "",
                   },
+                  state: null,
                 });
               }}
               value={
@@ -97,7 +98,7 @@ const LocationSelection = ({
           </FormControl>
         </div>
         {/* Company Type Selector */}
-        <div className="flex-1">
+        <div className="w-1/2">
           <InputLabel className="text-lg font-semibold text-main">
             states
           </InputLabel>

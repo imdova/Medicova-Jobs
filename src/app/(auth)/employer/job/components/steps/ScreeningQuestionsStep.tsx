@@ -1,13 +1,10 @@
 import React, { KeyboardEvent, useState } from "react";
 import {
-  Box,
-  Typography,
   TextField,
   Button,
   IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
   Checkbox,
   RadioGroup,
@@ -17,7 +14,7 @@ import {
   FormControl,
   TextareaAutosize,
 } from "@mui/material";
-import { Add, Close, Delete, Edit, FormatSize } from "@mui/icons-material";
+import { Add, Close, Delete, FormatSize } from "@mui/icons-material";
 import { JobData } from "@/types";
 import { disableEnterKey } from "@/util";
 

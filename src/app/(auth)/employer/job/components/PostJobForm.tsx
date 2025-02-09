@@ -1,26 +1,31 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Typography, Stepper, Step, StepLabel } from "@mui/material";
+import {
+  Typography,
+  Stepper,
+  Step,
+  StepLabel,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
-import { JobData, UserState } from "@/types";
+import { JobData, NotificationType, UserState } from "@/types";
 import { useSession } from "next-auth/react";
 import { createJob, updateJob } from "@/lib/actions/job.actions";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
 import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
-import { useFormDirty } from "@/hooks/useFormDirty";
-import { usePrompt } from "@/hooks/usePrompt";
 import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
-import useIsLeaving from "@/hooks/useIsLeaving";
 
 const steps = [
   "Job Details",
   "Screening Questions(Optional)",
   "Review & Publish",
 ];
+import { AlertColor } from "@mui/material";
 
 const initialJob: JobData = {
   companyId: null,
@@ -64,43 +69,6 @@ const initialJob: JobData = {
   startDateType: null,
   validTo: null,
 };
-//   companyId: "",
-//   title: "",
-//   jobIndustryId: "",
-//   jobSpecialityId: "",
-//   jobCategoryId: "",
-//   jobCareerLevelId: "",
-//   jobEmploymentTypeId: "",
-//   jobWorkPlace: null,
-//   gender: null,
-//   minAge: null,
-//   maxAge: null,
-//   educationLevel: null,
-//   country: "",
-//   city: null,
-//   maxExpYears: null,
-//   minExpYears: null,
-//   hideSalary: true,
-//   salaryRangeStart: null,
-//   salaryRangeEnd: null,
-//   salaryCurrency: null,
-//   availableVacancies: null,
-//   description: null,
-//   requirements: null,
-//   salaryDetails: null,
-//   keywords: [],
-//   skills: [],
-//   questions: [],
-//   showCompany: true,
-//   recieveEmails: true,
-//   jobEmail: null,
-//   draft: false,
-//   active: true,
-//   closed: false,
-//   startDateType: null,
-//   jobSectorId: "",
-//   validTo: null,
-// };
 type PostJobFormProps = {
   job?: JobData;
 };
@@ -111,11 +79,10 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
 
+  const [notification, setNotification] = useState<NotificationType | null>(
+    null,
+  );
   const dispatch = useAppDispatch();
-  const { isDirty, markAsDirty, markAsClean } = useFormDirty();
-  const { isLeaving, handleUserDecision } = useIsLeaving({
-    preventDefault: true,
-  });
 
   const [activeStep, setActiveStep] = useState(0);
   const [jobData, setJobData] = useState(job ? job : initialJob);
@@ -138,15 +105,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
 
   const onFirstStepSubmit = (data: JobData) => {
     const newData = { ...jobData, ...data, companyId };
+    onDraft({ ...newData, draft: true });
     handleNext();
     setJobData(newData);
-    console.log(newData);
   };
   const onSecondStepSubmit = (data: Partial<JobData>) => {
     const newData = { ...jobData, ...data, companyId };
+    onDraft({ ...newData, draft: true });
     handleNext();
     setJobData(newData);
-    console.log(newData);
   };
   const publish = async () => {
     const newData = {
@@ -158,7 +125,8 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     if (jobData.id) {
       await handleUpdate(newData);
     } else {
-      await handleCreate(newData);
+      const id = await handleCreate(newData);
+      route.push(`/job/${id}`);
     }
     setLoading(false);
   };
@@ -174,18 +142,23 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     if (jobData.id) {
       await handleUpdate(newData);
     } else {
-      await handleCreate(newData);
+      const id = await handleCreate(newData, "draft");
+      route.replace(`/employer/job/posted/${id}`);
     }
     setDraftLoading(false);
   };
-  const handleCreate = async (data: JobData) => {
+  const handleCreate = async (data: JobData, type: "new" | "draft" = "new") => {
     const result = await createJob(convertEmptyStringsToNull(data));
     if (result.success && result.data) {
       const job = result.data;
       dispatch(addNewJob(job));
-      markAsClean();
-      route.push(`/job/${job.id}`);
-      console.log("Job Created successfully");
+      if (type === "draft") {
+        setNotification({
+          message: "your job saved to draft",
+          severity: "success",
+        });
+      }
+      return job.id;
     } else {
       setError(result.message);
     }
@@ -197,7 +170,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
       const job = result.data;
       route.push(`/job/${job.id}`);
       dispatch(updateJobOptimistic(job));
-      markAsClean();
+      // markAsClean();
       console.log("Job Updated successfully");
     } else {
       setError(result.message);
@@ -206,16 +179,6 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   };
 
   // Effect to determine if the form data has been modified.
-  // usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
-
-  useEffect(() => {
-    if (job && jobData) {
-      if (hasDataChanged(job, jobData)) {
-        markAsDirty();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [job, jobData]);
 
   if (activeStep === null) {
     // Prevent rendering until `activeStep` is initialized
@@ -225,16 +188,20 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   return (
     <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Header */}
-      {isLeaving && (
-        <div className="modal">
-          <h2>Are you sure you want to leave?</h2>
-          <p>You might have unsaved changes.</p>
-          <div>
-            <button onClick={() => handleUserDecision(true)}>Yes, Leave</button>
-            <button onClick={() => handleUserDecision(false)}>Stay</button>
-          </div>
-        </div>
-      )}
+      <Snackbar
+        open={!!notification}
+        autoHideDuration={6000}
+        onClose={() => setNotification(null)}
+      >
+        <Alert
+          onClose={() => setNotification(null)}
+          severity={notification?.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {notification?.message}
+        </Alert>
+      </Snackbar>
       <Typography
         className="text-main"
         variant="h4"

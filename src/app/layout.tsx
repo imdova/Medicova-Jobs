@@ -5,7 +5,6 @@ import StoreProvider from "@/store/StoreProvider";
 import DynamicHeader from "@/components/Layout/Header/Header";
 import DynamicLayout from "@/components/Layout/layout";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import PromptModal from "@/components/UI/PromptModal";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -32,14 +31,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSerifDisplay.variable}  ${poppins.variable} font-poppins`}
+        className={`${dmSerifDisplay.variable} ${poppins.variable} font-poppins`}
       >
         <ThemeProviderClient>
           <StoreProvider>
             <NextAuthProvider>
               <DynamicHeader />
               <DynamicLayout>{children}</DynamicLayout>
-              <PromptModal />
             </NextAuthProvider>
           </StoreProvider>
         </ThemeProviderClient>

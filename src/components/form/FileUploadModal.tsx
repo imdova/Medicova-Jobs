@@ -163,7 +163,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
 
     setIsUploading(true);
     setError(null);
-
+    // TODO : add upload handler here
     try {
       await onUpload(selectedFiles);
       onClose();

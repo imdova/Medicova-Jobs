@@ -1,10 +1,12 @@
 import {
+  Alert,
   Button,
   Divider,
   IconButton,
   LinearProgress,
   Menu,
   MenuItem,
+  Snackbar,
   Switch,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -15,7 +17,7 @@ import React, { useState } from "react";
 import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
 import { deleteJob } from "@/lib/actions/job.actions";
-import { JobData } from "@/types";
+import { JobData, NotificationType } from "@/types";
 import {
   fetchJobs,
   removeCompanyJob,

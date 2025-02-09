@@ -11,15 +11,12 @@ import { useSession } from "next-auth/react";
 import LocationSelection from "./LocationSelection";
 import SectorSelection from "./SectorSelection";
 import { hasDataChanged } from "@/util";
-import { usePrompt } from "@/hooks/usePrompt";
 import MainInformation from "./Main-Information";
 import CompanyOwnership from "./CompanyOwnership";
 import CompanyContactInputs from "./CompanyContacInputs";
-import { useFormDirty } from "@/hooks/useFormDirty";
 import CompanyImage from "./CompanyImage";
 
 const CompanyInfoForm: React.FC = () => {
-  const { isDirty, markAsDirty, markAsClean } = useFormDirty();
   const [company, setCompany] = useState<Company | null>(null);
   const [data, setData] = useState<Company>({
     isPrivate: true,
@@ -78,15 +75,6 @@ const CompanyInfoForm: React.FC = () => {
   };
 
   // Effect to determine if the form data has been modified.
-  usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
-  useEffect(() => {
-    if (company && data) {
-      if (hasDataChanged(company, data)) {
-        markAsDirty();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, company]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +95,6 @@ const CompanyInfoForm: React.FC = () => {
       const newCompany = result.data;
       setData(newCompany); // Set the form data with the fetched company data
       setCompany(newCompany);
-      markAsClean();
       update({
         companyId: newCompany.id,
         companyName: newCompany.name,
@@ -133,7 +120,6 @@ const CompanyInfoForm: React.FC = () => {
         companyPhoto: updatedCompany.logo,
         companyEmail: updatedCompany.email,
       });
-      markAsClean();
       setLoading(false);
       console.log("Company Updated successfully");
     } else {
@@ -155,7 +141,6 @@ const CompanyInfoForm: React.FC = () => {
         const newCompany = result.data;
         setData(newCompany); // Set the form data with the fetched company data
         setCompany(newCompany);
-        markAsClean();
       }
     } catch (error) {
       console.error("Failed to fetch company data", error);
@@ -229,7 +214,7 @@ const CompanyInfoForm: React.FC = () => {
       <div className="flex justify-center">
         <Button
           type="submit"
-          disabled={loading || (company?.id ? !isDirty : false)}
+          disabled={loading}
           variant="contained"
           className="text-lg"
         >

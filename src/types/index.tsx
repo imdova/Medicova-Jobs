@@ -7,7 +7,7 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
-import { TextFieldProps } from "@mui/material";
+import { AlertColor, TextFieldProps } from "@mui/material";
 
 export type Country = {
   name: string;
@@ -23,6 +23,10 @@ export type CountryMin = {
   code: string;
 };
 
+export type NotificationType = {
+  message: string;
+  severity: AlertColor;
+};
 export type State = {
   name: string;
   isoCode: string;

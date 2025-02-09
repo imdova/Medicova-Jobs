@@ -87,7 +87,7 @@ const AboutCompany: React.FC<{
           src={"/images/activities.png"}
           description={" Tell us about your company."}
           buttonText="Add About Company"
-          onClick={() => {}}
+          onClick={open}
         />
       ) : null}
     </div>

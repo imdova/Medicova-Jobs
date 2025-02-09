@@ -47,13 +47,13 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
       {/* Background Cover Image */}
       <div className="grid grid-cols-1 grid-rows-1">
         {/* Avatar Positioned on Background Image */}
-        <div className="col-start-1 row-start-1 w-full">
+        <div className="col-start-1 row-start-1 min-h-24 w-full">
           <CoverImage
             currentImageUrl={cover ? URL.createObjectURL(cover) : ""}
             onImageUpdate={updateCoverImage}
           />
         </div>
-        <div className="col-start-1 row-start-1 w-full">
+        <div className="col-start-1 row-start-1 flex w-full items-end justify-center px-4 md:justify-start">
           {isEmployee ? (
             <Avatar
               currentImageUrl={
@@ -62,7 +62,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
               size="xLarge"
               onImageUpdate={updateImage}
               maxFileSizeMB={5}
-              className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white shadow-md md:h-[120px] md:w-[120px]"
+              className="h-[100px] w-[100px] rounded-full border-4 border-white shadow-md"
               imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
             />
           ) : (
@@ -71,7 +71,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
               alt="avatar"
               width={100}
               height={100}
-              className="absolute bottom-[-50px] left-[20px] h-[80px] w-[80px] rounded-full border-4 border-white bg-white object-cover shadow-md md:h-[120px] md:w-[120px]"
+              className="h-[100px] w-[100px] rounded-full border-4 border-white bg-white object-cover shadow-md"
             />
           )}
         </div>
@@ -198,7 +198,7 @@ export const CoverImage = memo(
           width={1080}
           height={200}
           alt="cover Image"
-          className="mb-4 aspect-[4/1] w-full object-cover"
+          className="aspect-[4/1] min-h-24 w-full object-cover"
         />
 
         {/* Overlay with PhotoCamera icon */}
