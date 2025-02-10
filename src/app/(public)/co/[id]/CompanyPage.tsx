@@ -61,7 +61,7 @@ const CompanyPage = ({ company }: { company: Company }) => {
           {isEmployee && (
             <CompleteProfile percentage={company?.completencePercent} />
           )}
-          {isEmployee && <PostYourFirstJob />}
+          {isEmployee && <PostYourFirstJob company={company} />}
           <EmployerSocialMedia data={company} isEmployee={isEmployee} />
           {/* Complete Profile Section */}
           {/* Public Profile Section */}

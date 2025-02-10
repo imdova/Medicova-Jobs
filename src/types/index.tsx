@@ -368,6 +368,7 @@ export type NavItem = {
   icon?: React.ElementType;
   label?: string;
   path?: string;
+  pattern?: string;
   notifications?: number;
   section?: string; // Optional section header
   type?: "divider" | "text" | "collapse" | "supLink" | "profile";

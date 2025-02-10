@@ -15,18 +15,18 @@ import {
 import DynamicFormModal from "@/components/form/DynamicFormModal";
 import { Company, FieldConfig } from "@/types";
 import { updateCompany } from "@/lib/actions/employer.actions";
+import PostJobModal from "./Modals/post-job-modal";
 
-export const PostYourFirstJob = () => {
+export const PostYourFirstJob: React.FC<{ company: Company }> = ({
+  company,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const onOpen = () => setIsModalOpen(true);
+  const onClose = () => setIsModalOpen(false);
   return (
     <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
+      <PostJobModal company={company} isOpen={isModalOpen} onClose={onClose} />
+      <div className="flex flex-col items-center gap-2">
         {/* Centered Image */}
         <Image
           src={post}
@@ -41,15 +41,11 @@ export const PostYourFirstJob = () => {
           To find better candidates, make your job description detailed, use
           relevant keywords, and add screening questions to your job post.
         </p>
-      </Box>
+      </div>
 
       {/* Centered Button */}
       <div className="flex justify-center">
-        <Button
-          component={Link}
-          href="/employer/job/posted"
-          variant="contained"
-        >
+        <Button onClick={onOpen} variant="contained">
           Post a job for free
         </Button>
       </div>

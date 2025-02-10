@@ -1,193 +1,209 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import React from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store/hooks";
+import { Stepper, Step, StepLabel, Alert, Snackbar } from "@mui/material";
+import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
+import { createJob, updateJob } from "@/lib/actions/job.actions";
+import { convertEmptyStringsToNull } from "@/util";
+import { JobData, UserState } from "@/types";
+
+// Components
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
-import { JobData, NotificationType, UserState } from "@/types";
-import { useSession } from "next-auth/react";
-import { createJob, updateJob } from "@/lib/actions/job.actions";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store/hooks";
-import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
-import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
-import { SalaryCurrency } from "@/constants/enums/currency.enum";
+import { useJobForm } from "./use-job-form";
 
-const steps = [
+// Constants
+const FORM_STEPS = [
   "Job Details",
-  "Screening Questions(Optional)",
+  "Screening Questions (Optional)",
   "Review & Publish",
-];
-import { AlertColor } from "@mui/material";
+] as const;
 
-const initialJob: JobData = {
-  companyId: null,
-  title: "",
-  jobIndustryId: null,
-  jobIndustryName: null,
-  jobSpecialityId: null,
-  jobSpecialityName: null,
-  jobCategoryId: null,
-  jobCategoryName: null,
-  jobCareerLevelId: null,
-  jobCareerLevelName: null,
-  jobEmploymentTypeId: null,
-  jobEmploymentTypeName: null,
-  jobWorkPlace: null,
-  gender: null,
-  minAge: null,
-  maxAge: null,
-  educationLevel: null,
-  country: null,
-  city: null,
-  maxExpYears: null,
-  minExpYears: null,
-  hideSalary: true,
-  salaryRangeStart: null,
-  salaryRangeEnd: null,
-  salaryCurrency: SalaryCurrency.USD,
-  availableVacancies: 1,
-  description: null,
-  requirements: null,
-  salaryDetails: null,
-  keywords: [],
-  skills: [],
-  questions: [],
-  showCompany: true,
-  recieveEmails: true,
-  jobEmail: null,
-  draft: false,
-  active: true,
-  closed: false,
-  startDateType: null,
-  validTo: null,
-};
-type PostJobFormProps = {
+interface PostJobFormProps {
   job?: JobData;
-};
+}
+
 const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
-  const route = useRouter();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
 
-  const [notification, setNotification] = useState<NotificationType | null>(
-    null,
-  );
-  const dispatch = useAppDispatch();
+  const {
+    activeStep,
+    setActiveStep,
+    jobData,
+    setJobData,
+    loading,
+    setLoading,
+    draftLoading,
+    setDraftLoading,
+    error,
+    setError,
+    notification,
+    setNotification,
+  } = useJobForm(job);
 
-  const [activeStep, setActiveStep] = useState(0);
-  const [jobData, setJobData] = useState(job ? job : initialJob);
-
-  const [loading, setLoading] = useState(false);
-  const [draftLoading, setDraftLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-
-  const handleNext = () => {
-    if (activeStep !== null && activeStep < steps.length - 1) {
-      setActiveStep((prevStep) => (prevStep !== null ? prevStep + 1 : 0));
-    }
+  const handleNavigation = {
+    next: () =>
+      setActiveStep((prev) => Math.min(prev + 1, FORM_STEPS.length - 1)),
+    back: (data?: Partial<JobData>) => {
+      console.log("🚀 ~ data:", data?.jobEmail);
+      data && setJobData({ ...jobData, ...data, companyId });
+      setActiveStep((prev) => Math.max(prev - 1, 0));
+    },
   };
 
-  const handleBack = () => {
-    if (activeStep !== null && activeStep > 0) {
-      setActiveStep((prevStep) => (prevStep !== null ? prevStep - 1 : 0));
-    }
-  };
-
-  const onFirstStepSubmit = (data: JobData) => {
-    const newData = { ...jobData, ...data, companyId };
-    onDraft({ ...newData, draft: true });
-    handleNext();
-    setJobData(newData);
-  };
-  const onSecondStepSubmit = (data: Partial<JobData>) => {
-    const newData = { ...jobData, ...data, companyId };
-    onDraft({ ...newData, draft: true });
-    handleNext();
-    setJobData(newData);
-  };
-  const publish = async () => {
-    const newData = {
-      ...jobData,
-      companyId,
-      draft: false,
-    };
-    setLoading(true);
-    if (jobData.id) {
-      await handleUpdate(newData);
-    } else {
-      const id = await handleCreate(newData);
-      route.push(`/job/${id}`);
-    }
-    setLoading(false);
-  };
-
-  const onDraft = async (data?: Partial<JobData>) => {
-    const newData = {
-      ...jobData,
-      ...data,
-      companyId,
-      draft: true,
-    };
-    setDraftLoading(true);
-    if (jobData.id) {
-      await handleUpdate(newData);
-    } else {
-      const id = await handleCreate(newData, "draft");
-      route.replace(`/employer/job/posted/${id}`);
-    }
-    setDraftLoading(false);
-  };
-  const handleCreate = async (data: JobData, type: "new" | "draft" = "new") => {
+  const handleJobCreation = async (
+    data: JobData,
+    type: "new" | "draft" = "new",
+  ) => {
     const result = await createJob(convertEmptyStringsToNull(data));
+
     if (result.success && result.data) {
-      const job = result.data;
-      dispatch(addNewJob(job));
+      const newJob = result.data;
+      dispatch(addNewJob(newJob));
+
       if (type === "draft") {
         setNotification({
-          message: "your job saved to draft",
+          message: "Your job has been saved to draft",
           severity: "success",
         });
+        return router.replace(`/employer/job/posted/${newJob.id}`);
       }
-      return job.id;
+      router.push(`/job/${newJob.id}`);
     } else {
       setError(result.message);
     }
-    return result;
   };
-  const handleUpdate = async (data: JobData) => {
+
+  const handleJobUpdate = async (
+    data: JobData,
+    type: "new" | "draft" = "new",
+  ) => {
     const result = await updateJob(convertEmptyStringsToNull(data));
+
     if (result.success && result.data) {
-      const job = result.data;
-      route.push(`/job/${job.id}`);
-      dispatch(updateJobOptimistic(job));
-      // markAsClean();
-      console.log("Job Updated successfully");
+      const updatedJob = result.data;
+      dispatch(updateJobOptimistic(updatedJob));
+      if (type === "draft") {
+        setNotification({
+          message: "Your job has been saved to draft",
+          severity: "success",
+        });
+        return router.replace(`/employer/job/posted/${updatedJob.id}`);
+      }
+      router.push(`/job/${updatedJob.id}`);
     } else {
       setError(result.message);
     }
-    return result;
   };
 
-  // Effect to determine if the form data has been modified.
+  const handleStepSubmit = {
+    jobDetails: (data: JobData) => {
+      setJobData({ ...jobData, ...data, companyId });
+      handleNavigation.next();
+    },
+    screening: (data: Partial<JobData>) => {
+      setJobData({ ...jobData, ...data, companyId });
+      handleNavigation.next();
+    },
+    publish: async () => {
+      const jobToSubmit = {
+        ...jobData,
+        companyId,
+        draft: false,
+      };
 
-  if (activeStep === null) {
-    // Prevent rendering until `activeStep` is initialized
-    return null;
-  }
+      setLoading(true);
+      try {
+        if (jobData.id) {
+          await handleJobUpdate(jobToSubmit);
+        } else {
+          await handleJobCreation(jobToSubmit);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    draft: async (data?: Partial<JobData>) => {
+      const jobToSave = {
+        ...jobData,
+        ...data,
+        companyId,
+        draft: true,
+      };
+
+      setDraftLoading(true);
+      try {
+        if (jobData.id) {
+          await handleJobUpdate(jobToSave, "draft");
+        } else {
+          await handleJobCreation(jobToSave, "draft");
+        }
+      } finally {
+        setDraftLoading(false);
+      }
+    },
+  };
 
   return (
-    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      {/* Header */}
+    <div className="space-y-4">
+      <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg">
+        <h1 className="text-center text-xl font-semibold tracking-tight text-main focus:outline-none md:text-2xl">
+          Post Job Now
+        </h1>
+
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {FORM_STEPS.map((label) => (
+            <Step
+              key={label}
+              completed={activeStep > FORM_STEPS.indexOf(label)}
+            >
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </div>
+
+      <div className="grid gap-3">
+        {activeStep === 0 && (
+          <JobDetailsStep
+            jobData={jobData}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.jobDetails}
+            draftLoading={draftLoading}
+          />
+        )}
+
+        {activeStep === 1 && (
+          <ScreeningQuestionsStep
+            jobData={{ ...jobData, jobEmail: jobData.jobEmail || companyEmail }}
+            onBack={handleNavigation.back}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.screening}
+            draftLoading={draftLoading}
+          />
+        )}
+
+        {activeStep === 2 && (
+          <ReviewPublishStep
+            jobData={jobData}
+            onBack={handleNavigation.back}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.publish}
+            loading={loading}
+            draftLoading={draftLoading}
+            error={error}
+          />
+        )}
+      </div>
+
       <Snackbar
         open={!!notification}
         autoHideDuration={6000}
@@ -202,92 +218,6 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
           {notification?.message}
         </Alert>
       </Snackbar>
-      <Typography
-        className="text-main"
-        variant="h4"
-        sx={{
-          textAlign: "center",
-          fontWeight: "bold",
-          mb: 4,
-        }}
-      >
-        Post Job Now
-      </Typography>
-
-      {/* Progress Indicator using Stepper */}
-      <Stepper
-        activeStep={activeStep}
-        alternativeLabel
-        sx={{
-          mb: 4,
-          "& .MuiStepConnector-line": {
-            borderColor: (theme) =>
-              activeStep > 0 ? "rgba(46, 174, 125, 1)" : theme.palette.divider,
-          },
-          "& .MuiStepIcon-root": {
-            color: "var(--text-secondary)",
-          },
-          "& .MuiStepIcon-text": {
-            fill: "var(--primary-foreground)", // Example: White text
-          },
-          "& .MuiStepIcon-root.Mui-active": {
-            color: "var(--primary)",
-          },
-          "& .MuiStepIcon-root.Mui-completed": {
-            color: "var(--primary)",
-          },
-        }}
-      >
-        {steps.map((label, index) => (
-          <Step key={label} completed={activeStep > index}>
-            <StepLabel
-              sx={{
-                "& .MuiStepLabel-label": {
-                  fontWeight: activeStep === index ? "bold" : "normal",
-                  color:
-                    activeStep === index
-                      ? "rgba(24, 93, 67, 1)"
-                      : "rgba(81, 91, 111, 1)",
-                },
-              }}
-            >
-              {label}
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
-      {/* Form Section */}
-      <div className="grid gap-3">
-        {activeStep === 0 && (
-          <JobDetailsStep
-            jobData={jobData}
-            onDraft={onDraft}
-            onSubmit={onFirstStepSubmit}
-            draftLoading={draftLoading}
-          />
-        )}
-        {activeStep === 1 && (
-          <ScreeningQuestionsStep
-            jobData={{ ...jobData, jobEmail: companyEmail }}
-            onBack={handleBack}
-            onDraft={onDraft}
-            onSubmit={onSecondStepSubmit}
-            draftLoading={draftLoading}
-          />
-        )}
-        {activeStep === 2 && (
-          <ReviewPublishStep
-            onBack={handleBack}
-            jobData={jobData}
-            onDraft={onDraft}
-            onSubmit={publish}
-            loading={loading}
-            draftLoading={draftLoading}
-            error={error}
-          />
-        )}
-      </div>
     </div>
   );
 };

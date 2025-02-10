@@ -16,18 +16,26 @@ type ButtonColor =
   | "warning";
 type ButtonVariant = "text" | "outlined" | "contained";
 
+interface ButtonConfig {
+  text: string;
+  onClick: () => void;
+  color?: ButtonColor;
+  variant?: ButtonVariant;
+  autoFocus?: boolean;
+}
+
 interface LeaveConfirmationModalProps {
   isOpen: boolean;
   onLeave: () => void;
   onStay: () => void;
   title?: string;
   description?: string;
-  leaveButtonText?: string;
-  stayButtonText?: string;
-  leaveButtonColor?: ButtonColor;
-  stayButtonColor?: ButtonColor;
-  leaveButtonVariant?: ButtonVariant;
-  stayButtonVariant?: ButtonVariant;
+  hideDefaultButtons?: boolean;
+  additionalButtons?: ButtonConfig[];
+  defaultButtonColors?: {
+    leave?: string;
+    stay?: string;
+  };
 }
 
 const LeaveConfirmationModal: React.FC<LeaveConfirmationModalProps> = ({
@@ -36,13 +44,29 @@ const LeaveConfirmationModal: React.FC<LeaveConfirmationModalProps> = ({
   onStay,
   title = "Are you sure you want to leave?",
   description = "You have unsaved changes. Are you sure you want to leave without saving?",
-  leaveButtonText = "Leave",
-  stayButtonText = "Stay",
-  leaveButtonColor = "error",
-  stayButtonColor = "primary",
-  leaveButtonVariant = "contained",
-  stayButtonVariant = "outlined",
+  hideDefaultButtons = false,
+  additionalButtons = [],
 }) => {
+  const defaultButtons: ButtonConfig[] = !hideDefaultButtons
+    ? [
+        {
+          text: "Stay",
+          onClick: onStay,
+          color: "primary",
+          variant: "outlined",
+        },
+        {
+          text: "Leave",
+          onClick: onLeave,
+          color: "error",
+          variant: "contained",
+          autoFocus: true,
+        },
+      ]
+    : [];
+
+  const allButtons: ButtonConfig[] = [...defaultButtons, ...additionalButtons];
+
   return (
     <Dialog
       open={isOpen}
@@ -64,21 +88,17 @@ const LeaveConfirmationModal: React.FC<LeaveConfirmationModalProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button
-          onClick={onStay}
-          color={stayButtonColor}
-          variant={stayButtonVariant}
-        >
-          {stayButtonText}
-        </Button>
-        <Button
-          onClick={onLeave}
-          color={leaveButtonColor}
-          variant={leaveButtonVariant}
-          autoFocus
-        >
-          {leaveButtonText}
-        </Button>
+        {allButtons.map((button, index) => (
+          <Button
+            key={index}
+            onClick={button.onClick}
+            variant={button.variant}
+            autoFocus={button.autoFocus}
+            color={button.color}
+          >
+            {button.text}
+          </Button>
+        ))}
       </DialogActions>
     </Dialog>
   );

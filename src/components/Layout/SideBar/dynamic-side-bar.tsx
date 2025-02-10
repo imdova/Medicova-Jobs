@@ -2,7 +2,7 @@
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { Divider } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { isCurrentPage } from "@/util";
 import { NavItem, UserState } from "@/types";
@@ -10,11 +10,36 @@ import { getSideBarLinks } from "./LayoutRoutConfigs";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import Image from "next/image";
 
-export interface SideBarProps {
+interface SideBarProps {
   user?: UserState;
   status: "authenticated" | "loading" | "unauthenticated";
   pathname: string;
 }
+
+const useActiveTab = (links: NavItem[], pathname: string) => {
+  const [activeTab, setActiveTab] = useState<number | null>(null);
+
+  // Define updateActiveTab as a stable function
+  const updateActiveTab = useCallback(
+    (currentLinks: NavItem[]) => {
+      const activeTabIndex = currentLinks.findIndex((link) => {
+        const path = link.path || link.pattern;
+        return path ? isCurrentPage(pathname, path) : false;
+      });
+      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
+    },
+    [pathname],
+  );
+
+  // Run updateActiveTab when links or pathname change
+  useEffect(() => {
+    if (links.length > 0) {
+      updateActiveTab(links);
+    }
+  }, [links, pathname, updateActiveTab]);
+
+  return { activeTab, setActiveTab, updateActiveTab };
+};
 
 export default function DynamicSideBar({
   user,
@@ -23,33 +48,21 @@ export default function DynamicSideBar({
 }: SideBarProps) {
   const initialLinks = getSideBarLinks(user, pathname);
   const [links, setLinks] = useState<NavItem[]>(initialLinks);
+  const { activeTab, setActiveTab, updateActiveTab } = useActiveTab(
+    links,
+    pathname,
+  );
 
-  const [activeTab, setActiveTab] = useState<number | null>(null);
-
-  const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newTab: number) => {
     setActiveTab(newTab);
-  };
-
-  const updateActiveTab = (links: NavItem[]) => {
-    const activeTabIndex = links.findIndex((link) =>
-      link.path ? isCurrentPage(pathname, link.path) : false,
-    );
-    setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
   };
 
   useEffect(() => {
     if (links.length === 0 && initialLinks.length > 0) {
       setLinks(initialLinks);
-      const activeTabIndex = initialLinks.findIndex((link) =>
-        link.path ? isCurrentPage(pathname, link.path) : false,
-      );
-      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
-    }
-    if (links.length > 0) {
-      updateActiveTab(links);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialLinks, pathname]);
+  }, [initialLinks]);
 
   return (
     <Tabs
@@ -58,64 +71,67 @@ export default function DynamicSideBar({
       onChange={handleTabChange}
       aria-label="Sidebar navigation tabs"
       role="navigation"
-      TabIndicatorProps={
-        activeTab !== null
-          ? {
-              sx: {
-                backgroundColor: "var(--light-primary)", // Set the color of the indicator
-                left: 0, // Move the indicator to the left
-                width: 4, // Adjust the thickness of the indicator
-                maxHeight: "30px", // Center the indicator vertically relative to the tab height
-                borderRadius: 5, // Optional: Add rounded corners
-                transform: "translateY(10px)", // Center the indicator vertically relative to its smaller height
-              },
-            }
-          : { style: { display: "none" } }
-      }
+      TabIndicatorProps={{
+        sx:
+          activeTab !== null
+            ? {
+                backgroundColor: "var(--light-primary)",
+                left: 0,
+                width: 4,
+                maxHeight: "30px",
+                borderRadius: 5,
+                transform: "translateY(10px)",
+              }
+            : { display: "none" },
+      }}
     >
       {links.map((item, index) => {
-        if (item.type === "profile" && user) {
-          return (
-            <ProfileTab
-              key={item.id}
-              user={user}
-              pathname={pathname}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
-          );
+        switch (item.type) {
+          case "profile":
+            return user ? (
+              <ProfileTab
+                key={item.id}
+                user={user}
+                pathname={pathname}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            ) : null;
+          case "divider":
+            return <Divider key={item.id} className="mt-2" />;
+          case "text":
+            return (
+              <p
+                key={item.id}
+                className="p-4 text-sm normal-case text-gray-800"
+              >
+                {item.section}
+              </p>
+            );
+          case "collapse":
+            return (
+              <CollapseTab
+                key={item.id}
+                item={item}
+                index={index}
+                links={links}
+                setLinks={setLinks}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                updateActiveTab={updateActiveTab}
+              />
+            );
+          default:
+            return (
+              <LinkTab
+                key={item.id}
+                item={item}
+                index={index}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            );
         }
-        if (item.type === "divider")
-          return <Divider key={item.id} className="mt-2" />;
-        if (item.type === "text")
-          return (
-            <p key={item.id} className="p-4 text-sm normal-case text-gray-800">
-              {item.section}
-            </p>
-          );
-        if (item.type === "collapse") {
-          return (
-            <CollapseTab
-              key={item.id}
-              item={item}
-              index={index}
-              links={links}
-              setLinks={setLinks}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              updateActiveTab={updateActiveTab}
-            />
-          );
-        }
-        return (
-          <LinkTab
-            key={item.id}
-            item={item}
-            index={index}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
-        );
       })}
     </Tabs>
   );
