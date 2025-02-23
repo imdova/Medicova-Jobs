@@ -28,6 +28,7 @@ export const callbacks = {
       token.phone = user.phone;
       token.companyId = user.companyId;
       token.companyName = user.companyName;
+      token.companyUserName = user.companyUserName;
       token.companyPhoto = user.companyPhoto;
       token.companyEmail = user.companyEmail;
       token.permissions = user.permissions;
@@ -37,6 +38,8 @@ export const callbacks = {
       if (session?.companyId) token.companyId = session.companyId;
       if (session?.companyName) token.companyName = session.companyName;
       if (session?.companyPhoto) token.companyPhoto = session.companyPhoto;
+      if (session?.companyUserName)
+        token.companyUserName = session.companyUserName;
       if (session?.companyEmail) token.companyEmail = session.companyEmail;
     }
     return token;
@@ -53,6 +56,7 @@ export const callbacks = {
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;
       session.user.companyName = token.companyName as string | null;
+      session.user.companyUserName = token.companyUserName as string | null;
       session.user.companyPhoto = token.companyPhoto as string | null;
       session.user.companyEmail = token.companyEmail as string | null;
       session.user.permissions = token.permissions as Permission[];

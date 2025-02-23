@@ -1,6 +1,6 @@
 import { API_URL } from ".";
 
-export const API_USERS_BASE = API_URL + "/users/api/v1.0";
+export const API_USERS_BASE = API_URL + "/api/v1.0.0";
 
 // Users
 export const USERS = API_USERS_BASE + "/users";

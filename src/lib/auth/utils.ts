@@ -29,7 +29,7 @@ export async function changePasswordWithOTP(credentials: any) {
 export async function authenticateRegister(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
   try {
-    const response = await register(credentials, credentials.type);
+    const response = await register(credentials);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -76,7 +76,10 @@ export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
   }
 };
 
-export function expandItems<T>(array: T[], initial: number, expand: boolean): T[] {
+export function expandItems<T>(
+  array: T[],
+  initial: number,
+  expand: boolean,
+): T[] {
   return expand ? array : array.slice(0, initial);
 }
-

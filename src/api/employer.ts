@@ -1,13 +1,15 @@
 import { API_URL } from ".";
 
-export const API_EMPLOYER_BASE = API_URL + "/employer/api/v1.0";
+export const API_EMPLOYER_BASE = API_URL + "/api/v1.0.0";
 // Companies
 export const COMPANIES = API_EMPLOYER_BASE + "/companies";
-export const API_CREATE_COMPANY = COMPANIES; // POST
-export const API_GET_COMPANIES = COMPANIES; // GET
+// export const API_CREATE_COMPANY = COMPANIES; // POST
+// export const API_GET_COMPANIES = COMPANIES; // GET
+export const API_GET_COMPANIES_BY_USER_NAME = COMPANIES + "/userName/"; // GET
 export const API_GET_COMPANY_BY_ID = COMPANIES + "/"; // GET + [companyID]
+export const API_UPDATE_COMPANY_USER_NAME = COMPANIES + "/userName"; // PATCH
 export const API_UPDATE_COMPANY = COMPANIES + "/"; // PATCH + [companyID]
-export const API_DELETE_COMPANY = COMPANIES + "/"; // DELETE + [companyID]
+// export const API_DELETE_COMPANY = COMPANIES + "/"; // DELETE + [companyID]
 
 // Company Sectors
 export const COMPANY_SECTORS = API_EMPLOYER_BASE + "/company-sector";
@@ -53,7 +55,8 @@ export const API_DELETE_JOB_INDUSTRY = JOB_INDUSTRIES + "/"; // DELETE + [id]
 export const JOB_CATEGORIES = API_EMPLOYER_BASE + "/job-categories";
 export const API_CREATE_JOB_CATEGORY = JOB_CATEGORIES; // POST
 export const API_GET_JOB_CATEGORIES = JOB_CATEGORIES; // GET
-export const API_GET_JOB_CATEGORIES_BY_INDUSTRY = JOB_CATEGORIES + "/industries"; // GET
+export const API_GET_JOB_CATEGORIES_BY_INDUSTRY =
+  JOB_CATEGORIES + "/industries"; // GET
 export const API_GET_JOB_CATEGORY_BY_ID = JOB_CATEGORIES + "/"; // GET + [id]
 export const API_UPDATE_JOB_CATEGORY = JOB_CATEGORIES + "/"; // PATCH + [id]
 export const API_DELETE_JOB_CATEGORY = JOB_CATEGORIES + "/"; // DELETE + [id]

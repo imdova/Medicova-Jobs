@@ -1,7 +1,6 @@
 "use server";
 import { TAGS } from "@/api";
 import {
-  API_CREATE_COMPANY,
   API_GET_COMPANY_BY_ID,
   API_GET_COMPANY_SECTORS,
   API_GET_COMPANY_TYPE_BY_ID,
@@ -96,43 +95,9 @@ export const getEmployeeOfCompany = async (
   }
 };
 
-export const createCompany = async (
-  companyData: Company,
-  userId: string,
+export const updateCompany = async (
+  companyData: Partial<Company>,
 ): Promise<Result> => {
-  try {
-    const response = await fetch(API_CREATE_COMPANY + `?userId=${userId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
-      },
-      body: JSON.stringify(companyData),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      data.typeId = data.type.id;
-      data.sectorId = data.type.sector.id;
-      return {
-        success: true,
-        message: "Company created successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "An error occurred",
-    };
-  }
-};
-export const updateCompany = async (companyData: Partial<Company>): Promise<Result> => {
   try {
     const response = await fetch(API_UPDATE_COMPANY + companyData.id, {
       method: "PATCH",
@@ -176,7 +141,7 @@ export const getCompanyById = async (
         "Content-Type": "application/json",
         accept: "application/json",
       },
-      next: { tags: [TAGS.company] }
+      next: { tags: [TAGS.company] },
     });
     if (response.ok) {
       const data: Company = await response.json();
@@ -201,7 +166,7 @@ export const getCompanyById = async (
     };
   }
 };
- 
+
 export const getSectorList = async (): Promise<Result<Sector[]>> => {
   try {
     const response = await fetch(API_GET_COMPANY_SECTORS, {
@@ -475,13 +440,16 @@ export const getPaginatedSeekers = async (
   }>
 > => {
   try {
-    const response = await fetch(`${API_GET_SEEKERS}?page=${page}&limit=${limit}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
+    const response = await fetch(
+      `${API_GET_SEEKERS}?page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
       },
-    });
+    );
     if (response.ok) {
       const data: { total: number; data: UserState[] } = await response.json();
       return {
@@ -503,4 +471,3 @@ export const getPaginatedSeekers = async (
     };
   }
 };
-

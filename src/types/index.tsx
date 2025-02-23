@@ -59,6 +59,7 @@ export interface UserState {
   phone: string | null;
   companyId: string | null;
   companyName: string | null;
+  companyUserName: string | null;
   companyEmail: string | null;
   companyPhoto: string | null;
   permissions: Permission[];

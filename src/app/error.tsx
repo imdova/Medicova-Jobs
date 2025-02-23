@@ -1,4 +1,6 @@
-export default function NotFoundPage() {
+"use client";
+
+export default function Error() {
   return (
     <div className="grid h-[90vh] place-content-center bg-white px-4">
       <div className="text-center">

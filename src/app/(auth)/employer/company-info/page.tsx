@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, CircularProgress } from "@mui/material";
 import { Company, UserState } from "@/types";
-import {
-  createCompany,
-  getCompanyById,
-  updateCompany,
-} from "@/lib/actions/employer.actions";
+import { getCompanyById, updateCompany } from "@/lib/actions/employer.actions";
 import { useSession } from "next-auth/react";
 import LocationSelection from "./LocationSelection";
 import SectorSelection from "./SectorSelection";
@@ -83,32 +79,10 @@ const CompanyInfoForm: React.FC = () => {
       setLoading(true);
       if (companyId) {
         handleUpdate();
-      } else {
-        handleCreate();
       }
     }
   };
 
-  const handleCreate = async () => {
-    const result = await createCompany(data, user?.id || "");
-    if (result.success && result.data) {
-      const newCompany = result.data;
-      setData(newCompany); // Set the form data with the fetched company data
-      setCompany(newCompany);
-      update({
-        companyId: newCompany.id,
-        companyName: newCompany.name,
-        companyPhoto: newCompany.logo,
-      });
-      reloadSession();
-      setLoading(false);
-      window.location.href = "/co/" + newCompany.id;
-      console.log("Company created successfully");
-    } else {
-      setLoading(false);
-      setError(result.message);
-    }
-  };
   const handleUpdate = async () => {
     const result = await updateCompany(data);
     if (result.success && result.data) {
