@@ -1,31 +1,15 @@
 import { API_URL } from ".";
 
-export const API_EMPLOYER_BASE = API_URL + "/api/v1.0.0";
+export const API_EMPLOYER_BASE = API_URL + "/api/v1.0.0/employer";
 // Companies
 export const COMPANIES = API_EMPLOYER_BASE + "/companies";
 // export const API_CREATE_COMPANY = COMPANIES; // POST
 // export const API_GET_COMPANIES = COMPANIES; // GET
-export const API_GET_COMPANIES_BY_USER_NAME = COMPANIES + "/userName/"; // GET
+export const API_GET_COMPANY_BY_USER_NAME = COMPANIES + "/userName/"; // GET
 export const API_GET_COMPANY_BY_ID = COMPANIES + "/"; // GET + [companyID]
 export const API_UPDATE_COMPANY_USER_NAME = COMPANIES + "/userName"; // PATCH
 export const API_UPDATE_COMPANY = COMPANIES + "/"; // PATCH + [companyID]
 // export const API_DELETE_COMPANY = COMPANIES + "/"; // DELETE + [companyID]
-
-// Company Sectors
-export const COMPANY_SECTORS = API_EMPLOYER_BASE + "/company-sector";
-export const API_CREATE_COMPANY_SECTOR = COMPANY_SECTORS; // POST
-export const API_GET_COMPANY_SECTORS = COMPANY_SECTORS; // GET
-export const API_GET_COMPANY_SECTOR_BY_ID = COMPANY_SECTORS + "/"; // GET + [sectorID]
-export const API_UPDATE_COMPANY_SECTOR = COMPANY_SECTORS + "/"; // PATCH + [sectorID]
-export const API_DELETE_COMPANY_SECTOR = COMPANY_SECTORS + "/"; // DELETE + [sectorID]
-
-// Company Types
-export const COMPANY_TYPES = API_EMPLOYER_BASE + "/company-type";
-export const API_CREATE_COMPANY_TYPE = COMPANY_TYPES; // POST
-export const API_GET_COMPANY_TYPES = COMPANY_TYPES; // GET ?sectorId=550e8400-e29b-41d4-a716-446655440000
-export const API_GET_COMPANY_TYPE_BY_ID = COMPANY_TYPES + "/"; // GET + [typeID]
-export const API_UPDATE_COMPANY_TYPE = COMPANY_TYPES + "/"; // PATCH + [typeID]
-export const API_DELETE_COMPANY_TYPE = COMPANY_TYPES + "/"; // DELETE + [typeID]
 
 // Employees
 export const EMPLOYEES = API_EMPLOYER_BASE + "/employees";
@@ -84,9 +68,3 @@ export const API_GET_JOB_EMPLOYMENT_TYPES = JOB_EMPLOYMENT_TYPES; // GET
 export const API_GET_JOB_EMPLOYMENT_TYPE_BY_ID = JOB_EMPLOYMENT_TYPES + "/"; // GET + [id]
 export const API_UPDATE_JOB_EMPLOYMENT_TYPE = JOB_EMPLOYMENT_TYPES + "/"; // PATCH + [id]
 export const API_DELETE_JOB_EMPLOYMENT_TYPE = JOB_EMPLOYMENT_TYPES + "/"; // DELETE + [id]
-
-// Location
-export const LOCATION = API_EMPLOYER_BASE + "/location";
-export const API_GET_COUNTRIES = LOCATION + "/countries"; // GET
-export const API_GET_STATES = LOCATION + "/states"; // GET ?countryCode=AF (requires country code)
-export const API_GET_CITIES = LOCATION + "/cities"; // GET ?countryCode=US&stateCode=CA (requires state and country code)

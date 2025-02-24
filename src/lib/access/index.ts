@@ -10,15 +10,8 @@ import {
   API_VALIDATE_OTP,
 } from "@/api/users";
 import { registerData, Result, Role, UserState } from "@/types";
-
+import { errorResult } from "@/util/general";
 import { transformRegisterData, transLoginData } from "@/util/user";
-
-const errorResult = (type: string): Result => {
-  return {
-    success: false,
-    message: `error at ${type}`,
-  };
-};
 
 interface UserResponse {
   user: UserState;
@@ -101,10 +94,11 @@ export const serverSignIn = async ({
     });
     if (!response.ok) return errorResult("serverSignIn");
     const data = await response.json();
+    const user = transLoginData(data);
     return {
       success: true,
       message: "OTP validated successfully",
-      data: transLoginData(data),
+      data: user,
     };
   } catch (error: any) {
     return {

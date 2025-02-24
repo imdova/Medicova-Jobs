@@ -14,9 +14,9 @@ import {
 import { useEffect } from "react";
 
 interface LocationSelectionProps {
-  data: Company;
-  setData: React.Dispatch<React.SetStateAction<Company>>;
-  errors: { [key: string]: string };
+  data: Partial<Company>;
+  setData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
+  errors: FormErrors;
 }
 
 const LocationSelection = ({

@@ -6,9 +6,9 @@ import { Company } from "@/types";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface SectorSelectionProps {
-  data: Company;
+  data: Partial<Company>;
   handleChange: <K extends keyof Company>(name: K, value: Company[K]) => void;
-  errors: { [key: string]: string };
+  errors: FormErrors;
 }
 
 const CompanyOwnership: React.FC<SectorSelectionProps> = ({

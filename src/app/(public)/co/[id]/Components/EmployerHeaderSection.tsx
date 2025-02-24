@@ -57,7 +57,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
           {isEmployee ? (
             <Avatar
               currentImageUrl={
-                image ? URL.createObjectURL(image) : data.photo || ""
+                image ? URL.createObjectURL(image) : data.avatar || ""
               }
               size="xLarge"
               onImageUpdate={updateImage}
@@ -67,7 +67,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
             />
           ) : (
             <Image
-              src={data.photo || "/images/placeholder-avatar.svg"}
+              src={data.avatar || "/images/placeholder-avatar.svg"}
               alt="avatar"
               width={100}
               height={100}
@@ -98,7 +98,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 <div className="mr-3 flex items-center gap-1">
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {data.type?.name}
+                    {data.type}
                   </Typography>
                 </div>
                 {(data.country || data.state || data.city) && (

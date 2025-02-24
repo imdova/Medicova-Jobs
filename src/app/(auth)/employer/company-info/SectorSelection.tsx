@@ -1,8 +1,4 @@
-import {
-  getSectorList,
-  getTypeById,
-  getTypeList,
-} from "@/lib/actions/employer.actions";
+import { getSectorList, getTypeList } from "@/lib/actions/employer.actions";
 import { Company, Sector } from "@/types";
 import {
   FormControl,
@@ -15,9 +11,9 @@ import {
 import { useEffect, useState } from "react";
 
 interface SectorSelectionProps {
-  data: Company;
-  setData: React.Dispatch<React.SetStateAction<Company>>;
-  errors: { [key: string]: string };
+  data: Partial<Company>;
+  setData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
+  errors: FormErrors;
 }
 
 const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
@@ -30,8 +26,8 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
     }
   };
 
-  const typesDataHandler = async (sectorId: string) => {
-    const result = await getTypeList(sectorId);
+  const typesDataHandler = async (companySectorId: string) => {
+    const result = await getTypeList(companySectorId);
     if (result.success && result.data) {
       setTypeList(result.data);
     }
@@ -42,10 +38,10 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
   }, []);
 
   useEffect(() => {
-    if (data.sectorId) {
-      typesDataHandler(data.sectorId);
+    if (data.companySectorId) {
+      typesDataHandler(data.companySectorId);
     }
-  }, [data.sectorId]);
+  }, [data.companySectorId]);
 
   return (
     <div className="flex flex-wrap gap-5 md:flex-nowrap">
@@ -54,7 +50,10 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
         <InputLabel className="mb-2 text-lg font-semibold text-main">
           Company Sector *
         </InputLabel>
-        <FormControl fullWidth error={Boolean(errors.typeId) && !data.sectorId}>
+        <FormControl
+          fullWidth
+          error={Boolean(errors.companyTypeId) && !data.companySectorId}
+        >
           <Select
             className="w-full"
             displayEmpty
@@ -74,9 +73,9 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               return <span>{sec}</span>;
             }}
             onChange={(e) => {
-              setData({ ...data, sectorId: e.target.value });
+              setData({ ...data, companySectorId: e.target.value });
             }}
-            value={sectorList.length > 0 ? (data.sectorId ?? "") : ""}
+            value={sectorList.length > 0 ? (data.companySectorId ?? "") : ""}
           >
             <MenuItem value="" disabled>
               <em>Select Sector</em>
@@ -87,7 +86,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               </MenuItem>
             ))}
           </Select>
-          {Boolean(errors.typeId) && !data.sectorId && (
+          {Boolean(errors.companyTypeId) && !data.companySectorId && (
             <FormHelperText>sector is required</FormHelperText>
           )}
         </FormControl>
@@ -98,17 +97,24 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
         <InputLabel className="mb-2 text-lg font-semibold text-main">
           Company Type *
         </InputLabel>
-        <FormControl fullWidth error={Boolean(errors.typeId) && !data.typeId}>
+        <FormControl
+          fullWidth
+          error={Boolean(errors.companyTypeId) && !data.companyTypeId}
+        >
           <Tooltip
             title={
-              data.sectorId ? undefined : "Please select company sector first"
+              data.companySectorId
+                ? undefined
+                : "Please select company sector first"
             }
             placement="bottom"
           >
             <Select
               className="w-full"
               displayEmpty
-              disabled={data.sectorId ? false : true || typeList.length === 0}
+              disabled={
+                data.companySectorId ? false : true || typeList.length === 0
+              }
               MenuProps={{
                 disableScrollLock: true,
                 PaperProps: {
@@ -123,9 +129,9 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
                 return <span>{type}</span>;
               }}
               onChange={(e) => {
-                setData({ ...data, typeId: e.target.value });
+                setData({ ...data, companyTypeId: e.target.value });
               }}
-              value={typeList?.length > 0 ? data.typeId || "" : ""}
+              value={typeList?.length > 0 ? data.companyTypeId || "" : ""}
             >
               <MenuItem value="" disabled>
                 <em>Select Company Type</em>
@@ -137,7 +143,7 @@ const SectorSelection = ({ data, setData, errors }: SectorSelectionProps) => {
               ))}
             </Select>
           </Tooltip>
-          {Boolean(errors.typeId) && !data.typeId && (
+          {Boolean(errors.companyTypeId) && !data.companyTypeId && (
             <FormHelperText>Type is required</FormHelperText>
           )}
         </FormControl>

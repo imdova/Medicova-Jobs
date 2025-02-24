@@ -2,9 +2,9 @@ import { Company } from "@/types";
 import { InputLabel, TextField } from "@mui/material";
 
 interface SectorSelectionProps {
-  data: Company;
+  data: Partial<Company>;
   handleChange: <K extends keyof Company>(name: K, value: Company[K]) => void;
-  errors: { [key: string]: string };
+  errors: FormErrors;
 }
 
 const MainInformation: React.FC<SectorSelectionProps> = ({
@@ -41,8 +41,6 @@ const MainInformation: React.FC<SectorSelectionProps> = ({
           placeholder="Enter your title"
           value={data.title}
           onChange={(e) => handleChange("title", e.target.value)}
-          error={!!errors.title}
-          helperText={errors.title}
         />
       </div>
       <div className="mb-4">

@@ -150,6 +150,7 @@ type CountryInData = {
 export interface Company {
   id: string;
   name: string;
+  userName: string;
   title?: string | null;
   about?: string;
   completencePercent?: number;
@@ -161,22 +162,20 @@ export interface Company {
   city?: string;
   size?: CompanySize | null;
   phone?: string;
+  cover?: string;
   email?: string;
   yearFounded?: number | string;
-  photo?: string;
+  avatar?: string;
   socialLinks?: { [key: string]: string };
   visible?: boolean;
   profileUrl?: string;
-  typeId: string;
-  sectorId?: string | null;
-  type: {
-    id: string;
-    name: string;
-    sector: {
-      id: string;
-      name: string;
-    };
-  } | null;
+  companyTypeId: string;
+  companySectorId?: string | null;
+  type: string;
+  sector?: string | null;
+  banner1?: string | null;
+  banner2?: string | null;
+  banner3?: string | null;
 }
 export interface MiniCompany {
   name: string;

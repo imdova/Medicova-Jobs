@@ -75,13 +75,13 @@ export default function DynamicSideBar({
         sx:
           activeTab !== null
             ? {
-                backgroundColor: "var(--light-primary)",
-                left: 0,
-                width: 4,
-                maxHeight: "30px",
-                borderRadius: 5,
-                transform: "translateY(10px)",
-              }
+              backgroundColor: "var(--light-primary)",
+              left: 0,
+              width: 4,
+              maxHeight: "30px",
+              borderRadius: 5,
+              transform: "translateY(10px)",
+            }
             : { display: "none" },
       }}
     >
@@ -205,7 +205,7 @@ const ProfileTab = ({
   onTabChange: (index: number) => void;
 }) => {
   const isEmployer = user.type === "employer";
-  const path = isEmployer ? `/co/${user?.companyId}` : `/me/${user.userName}`;
+  const path = isEmployer ? `/co/${user?.companyUserName}` : `/me/${user.userName}`;
   const isActive =
     activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
 
@@ -219,7 +219,7 @@ const ProfileTab = ({
       component={Link}
       href={
         isEmployer
-          ? `/co/${user?.companyId}`
+          ? `/co/${user?.companyUserName}`
           : user.userName
             ? `/me/${user.userName}`
             : "#"
@@ -283,11 +283,10 @@ const LinkTab = ({
           </div>
           {item.notifications && (
             <div
-              className={`${
-                isActive
+              className={`${isActive
                   ? "bg-primary-foreground text-light-primary"
                   : "bg-secondary text-primary-foreground"
-              } aspect-square rounded-full p-1 px-2 text-xs`}
+                } aspect-square rounded-full p-1 px-2 text-xs`}
             >
               {item.notifications}
             </div>

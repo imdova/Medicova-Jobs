@@ -16,31 +16,10 @@ import {
 
 const CompanyPage = ({ company }: { company: Company }) => {
   const { data: session, status } = useSession();
-  const [employees, setEmployees] = useState<{ id: string }[]>([]);
-  const [loading, setLoading] = useState(true);
   const user = session?.user as UserState;
-  const [isEmployee, setIsEmployee] = useState(false);
+  const isEmployee = company.id === user.companyId
 
-  const initData = async () => {
-    const response = await getEmployeeOfCompany(company.id);
-    if (response.success && response.data) {
-      setEmployees(response.data.data);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    initData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!user?.id) return;
-    if (!employees.length) return;
-    setIsEmployee(employees.some((employee) => employee.id === user?.id));
-  }, [employees, user?.id]);
-
-  if (status === "loading" || loading) {
+  if (status === "loading") {
     return <Loading />;
   }
   return (

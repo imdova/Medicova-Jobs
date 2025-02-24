@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Flag from "./flagitem";
 import SearchableSelect from "./SearchableSelect";
 import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js";
+import { isValidEgyptianPhoneNumber } from "@/util/forms";
 
 const formatCode = (code: string): string => {
   if (!code.startsWith("+")) {
@@ -51,8 +52,13 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
       country.isoCode as CountryCode,
     );
     if (phoneNumberObj && phoneNumberObj.isValid()) {
-      // setPhoneNumber(phoneNumberObj.formatInternational());
       setIsValid(true);
+      if (
+        country.isoCode === "EG" &&
+        !isValidEgyptianPhoneNumber(phoneNumberObj.number)
+      ) {
+        setIsValid(false);
+      }
       if (props.onChange) {
         const syntheticEvent = {
           target: { value: phoneNumberObj.number },
@@ -64,10 +70,15 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
     }
   };
 
+  const getOnlyPhoneNumber = (number: string) => {
+    const phoneNumberObj = parsePhoneNumberFromString(number);
+    return phoneNumberObj?.nationalNumber;
+  };
   return (
     <div className="flex">
       <SearchableSelect
         displayEmpty
+        IconComponent={() => null}
         options={countries.map((x) => ({
           value: x.phonecode,
           label: `${x.name} (${formatCode(x.phonecode)})`,
@@ -83,7 +94,7 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
             item && (
               <div className="flex items-center">
                 <Flag code={item.isoCode.toLowerCase()} name={item.name} />
-                <p className="ml-2 min-w-12">{formatCode(selected)}</p>
+                <p className="ml-2 max-w-12">{formatCode(selected)}</p>
               </div>
             )
           );
@@ -97,7 +108,7 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
           "& fieldset": { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
           ...props.sx,
         }}
-        value={phoneNumber}
+        value={phoneNumber || getOnlyPhoneNumber(props.value as string)}
         onChange={handlePhoneChange}
       />
     </div>

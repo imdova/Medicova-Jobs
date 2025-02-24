@@ -3,9 +3,9 @@ import { Company } from "@/types";
 import PhoneNumberInput from "@/components/UI/phoneNumber";
 
 interface SectorSelectionProps {
-  data: Company;
+  data: Partial<Company>;
   handleChange: <K extends keyof Company>(name: K, value: Company[K]) => void;
-  errors: { [key: string]: string };
+  errors: FormErrors;
 }
 
 const CompanyContactInputs: React.FC<SectorSelectionProps> = ({
@@ -23,7 +23,7 @@ const CompanyContactInputs: React.FC<SectorSelectionProps> = ({
           name="email"
           placeholder="Enter your email"
           className="w-full"
-          value={data.email}
+          value={data.email || ""}
           type="email"
           onChange={(e) => handleChange("email", e.target.value)}
           error={!!errors.email}
@@ -35,52 +35,7 @@ const CompanyContactInputs: React.FC<SectorSelectionProps> = ({
         <InputLabel className="mb-2 text-lg font-semibold text-main">
           Phone Number
         </InputLabel>
-        <FormControl
-          fullWidth
-          error={!!errors.phone}
-          className="w-full"
-          sx={{
-            mb: 1,
-            "& .PhoneInput": {
-              display: "flex",
-              border: errors.phone ? "1px solid red" : "1px solid #ccc",
-              height: "50px",
-              borderRadius: "10px",
-            },
-            "& .PhoneInputInput": {
-              padding: "15px",
-              fontSize: "14px",
-              width: "100%",
-              borderRadius: "0 10px 10px 0",
-              border: "1px solid transparent",
-              backgroundColor: "transparent",
-              height: "50px",
-
-              "&::placeholder": {
-                color: errors.phone ? "red" : "GrayText", // Set placeholder color to black
-                opacity: 0.7, // Ensure full opacity
-              },
-              "&:hover": {
-                border: errors.phone ? "" : "1px solid black",
-              },
-              "&:focus": {
-                border: errors.phone ? "" : "1px solid var(--light-primary)",
-                outline: "2px solid transparent",
-              },
-            },
-            "& .PhoneInputCountry": {
-              borderRadius: "10px 0 0 10px",
-              border: "1px solid transparent",
-              display: "flex",
-              gap: "5px",
-              px: 1,
-              m: 0,
-            },
-            "& .PhoneInputCountry:hover": {
-              border: errors.phone ? "" : "1px solid black",
-            },
-          }}
-        >
+        <FormControl fullWidth error={!!errors.phone} className="w-full">
           <PhoneNumberInput
             fullWidth
             value={data.phone ?? ""}

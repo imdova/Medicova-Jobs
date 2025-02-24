@@ -78,7 +78,7 @@ export function getSideBarLinks(user?: UserState, pathname?: string) {
       if (userType === "seeker") {
         return roleBasedSideBarLinks.seeker;
       } else if (userType === "employer") {
-        if (user?.companyUserName) {
+        if (user?.companyName) {
           return roleBasedSideBarLinks.employer;
         } else {
           return roleBasedSideBarLinks.unEmployee;
