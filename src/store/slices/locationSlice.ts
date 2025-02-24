@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Country, State } from '@/types';
-import { getCountryList, getStateList } from '@/lib/actions/location.actions';
-
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { Country, State } from "@/types";
+import { API_GET_COUNTRIES, API_GET_STATES } from "@/api/general";
 
 interface LocationState {
   countries: {
@@ -31,38 +30,60 @@ const initialState: LocationState = {
 
 // Async thunk for fetching countries
 export const fetchCountries = createAsyncThunk(
-  'location/fetchCountries',
+  "location/fetchCountries",
   async (_, { rejectWithValue }) => {
     try {
-      const result = await getCountryList();
-      if (result.success && result.data) {
-        return result.data;
+      const response = await fetch(API_GET_COUNTRIES, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
       }
-      return rejectWithValue('Failed to fetch countries');
+      return rejectWithValue("Failed to fetch countries");
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch countries');
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch countries",
+      );
     }
-  }
+  },
 );
 
 // Async thunk for fetching states
 export const fetchStates = createAsyncThunk(
-  'location/fetchStates',
+  "location/fetchStates",
   async (countryCode: string, { rejectWithValue }) => {
     try {
-      const result = await getStateList(countryCode);
-      if (result.success && result.data) {
-        return result.data;
+      const response = await fetch(
+        API_GET_STATES + `?countryCode=${countryCode}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        },
+      );
+      if (response.ok) {
+        const data = await response.json();
+        return data;
       }
-      return rejectWithValue('Failed to fetch states');
+
+      return rejectWithValue("Failed to fetch states");
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch states');
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch states",
+      );
     }
-  }
+  },
 );
 
 const locationSlice = createSlice({
-  name: 'location',
+  name: "location",
   initialState,
   reducers: {
     clearStates: (state) => {

@@ -19,6 +19,7 @@ import { registerData } from "@/types";
 import { RoleState } from "@/types/next-auth";
 import { signIn } from "next-auth/react";
 import PhoneNumberInput from "@/components/UI/phoneNumber";
+import { isValidPhoneNumber } from "@/util/forms";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -276,8 +277,14 @@ const RegisterForm: React.FC = () => {
         </Box>
         <Box sx={{ mb: 1, position: "relative" }}>
           <Controller
-            control={control}
             name="phone"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: "Phone Number is required",
+              validate: (value) =>
+                isValidPhoneNumber(value || "") || "Please enter a valid phone number",
+            }}
             render={({ field }) => (
               <PhoneNumberInput
                 {...field}
@@ -286,13 +293,14 @@ const RegisterForm: React.FC = () => {
                 variant="outlined"
                 id="phone"
                 error={!!errors.phone}
-                helperText={errors.phone?.message}
               />
             )}
-            rules={{
-              required: "Phone number is required",
-            }}
           />
+          {errors.phone && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.phone.message}
+            </p>
+          )}
         </Box>
 
         <p className="my-1 text-red-500">{error}</p>

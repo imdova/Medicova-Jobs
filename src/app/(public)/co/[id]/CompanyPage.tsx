@@ -3,8 +3,6 @@
 import { Company, UserState } from "@/types";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/loading/loading";
-import { useEffect, useState } from "react";
-import { getEmployeeOfCompany } from "@/lib/actions/employer.actions";
 import EmployerHeaderSection from "./Components/EmployerHeaderSection";
 import AboutCompany from "./Components/AboutCompany";
 import CompanyJobs from "./Components/CompanyJobs";
@@ -17,7 +15,7 @@ import {
 const CompanyPage = ({ company }: { company: Company }) => {
   const { data: session, status } = useSession();
   const user = session?.user as UserState;
-  const isEmployee = company.id === user.companyId
+  const isEmployee = company.id === user?.companyId
 
   if (status === "loading") {
     return <Loading />;

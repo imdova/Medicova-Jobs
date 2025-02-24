@@ -22,7 +22,6 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
 
   const [countryCode, setCountryCode] = useState<string>("20"); // Default to Egypt
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [isValid, setIsValid] = useState<boolean>(true);
 
   useEffect(() => {
     if (countries.length === 0) {
@@ -51,22 +50,11 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
       input,
       country.isoCode as CountryCode,
     );
-    if (phoneNumberObj && phoneNumberObj.isValid()) {
-      setIsValid(true);
-      if (
-        country.isoCode === "EG" &&
-        !isValidEgyptianPhoneNumber(phoneNumberObj.number)
-      ) {
-        setIsValid(false);
-      }
-      if (props.onChange) {
-        const syntheticEvent = {
-          target: { value: phoneNumberObj.number },
-        } as unknown as React.ChangeEvent<HTMLInputElement>;
-        props.onChange(syntheticEvent);
-      }
-    } else {
-      setIsValid(false);
+    if (props.onChange) {
+      const syntheticEvent = {
+        target: { value: phoneNumberObj?.number || "" },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      props.onChange(syntheticEvent);
     }
   };
 
@@ -102,13 +90,12 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
       />
       <TextField
         {...props}
-        error={!isValid}
-        helperText={!isValid ? "Invalid phone number" : ""}
         sx={{
           "& fieldset": { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
           ...props.sx,
         }}
-        value={phoneNumber || getOnlyPhoneNumber(props.value as string)}
+        defaultValue={phoneNumber || getOnlyPhoneNumber(props.value as string)}
+        value={phoneNumber ? phoneNumber : undefined}
         onChange={handlePhoneChange}
       />
     </div>

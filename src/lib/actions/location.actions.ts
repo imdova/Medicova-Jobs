@@ -4,7 +4,7 @@ import {
   API_GET_CITIES,
   API_GET_COUNTRIES,
   API_GET_STATES,
-} from "@/api/employer";
+} from "@/api/general";
 import { City, Country, Result, State } from "@/types";
 
 export const getStateList = async (
@@ -74,7 +74,10 @@ export const getCountryList = async (): Promise<Result<Country[]>> => {
   }
 };
 
-export const getCityList = async (countryCode: string, stateCode?: string): Promise<Result<City[]>> => {
+export const getCityList = async (
+  countryCode: string,
+  stateCode?: string,
+): Promise<Result<City[]>> => {
   try {
     let url = `${API_GET_CITIES}?countryCode=${countryCode}`;
     if (stateCode) {

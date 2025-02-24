@@ -1,10 +1,10 @@
 import { DeleteOutline } from "@mui/icons-material";
-import { Alert, Button, CircularProgress, IconButton } from "@mui/material";
+import { Alert, IconButton } from "@mui/material";
 import clsx from "clsx";
 import { CloudUpload } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { DropzoneInputProps, useDropzone } from "react-dropzone";
+import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 interface FileWithPreview extends File {
   preview?: string;

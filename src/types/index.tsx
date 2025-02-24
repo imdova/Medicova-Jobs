@@ -169,9 +169,9 @@ export interface Company {
   socialLinks?: { [key: string]: string };
   visible?: boolean;
   profileUrl?: string;
-  companyTypeId: string;
+  companyTypeId?: string | null;
   companySectorId?: string | null;
-  type: string;
+  type?: string | null;
   sector?: string | null;
   banner1?: string | null;
   banner2?: string | null;

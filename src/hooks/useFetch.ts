@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 
-interface FetchState<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
+interface FetchOptions extends RequestInit {
+  skip?: boolean;
+  fetchOnUrlChange?: boolean;
+  fetchOnce?: boolean;
 }
 
-type FetchOptions = RequestInit & {
-  autoFetch?: boolean; // Optional flag to control auto-fetching
-};
+interface FetchResult<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+}
 
 const defaultOptions: FetchOptions = {
   method: "GET",
@@ -16,56 +18,84 @@ const defaultOptions: FetchOptions = {
     "Content-Type": "application/json",
     accept: "application/json",
   },
-  autoFetch: false, // Default to false (fetch only once)
+  fetchOnce: true,
+  skip: false,
+  fetchOnUrlChange: false,
 };
 
-const useFetch = <T>(
-  url: string | null,
-  options: FetchOptions = { ...defaultOptions },
-  onSuccess?: (data: T) => void, // Optional callback for successful fetch
-): FetchState<T> => {
+export default function useFetch<T>(
+  url: string | undefined | null,
+  options: FetchOptions = {},
+  onSuccess?: (data: T) => void,
+): FetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const hasFetched = useRef(false); // Track if fetch has already happened
+  const [error, setError] = useState<Error | null>(null);
+  const hasFetched = useRef<boolean>(false);
+  const prevUrl = useRef<string | undefined | null>(url);
+
+  // Merge default options with provided options
+  const mergedOptions = { ...defaultOptions, ...options };
 
   useEffect(() => {
+    const shouldFetch = () => {
+      // Don't fetch if there's no URL
+      if (!url) return false;
+
+      // Don't fetch if skip is true
+      if (mergedOptions.skip) return false;
+
+      // If fetchOnce is true and we've already fetched, don't fetch again
+      if (mergedOptions.fetchOnce && hasFetched.current) return false;
+
+      // If fetchOnUrlChange is true, fetch when URL changes
+      if (mergedOptions.fetchOnUrlChange && url !== prevUrl.current)
+        return true;
+
+      // If it's the first render and we haven't fetched, fetch
+      if (!hasFetched.current) return true;
+
+      return false;
+    };
+
     const fetchData = async () => {
-      if (!url) return; // Skip if no URL
-      if (!options.autoFetch && hasFetched.current) return; // Skip if autoFetch is false and already fetched
+      if (!shouldFetch()) return;
 
       setLoading(true);
       setError(null);
+
       try {
-        const response = await fetch(url, options);
-
+        const response = await fetch(url!, mergedOptions);
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const result: T = await response.json();
+        const result = await response.json();
         setData(result);
+        hasFetched.current = true;
+        prevUrl.current = url;
         if (onSuccess) {
-          onSuccess(result); // Call the onSuccess callback with the fetched data
-        }
-        if (!options.autoFetch) {
-          hasFetched.current = true; // Mark as fetched only if autoFetch is false
+          onSuccess(result);
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred",
-        );
+        setError(err instanceof Error ? err : new Error("An error occurred"));
       } finally {
         setLoading(false);
       }
     };
 
-    if (url) {
-      fetchData();
-    }
-  }, [url, options, onSuccess]); // Add onSuccess to dependencies
+    fetchData();
+
+    // Cleanup function
+    return () => {
+      // Could add abort controller here if needed
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    url,
+    mergedOptions.skip,
+    mergedOptions.fetchOnUrlChange,
+    mergedOptions.fetchOnce,
+  ]);
 
   return { data, loading, error };
-};
-
-export default useFetch;
+}
