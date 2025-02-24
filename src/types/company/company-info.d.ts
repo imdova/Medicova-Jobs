@@ -4,3 +4,8 @@ interface FormErrors {
   companyTypeId: string;
   name: string;
 }
+
+interface FileWithPreview extends File {
+  preview?: string;
+  uploaded?: boolean;
+}

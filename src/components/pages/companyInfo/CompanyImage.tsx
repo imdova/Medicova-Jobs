@@ -1,21 +1,37 @@
-import { DeleteOutline } from "@mui/icons-material";
-import { Alert, IconButton } from "@mui/material";
+import { TAGS } from "@/api";
+import { API_UPDATE_COMPANY } from "@/api/employer";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import uploadImages from "@/lib/files/imageUploader";
+import { Company } from "@/types";
+import { Alert, Button, CircularProgress, IconButton } from "@mui/material";
 import clsx from "clsx";
-import { CloudUpload } from "lucide-react";
+import { CloudUpload, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-interface FileWithPreview extends File {
-  preview?: string;
-}
+
 
 const MAX_FILE_SIZE = 5;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
-const CompanyImage = () => {
-  const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+
+const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
+  const initialFilePreviews: FileWithPreview[] = [company.banner1, company.banner2, company.banner3].filter(Boolean).map((image) => ({
+    lastModified: 0,
+    name: '',
+    webkitRelativePath: '',
+    size: 0,
+    type: 'image/',
+    preview: image || "",
+    uploaded: true
+  } as FileWithPreview));
+
+
+  const { update } = useUpdateApi<Company>(handleSuccess);
+  const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>(initialFilePreviews || []);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFilesChanged, setIsFilesChanged] = useState(false)
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -52,6 +68,7 @@ const CompanyImage = () => {
       );
 
       setSelectedFiles((prevFiles) => [...prevFiles, ...filesWithPreview]);
+      setIsFilesChanged(true)
     },
     accept: ACCEPTED_IMAGE_TYPES.reduce(
       (acc, curr) => ({ ...acc, [curr]: [] }),
@@ -64,26 +81,50 @@ const CompanyImage = () => {
   });
 
   const handleRemoveFile = (fileToRemove: File) => {
-    setSelectedFiles((prevFiles) =>
-      prevFiles.filter((file) => file !== fileToRemove),
-    );
+    const newImages = selectedFiles.filter((file) => file !== fileToRemove)
+    setSelectedFiles(newImages);
+    const [banner1, banner2, banner3] = newImages.map((image) => image.preview || null)
+    handleUpdate({ banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null });
   };
 
-  //   const handleUpload = async () => {
-  //     if (selectedFiles.length === 0) return;
 
-  //     setIsUploading(true);
-  //     setError(null);
+  function handleSuccess(updatedCompany: Company) {
+    const updatedFilePreviews = [updatedCompany.banner1, updatedCompany.banner2, updatedCompany.banner3].filter(Boolean).map((image) => ({
+      lastModified: 0,
+      name: '',
+      webkitRelativePath: '',
+      size: 0,
+      type: 'image/',
+      preview: image || "",
+      uploaded: true
+    } as FileWithPreview))
+    setSelectedFiles(updatedFilePreviews)
+    setIsFilesChanged(false)
+  }
 
-  //     try {
-  //       //   await onUpload(selectedFiles);
-  //       setSelectedFiles([]);
-  //     } catch (err) {
-  //       setError("Failed to upload files. Please try again.");
-  //     } finally {
-  //       setIsUploading(false);
-  //     }
-  //   };
+  const handleUpdate = async (formData: Partial<Company>) => {
+    await update(API_UPDATE_COMPANY, {
+      body: { id: company.id, userName: company.userName, ...formData } as Company,
+    }, TAGS.company);
+  };
+
+  const handleUpload = async () => {
+    if (selectedFiles.length === 0) return;
+
+    setIsUploading(true);
+    setError(null);
+    const uploadedImages = selectedFiles.filter((file) => file.uploaded).map((file) => file.preview);
+    const imagesToUpload = selectedFiles.filter((file) => !file.uploaded);
+    try {
+      const response = await uploadImages(imagesToUpload);
+      const [banner1, banner2, banner3] = [...uploadedImages, ...response]
+      handleUpdate({ banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null });
+    } catch (err) {
+      setError("Failed to upload files. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -117,7 +158,7 @@ const CompanyImage = () => {
                       onClick={() => handleRemoveFile(file)}
                       className="absolute -right-2 -top-2 z-20 bg-gray-300 p-1 hover:bg-red-300 hover:text-red-600"
                     >
-                      <DeleteOutline className="h-5 w-5" />
+                      <X className="h-3 w-3" />
                     </IconButton>
                     <Image
                       src={file.preview || ""}
@@ -136,11 +177,12 @@ const CompanyImage = () => {
             <div
               {...getRootProps()}
               className={clsx(
-                "relative col-span-1 aspect-square cursor-pointer rounded-base border border-dashed p-4 transition-colors",
+                "relative col-span-1 flex justify-center items-center aspect-square cursor-pointer rounded-base border border-dashed p-4 transition-colors",
                 isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300",
                 selectedFiles.length >= 3 ? "hidden" : "",
               )}
             >
+              <CloudUpload className="mx-auto h-8 w-8 text-gray-400" />
               <input {...getInputProps()} />
             </div>
           </div>
@@ -168,6 +210,17 @@ const CompanyImage = () => {
           </p>
         </div>
       )}
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={isUploading ? <CircularProgress size={20} /> : <CloudUpload />}
+        onClick={handleUpload}
+        disabled={selectedFiles.length === 0 || isUploading || !isFilesChanged}
+        className="mt-4"
+      >
+        {isUploading ? "Uploading" : "Upload"}
+      </Button>
+
     </div>
   );
 };

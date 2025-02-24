@@ -64,7 +64,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
                         <h5 className="mb-4 text-2xl font-semibold text-main md:mt-4">
                             Company Images
                         </h5>
-                        <CompanyImage />
+                        <CompanyImage company={company} />
                     </div>
                     <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
                         <h5 className="mb-8 text-2xl font-semibold text-main md:mt-4">
