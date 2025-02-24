@@ -1,40 +1,5 @@
-import { getCompanyById } from "@/lib/actions/employer.actions";
 import { Company } from "@/types";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// const initialState: Company = {
-//   id: "",
-//   name: "",
-//   typeId: "",
-// };
-
-// export const fetchCompany = createAsyncThunk(
-//   "todos/fetchTodos",
-//   async (id: string, { rejectWithValue }) => {
-//     try {
-//       const response = await getCompanyById(id);
-//       return response.data;
-//     } catch (err) {
-//       return rejectWithValue(err.response.data);
-//     }
-//   },
-// );
-
-// export const fetchCompany = createAsyncThunk<
-//   Company,
-//   string, // Update this type to match the id parameter
-//   { rejectValue: string }
-// >("company/fetchCompany", async (id: string, { rejectWithValue }) => {
-//   try {
-//     const response = await getCompanyById(id);
-//     if (response.success && response.data) {
-//       return response.data;
-//     }
-//     return rejectWithValue("Failed to fetch company");
-//   } catch (error: any) {
-//     return rejectWithValue(error.response?.data || "Failed to fetch company");
-//   }
-// });
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const companySlice = createSlice({
   name: "company",

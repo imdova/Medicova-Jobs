@@ -38,7 +38,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       </h6>
       <div className="flex items-center gap-2">
         <Image
-          src={job.company?.photo || "/images/placeholder-avatar.svg"}
+          src={job.company?.avatar || "/images/placeholder-avatar.svg"}
           alt={job.title}
           width={45}
           height={45}

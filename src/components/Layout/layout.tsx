@@ -1,15 +1,15 @@
+"use client";
+import { useSession } from "next-auth/react";
+import { UserState } from "@/types";
+import { usePathname } from "next/navigation";
 import { matchRoute } from "./SideBar/LayoutRoutConfigs";
 import DynamicSideBar from "./SideBar/dynamic-side-bar";
-import { getServerSession } from "next-auth";
-import { headers } from "next/headers";
-import { authOptions } from "@/lib/auth/config";
 
-const DynamicLayout = async ({ children }: { children: React.ReactNode }) => {
-  const data = await getServerSession(authOptions);
-  const user = data?.user
-  const headersList = headers();
-  const fullPathName = headersList.get('x-url') || headersList.get('referer') || '/';
-  const pathname = new URL(fullPathName, 'http://localhost').pathname;
+const DynamicLayout = ({ children }: { children: React.ReactNode }) => {
+  const { data: session, status } = useSession();
+  const user = session?.user as UserState;
+
+  const pathname = usePathname() || "/";
   const sideBarType = matchRoute(pathname)?.sideBarType || "";
   const getLayout = () => {
     switch (sideBarType) {

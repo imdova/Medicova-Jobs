@@ -242,7 +242,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
               <div>
                 <div className="flex items-center gap-2">
                   <Image
-                    src={job.company.photo || "/images/placeholder-avatar.svg"}
+                    src={job.company.avatar || "/images/placeholder-avatar.svg"}
                     alt="company logo"
                     width={70}
                     height={70}

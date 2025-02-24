@@ -47,7 +47,7 @@ const JobCard: React.FC<JobCardProps> = ({
         <div className="flex items-center gap-2">
           <Link href={`/co/${job.company?.id}`}>
             <Image
-              src={job.company?.photo || "/images/placeholder-avatar.svg"}
+              src={job.company?.avatar || "/images/placeholder-avatar.svg"}
               alt={job.title}
               width={60}
               height={60}
