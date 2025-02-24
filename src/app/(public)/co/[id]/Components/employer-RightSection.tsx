@@ -1,3 +1,4 @@
+'use client'
 import React, { KeyboardEvent, useState } from "react";
 import { Box, IconButton, Button, TextField } from "@mui/material";
 import Link from "next/link";

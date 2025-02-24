@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import MinJobCard from "@/components/UI/job-card-min";
 import { Button, CircularProgress, IconButton, Tooltip } from "@mui/material";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Grid, Card, Box, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 
 type CompleteProfileProps = {

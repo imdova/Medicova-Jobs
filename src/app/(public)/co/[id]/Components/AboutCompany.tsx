@@ -1,3 +1,4 @@
+'use client';
 import { IconButton } from "@mui/material";
 import { Edit, PendingActions } from "@mui/icons-material";
 import ClampedText from "@/components/UI/ClampedText";

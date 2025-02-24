@@ -21,6 +21,10 @@ import Image from "next/image";
 import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
 import { FileUploadModal } from "@/components/form/FileUploadModal";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_COMPANY } from "@/api/employer";
+import { TAGS } from "@/api";
+import uploadImages from "@/lib/files/imageUploader";
 
 interface EmployerHeaderSectionProps {
   isEmployee: boolean;
@@ -34,13 +38,26 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
   const [image, setImage] = useState<File | null>(null);
   const [cover, setCover] = useState<File | null>(null);
 
-  const updateCoverImage = async (file: File) => {
-    setCover(file);
-  };
+
   const size = companySizeList.find((item) => item.value === data.size);
 
+  const { update } = useUpdateApi<Company>();
+
+  const handleUpdateCompany = async (formData: Partial<Company>) => {
+    await update(API_UPDATE_COMPANY, {
+      body: { id: data.id, ...formData } as Company,
+    }, TAGS.company);
+  };
+
   const updateImage = async (file: File) => {
+    const [avatar] = await uploadImages([file]);
+    handleUpdateCompany({ avatar });
     setImage(file);
+  };
+  const updateCoverImage = async (file: File) => {
+    const [cover] = await uploadImages([file]);
+    handleUpdateCompany({ cover });
+    setCover(file);
   };
   return (
     <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
@@ -49,7 +66,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
         {/* Avatar Positioned on Background Image */}
         <div className="col-start-1 row-start-1 min-h-24 w-full">
           <CoverImage
-            currentImageUrl={cover ? URL.createObjectURL(cover) : ""}
+            currentImageUrl={cover ? URL.createObjectURL(cover) : data.cover || ""}
             onImageUpdate={updateCoverImage}
           />
         </div>

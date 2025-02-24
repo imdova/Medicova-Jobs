@@ -12,7 +12,6 @@ import Image from "next/image";
 
 interface SideBarProps {
   user?: UserState;
-  status: "authenticated" | "loading" | "unauthenticated";
   pathname: string;
 }
 
@@ -43,7 +42,6 @@ const useActiveTab = (links: NavItem[], pathname: string) => {
 
 export default function DynamicSideBar({
   user,
-  status,
   pathname,
 }: SideBarProps) {
   const initialLinks = getSideBarLinks(user, pathname);
@@ -284,8 +282,8 @@ const LinkTab = ({
           {item.notifications && (
             <div
               className={`${isActive
-                  ? "bg-primary-foreground text-light-primary"
-                  : "bg-secondary text-primary-foreground"
+                ? "bg-primary-foreground text-light-primary"
+                : "bg-secondary text-primary-foreground"
                 } aspect-square rounded-full p-1 px-2 text-xs`}
             >
               {item.notifications}
