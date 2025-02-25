@@ -5,26 +5,24 @@ import {
   IconButton,
   Typography,
   Grid,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PlaceIcon from "@mui/icons-material/Place";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EditIcon from "@mui/icons-material/Edit";
-import { DeleteOutline, PhotoCamera, Verified } from "@mui/icons-material";
+import { Verified } from "@mui/icons-material";
 import { Company } from "@/types";
-import { companySizeList, DEFAULT_COVER_IMAGE } from "@/constants";
+import { companySizeList } from "@/constants";
 import Avatar from "@/components/UI/Avatar";
 import Image from "next/image";
 import ShareMenu from "@/components/UI/ShareMenu";
 import Link from "next/link";
-import { FileUploadModal } from "@/components/form/FileUploadModal";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
 import uploadImages from "@/lib/files/imageUploader";
+import { ProfileCoverImage } from "@/components/pages/co/ProfileCoverImage";
 
 interface EmployerHeaderSectionProps {
   isEmployee: boolean;
@@ -65,12 +63,12 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
       <div className="grid grid-cols-1 grid-rows-1">
         {/* Avatar Positioned on Background Image */}
         <div className="col-start-1 row-start-1 min-h-24 w-full">
-          <CoverImage
+          <ProfileCoverImage
             currentImageUrl={cover ? URL.createObjectURL(cover) : data.cover || ""}
-            onImageUpdate={updateCoverImage}
+            onImageUpdate={isEmployee ? updateCoverImage : undefined}
           />
         </div>
-        <div className="col-start-1 row-start-1 flex w-full items-end justify-center px-4 md:justify-start">
+        <div className="col-start-1 row-start-1 z-[1] flex w-full items-end justify-center px-4 md:justify-start">
           {isEmployee ? (
             <Avatar
               currentImageUrl={
@@ -172,97 +170,3 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
 
 export default EmployerHeaderSection;
 
-interface CoverImageProps {
-  currentImageUrl?: string;
-  onImageUpdate: (file: File) => Promise<void>;
-  onImageRemove?: () => Promise<void>;
-}
-
-export const CoverImage = memo(
-  ({ currentImageUrl, onImageUpdate, onImageRemove }: CoverImageProps) => {
-    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    // Handlers
-    const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-      setAnchorEl(null);
-    };
-
-    const handleUploadClick = () => {
-      handleMenuClose();
-      setIsUploadModalOpen(true);
-    };
-
-    const handleRemoveClick = async () => {
-      handleMenuClose();
-      if (onImageRemove) {
-        await onImageRemove();
-      }
-    };
-
-    const handleUpload = async (files: File[]) => {
-      const file = files[0];
-      await onImageUpdate(file);
-    };
-    return (
-      <div className="group relative">
-        <Image
-          src={currentImageUrl || DEFAULT_COVER_IMAGE}
-          width={1080}
-          height={200}
-          alt="cover Image"
-          className="aspect-[4/1] min-h-24 w-full object-cover"
-        />
-
-        {/* Overlay with PhotoCamera icon */}
-        <button
-          onClick={handleMenuOpen}
-          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
-          aria-label="Update profile picture"
-        >
-          <PhotoCamera className="h-6 w-6 text-white" />
-        </button>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-        >
-          <MenuItem onClick={handleUploadClick}>
-            <PhotoCamera className="mr-2 h-4 w-4" />
-            Update Photo
-          </MenuItem>
-          {onImageRemove && currentImageUrl && (
-            <MenuItem onClick={handleRemoveClick} className="text-red-600">
-              <DeleteOutline className="mr-2 h-4 w-4" />
-              Remove Photo
-            </MenuItem>
-          )}
-        </Menu>
-
-        <FileUploadModal
-          open={isUploadModalOpen}
-          onClose={() => setIsUploadModalOpen(false)}
-          onUpload={handleUpload}
-          title={"Upload a cover image for your blog"}
-          uploadButtonText={"Upload"}
-          description="choose a picture as your blog cover photo. Supported formats: JPG, PNG, GIF"
-        />
-      </div>
-    );
-  },
-);
-
-CoverImage.displayName = "CoverImage";
