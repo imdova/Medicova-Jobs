@@ -1,0 +1,122 @@
+'use client'
+import React, { useState } from "react";
+import { IconButton, InputAdornment } from "@mui/material";
+import Link from "next/link";
+import { Company, FieldConfig } from "@/types";
+import { Edit } from "@mui/icons-material";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_COMPANY_USER_NAME } from "@/api/employer";
+import { TAGS } from "@/api";
+import DynamicFormModal from "@/components/form/DynamicFormModal";
+import { useSession } from "next-auth/react";
+
+const userNameField: FieldConfig[] = [
+  {
+    name: "username",
+    label: "User Name",
+    type: "text",
+    required: true,
+    textFieldProps: {
+      placeholder: "Enter User Name",
+      InputProps: {
+        startAdornment: (
+          <InputAdornment position="start">co/</InputAdornment>
+        ),
+      },
+    },
+    validation: {
+      required: "Username is required",
+      minLength: {
+        value: 3,
+        message: "Username must be at least 3 characters long",
+      },
+      maxLength: {
+        value: 20,
+        message: "Username cannot exceed 20 characters",
+      },
+      pattern: {
+        value: /^[a-z0-9_]+$/,
+        message:
+          "Username must contain only lowercase letters, numbers, or underscores (no spaces or uppercase)",
+      },
+    },
+  },
+
+];
+
+const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
+  const { update: updateSession } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isLoading, error, update, reset } = useUpdateApi<Company>(handleSuccess);
+  const open = () => setIsModalOpen(true);
+  const close = () => { setIsModalOpen(false); reset(); };
+
+  async function handleSuccess(updatedCompany: Company) {
+    close();
+    await updateSession({
+      companyName: updatedCompany.name,
+      companyPhoto: updatedCompany.avatar,
+      companyEmail: updatedCompany.email,
+      companyUserName: updatedCompany.username,
+    });
+    window.location.href = `/co/${updatedCompany.username}`
+
+  }
+
+  const handleUpdate = async (formData: Partial<Company>) => {
+    await update(API_UPDATE_COMPANY_USER_NAME, {
+      body: { id: company.id, username: formData.username } as Company,
+    }, TAGS.company);
+  };
+
+
+  return (
+    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+      {/* Title and Description */}
+      <DynamicFormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleUpdate}
+        error={error?.message}
+        loading={isLoading}
+        fields={userNameField}
+        title="Enter Your user Name"
+        initialValues={{ username: company.username }}
+      />
+
+      <div className="flex justify-between items-center"
+      >
+        <h6 className="mb-2 text-2xl font-semibold text-main">Company Public Profile</h6>
+        <IconButton
+          onClick={open}
+          className="rounded border border-solid border-gray-300 p-2"
+        >
+          <Edit />
+        </IconButton>
+      </div>
+      {/* <div className="flex items-center justify-between">
+        <label className="text-lg font-semibold text-main">
+          Public Company Page
+        </label>
+        <Switch color="primary" defaultChecked />
+      </div> */}
+      <div className="my-1 flex items-center justify-between rounded-base bg-primary-100 p-2 py-3">
+        <div>
+          <p className="text-sm text-secondary">
+            Your company&apos;s public profile URL:
+          </p>
+          <Link href={`https://www.medicova.net/co/${company.username}`} className="text-sm text-primary underline">
+            co/{company.username}
+          </Link>
+        </div>
+      </div>
+      {/* Centered Typography with Background */}
+      {/* <p className="mt-1 rounded-base bg-primary-100 p-2 text-sm text-secondary">
+        Optimize your profile for SEO by enabling visibility options and keeping
+        your company details up-to-date to attract top talent.
+      </p> */}
+    </div>
+  );
+};
+
+export default CompanyPublicLink;

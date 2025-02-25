@@ -161,7 +161,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 </IconButton>
               )}
               {/* Share Button */}
-              <ShareMenu path={`/co/${data.id}`} />
+              <ShareMenu path={`/co/${data.username}`} />
             </Box>
           </Grid>
         </Grid>

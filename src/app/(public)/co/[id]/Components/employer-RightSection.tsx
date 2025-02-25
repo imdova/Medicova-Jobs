@@ -140,13 +140,7 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
 
   return (
     <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="flex justify-between items-center">
         <h6 className="mb-2 text-2xl font-semibold text-main">Social Links</h6>
         {isEmployee && (
           <IconButton
@@ -156,7 +150,7 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
             <Edit />
           </IconButton>
         )}
-      </Box>
+      </div>
       <DynamicFormModal
         open={isModalOpen}
         onClose={close}

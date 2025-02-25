@@ -150,7 +150,7 @@ type CountryInData = {
 export interface Company {
   id: string;
   name: string;
-  userName: string;
+  username: string;
   title?: string | null;
   about?: string;
   completencePercent?: number;

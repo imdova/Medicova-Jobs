@@ -39,7 +39,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
             companyName: updatedCompany.name,
             companyPhoto: updatedCompany.avatar,
             companyEmail: updatedCompany.email,
-            companyUserName: updatedCompany.userName,
+            companyUserName: updatedCompany.username,
         });
     }
 

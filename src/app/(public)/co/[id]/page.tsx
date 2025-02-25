@@ -7,6 +7,7 @@ import AboutCompany from "./Components/AboutCompany";
 import CompanyJobs from "./Components/CompanyJobs";
 import CompleteProfile from "../../me/[id]/Components/CompleteProfile";
 import { EmployerSocialMedia, PostYourFirstJob } from "./Components/employer-RightSection";
+import CompanyPublicLink from "./Components/company-publicLink";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
@@ -31,6 +32,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         {isEmployee && (
           <CompleteProfile percentage={company?.completencePercent} />
         )}
+        {isEmployee && <CompanyPublicLink company={company} />}
         {isEmployee && <PostYourFirstJob company={company} />}
         <EmployerSocialMedia data={company} isEmployee={isEmployee} />
         {/* Complete Profile Section */}
