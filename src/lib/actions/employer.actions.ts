@@ -1,19 +1,13 @@
 "use server";
 import { TAGS } from "@/api";
 import {
+  API_GET_CATEGORIES_BY_INDUSTRY,
   API_GET_COMPANY_SECTORS,
   API_GET_COMPANY_TYPES_BY_SECTOR,
+  API_GET_EMPLOYMENT_TYPES,
+  API_GET_INDUSTRIES,
 } from "@/api/admin";
-import {
-  API_GET_COMPANY_BY_USER_NAME,
-  API_GET_EMPLOYEE_BY_ID,
-  API_GET_EMPLOYEES,
-  API_GET_JOB_CATEGORIES_BY_INDUSTRY,
-  API_GET_JOB_EMPLOYMENT_TYPES,
-  API_GET_JOB_INDUSTRIES,
-  API_GET_JOBS,
-  API_UPDATE_COMPANY,
-} from "@/api/employer";
+import { API_GET_COMPANY_BY_USER_NAME, API_GET_JOBS } from "@/api/employer";
 import { API_GET_SEEKERS } from "@/api/seeker";
 import {
   Company,
@@ -26,75 +20,6 @@ import {
   UserState,
 } from "@/types";
 import { errorResult } from "@/util/general";
-import { revalidateTag } from "next/cache";
-
-export const getEmployerWithID = async (id: string): Promise<Result> => {
-  try {
-    const response = await fetch(API_GET_EMPLOYEE_BY_ID + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return {
-        success: true,
-        message: "Role fetched successfully",
-        data: data.company,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "An error occurred",
-    };
-  }
-};
-export const getEmployeeOfCompany = async (
-  companyId: string,
-  page: number = 1,
-  limit: number = 10,
-): Promise<Result<{ data: { id: string }[]; total: number }>> => {
-  try {
-    const response = await fetch(
-      API_GET_EMPLOYEES + `?page=${page}&limit=${limit}&companyId=${companyId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      },
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return {
-        success: true,
-        message: "Roles fetched successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "An error occurred",
-    };
-  }
-};
 
 export const getCompanyByUserName = async (
   userName: string,
@@ -197,7 +122,7 @@ export const getIndustries = async (
 > => {
   try {
     const response = await fetch(
-      `${API_GET_JOB_INDUSTRIES}?page=${page}&limit=${limit}`,
+      `${API_GET_INDUSTRIES}?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -238,7 +163,7 @@ export const getEmploymentTypes = async (
 > => {
   try {
     const response = await fetch(
-      `${API_GET_JOB_EMPLOYMENT_TYPES}?page=${page}&limit=${limit}`,
+      `${API_GET_EMPLOYMENT_TYPES}?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -279,7 +204,7 @@ export const getCategoryFromIndustryId = async (
 > => {
   try {
     const response = await fetch(
-      `${API_GET_JOB_CATEGORIES_BY_INDUSTRY}?industryIds=${industryId}`,
+      `${API_GET_CATEGORIES_BY_INDUSTRY}?industryIds=${industryId}`,
       {
         method: "GET",
         headers: {

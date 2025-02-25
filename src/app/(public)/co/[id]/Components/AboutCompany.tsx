@@ -48,7 +48,6 @@ const AboutCompany: React.FC<{
     await update(API_UPDATE_COMPANY, {
       body: { id: company?.id, ...formData },
     }, TAGS.company);
-
   };
 
   return (

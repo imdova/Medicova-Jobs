@@ -61,7 +61,7 @@ const CompanyJobs: React.FC<{
 
   return (
     <div className="mt-5">
-      <PostJobModal company={company} isOpen={isModalOpen} onClose={onClose} />
+      <PostJobModal key="body-post-job" company={company} isOpen={isModalOpen} onClose={onClose} />
       {/* Title */}
       <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
         <h3 className="text-2xl font-bold text-main">Latest jobs:</h3>

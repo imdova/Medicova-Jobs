@@ -28,7 +28,7 @@ export const PostYourFirstJob: React.FC<{ company: Company }> = ({
   const onClose = () => setIsModalOpen(false);
   return (
     <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <PostJobModal company={company} isOpen={isModalOpen} onClose={onClose} />
+      <PostJobModal key="right-section-post-job" company={company} isOpen={isModalOpen} onClose={onClose} />
       <div className="flex flex-col items-center gap-2">
         {/* Centered Image */}
         <Image

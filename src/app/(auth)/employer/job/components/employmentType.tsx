@@ -56,28 +56,28 @@ const EmploymentTypeSelect: React.FC<IndustryFormProps> = ({
             <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
               {loading
                 ? [1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="flex h-[42px] w-full max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
-                    >
-                      <span className="rounded-md bg-gray-300 text-transparent">
-                        Demo
-                      </span>
-                    </div>
-                  ))
+                  <div
+                    key={i}
+                    className="flex h-[42px] w-full max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
+                  >
+                    <span className="rounded-md bg-gray-300 text-transparent">
+                      Demo
+                    </span>
+                  </div>
+                ))
                 : employmentTypes.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        field.onChange(item.id);
-                        setValue("jobEmploymentTypeName", item.name);
-                      }}
-                      className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobEmploymentTypeId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      field.onChange(item.id);
+                      setValue("jobEmploymentType", item.name);
+                    }}
+                    className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobEmploymentTypeId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                  >
+                    {item.name}
+                  </button>
+                ))}
             </div>
 
             {errors.jobEmploymentTypeId && (

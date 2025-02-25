@@ -60,7 +60,6 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
       companyUserName: updatedCompany.username,
     });
     window.location.href = `/co/${updatedCompany.username}`
-
   }
 
   const handleUpdate = async (formData: Partial<Company>) => {

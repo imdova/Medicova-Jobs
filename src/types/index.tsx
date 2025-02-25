@@ -215,8 +215,8 @@ export type CareerLevels = {
 export interface JobCategory {
   id: string;
   name: string;
-  specialities: SpecialtyItem[];
-  careerLevels: CareerLevels[];
+  // specialities: SpecialtyItem[];
+  // careerLevels: CareerLevels[];
 }
 export interface EmploymentType {
   id: string;
@@ -226,7 +226,6 @@ export interface EmploymentType {
 export interface Industry {
   id: string;
   name: string;
-  categories: JobCategory[];
 }
 export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
@@ -236,21 +235,17 @@ export interface JobData {
   company?: Company;
   title: string;
   jobIndustryId: string | null;
-  jobIndustryName: string | null;
   jobSpecialityId: string | null;
-  jobSpecialityName: string | null;
   jobCategoryId: string | null;
-  jobCategoryName: string | null;
   jobCareerLevelId: string | null;
-  jobCareerLevelName: string | null;
   jobEmploymentTypeId: string | null;
-  jobEmploymentTypeName: string | null;
   jobWorkPlace: JobWorkPlace | null | "";
   gender: Gender | null;
   minAge: number | null;
   maxAge: number | null;
   educationLevel: EducationLevel | null | "";
   country: CountryInData | null;
+  state: CountryInData | null;
   city: string | null;
   maxExpYears: number | null;
   minExpYears: number | null;
@@ -272,31 +267,19 @@ export interface JobData {
   active: boolean | null;
   closed: boolean | null;
   validTo: string | null; // ISO date string
-  applications?: number | null;
+
+  applications?: number | null; // Not in NewJobData
+
   startDateType: StartDateType | null | "";
-  jobIndustry?: {
-    id: string;
-    name: string;
-  } | null;
-  jobSpeciality?: {
-    id: string;
-    name: string;
-  } | null;
-  jobCategory?: {
-    id: string;
-    name: string;
-  } | null;
-  jobCareerLevel?: {
-    id: string;
-    name: string;
-  } | null;
-  jobEmploymentType?: {
-    id: string;
-    name: string;
-  } | null;
-  created_at?: string | null; // ISO date string
-  updatedAt?: string | null; // ISO date string
+  created_at?: string | null; // ISO date string 
+  updatedAt?: string | null; // ISO date string 
+  jobIndustry: string;
+  jobSpeciality: string;
+  jobCategory: string;
+  jobCareerLevel: string;
+  jobEmploymentType: string;
 }
+
 
 export interface FilterOption {
   label: string;

@@ -49,8 +49,10 @@ export default function useFetch<T>(
       if (mergedOptions.fetchOnce && hasFetched.current) return false;
 
       // If fetchOnUrlChange is true, fetch when URL changes
-      if (mergedOptions.fetchOnUrlChange && url !== prevUrl.current)
-        return true;
+      if (mergedOptions.fetchOnUrlChange)
+        if (url != prevUrl.current || (url == prevUrl.current && !data)) {
+          return true;
+        }
 
       // If it's the first render and we haven't fetched, fetch
       if (!hasFetched.current) return true;
@@ -59,6 +61,7 @@ export default function useFetch<T>(
     };
 
     const fetchData = async () => {
+      if (!url) return setData(null);
       if (!shouldFetch()) return;
 
       setLoading(true);
