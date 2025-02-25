@@ -166,7 +166,7 @@ export interface Company {
   email?: string;
   yearFounded?: number | string;
   avatar?: string;
-  socialLinks?: { [key: string]: string };
+  socialLinks?: string;
   visible?: boolean;
   profileUrl?: string;
   companyTypeId?: string | null;

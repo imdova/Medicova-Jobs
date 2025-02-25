@@ -96,42 +96,6 @@ export const getEmployeeOfCompany = async (
   }
 };
 
-export const updateCompany = async (
-  companyData: Partial<Company>,
-): Promise<Result> => {
-  try {
-    const response = await fetch(API_UPDATE_COMPANY + companyData.id, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
-      },
-      body: JSON.stringify(companyData),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      data.typeId = data.type.id;
-      data.sectorId = data.type.sector.id;
-      revalidateTag(TAGS.company);
-      return {
-        success: true,
-        message: "Company updated successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "An error occurred",
-    };
-  }
-};
 export const getCompanyByUserName = async (
   userName: string,
 ): Promise<Result<Company>> => {

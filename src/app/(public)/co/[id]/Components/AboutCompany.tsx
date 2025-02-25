@@ -6,7 +6,9 @@ import EmptyCard from "@/components/UI/emptyCard";
 import { Company, FieldConfig } from "@/types";
 import { useState } from "react";
 import DynamicFormModal from "@/components/form/DynamicFormModal";
-import { updateCompany } from "@/lib/actions/employer.actions";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_COMPANY } from "@/api/employer";
+import { TAGS } from "@/api";
 
 const fields: FieldConfig[] = [
   {
@@ -33,40 +35,36 @@ const AboutCompany: React.FC<{
   isEmployee: boolean;
 }> = ({ company, isEmployee }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isLoading, error, update, reset } = useUpdateApi<Company>(() => setIsModalOpen(false));
+
   const open = () => setIsModalOpen(true);
-  const close = () => setIsModalOpen(false);
-  const [loading, setLoading] = useState(false);
+  const close = () => { setIsModalOpen(false); reset(); };
 
-  const handleSubmit = (data: { [key: string]: string }) => {
-    setLoading(true);
-    handleUpdate(data);
-  };
-
-  const handleUpdate = async (data: { [key: string]: string }) => {
-    const result = await updateCompany({ id: company?.id, about: data.about });
-    if (result.success && result.data) {
-      setLoading(false);
-      console.log("Company Updated successfully");
-    } else {
-      setLoading(false);
-    }
-  };
 
   if (!isEmployee && company?.about?.length === 0) {
     return null;
   }
+  const handleUpdate = async (formData: Partial<Company>) => {
+    await update(API_UPDATE_COMPANY, {
+      body: { id: company?.id, ...formData },
+    }, TAGS.company);
+
+  };
+
   return (
     <div className="relative mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       {/* Title */}
-      <DynamicFormModal
+      {isEmployee && <DynamicFormModal
         open={isModalOpen}
+        error={error?.message}
+        loading={isLoading}
         onClose={close}
-        onSubmit={handleSubmit}
+        onSubmit={handleUpdate}
         fields={fields}
         title="About Company "
         description="Add a brief company description for potential employees. This section is public."
         initialValues={{ about: company?.about }}
-      />
+      />}
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
         {isEmployee && (

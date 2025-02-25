@@ -93,7 +93,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       open &&
       (JSON.stringify(fields) !== JSON.stringify(previousFieldsRef.current) ||
         JSON.stringify(initialValues) !==
-          JSON.stringify(previousInitialValuesRef.current))
+        JSON.stringify(previousInitialValuesRef.current))
     ) {
       const currentValues = getValues();
       const newDefaults = getDefaultValues(fields, initialValues);
@@ -118,12 +118,6 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       previousInitialValuesRef.current = initialValues;
     }
   }, [fields, initialValues, open, reset, getValues]);
-
-  const submitHandler: SubmitHandler<any> = (data) => {
-    onSubmit(data);
-    onClose();
-    reset(getDefaultValues(fields, initialValues));
-  };
 
   const handleClose = () => {
     if (isDirty) {
@@ -317,7 +311,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
           </Alert>
         )}
         <DialogContent>
-          <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Grid container className="mt-1" spacing={2}>
               {fields.map((field) => (
                 <Grid
