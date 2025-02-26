@@ -273,13 +273,22 @@ export interface JobData {
   startDateType: StartDateType | null | "";
   created_at?: string | null; // ISO date string 
   updatedAt?: string | null; // ISO date string 
-  jobIndustry: string;
-  jobSpeciality: string;
-  jobCategory: string;
-  jobCareerLevel: string;
-  jobEmploymentType: string;
+  jobIndustry?: string | null;
+  jobSpeciality?: string | null;
+  jobCategory?: string | null;
+  jobCareerLevel?: string | null;
+  jobEmploymentType?: string | null;
 }
 
+export type JobStringData = Omit<
+  JobData,
+  "country" | "keywords" | "skills" | "questions"
+> & {
+  country: string;
+  keywords: string;
+  skills: string;
+  questions: string;
+};
 
 export interface FilterOption {
   label: string;

@@ -87,7 +87,6 @@ export const fetchCategories = createAsyncThunk(
   "industry/fetchCategories",
   async (industryIds: string[], { rejectWithValue }) => {
     const queryString = industryIds.map((id) => `ids=${id}`).join("&");
-    console.log("🚀 ~ queryString:", queryString);
     try {
       const response = await fetch(
         `${API_GET_CATEGORIES_BY_INDUSTRY}?${queryString}`,
@@ -99,8 +98,6 @@ export const fetchCategories = createAsyncThunk(
           },
         },
       );
-      console.log("🚀 ~ response:", response);
-
       if (response.ok) {
         const data: PaginatedResponse<Item> = await response.json();
         return data;

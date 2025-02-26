@@ -8,7 +8,6 @@ import {
   FormControl,
   Checkbox,
   FormControlLabel,
-  Divider,
   InputAdornment,
 } from "@mui/material";
 import TextEditor from "@/components/editor/editor";
@@ -707,15 +706,10 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                     minRows={4}
                     maxRows={6}
                     placeholder="Eg. Bonus Commission, Salary in Local Currency, etc."
-                    error={!!errors?.title?.message}
                   />
                 )}
               />
-              {errors.title && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.title.message}
-                </p>
-              )}
+
             </div>
           </div>
           <div className="flex flex-wrap gap-2 md:flex-nowrap">

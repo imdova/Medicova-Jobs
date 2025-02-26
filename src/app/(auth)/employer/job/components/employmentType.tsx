@@ -1,9 +1,7 @@
-import { getEmploymentTypes } from "@/lib/actions/employer.actions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchEmploymentTypes } from "@/store/slices/employmentTypeSlice";
+import { API_GET_EMPLOYMENT_TYPES } from "@/api/admin";
+import useFetch from "@/hooks/useFetch";
 import { EmploymentType, JobData } from "@/types";
 import { FormControl } from "@mui/material";
-import { useEffect, useState } from "react";
 import {
   UseFormSetValue,
   Control,
@@ -20,23 +18,10 @@ interface IndustryFormProps {
 const EmploymentTypeSelect: React.FC<IndustryFormProps> = ({
   control,
   errors,
-  watch,
   setValue,
 }) => {
-  const {
-    employmentTypes: { data: employmentTypes, loading },
-  } = useAppSelector((state) => state.employmentType);
-  const dispatch = useAppDispatch();
+  const { loading, error, data: employmentTypes } = useFetch<PaginatedResponse<EmploymentType>>(API_GET_EMPLOYMENT_TYPES);
 
-  const handleFetchEmploymentTypes = async () => {
-    await dispatch(fetchEmploymentTypes());
-  };
-  useEffect(() => {
-    if (employmentTypes.length === 0) {
-      handleFetchEmploymentTypes();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
   return (
     <div className="min-w-[150px] flex-1">
       <label className="mb-1 text-lg font-semibold text-main">
@@ -65,7 +50,7 @@ const EmploymentTypeSelect: React.FC<IndustryFormProps> = ({
                     </span>
                   </div>
                 ))
-                : employmentTypes.map((item) => (
+                : employmentTypes?.data.map((item) => (
                   <button
                     key={item.id}
                     type="button"

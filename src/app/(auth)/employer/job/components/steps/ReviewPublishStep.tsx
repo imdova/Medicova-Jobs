@@ -55,7 +55,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
               <div className="rounded-md text-sm text-gray-500">
                 <MedicalServicesOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                 <span className="ml-2 text-xs md:text-base">
-                  {jobData.jobCategoryName}
+                  {jobData.jobCategory}
                 </span>
               </div>
             </div>
@@ -142,7 +142,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
         </div>
       </div>
       <p className="text-red-500"> {error}</p>
-      <div className="space-between sticky bottom-0 mt-5 flex gap-2 md:justify-end">
+      <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg space-between sticky bottom-5  mt-5 flex gap-2 md:justify-end">
         <Button onClick={onBack} variant="outlined">
           Back
         </Button>

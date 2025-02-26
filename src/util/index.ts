@@ -144,13 +144,13 @@ export const formatEducationAndSpecialty = (job: JobData): string | null => {
   }
   switch (education.id) {
     case EducationLevel.HIGH_SCHOOL:
-      return `High School Diploma in ${job.jobSpecialityName}`;
+      return `High School Diploma in ${job.jobSpeciality}`;
     case EducationLevel.BACHELORS:
-      return `Bachelor's Degree in ${job.jobSpecialityName}`;
+      return `Bachelor's Degree in ${job.jobSpeciality}`;
     case EducationLevel.MASTERS:
-      return `Master's Degree in ${job.jobSpecialityName}`;
+      return `Master's Degree in ${job.jobSpeciality}`;
     case EducationLevel.PHD:
-      return `PhD in ${job.jobSpecialityName}`;
+      return `PhD in ${job.jobSpeciality}`;
     default:
       return null;
   }

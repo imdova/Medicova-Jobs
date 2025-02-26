@@ -5,15 +5,19 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
 import { Stepper, Step, StepLabel, Alert, Snackbar } from "@mui/material";
 import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
-import { createJob, updateJob } from "@/lib/actions/job.actions";
+// import { createJob, updateJob } from "@/lib/actions/job.actions";
 import { convertEmptyStringsToNull } from "@/util";
-import { JobData, UserState } from "@/types";
+import { JobData, JobStringData, UserState } from "@/types";
 
 // Components
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
 import { useJobForm } from "./use-job-form";
+import { API_CREATE_JOB } from "@/api/employer";
+import { TAGS } from "@/api";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { transformToJsonStrings } from "@/util/job/post-job";
 
 // Constants
 const FORM_STEPS = [
@@ -39,12 +43,8 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     setActiveStep,
     jobData,
     setJobData,
-    loading,
-    setLoading,
     draftLoading,
     setDraftLoading,
-    error,
-    setError,
     notification,
     setNotification,
   } = useJobForm(job);
@@ -53,56 +53,43 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     next: () =>
       setActiveStep((prev) => Math.min(prev + 1, FORM_STEPS.length - 1)),
     back: (data?: Partial<JobData>) => {
-      console.log("🚀 ~ data:", data?.jobEmail);
       data && setJobData({ ...jobData, ...data, companyId });
       setActiveStep((prev) => Math.max(prev - 1, 0));
     },
   };
 
-  const handleJobCreation = async (
-    data: JobData,
-    type: "new" | "draft" = "new",
-  ) => {
-    const result = await createJob(convertEmptyStringsToNull(data));
+  const { isLoading, error, update } = useUpdateApi<JobData>(handleSuccess);
 
-    if (result.success && result.data) {
-      const newJob = result.data;
+  const createJob = async (data: Partial<JobData>) => {
+    const body: Partial<JobStringData> = transformToJsonStrings(data);
+    await update(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);
+  };
+  const updateJob = async (data: Partial<JobData>) => {
+    const body: Partial<JobStringData> = transformToJsonStrings(data);
+    await update(API_CREATE_JOB, { body }, TAGS.jobs);
+  };
+
+  async function handleSuccess(newJob: JobData) {
+    if (!jobData.id) {
       dispatch(addNewJob(newJob));
-
-      if (type === "draft") {
+      if (newJob.draft) {
         setNotification({
           message: "Your job has been saved to draft",
           severity: "success",
         });
-        return router.replace(`/employer/job/posted/${newJob.id}`);
+      } else {
+        router.push(`/job/${newJob.id}`);
       }
-      router.push(`/job/${newJob.id}`);
     } else {
-      setError(result.message);
-    }
-  };
-
-  const handleJobUpdate = async (
-    data: JobData,
-    type: "new" | "draft" = "new",
-  ) => {
-    const result = await updateJob(convertEmptyStringsToNull(data));
-
-    if (result.success && result.data) {
-      const updatedJob = result.data;
-      dispatch(updateJobOptimistic(updatedJob));
-      if (type === "draft") {
+      dispatch(updateJobOptimistic(newJob));
+      if (newJob.draft) {
         setNotification({
           message: "Your job has been saved to draft",
           severity: "success",
         });
-        return router.replace(`/employer/job/posted/${updatedJob.id}`);
       }
-      router.push(`/job/${updatedJob.id}`);
-    } else {
-      setError(result.message);
     }
-  };
+  }
 
   const handleStepSubmit = {
     jobDetails: (data: JobData) => {
@@ -119,16 +106,10 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         companyId,
         draft: false,
       };
-
-      setLoading(true);
-      try {
-        if (jobData.id) {
-          await handleJobUpdate(jobToSubmit);
-        } else {
-          await handleJobCreation(jobToSubmit);
-        }
-      } finally {
-        setLoading(false);
+      if (jobData.id) {
+        updateJob(jobToSubmit);
+      } else {
+        createJob(jobToSubmit);
       }
     },
     draft: async (data?: Partial<JobData>) => {
@@ -138,17 +119,12 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         companyId,
         draft: true,
       };
-
-      setDraftLoading(true);
-      try {
-        if (jobData.id) {
-          await handleJobUpdate(jobToSave, "draft");
-        } else {
-          await handleJobCreation(jobToSave, "draft");
-        }
-      } finally {
-        setDraftLoading(false);
+      if (jobData.id) {
+        updateJob(jobToSave);
+      } else {
+        createJob(jobToSave);
       }
+
     },
   };
 
@@ -197,9 +173,9 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
             onBack={handleNavigation.back}
             onDraft={handleStepSubmit.draft}
             onSubmit={handleStepSubmit.publish}
-            loading={loading}
+            loading={isLoading}
             draftLoading={draftLoading}
-            error={error}
+            error={error?.message || ""}
           />
         )}
       </div>

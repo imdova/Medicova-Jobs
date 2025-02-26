@@ -11,6 +11,7 @@ import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { Gender } from "@/constants/enums/gender.enum";
 import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { JobData, Result } from "@/types";
+import { transformFromJsonStrings } from "@/util/job/post-job";
 import { revalidateTag } from "next/cache";
 
 export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
@@ -159,22 +160,11 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
       next: { tags: [TAGS.jobs] },
     });
     if (response.ok) {
-      const data: JobData = await response.json();
-      data.companyId = data.company?.id || null;
-      data.jobCategoryId = data.jobCategory?.id || null;
-      data.jobCategoryName = data.jobCategory?.name || null;
-      data.jobIndustryId = data.jobIndustry?.id || null;
-      data.jobIndustryName = data.jobIndustry?.name || null;
-      data.jobSpecialityId = data.jobSpeciality?.id || null;
-      data.jobSpecialityName = data.jobSpeciality?.name || null;
-      data.jobCareerLevelId = data.jobCareerLevel?.id || null;
-      data.jobCareerLevelName = data.jobCareerLevel?.name || null;
-      data.jobEmploymentTypeId = data.jobEmploymentType?.id || null;
-      data.jobEmploymentTypeName = data.jobEmploymentType?.name || null;
+      const data = await response.json();
       return {
         success: true,
         message: "Job fetched successfully",
-        data: data,
+        data: transformFromJsonStrings(data) as JobData,
       };
     } else {
       const errorData = await response.json();

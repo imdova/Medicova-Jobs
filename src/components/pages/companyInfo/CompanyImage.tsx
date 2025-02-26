@@ -104,7 +104,7 @@ const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
 
   const handleUpdate = async (formData: Partial<Company>) => {
     await update(API_UPDATE_COMPANY, {
-      body: { id: company.id, userName: company.userName, ...formData } as Company,
+      body: { id: company.id, userName: company.username, ...formData } as Company,
     }, TAGS.company);
   };
 

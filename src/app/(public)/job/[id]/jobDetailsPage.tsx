@@ -14,7 +14,7 @@ import { Button, IconButton } from "@mui/material";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { formatEducationAndSpecialty, getFullLastEdit } from "@/util";
 import { useSession } from "next-auth/react";
-import { JobData, UserState } from "@/types";
+import { JobData } from "@/types";
 import { notFound } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
@@ -114,7 +114,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
             <div className="rounded-md text-sm text-gray-500">
               <MedicalServicesOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
               <span className="ml-2 text-xs md:text-base">
-                {job.jobCategoryName}
+                {job.jobCategory}
               </span>
             </div>
           </div>

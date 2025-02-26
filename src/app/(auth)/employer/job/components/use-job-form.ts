@@ -5,9 +5,7 @@ import React from "react";
 export const useJobForm = (initialJob?: JobData) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [jobData, setJobData] = React.useState(initialJob || INITIAL_JOB_DATA);
-  const [loading, setLoading] = React.useState(false);
   const [draftLoading, setDraftLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
   const [notification, setNotification] =
     React.useState<NotificationType | null>(null);
 
@@ -16,12 +14,8 @@ export const useJobForm = (initialJob?: JobData) => {
     setActiveStep,
     jobData,
     setJobData,
-    loading,
-    setLoading,
     draftLoading,
     setDraftLoading,
-    error,
-    setError,
     notification,
     setNotification,
   };

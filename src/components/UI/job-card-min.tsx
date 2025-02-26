@@ -1,4 +1,3 @@
-import { notifications } from "@/constants";
 import { JobData } from "@/types";
 import { formatEducationAndSpecialty, getFullLastEdit } from "@/util";
 import {
@@ -8,9 +7,8 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
-import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
+import { jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
-import { Button } from "@mui/material";
 interface JobCardProps {
   job: JobData;
   className?: string;
@@ -65,10 +63,10 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       </div>
 
       <div className="mb-2 ml-[6px] mt-3 flex max-w-[500px] flex-wrap text-secondary">
-        {job.jobEmploymentType?.name && workPlace && (
+        {job.jobEmploymentType && workPlace && (
           <div className="mr-2 mt-2 flex items-center gap-1 text-xs">
             <span className="h-[4px] w-[4px] rounded-full bg-secondary"></span>
-            {job.jobEmploymentType?.name} {workPlace ? " | " + workPlace : ""}
+            {job.jobEmploymentType} {workPlace ? " | " + workPlace : ""}
           </div>
         )}
         {job.minExpYears !== null && job.maxExpYears !== null ? (
@@ -107,20 +105,20 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       )}
       <div className="mt-auto">
         <div className="mt-3 flex flex-wrap">
-          {job.jobIndustry?.name && (
+          {job.jobIndustry && (
             <Link
-              href={`/search?q=${job.jobIndustry.name}`}
+              href={`/search?q=${job.jobIndustry}`}
               className="mr-2 text-sm text-primary underline hover:no-underline"
             >
-              #{job.jobIndustry.name}
+              #{job.jobIndustry}
             </Link>
           )}
-          {job.jobCategory?.name && (
+          {job.jobCategory && (
             <Link
-              href={`/search?q=${job.jobCategory.name}`}
+              href={`/search?q=${job.jobCategory}`}
               className="mr-2 text-sm text-primary underline hover:no-underline"
             >
-              #{job.jobCategory.name}
+              #{job.jobCategory}
             </Link>
           )}
           {job.country && (

@@ -105,7 +105,7 @@ const JobCard: React.FC<JobCardProps> = ({
                 <div className="mb-1 mr-2 flex items-center gap-1 md:mb-0">
                   <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {education} Degree at {job.jobSpeciality?.name}{" "}
+                    {education} Degree at {job.jobSpeciality}{" "}
                   </p>
                 </div>
               )}
@@ -115,12 +115,12 @@ const JobCard: React.FC<JobCardProps> = ({
         <div>
           <div className="mb-2 flex max-w-[600px] flex-wrap text-secondary">
             {/* /// */}
-            {job.jobEmploymentType?.name && (
+            {job.jobEmploymentType && (
               <div className="flex items-center gap-1 text-xs md:text-base">
                 <div>
                   <span className="mx-[4px] block h-[6px] w-[6px] rounded-full bg-secondary md:mx-[5px]"></span>
                 </div>
-                {job.jobEmploymentType?.name} | {workPlace}
+                {job.jobEmploymentType} | {workPlace}
               </div>
             )}
             {(job.minExpYears || job.maxExpYears) && (
@@ -179,14 +179,14 @@ const JobCard: React.FC<JobCardProps> = ({
             )}
           </div>
           <div className="ml-5 flex gap-3">
-            {job.jobIndustry?.name && (
+            {job.jobIndustry && (
               <button className="text-sm text-primary underline hover:no-underline">
-                #{job.jobIndustry?.name}
+                #{job.jobIndustry}
               </button>
             )}
-            {job.jobCategory?.name && (
+            {job.jobCategory && (
               <button className="text-sm text-primary underline hover:no-underline">
-                #{job.jobCategory?.name}
+                #{job.jobCategory}
               </button>
             )}
             {job.country?.name && (
