@@ -1,5 +1,5 @@
 import { getCompanyByUserName } from "@/lib/actions/employer.actions";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import EmployerHeaderSection from "./Components/EmployerHeaderSection";
@@ -12,7 +12,7 @@ import CompanyPublicLink from "./Components/company-publicLink";
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
   const { success, data: company } = await getCompanyByUserName(id);
-  if (!success || !company) return redirect("/employer/company-info");
+  if (!success || !company) return notFound();
   const user = data?.user
   const isEmployee = company.id === user?.companyId
   return <div className="relative w-full">
@@ -20,7 +20,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       {/* Left + Center Sections */}
       <div className="flex-1">
         {/* Header Section */}
-        <EmployerHeaderSection isEmployee={isEmployee} data={company} />
+        <EmployerHeaderSection isEmployee={isEmployee} company={company} />
         {/* Left Section */}
         <AboutCompany company={company} isEmployee={isEmployee} />
         {/* Center Section + Profile Form */}

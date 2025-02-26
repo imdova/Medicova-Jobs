@@ -1,3 +1,4 @@
+import { FieldConfig } from "@/types";
 import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 
 export const isValidEgyptianPhoneNumber = (phone: string): boolean => {
@@ -15,3 +16,28 @@ export const isValidPhoneNumber = (phoneNumber: string): boolean => {
   }
   return true;
 };
+
+export const getDefaultValues = (
+  fields: FieldConfig[],
+  initialValues: Record<string, any>,
+): Record<string, any> => ({
+  ...fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.name]: field.type === "checkbox" ? false : "",
+    }),
+    {},
+  ),
+  ...initialValues,
+});
+
+export function getNestedValue(
+  formValues: Record<string, any>,
+  path: string,
+): any {
+  const keys = path.split(".");
+  const value = keys.reduce((current, key) => {
+    return current && current[key] !== undefined ? current[key] : undefined;
+  }, formValues);
+  return value;
+}

@@ -385,7 +385,13 @@ export type FieldType =
   | "date"
   | "textEditor"
   | "select"
+  | "search-select"
   | "checkbox";
+
+export interface Option {
+  value: string | number;
+  label: string;
+}
 
 // Updated FieldConfig to support multiple hidden fields
 export interface FieldConfig<T = any> {
@@ -393,16 +399,31 @@ export interface FieldConfig<T = any> {
   label?: string;
   type: FieldType;
   required?: boolean;
+  dependsOn?: string; // Field this depends on
   validation?: any;
   gridProps?: {
     xs?: number;
     sm?: number;
     md?: number;
   };
+  resetFields?: (string | number)[]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
-  options?: { label: string; value: string | number }[];
+  // options?: { label: string; value: string | number }[];
+  options?: Option[] // Updated to support dynamic options
   hideFieldNames?: (keyof T)[];
-  onChange?: (value: any) => void; // Add this line
+  onChange?: (value: any) => void; // Updated to include formMethods
+}
+export interface DynamicModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+  fields: FieldConfig[];
+  title: string;
+  description?: string;
+  initialValues?: Record<string, any>;
+  children?: React.ReactNode;
+  loading?: boolean;
+  error?: string;
 }
