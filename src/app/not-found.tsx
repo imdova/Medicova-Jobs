@@ -12,7 +12,7 @@ export default function NotFoundPage() {
 
         <a
           href="/"
-          className="focus:ring-3 focus:outline-hidden bg-orange-primary mt-6 inline-block rounded-3xl px-5 py-3 font-medium text-white hover:bg-yellow-600"
+          className="focus:ring-3 focus:outline-hidden bg-primary mt-6 inline-block rounded-3xl px-5 py-3 font-medium text-white hover:bg-primary-900"
         >
           Go Back Home
         </a>

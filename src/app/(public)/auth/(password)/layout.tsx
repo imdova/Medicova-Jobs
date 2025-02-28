@@ -1,22 +1,10 @@
-"use client";
-
-import { UserState } from "@/types";
-import { CircularProgress } from "@mui/material";
-import { useSession } from "next-auth/react";
+import { authOptions } from "@/lib/auth/config";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-  const user = session?.user as UserState;
-
-  if (status === "loading") {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <CircularProgress />
-        <h6 className="ml-4">Loading...</h6>
-      </div>
-    );
-  }
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const data = await getServerSession(authOptions);
+  const user = data?.user
   if (!user) {
     redirect("/auth/login");
   }

@@ -1,15 +1,14 @@
 "use client";
 import { createUrl } from "@/util";
-import { Search } from "@mui/icons-material";
-import { IconButton, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ComponentProps, Suspense, useState } from "react";
+import { ComponentProps, KeyboardEvent, Suspense, useState } from "react";
 
 interface SearchProps extends ComponentProps<typeof TextField> {
   onClick?: () => void;
   pathname?: string;
   children?: React.ReactNode;
-  parentClassName?: string;
+  isBounce?: boolean;
 }
 
 let timer: NodeJS.Timeout;
@@ -27,21 +26,19 @@ const Input: React.FC<SearchProps> = ({
   onClick,
   pathname: initialPathname,
   children,
-  parentClassName,
+  isBounce,
   ...props
 }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const currentPage = pathname.split("/").pop();
+  // const currentPage = pathname.split("/").pop();
   const newPathname = initialPathname || pathname;
   const initialSearchText = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialSearchText);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function onSubmit() {
     const newParams = new URLSearchParams(searchParams.toString());
-
     if (query) {
       newParams.set("q", query);
       newParams.delete("page");
@@ -62,28 +59,24 @@ const Input: React.FC<SearchProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
-    if (currentPage === "shop") {
+    if (isBounce) {
       updateSearchParams(value);
     }
   };
-
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && query.trim()) {
+      e.preventDefault();
+      onSubmit()
+    }
+  };
   return (
-    <form onSubmit={onSubmit} className={parentClassName}>
-      <TextField
-        {...props}
-        value={query}
-        onChange={handleChange}
-        InputProps={{
-          startAdornment: (
-            <IconButton edge="start">
-              <Search />
-            </IconButton>
-          ),
-        }}
-      />
-      <input type="submit" hidden />
-      {children}
-    </form>
+    <TextField
+      {...props}
+      value={query}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+
+    />
   );
 };
 

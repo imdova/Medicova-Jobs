@@ -9,9 +9,10 @@ import {
   Alert,
   styled,
 } from "@mui/material";
-import { CloudUpload, Delete } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 import Image from "next/image";
 import clsx from "clsx";
+import { ACCEPTED_IMAGE_TYPES } from "@/constants";
 
 // Types for the modal
 interface FileWithPreview extends File {
@@ -101,7 +102,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   multiple = false,
   maxFiles = 1,
   maxFileSizeMB = 5,
-  acceptedFileTypes = ["*"],
+  acceptedFileTypes = ACCEPTED_IMAGE_TYPES,
   title = "Upload Files",
   description,
   uploadButtonText = "Upload",
@@ -151,8 +152,13 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: acceptedFileTypes.reduce(
-      (acc, curr) => ({ ...acc, [curr]: [] }),
-      {},
+      (acc, type) => ({
+        ...acc,
+        [type]: type === "image/jpeg"
+          ? ['.jpeg', '.jpg']
+          : [`.${type.split('/')[1]}`]
+      }),
+      {}
     ),
     multiple,
     maxFiles,

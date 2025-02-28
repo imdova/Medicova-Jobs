@@ -85,13 +85,16 @@ export function getLastSegment(url?: string) {
   return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
 }
 
-export const isCurrentPage = (pathname: string, linkPath: string): boolean => {
-  // Convert the linkPath into a regex pattern
-  const regexPattern = linkPath
-    .replace(/\[.*?\]/g, "[^/]+") // Replace dynamic segments (e.g., [id]) with a regex to match any non-slash characters
-    .replace(/\//g, "\\/"); // Escape slashes for regex
+export const isCurrentPage = (
+  pathname?: string,
+  linkPath?: string,
+): boolean => {
+  if (!pathname || !linkPath) return false;
 
-  // Create the regex and test the pathname
+  const regexPattern = linkPath
+    .replace(/\[.*?\]/g, "[^/]+")
+    .replace(/\//g, "\\/");
+
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(pathname);
 };

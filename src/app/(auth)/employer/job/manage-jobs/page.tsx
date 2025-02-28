@@ -1,62 +1,43 @@
-"use client";
-import React, { useEffect } from "react";
-import { Box, TextField, IconButton, Tabs, Tab } from "@mui/material";
+import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
 import JobCard from "@/components/UI/job-card";
-import { useSession } from "next-auth/react";
-import { JobsTabs, UserState } from "@/types";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchJobs } from "@/store/slices/jobSlice";
+import { JobsTabs } from "@/types";
 import { filteredJobs } from "@/lib/auth/utils";
-import Loading from "@/components/loading/loading";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/config";
+import { getJobsByCompanyId } from "@/lib/actions/job.actions";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import SearchInput from "@/components/UI/search-Input";
+import { searchJobsByQueryAndDate } from "@/util/job/searchInJobs";
 
-const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
+const tabs: JobsTabs[] = ["active", "closed", "expired", "draft"];
 
-const ManageJobs: React.FC = () => {
-  const { data: session } = useSession();
-  const user = session?.user as UserState;
-  const companyId = user?.companyId || "";
-
-  const {
-    jobs: { data: jobs, loading, error },
-  } = useAppSelector((state) => state.companyJobs);
-  const dispatch = useAppDispatch();
-
-  const [activeTab, setActiveTab] = React.useState(0);
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
-  useEffect(() => {
-    if (jobs.length === 0 && companyId) {
-      dispatch(fetchJobs(companyId));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, companyId]);
+const page = async ({ searchParams }: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+) => {
+  const activeTab = searchParams?.tab as JobsTabs || "active"
+  const query = searchParams?.q as string || ""
+  const data = await getServerSession(authOptions);
+  const user = data?.user
+  if (!user?.companyId) return notFound()
+  const result = await getJobsByCompanyId(user?.companyId, 1, 10);
+  const { data: jobs } = result.data || { data: [], total: 0 };
 
   return (
-    <Box sx={{ padding: { xs: "14px", md: "40px" } }}>
+    <div className="p-4" >
       {/* Header Section */}
-      <Box
-        sx={{
-          display: "flex",
-
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-          gap: 2,
-        }}
+      <div className="flex justify-between items-center mb-3 gap-3"
       >
         {/* Search Input */}
-        <TextField
+        <SearchInput
+          isBounce={true}
           variant="outlined"
           placeholder="Search your job by title"
           InputProps={{
             endAdornment: (
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
+              <SearchIcon className="text-secondary" />
             ),
           }}
           sx={{
@@ -68,62 +49,39 @@ const ManageJobs: React.FC = () => {
         />
 
         {/* Filter Section */}
-        <Box sx={{ display: "flex", gap: 5 }}>
+        <div className="flex gap-8">
           <TextField
             className="hidden md:block"
             type="date"
-            sx={{
-              "& input": { padding: "10px" },
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
-              },
-            }}
             variant="outlined"
           />
-          {/* Filter Button with Background Color and Border Radius */}
-          <button className="flex h-14 w-14 items-center justify-center rounded-full bg-[#eee] p-2 md:w-auto md:gap-1 md:px-6">
-            <TuneIcon className="text-primary" />
-            <p className="hidden md:block">Filter</p>
-          </button>
-        </Box>
-      </Box>
-
-      {/* Tabs Section */}
-      <div className="max-w-[calc(100vw-40px)]">
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          sx={{
-            marginBottom: "20px",
-            "& .MuiTab-root": {
-              textTransform: "none",
-              minWidth: "125px", // Increased width for each tab
-              fontSize: "15px", // Increased font size for each tab
-            },
-            "& .Mui-selected": {
-              fontWeight: "bold",
-            },
-          }}
-        >
-          {tabs.map((tab, index) => (
-            <Tab
-              key={index}
-              label={`${tab} (${filteredJobs(jobs, tabs[index]).length})`}
-            />
-          ))}
-        </Tabs>
+        </div>
       </div>
 
-      {/* Job Listings */}
-      {loading && <Loading />}
+      {/* Tabs Section */}
+      <div className="max-w-[calc(100vw-40px)]  overflow-x-auto ">
+        <div className="flex gap-3 md:gap-7 py-4 px-4"
+        >
+          {tabs.map((tab) => (
+            <Link
+              href={{ query: { tab } }}
+              key={tab}
+              scroll={false}
+              className={`${activeTab === tab ? "border-primary" : "border-transparent"} border-b-2  hover:text-gray-600 capitalize text-main md:text-lg`}
+            >
+              {`${tab} (${filteredJobs(jobs, tab).length})`}
+            </Link>
+          ))}
+        </div>
+      </div>
       <div className="flex flex-col gap-4 p-2">
-        {filteredJobs(jobs, tabs[activeTab]).map((job) => (
+        {/* {filteredJobs(jobs, tabs[activeTab]).map((job) => ( */}
+        {searchJobsByQueryAndDate(filteredJobs(jobs, activeTab), query).map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />
         ))}
       </div>
-    </Box>
+    </div>
   );
 };
 
-export default ManageJobs;
+export default page;

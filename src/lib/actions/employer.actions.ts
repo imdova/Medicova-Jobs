@@ -114,12 +114,7 @@ export const getTypeList = async (
 export const getIndustries = async (
   page: number = 1,
   limit: number = 10,
-): Promise<
-  Result<{
-    data: Industry[];
-    total: number;
-  }>
-> => {
+): Promise<Result<Industry[]>> => {
   try {
     const response = await fetch(
       `${API_GET_INDUSTRIES}?page=${page}&limit=${limit}`,
@@ -132,11 +127,11 @@ export const getIndustries = async (
       },
     );
     if (response.ok) {
-      const data: { total: number; data: Industry[] } = await response.json();
+      const data = await response.json();
       return {
         success: true,
         message: "Industries list fetched successfully",
-        data: data,
+        data: data.data,
       };
     } else {
       const errorData = await response.json();
@@ -155,12 +150,7 @@ export const getIndustries = async (
 export const getEmploymentTypes = async (
   page: number = 1,
   limit: number = 10,
-): Promise<
-  Result<{
-    data: EmploymentType[];
-    total: number;
-  }>
-> => {
+): Promise<Result<EmploymentType[]>> => {
   try {
     const response = await fetch(
       `${API_GET_EMPLOYMENT_TYPES}?page=${page}&limit=${limit}`,
@@ -178,7 +168,7 @@ export const getEmploymentTypes = async (
       return {
         success: true,
         message: "Employment types list fetched successfully",
-        data: data,
+        data: data.data,
       };
     } else {
       const errorData = await response.json();

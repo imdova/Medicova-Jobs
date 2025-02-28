@@ -6,14 +6,13 @@ import { useAppDispatch } from "@/store/hooks";
 import { Stepper, Step, StepLabel, Alert, Snackbar } from "@mui/material";
 import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
 // import { createJob, updateJob } from "@/lib/actions/job.actions";
-import { convertEmptyStringsToNull } from "@/util";
-import { JobData, JobStringData, UserState } from "@/types";
+import { JobData, JobStringData, UserState, NotificationType, Industry, EmploymentType } from "@/types";
 
 // Components
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
-import { useJobForm } from "./use-job-form";
+import { INITIAL_JOB_DATA } from "@/constants/jobs/post-job";
 import { API_CREATE_JOB } from "@/api/employer";
 import { TAGS } from "@/api";
 import useUpdateApi from "@/hooks/useUpdateApi";
@@ -28,26 +27,21 @@ const FORM_STEPS = [
 
 interface PostJobFormProps {
   job?: JobData;
+  industries: Industry[]
+  employmentTypes: EmploymentType[]
 }
 
-const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
+const PostJobForm: React.FC<PostJobFormProps> = ({ job, industries, employmentTypes }) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
 
-  const {
-    activeStep,
-    setActiveStep,
-    jobData,
-    setJobData,
-    draftLoading,
-    setDraftLoading,
-    notification,
-    setNotification,
-  } = useJobForm(job);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [jobData, setJobData] = React.useState(job || INITIAL_JOB_DATA);
+  const [notification, setNotification] =
+    React.useState<NotificationType | null>(null);
 
   const handleNavigation = {
     next: () =>
@@ -59,6 +53,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
   };
 
   const { isLoading, error, update } = useUpdateApi<JobData>(handleSuccess);
+  const { isLoading: draftLoading, error: draftingError, update: draft, reset: resetDraftError } = useUpdateApi<JobData>(handleDraftSuccess);
 
   const createJob = async (data: Partial<JobData>) => {
     const body: Partial<JobStringData> = transformToJsonStrings(data);
@@ -68,27 +63,24 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
     const body: Partial<JobStringData> = transformToJsonStrings(data);
     await update(API_CREATE_JOB, { body }, TAGS.jobs);
   };
+  const draftJob = async (data: Partial<JobData>) => {
+    const body: Partial<JobStringData> = transformToJsonStrings(data);
+    if (data.id) {
+      await draft(API_CREATE_JOB, { body }, TAGS.jobs);
+    } else {
+      await draft(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);
+    }
+  }
 
   async function handleSuccess(newJob: JobData) {
-    if (!jobData.id) {
-      dispatch(addNewJob(newJob));
-      if (newJob.draft) {
-        setNotification({
-          message: "Your job has been saved to draft",
-          severity: "success",
-        });
-      } else {
-        router.push(`/job/${newJob.id}`);
-      }
-    } else {
-      dispatch(updateJobOptimistic(newJob));
-      if (newJob.draft) {
-        setNotification({
-          message: "Your job has been saved to draft",
-          severity: "success",
-        });
-      }
-    }
+    router.push(`/job/${newJob.id}`);
+  }
+  async function handleDraftSuccess(newJob: JobData) {
+    setJobData(newJob)
+    setNotification({
+      message: "Your job has been saved to draft",
+      severity: "success",
+    });
   }
 
   const handleStepSubmit = {
@@ -119,11 +111,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         companyId,
         draft: true,
       };
-      if (jobData.id) {
-        updateJob(jobToSave);
-      } else {
-        createJob(jobToSave);
-      }
+      draftJob(jobToSave);
 
     },
   };
@@ -151,6 +139,8 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
         {activeStep === 0 && (
           <JobDetailsStep
             jobData={jobData}
+            industries={industries}
+            employmentTypes={employmentTypes}
             onDraft={handleStepSubmit.draft}
             onSubmit={handleStepSubmit.jobDetails}
             draftLoading={draftLoading}
@@ -181,17 +171,17 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
       </div>
 
       <Snackbar
-        open={!!notification}
+        open={!!notification || !!draftingError}
         autoHideDuration={6000}
-        onClose={() => setNotification(null)}
+        onClose={() => { setNotification(null); resetDraftError() }}
       >
         <Alert
-          onClose={() => setNotification(null)}
-          severity={notification?.severity}
+          onClose={() => { setNotification(null); resetDraftError() }}
+          severity={(notification?.severity) || (draftingError ? "error" : "info")}
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {notification?.message}
+          {notification?.message || draftingError?.message || ""}
         </Alert>
       </Snackbar>
     </div>

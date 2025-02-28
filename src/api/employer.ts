@@ -16,5 +16,6 @@ export const JOBS = API_EMPLOYER_BASE + "/jobs";
 export const API_CREATE_JOB = JOBS; // POST
 export const API_GET_JOBS = JOBS; // GET
 export const API_GET_JOB_BY_ID = JOBS + "/"; // GET + [jobID]
+export const API_GET_JOBS_BY_COMPANY_ID = JOBS + "/company/"; // GET + [companyID]
 export const API_UPDATE_JOB = JOBS + "/"; // PATCH + [jobID]
 export const API_DELETE_JOB = JOBS + "/"; // DELETE + [jobID]

@@ -8,6 +8,7 @@ import CompanyJobs from "./Components/CompanyJobs";
 import CompleteProfile from "../../me/[id]/Components/CompleteProfile";
 import { EmployerSocialMedia, PostYourFirstJob } from "./Components/employer-RightSection";
 import CompanyPublicLink from "./Components/company-publicLink";
+import { Suspense } from "react";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
@@ -24,7 +25,9 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         {/* Left Section */}
         <AboutCompany company={company} isEmployee={isEmployee} />
         {/* Center Section + Profile Form */}
-        <CompanyJobs isEmployee={isEmployee} company={company} />
+        <Suspense >
+          <CompanyJobs isEmployee={isEmployee} company={company} />
+        </Suspense>
       </div>
       {/* Right Sections */}
       <div className="hidden min-w-80 max-w-80 md:block">

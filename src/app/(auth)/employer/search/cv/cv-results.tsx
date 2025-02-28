@@ -120,7 +120,6 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
     <div className="w-full lg:w-[80%]">
       <div className="h-[80px] w-full pl-[39px]">
         <SearchInput
-          parentClassName="flex gap-2"
           fullWidth
           variant="outlined"
           placeholder="Job Candidates CV's"

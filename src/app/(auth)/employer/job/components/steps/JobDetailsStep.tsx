@@ -11,14 +11,13 @@ import {
   InputAdornment,
 } from "@mui/material";
 import TextEditor from "@/components/editor/editor";
-import { JobData } from "@/types";
+import { EmploymentType, Industry, JobData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries } from "@/store/slices/locationSlice";
 import { Add, Remove } from "@mui/icons-material";
 import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
-import EmploymentTypeSelect from "../employmentType";
 import {
   currencyOptions,
   educationOptions,
@@ -37,12 +36,16 @@ interface JobDetailProps {
   onSubmit: (data: JobData) => void;
   onDraft: (data: Partial<JobData>) => void;
   draftLoading: boolean;
+  industries: Industry[]
+  employmentTypes: EmploymentType[]
 }
 const JobDetailsStep: React.FC<JobDetailProps> = ({
   jobData,
   onSubmit,
   onDraft,
   draftLoading,
+  industries,
+  employmentTypes
 }) => {
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
@@ -139,15 +142,50 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             errors={errors}
             watch={watch}
             setValue={setValue}
+            industries={industries}
           />
           {/* Dropdowns employment type - education level  */}
           <div className="mb-6 flex flex-wrap gap-2 md:flex-nowrap">
-            <EmploymentTypeSelect
-              control={control}
-              errors={errors}
-              watch={watch}
-              setValue={setValue}
-            />
+            <div className="min-w-[150px] flex-1">
+              <label className="mb-1 text-lg font-semibold text-main">
+                Type of Employment *
+              </label>
+              <Controller
+                name="jobEmploymentTypeId"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Employment type is required" }}
+                render={({ field }) => (
+                  <FormControl
+                    component="fieldset"
+                    error={!!errors?.jobEmploymentTypeId?.message}
+                    fullWidth
+                  >
+                    <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                      {employmentTypes?.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            field.onChange(item.id);
+                            setValue("jobEmploymentType", item.name);
+                          }}
+                          className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobEmploymentTypeId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                        >
+                          {item.name}
+                        </button>
+                      ))}
+                    </div>
+
+                    {errors.jobEmploymentTypeId && (
+                      <p className="mt-2 text-sm text-red-500">
+                        {errors.jobEmploymentTypeId.message}
+                      </p>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </div>
             <div className="min-w-[150px] flex-1">
               <label className="mb-1 text-lg font-semibold text-main">
                 Education Level *

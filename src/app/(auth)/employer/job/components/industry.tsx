@@ -18,18 +18,20 @@ interface IndustryFormProps {
   errors: FieldErrors<JobData>;
   watch: UseFormWatch<JobData>;
   setValue: UseFormSetValue<JobData>;
+  industries: Industry[]
+
 }
 const IndustryForm: React.FC<IndustryFormProps> = ({
   control,
   errors,
   watch,
   setValue,
+  industries,
 }) => {
   const selectedJobIndustryId = watch("jobIndustryId");
   const selectedJobCategoryId = watch("jobCategoryId");
 
 
-  const { loading: industriesLoading, data: industries } = useFetch<PaginatedResponse<Industry>>(API_GET_INDUSTRIES);
   const { loading: categoriesLoading, data: categories } = useFetch<PaginatedResponse<Industry>>(selectedJobIndustryId && `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${selectedJobIndustryId}`, {
     fetchOnce: false,
     fetchOnUrlChange: true,
@@ -60,41 +62,24 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               error={!!errors?.jobIndustryId?.message}
               fullWidth
             >
-              <Tooltip
-                title={!industriesLoading ? undefined : "Industries are loading"}
-                placement="bottom"
-              >
-                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                  {industriesLoading
-                    ? [1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="flex h-[42px] max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
-                      >
-                        <span className="rounded-md bg-gray-300 text-transparent">
-                          Demo Industry
-                        </span>
-                      </div>
-                    ))
-                    : industries?.data.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => {
-                          setValue("jobCategoryId", "");
-                          setValue("jobSpecialityId", "");
-                          setValue("jobCareerLevelId", "");
-                          setValue("jobIndustry", item.name);
-                          field.onChange(item.id);
-                        }}
-                        className={`h-[42px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                      >
-                        {item.name}
-                      </button>
-                    ))}
-                </div>
-              </Tooltip>
-
+              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                {industries?.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setValue("jobCategoryId", null);
+                      setValue("jobSpecialityId", null);
+                      setValue("jobCareerLevelId", null);
+                      setValue("jobIndustry", item.name);
+                      field.onChange(item.id);
+                    }}
+                    className={`h-[42px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
               {errors.jobIndustryId && (
                 <p className="mt-2 text-sm text-red-500">
                   {errors.jobIndustryId.message}
@@ -129,6 +114,8 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                       const id = e.target.value;
                       field.onChange(id);
                       const category = categories?.data?.find((x) => x.id === id);
+                      setValue("jobSpecialityId", null);
+                      setValue("jobCareerLevelId", null);
                       setValue("jobCategory", category?.name || "");
                     }}
                     displayEmpty

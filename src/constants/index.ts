@@ -14,6 +14,7 @@ import {
   Search,
 } from "@mui/icons-material";
 import { CompanySize } from "./enums/company-size.enum";
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export const DEFAULT_COVER_IMAGE =
   "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";

@@ -5,6 +5,7 @@ import {
   API_DELETE_JOB,
   API_GET_JOB_BY_ID,
   API_GET_JOBS,
+  API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_JOB,
 } from "@/api/employer";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
@@ -115,10 +116,10 @@ export const getJobsByCompanyId = async (
   companyId: string,
   page: number = 1,
   limit: number = 10,
-): Promise<Result<{ data: JobData[]; total: number }>> => {
+): Promise<Result<PaginatedResponse<JobData>>> => {
   try {
     const response = await fetch(
-      `${API_GET_JOBS}?page=${page}&limit=${limit}&companyIds=${companyId}`,
+      `${API_GET_JOBS_BY_COMPANY_ID}${companyId}?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {

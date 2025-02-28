@@ -209,7 +209,7 @@ const ProfileTab = ({
 
   return (
     <Tab
-      className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
+      className={`transition-color mx-4 my-1 flex opacity-100 flex-row justify-start rounded-[10px] p-[5px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white " : "text-gray-800/60"}`}
       id={`vertical-tab-0`}
       aria-controls={`vertical-tabpanel-0`}
       value={0}
@@ -235,7 +235,7 @@ const ProfileTab = ({
             height={40}
             className={`${isActive ? "border-white" : "border-gray-300"} aspect-square h-full max-h-[40px] w-full max-w-[40px] rounded-full border-2 bg-white object-cover`}
           />
-          <div>
+          <div >
             <h6 className="text-left text-sm normal-case">
               {user?.companyName || user.firstName + " ." + user.lastName?.[0]}
             </h6>

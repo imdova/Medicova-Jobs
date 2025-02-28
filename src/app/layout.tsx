@@ -5,6 +5,8 @@ import StoreProvider from "@/store/StoreProvider";
 import DynamicHeader from "@/components/Layout/Header/Header";
 import DynamicLayout from "@/components/Layout/layout";
 import { NextAuthProvider } from "@/NextAuthProvider";
+import { Suspense } from "react";
+import FullHeader from "@/components/Layout/Header/FullHeader";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -36,7 +38,9 @@ export default function RootLayout({
         <ThemeProviderClient>
           <StoreProvider>
             <NextAuthProvider>
-              <DynamicHeader />
+              <Suspense fallback={<FullHeader />}>
+                <DynamicHeader />
+              </Suspense>
               <DynamicLayout>{children}</DynamicLayout>
             </NextAuthProvider>
           </StoreProvider>
