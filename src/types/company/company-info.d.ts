@@ -6,6 +6,14 @@ interface FormErrors {
 }
 
 interface FileWithPreview extends File {
-  preview?: string;
+  preview: string;
   uploaded?: boolean;
+}
+
+interface UploadResponse {
+  message?: string;
+  fileId?: string;
+  fileUrl?: string;
+  error?: string;
+  fileName?: string;
 }

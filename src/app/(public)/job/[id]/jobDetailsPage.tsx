@@ -233,13 +233,13 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           </div>
 
           {/* company details */}
-          {job.company && (
-            <div
-              className={`mt-8 grid grid-cols-1 gap-4 ${false ? "md:grid-cols-2" : ""}`}
-            >
-              {/* <div className={`mt-8 grid grid-cols-1 gap-4 ${job.company.images "md:grid-cols-2"}`}> */}
-              {/* company details */}
-              <div>
+          {/* {job.company && ( */}
+          <div
+            className={`mt-8 grid grid-cols-1 gap-4 ${false ? "md:grid-cols-2" : ""}`}
+          >
+            {/* <div className={`mt-8 grid grid-cols-1 gap-4 ${job.company.images "md:grid-cols-2"}`}> */}
+            {/* company details */}
+            {/* <div>
                 <div className="flex items-center gap-2">
                   <Image
                     src={job.company.avatar || "/images/placeholder-avatar.svg"}
@@ -259,9 +259,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                   </Link>
                 </div>
                 <p className="mt-2 text-secondary">{job.company.about}</p>
-              </div>
-              {/* gallery */}
-              {/* <div className="grid grid-cols-3 grid-rows-2 gap-3">
+              </div> */}
+            {/* gallery */}
+            {/* <div className="grid grid-cols-3 grid-rows-2 gap-3">
                 <Image
                   src="/images/company-image1.jpg"
                   alt="company image 1"
@@ -284,8 +284,8 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                   className="h-full w-full rounded-md object-cover"
                 />
               </div> */}
-            </div>
-          )}
+          </div>
+          {/* )} */}
         </div>
         {/* Job Overview only on desktop */}
         <JobOverview

@@ -166,13 +166,13 @@ export interface Company {
   email?: string;
   yearFounded?: number | string;
   avatar?: string;
-  socialLinks?: string;
+  socialLinks?: Record<string, string>;
   visible?: boolean;
   profileUrl?: string;
   companyTypeId?: string | null;
   companySectorId?: string | null;
-  type?: string | null;
-  sector?: string | null;
+  companySectorName?: string | null;
+  companyTypeName?: string | null;
   banner1?: string | null;
   banner2?: string | null;
   banner3?: string | null;
@@ -232,7 +232,7 @@ export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 export interface JobData {
   id?: string;
   companyId: string | null;
-  company?: Company;
+  company?: Pick<Company, "id" | "name" | "username" | "about" | "banner1" | "banner2" | "banner3" | "avatar">;
   title: string;
   jobIndustryId: string | null;
   jobSpecialityId: string | null;
@@ -268,7 +268,7 @@ export interface JobData {
   closed: boolean | null;
   validTo: string | null; // ISO date string
 
-  applications?: number | null; // Not in NewJobData
+  applicationCount?: number | null; // Not in NewJobData
 
   startDateType: StartDateType | null | "";
   created_at?: string | null; // ISO date string 

@@ -50,7 +50,6 @@ function useUpdateApi<T>(
 
       try {
         const response = await fetch(url, defaultOptions);
-
         // Handle non-JSON responses
         const contentType = response.headers.get("content-type");
         let result: T;

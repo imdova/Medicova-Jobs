@@ -1,13 +1,11 @@
 import {
-  Box,
   Typography,
-  Grid,
 } from "@mui/material";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PlaceIcon from "@mui/icons-material/Place";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Verified } from "@mui/icons-material";
-import { Company, FieldConfig } from "@/types";
+import { Company, } from "@/types";
 import { companySizeList } from "@/constants";
 import ProfileCoverSection from "./ProfileCoverSection";
 import EditCompanySection from "./EditCompanySection";
@@ -23,7 +21,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
 }) => {
   const size = companySizeList.find((item) => item.value === company.size);
   return (
-    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-lg">
+    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-soft">
       {/* Background Cover Image */}
       <ProfileCoverSection company={company} isEmployee={isEmployee} />
       {/* Profile Section */}
@@ -31,7 +29,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
         <div className="flex" >
           {/* Text Section */}
           <div className="flex-1">
-            <div className="text-center md:text-left" >
+            <div className="text-left" >
               <h3 className="mb-2 text-2xl font-bold text-main">
                 {company.name}
                 <Verified className="ml-3 text-primary" />
@@ -48,7 +46,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 <div className="mr-3 flex items-center gap-1">
                   <LocalHospitalIcon className="text-primary" />
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {company.type}
+                    {company.companyTypeName}
                   </Typography>
                 </div>
                 {(company.country || company.state || company.city) && (

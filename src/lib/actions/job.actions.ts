@@ -165,7 +165,7 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
       return {
         success: true,
         message: "Job fetched successfully",
-        data: transformFromJsonStrings(data) as JobData,
+        data: data,
       };
     } else {
       const errorData = await response.json();

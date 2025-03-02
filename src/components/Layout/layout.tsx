@@ -16,12 +16,12 @@ const DynamicLayout = ({ children }: { children: React.ReactNode }) => {
       case "full":
         return (
           <div className="container mx-auto my-4 md:my-8 flex min-h-[calc(100vh-150px)] w-full flex-row lg:max-w-[1300px]">
-            <aside className="hidden mx-2 w-1/5 rounded-base border border-gray-100 bg-white py-4 shadow-xl lg:block">
+            <aside className="hidden w-1/5 rounded-base border border-gray-100 bg-white py-4 shadow-soft lg:block">
               <div className="sticky top-[85px]">
                 <DynamicSideBar user={user} pathname={pathname} />
               </div>
             </aside>
-            <main className="w-full px-0 md:px-6 lg:w-4/5">{children}</main>
+            <main className="w-full px-0 md:px-5 lg:w-4/5">{children}</main>
           </div>
         );
       case "minimal":

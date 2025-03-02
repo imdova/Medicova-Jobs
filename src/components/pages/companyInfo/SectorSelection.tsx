@@ -11,7 +11,6 @@ import { Control, Controller, UseFormSetValue, FieldErrors, UseFormWatch } from 
 
 interface SectorSelectionProps {
   control: Control<Company, any>
-  errors: FieldErrors<Company>
   watch: UseFormWatch<Company>;
   setValue: UseFormSetValue<Company>
 
@@ -19,7 +18,6 @@ interface SectorSelectionProps {
 
 const SectorSelection: React.FC<SectorSelectionProps> = ({
   control,
-  errors,
   watch,
   setValue
 }) => {
@@ -38,14 +36,14 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
   return (
     <div className="flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
-      <div className="min-w-[250px] flex-1">
+      <div className="min-w-[200px] flex-1">
         <label className="text-lg font-semibold text-main">Company Sector *</label>
         <Controller
-          name="sector"
+          name="companySectorName"
           control={control}
           rules={{ required: "Company Sector is required" }}
-          render={({ field }) => (
-            <FormControl error={Boolean(errors.sector)} fullWidth>
+          render={({ field, fieldState: { error } }) => (
+            <FormControl error={Boolean(error)} fullWidth>
               <Select
                 {...field}
                 value={field.value ?? undefined}
@@ -57,7 +55,7 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                   );
                   setValue("companySectorId", sector?.id)
                   setValue("companyTypeId", "");
-                  setValue("type", "");
+                  setValue("companyTypeName", "");
                 }}
                 displayEmpty
                 MenuProps={{
@@ -83,9 +81,9 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                 ))}
               </Select>
 
-              {errors.sector && (
+              {error && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.sector.message}
+                  {error.message}
                 </p>
               )}
             </FormControl>
@@ -94,14 +92,14 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
       </div>
 
       {/* Company Type Selector */}
-      <div className="min-w-[250px] flex-1">
+      <div className="min-w-[200px] flex-1">
         <label className="text-lg font-semibold text-main">Company Type *</label>
         <Controller
-          name="type"
+          name="companyTypeName"
           control={control}
           rules={{ required: "Company Type is required" }}
-          render={({ field }) => (
-            <FormControl error={Boolean(errors.type)} fullWidth>
+          render={({ field, fieldState: { error } }) => (
+            <FormControl error={Boolean(error)} fullWidth>
               <Tooltip
                 title={
                   selectedCompanySectorId
@@ -146,9 +144,9 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                 </Select>
               </Tooltip>
 
-              {errors.type && (
+              {error && (
                 <p className="mt-2 text-sm text-red-500">
-                  {errors.type.message}
+                  {error.message}
                 </p>
               )}
             </FormControl>

@@ -7,16 +7,16 @@ import { Edit } from "@mui/icons-material";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY_USER_NAME } from "@/api/employer";
 import { TAGS } from "@/api";
-import DynamicFormModal from "@/components/form/DynamicFormModal";
 import { useSession } from "next-auth/react";
+import FormModal from "@/components/form/FormModal/FormModal";
 
 const userNameField: FieldConfig[] = [
   {
     name: "username",
-    label: "User Name",
     type: "text",
     required: true,
     textFieldProps: {
+      label: "User Name",
       placeholder: "Enter User Name",
       InputProps: {
         startAdornment: (
@@ -54,9 +54,6 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
   async function handleSuccess(updatedCompany: Company) {
     close();
     await updateSession({
-      companyName: updatedCompany.name,
-      companyPhoto: updatedCompany.avatar,
-      companyEmail: updatedCompany.email,
       companyUserName: updatedCompany.username,
     });
     window.location.href = `/co/${updatedCompany.username}`
@@ -70,9 +67,9 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
 
 
   return (
-    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
-      <DynamicFormModal
+      <FormModal
         open={isModalOpen}
         onClose={close}
         onSubmit={handleUpdate}

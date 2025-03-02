@@ -25,6 +25,8 @@ type PostJobModalProps = {
   company: Company;
 };
 
+// TODO: you need to use FormModal
+
 
 const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
@@ -55,7 +57,6 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
   );
 
   const { isLoading, error, update } = useUpdateApi<JobData>(handleSuccess);
-  const dispatch = useAppDispatch();
 
   const handlePost = async (formData: Partial<JobData>) => {
     const body = {
@@ -67,8 +68,7 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
   };
 
   async function handleSuccess(newJob: JobData) {
-    dispatch(addNewJob(newJob));
-    router.push(`/job/posted/${newJob.id}`);
+    router.push(`/employer/job/posted/${newJob.id}`);
     onClose();
   }
 

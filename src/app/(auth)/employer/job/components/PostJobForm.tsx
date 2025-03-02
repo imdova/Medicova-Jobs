@@ -37,12 +37,13 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job, industries, employmentTy
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
-
+  // TODO: better isDirty Handling 
   const [activeStep, setActiveStep] = React.useState(0);
   const [jobData, setJobData] = React.useState(job || INITIAL_JOB_DATA);
   const [notification, setNotification] =
     React.useState<NotificationType | null>(null);
 
+  // better handle navigation it cause lagging
   const handleNavigation = {
     next: () =>
       setActiveStep((prev) => Math.min(prev + 1, FORM_STEPS.length - 1)),
@@ -55,17 +56,14 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ job, industries, employmentTy
   const { isLoading, error, update } = useUpdateApi<JobData>(handleSuccess);
   const { isLoading: draftLoading, error: draftingError, update: draft, reset: resetDraftError } = useUpdateApi<JobData>(handleDraftSuccess);
 
-  const createJob = async (data: Partial<JobData>) => {
-    const body: Partial<JobStringData> = transformToJsonStrings(data);
+  const createJob = async (body: Partial<JobData>) => {
     await update(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);
   };
-  const updateJob = async (data: Partial<JobData>) => {
-    const body: Partial<JobStringData> = transformToJsonStrings(data);
+  const updateJob = async (body: Partial<JobData>) => {
     await update(API_CREATE_JOB, { body }, TAGS.jobs);
   };
-  const draftJob = async (data: Partial<JobData>) => {
-    const body: Partial<JobStringData> = transformToJsonStrings(data);
-    if (data.id) {
+  const draftJob = async (body: Partial<JobData>) => {
+    if (body.id) {
       await draft(API_CREATE_JOB, { body }, TAGS.jobs);
     } else {
       await draft(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);

@@ -26,7 +26,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({ preventDefault: open });
 
     const formMethods = useFormState(open, fields, initialValues);
-    const { reset, setValue } = formMethods;
+    const { reset, setValue, formState: { isDirty } } = formMethods;
 
     const resetValues = (fieldNames: (string | number)[]) => {
         fieldNames.forEach(name => {
@@ -38,7 +38,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
         });
     };
 
-    const handleClose = () => setLeavingManually(true);
+    const handleClose = () => isDirty ? setLeavingManually(true) : handleCancel()
     const handleCancel = () => {
         reset(getDefaultValues(fields, initialValues));
         onClose();

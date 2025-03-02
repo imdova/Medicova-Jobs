@@ -51,7 +51,7 @@ const AboutCompany: React.FC<{
   };
 
   return (
-    <div className="relative mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className=" rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
       {/* Title */}
       {isEmployee && <DynamicFormModal
         open={isModalOpen}
@@ -64,7 +64,7 @@ const AboutCompany: React.FC<{
         description="Add a brief company description for potential employees. This section is public."
         initialValues={{ about: company?.about }}
       />}
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex  items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
         {isEmployee && (
           <IconButton

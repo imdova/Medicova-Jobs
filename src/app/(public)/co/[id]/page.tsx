@@ -6,9 +6,10 @@ import EmployerHeaderSection from "./Components/EmployerHeaderSection";
 import AboutCompany from "./Components/AboutCompany";
 import CompanyJobs from "./Components/CompanyJobs";
 import CompleteProfile from "../../me/[id]/Components/CompleteProfile";
-import { EmployerSocialMedia, PostYourFirstJob } from "./Components/employer-RightSection";
 import CompanyPublicLink from "./Components/company-publicLink";
 import { Suspense } from "react";
+import PostYourFirstJob from "./Components/postFirstJob";
+import EmployerSocialMedia from "./Components/EmployerSocialMedia";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
@@ -16,10 +17,10 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   if (!success || !company) return notFound();
   const user = data?.user
   const isEmployee = company.id === user?.companyId
-  return <div className="relative w-full">
+  return <div className="relative w-full px-4 md:p-0">
     <div className="flex gap-5">
       {/* Left + Center Sections */}
-      <div className="flex-1">
+      <div className="flex-1 space-y-2 md:space-y-5">
         {/* Header Section */}
         <EmployerHeaderSection isEmployee={isEmployee} company={company} />
         {/* Left Section */}

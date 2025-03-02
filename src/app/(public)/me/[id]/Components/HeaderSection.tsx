@@ -6,8 +6,8 @@ import { Verified } from "@mui/icons-material";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { UserProfile } from "@/types";
 import Link from "next/link";
-import Avatar from "@/components/UI/Avatar";
 import Image from "next/image";
+import ProfileImage from "@/components/UI/ProfileImage";
 
 const HeaderSection: React.FC<{
   user: UserProfile;
@@ -30,10 +30,11 @@ const HeaderSection: React.FC<{
         className="min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
       /> */}
       {isMe ? (
-        <Avatar
+        <ProfileImage
           currentImageUrl={
             image ? URL.createObjectURL(image) : user.photo || ""
           }
+          alt="avatar"
           size="xLarge"
           onImageUpdate={updateImage}
           maxFileSizeMB={5}

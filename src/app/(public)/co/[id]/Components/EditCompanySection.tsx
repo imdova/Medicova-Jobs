@@ -63,9 +63,9 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({ company, isE
         const body = {
             id: company?.id,
             companySectorId: sector?.id,
-            sector: sector?.name,
+            companySectorName: sector?.name,
             companyTypeId: type?.id,
-            type: type?.name,
+            companyTypeName: type?.name,
             country: { code: country?.isoCode, name: country?.name },
             state: { code: state?.isoCode, name: state?.name },
             name, title, city

@@ -51,7 +51,7 @@ export const updateCompanyJob = createAsyncThunk(
   "job/updateCompanyJob",
   async (job: Partial<JobData>, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_UPDATE_JOB + job.id, {
+      const response = await fetch(API_UPDATE_JOB, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

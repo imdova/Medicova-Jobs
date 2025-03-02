@@ -8,7 +8,7 @@ import { isCurrentPage } from "@/util";
 import { NavItem, UserState } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import Image from "next/image";
+import Avatar from "@/components/UI/Avatar";
 
 interface SideBarProps {
   user?: UserState;
@@ -203,6 +203,10 @@ const ProfileTab = ({
   onTabChange: (index: number) => void;
 }) => {
   const isEmployer = user.type === "employer";
+  const userAvatar = isEmployer ? user.companyPhoto : user.photo
+  const displayName = isEmployer ? user.companyName : user.firstName + " ." + user.lastName?.[0]
+  const email = isEmployer ? user.companyEmail || user.email : user.email
+
   const path = isEmployer ? `/co/${user?.companyUserName}` : `/me/${user.userName}`;
   const isActive =
     activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
@@ -215,35 +219,21 @@ const ProfileTab = ({
       value={0}
       onClick={() => onTabChange(0)}
       component={Link}
-      href={
-        isEmployer
-          ? `/co/${user?.companyUserName}`
-          : user.userName
-            ? `/me/${user.userName}`
-            : "#"
-      }
+      href={path}
       label={
         <div className="flex items-center gap-1">
-          <Image
-            src={
-              user.companyPhoto ||
-              user?.photo ||
-              "/images/placeholder-avatar.svg"
-            }
-            alt={(user?.companyName || user.firstName) + "photo"}
-            width={40}
-            height={40}
-            className={`${isActive ? "border-white" : "border-gray-300"} aspect-square h-full max-h-[40px] w-full max-w-[40px] rounded-full border-2 bg-white object-cover`}
+          <Avatar
+            src={userAvatar!}
+            alt={displayName + "photo"}
+            size={40}
           />
           <div >
             <h6 className="text-left text-sm normal-case">
-              {user?.companyName || user.firstName + " ." + user.lastName?.[0]}
+              {displayName}
             </h6>
-            {!isEmployer && (
-              <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
-                {user.email}
-              </p>
-            )}
+            <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
+              {email}
+            </p>
           </div>
         </div>
       }

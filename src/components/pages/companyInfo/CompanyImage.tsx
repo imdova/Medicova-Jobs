@@ -1,124 +1,93 @@
 import { TAGS } from "@/api";
 import { API_UPDATE_COMPANY } from "@/api/employer";
+import useFileUploader from "@/hooks/useFileUploader";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import uploadImages from "@/lib/files/imageUploader";
 import { Company } from "@/types";
-import { Alert, Button, CircularProgress, IconButton } from "@mui/material";
+import { companyBanners } from "@/util/company/companyform";
+import { Alert, Button, CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import { CloudUpload, X } from "lucide-react";
+import { CloudUpload, Info, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-
-
-const MAX_FILE_SIZE = 5;
+const MAX_FILE_SIZE = 1; // 1MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
-const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
-  const initialFilePreviews: FileWithPreview[] = [company.banner1, company.banner2, company.banner3].filter(Boolean).map((image) => ({
-    lastModified: 0,
-    name: '',
-    webkitRelativePath: '',
-    size: 0,
-    type: 'image/',
-    preview: image || "",
-    uploaded: true
-  } as FileWithPreview));
+interface CompanyImageProps {
+  company: Company;
+}
 
-
+const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
+  const { uploadFiles, loadingStates, uploadResults } = useFileUploader();
   const { update } = useUpdateApi<Company>(handleSuccess);
-  const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>(initialFilePreviews || []);
+
+  const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>(companyBanners(company));
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFilesChanged, setIsFilesChanged] = useState(false)
-
+  const [isFilesChanged, setIsFilesChanged] = useState(false);
+  //TODO: add value and onChange Handling for better Check
+  // Dropzone configuration
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       setError(null);
 
-      // Check if files were provided
       if (acceptedFiles.length === 0) {
-        setError(
-          `This File Type is not supported. Please upload only: ${ACCEPTED_IMAGE_TYPES.map((type) => type.split("/")[1]).join(", ")}`,
-        );
+        setError(`Unsupported file type. Only ${ACCEPTED_IMAGE_TYPES.join(", ")} allowed.`);
         return;
       }
 
-      // Check total number of files
       if (selectedFiles.length + acceptedFiles.length > 3) {
-        setError("You can only upload up to 3 files in total.");
+        setError("You can only upload up to 3 files.");
         return;
       }
 
-      // Check file size and type for each file
-      for (const file of acceptedFiles) {
-        // Size check
-        if (file.size > MAX_FILE_SIZE * 1024 * 1024) {
-          setError(`File "${file.name}" exceeds the ${MAX_FILE_SIZE}MB limit`);
-          return;
-        }
-      }
-
-      // If all checks pass, process the files
       const filesWithPreview = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        }),
+        Object.assign(file, { preview: URL.createObjectURL(file), uploaded: false })
       );
 
-      setSelectedFiles((prevFiles) => [...prevFiles, ...filesWithPreview]);
-      setIsFilesChanged(true)
+      setSelectedFiles((prev) => [...prev, ...filesWithPreview]);
     },
-    accept: ACCEPTED_IMAGE_TYPES.reduce(
-      (acc, curr) => ({ ...acc, [curr]: [] }),
-      {},
-    ),
+    accept: ACCEPTED_IMAGE_TYPES.reduce((acc, curr) => ({ ...acc, [curr]: [] }), {}),
     multiple: true,
     maxFiles: 3,
-    noClick: false,
-    noKeyboard: false,
   });
 
-  const handleRemoveFile = (fileToRemove: File) => {
-    const newImages = selectedFiles.filter((file) => file !== fileToRemove)
-    setSelectedFiles(newImages);
-    const [banner1, banner2, banner3] = newImages.map((image) => image.preview || null)
-    handleUpdate({ banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null });
-  };
-
-
-  function handleSuccess(updatedCompany: Company) {
-    const updatedFilePreviews = [updatedCompany.banner1, updatedCompany.banner2, updatedCompany.banner3].filter(Boolean).map((image) => ({
-      lastModified: 0,
-      name: '',
-      webkitRelativePath: '',
-      size: 0,
-      type: 'image/',
-      preview: image || "",
-      uploaded: true
-    } as FileWithPreview))
-    setSelectedFiles(updatedFilePreviews)
-    setIsFilesChanged(false)
-  }
-
-  const handleUpdate = async (formData: Partial<Company>) => {
-    await update(API_UPDATE_COMPANY, {
-      body: { id: company.id, userName: company.username, ...formData } as Company,
+  // Handle file removal
+  const handleRemoveFile = (fileToRemove: FileWithPreview) => {
+    const newFiles = selectedFiles.filter((file) => file !== fileToRemove);
+    const [banner1, banner2, banner3] = newFiles.filter((file) => file.uploaded).map((file) => file.preview);
+    setSelectedFiles(newFiles);
+    update(API_UPDATE_COMPANY, {
+      body: { id: company.id, userName: company.username, banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null },
     }, TAGS.company);
   };
 
+  // Handle successful update
+  function handleSuccess(updatedCompany: Company) {
+    setSelectedFiles(companyBanners(updatedCompany));
+  };
+
+  // Handle file upload
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
 
     setIsUploading(true);
     setError(null);
-    const uploadedImages = selectedFiles.filter((file) => file.uploaded).map((file) => file.preview);
-    const imagesToUpload = selectedFiles.filter((file) => !file.uploaded);
+
     try {
-      const response = await uploadImages(imagesToUpload);
-      const [banner1, banner2, banner3] = [...uploadedImages, ...response]
-      handleUpdate({ banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null });
+      const filesToUpload = selectedFiles.filter((file) => !file.uploaded);
+      const uploadedUrls = await uploadFiles(filesToUpload);
+
+      if (uploadedUrls.length > 0) {
+        const [banner1, banner2, banner3] = [
+          ...selectedFiles.filter((file) => file.uploaded).map((file) => file.preview),
+          ...uploadedUrls,
+        ];
+        await update(API_UPDATE_COMPANY, {
+          body: { id: company.id, userName: company.username, banner1: banner1 || null, banner2: banner2 || null, banner3: banner3 || null },
+        }, TAGS.company);
+      }
     } catch (err) {
       setError("Failed to upload files. Please try again.");
     } finally {
@@ -126,19 +95,21 @@ const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
     }
   };
 
+  // Cleanup preview URLs
   useEffect(() => {
-    return () => {
-      selectedFiles.forEach((file) => {
-        if (file.preview) URL.revokeObjectURL(file.preview);
-      });
-    };
+    if (selectedFiles.find(file => !file.uploaded)) {
+      setIsFilesChanged(true);
+    } else {
+      setIsFilesChanged(false);
+    }
+    // return () => {
+    //   selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    // };
   }, [selectedFiles]);
 
   return (
     <div className="h-full">
-      <p className="mb-2 text-sm text-secondary">
-        Share Moments of your company
-      </p>
+      <p className="mb-2 text-sm text-secondary">Share Moments of your company</p>
       {error && (
         <Alert severity="error" className="my-1">
           <p className="text-xs">{error}</p>
@@ -148,43 +119,27 @@ const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
         <div className="mt-4">
           <div className="mt-4 grid grid-cols-3 gap-4">
             {selectedFiles.map((file, index) => (
-              <div
+              <ImageItem
                 key={index}
-                className={`${index === 0 ? "col-span-3" : "col-span-1"} relative aspect-square`}
-              >
-                {file.type.startsWith("image/") ? (
-                  <div className="relative h-full w-full">
-                    <IconButton
-                      onClick={() => handleRemoveFile(file)}
-                      className="absolute -right-2 -top-2 z-20 bg-gray-300 p-1 hover:bg-red-300 hover:text-red-600"
-                    >
-                      <X className="h-3 w-3" />
-                    </IconButton>
-                    <Image
-                      src={file.preview || ""}
-                      alt={file.name}
-                      fill
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex h-full items-center justify-center rounded-lg bg-gray-100">
-                    <p className="text-sm text-gray-600">{file.name}</p>
-                  </div>
-                )}
-              </div>
+                file={file}
+                index={index}
+                handleRemoveFile={handleRemoveFile}
+                loadingStates={loadingStates}
+                uploadResults={uploadResults}
+              />
             ))}
-            <div
-              {...getRootProps()}
-              className={clsx(
-                "relative col-span-1 flex justify-center items-center aspect-square cursor-pointer rounded-base border border-dashed p-4 transition-colors",
-                isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300",
-                selectedFiles.length >= 3 ? "hidden" : "",
-              )}
-            >
-              <CloudUpload className="mx-auto h-8 w-8 text-gray-400" />
-              <input {...getInputProps()} />
-            </div>
+            {selectedFiles.length < 3 && (
+              <div
+                {...getRootProps()}
+                className={clsx(
+                  "relative col-span-1 flex justify-center items-center aspect-square cursor-pointer rounded-base border border-dashed p-4 transition-colors",
+                  isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                )}
+              >
+                <CloudUpload className="mx-auto h-8 w-8 text-gray-400" />
+                <input {...getInputProps()} />
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -193,7 +148,7 @@ const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
             {...getRootProps()}
             className={clsx(
               "cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors",
-              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300",
+              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
             )}
           >
             <input {...getInputProps()} />
@@ -205,24 +160,68 @@ const CompanyImage: React.FC<{ company: Company }> = ({ company }) => {
             </div>
           </div>
           <p className="mt-1 text-xs text-secondary">
-            {ACCEPTED_IMAGE_TYPES.join(", ")} (max {MAX_FILE_SIZE}MB , max 3
-            Images )
+            {ACCEPTED_IMAGE_TYPES.join(", ")} (max {MAX_FILE_SIZE}MB, max 3 images)
           </p>
         </div>
       )}
-      <Button
+      {isFilesChanged && selectedFiles.length > 0 && <Button
         variant="contained"
         color="primary"
         startIcon={isUploading ? <CircularProgress size={20} /> : <CloudUpload />}
         onClick={handleUpload}
-        disabled={selectedFiles.length === 0 || isUploading || !isFilesChanged}
+        disabled={isUploading}
         className="mt-4"
       >
         {isUploading ? "Uploading" : "Upload"}
-      </Button>
-
+      </Button>}
     </div>
   );
 };
 
 export default CompanyImage;
+
+interface ImageItemProps {
+  file: FileWithPreview;
+  index: number;
+  handleRemoveFile: (file: FileWithPreview) => void;
+  loadingStates: Record<string, boolean>;
+  uploadResults: UploadResponse[];
+}
+
+const ImageItem: React.FC<ImageItemProps> = ({ file, index, handleRemoveFile, loadingStates, uploadResults }) => {
+  const isLoading = loadingStates[file.name];
+  const error = uploadResults.find((result) => "error" in result && result.fileName === file.name);
+
+  return (
+    <div className={`${index === 0 ? "col-span-3" : "col-span-1"} relative aspect-square`}>
+      <div className="relative h-full w-full">
+        <button
+          type="button"
+          onClick={() => handleRemoveFile(file)}
+          className="absolute -right-2 -top-2 z-[1]  rounded-full bg-gray-300 p-1 hover:bg-red-300 hover:text-red-600"
+        >
+          <X className="h-3 w-3" />
+        </button>
+        <div className="relative h-full w-full overflow-hidden rounded-lg">
+          {isLoading && (
+            <div className="absolute inset-0  flex items-center justify-center bg-gray-200/50">
+              <CircularProgress size={index === 0 ? 20 : 14} className="text-primary" />
+            </div>
+          )}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200/50">
+              <Info size={index === 0 ? 20 : 14} className="text-red-700" />
+            </div>
+          )}
+          <Image
+            src={file.preview}
+            alt={file.name}
+            width={index === 0 ? 300 : 70}
+            height={index === 0 ? 300 : 70}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

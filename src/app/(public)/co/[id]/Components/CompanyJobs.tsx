@@ -5,6 +5,8 @@ import { filteredJobs } from "@/lib/auth/utils";
 import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 import AddNewJobButton from "./Modals/addNewJobButton";
 import Link from "next/link";
+import React from "react";
+import { Add } from "@mui/icons-material";
 
 const INITIAL_VISIBLE_ITEMS = 4;
 
@@ -25,18 +27,23 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
   const showMore = filJobs.length > INITIAL_VISIBLE_ITEMS;
   const remainingJobs = filJobs.length - INITIAL_VISIBLE_ITEMS;
   return (
-    <div className="mt-5">
+    <React.Fragment >
       {/* Title */}
-      <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+      <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
         <h3 className="text-2xl font-bold text-main">Latest jobs:</h3>
         {isEmployee && (
-          <AddNewJobButton company={company} />
+          <AddNewJobButton company={company}
+            className="rounded border border-solid border-gray-300 p-2"
+            title="Create Job Now"
+          >
+            <Add />
+          </AddNewJobButton>
         )}
       </div>
       {/* Loop through MinJobCard 8 times */}
       {filJobs.length > 0 ? (
         <div
-          className={`mt-4 grid ${filJobs.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}
+          className={` grid ${filJobs.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}
         >
           {/* card  */}
           {filJobs.slice(0, INITIAL_VISIBLE_ITEMS).map((job, i) => (
@@ -48,20 +55,22 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
           <h6 className="text-2xl font-semibold text-secondary">
             You haven&apos;t posted any jobs yet.
           </h6>
-          {/* TODO : add Post Job Form modal */}
-          <Button variant="contained">
+          <AddNewJobButton company={company}
+            variant="contained"
+            btnVariant="button"
+          >
             Post Job Now
-          </Button>
+          </AddNewJobButton>
         </div>
       ) : null}
       {showMore && (
-        <div className="mt-5 flex items-center justify-center rounded-base border border-gray-100 bg-white p-3 shadow-lg">
-          <Button LinkComponent={Link} href="/employer/jobs/manage-jobs" className="mt-2 p-0" variant="text">
+        <div className="flex items-center justify-center rounded-base border border-gray-100 bg-white p-3 shadow-soft">
+          <Button LinkComponent={Link} href="/employer/job/manage-jobs" className="mt-2 p-0" variant="text">
             Show {remainingJobs} more Jobs
           </Button>
         </div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

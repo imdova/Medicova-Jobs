@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, Tab, Tabs, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import JobCard from "@/components/UI/job-card";
 import { JobsTabs } from "@/types";
@@ -10,14 +10,15 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import SearchInput from "@/components/UI/search-Input";
 import { searchJobsByQueryAndDate } from "@/util/job/searchInJobs";
+import { Add } from "@mui/icons-material";
 
-const tabs: JobsTabs[] = ["active", "closed", "expired", "draft"];
+const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
 
 const page = async ({ searchParams }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 ) => {
-  const activeTab = searchParams?.tab as JobsTabs || "active"
+  const activeTab = searchParams?.tab as JobsTabs || "all"
   const query = searchParams?.q as string || ""
   const data = await getServerSession(authOptions);
   const user = data?.user
@@ -59,23 +60,39 @@ const page = async ({ searchParams }: {
       </div>
 
       {/* Tabs Section */}
-      <div className="max-w-[calc(100vw-40px)]  overflow-x-auto ">
-        <div className="flex gap-3 md:gap-7 py-4 px-4"
-        >
-          {tabs.map((tab) => (
-            <Link
-              href={{ query: { tab } }}
-              key={tab}
-              scroll={false}
-              className={`${activeTab === tab ? "border-primary" : "border-transparent"} border-b-2  hover:text-gray-600 capitalize text-main md:text-lg`}
-            >
-              {`${tab} (${filteredJobs(jobs, tab).length})`}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <Tabs
+        value={tabs.indexOf(activeTab)}
+        aria-label="basic tabs example"
+        variant="scrollable"
+        scrollButtons={false}
+        className="text-base"
+      >
+        {tabs.map(tab => (
+          <Link key={tab} href={{ query: { tab } }}>
+            <Tab label={`${tab} (${filteredJobs(jobs, tab).length})`} />
+          </Link>
+        ))}
+      </Tabs>
       <div className="flex flex-col gap-4 p-2">
-        {/* {filteredJobs(jobs, tabs[activeTab]).map((job) => ( */}
+        {filteredJobs(jobs, "all").length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-2 p-5">
+            <h3 className="text-center text-xl text-secondary font-semibold">
+              No jobs found
+            </h3>
+            <p className="text-center text-sm text-secondary">
+              You can create a new job by clicking the button below
+            </p>
+            <Button
+              variant="contained"
+              LinkComponent={Link}
+              href="/employer/job/posted"
+              color="primary"
+              startIcon={<Add />}
+            >
+              Create a new job
+            </Button>
+          </div>
+        )}
         {searchJobsByQueryAndDate(filteredJobs(jobs, activeTab), query).map((job) => (
           <JobCard key={job.id} job={job} isEdit={true} />
         ))}

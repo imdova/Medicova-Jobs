@@ -6,7 +6,7 @@ import DynamicHeader from "@/components/Layout/Header/Header";
 import DynamicLayout from "@/components/Layout/layout";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { Suspense } from "react";
-import FullHeader from "@/components/Layout/Header/FullHeader";
+import HeaderSelector from "@/components/Layout/Header/SelectedHeader";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -38,7 +38,7 @@ export default function RootLayout({
         <ThemeProviderClient>
           <StoreProvider>
             <NextAuthProvider>
-              <Suspense fallback={<FullHeader />}>
+              <Suspense fallback={<HeaderSelector />}>
                 <DynamicHeader />
               </Suspense>
               <DynamicLayout>{children}</DynamicLayout>

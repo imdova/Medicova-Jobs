@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { Company } from "@/types";
-import Avatar from "@/components/UI/Avatar";
-import Image from "next/image";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
 import uploadImages from "@/lib/files/imageUploader";
 import { ProfileCoverImage } from "@/components/pages/co/ProfileCoverImage";
+import { useSession } from "next-auth/react";
+import Avatar from "@/components/UI/Avatar";
+import ProfileImage from "@/components/UI/ProfileImage";
 
 interface EmployerHeaderSectionProps {
     isEmployee: boolean;
@@ -15,16 +16,25 @@ interface EmployerHeaderSectionProps {
 }
 
 const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({ company, isEmployee }) => {
+    const { update: updateSession } = useSession();
+
     const [image, setImage] = useState<File | null>(null);
     const [cover, setCover] = useState<File | null>(null);
 
-    const { update } = useUpdateApi<Company>();
+    const { update } = useUpdateApi<Company>(handleSuccess);
 
     const handleUpdateCompany = async (formData: Partial<Company>) => {
         await update(API_UPDATE_COMPANY, {
             body: { id: company.id, ...formData } as Company,
         }, TAGS.company);
     };
+
+    async function handleSuccess(updatedCompany: Company) {
+        await updateSession({
+            companyPhoto: updatedCompany.avatar,
+        });
+        window.location.reload();
+    }
 
     const updateImage = async (file: File) => {
         const [avatar] = await uploadImages([file]);
@@ -45,25 +55,24 @@ const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({ company, is
                     onImageUpdate={isEmployee ? updateCoverImage : undefined}
                 />
             </div>
-            <div className="col-start-1 row-start-1 z-[1] flex w-full items-end justify-center px-4 md:justify-start">
+            <div className="col-start-1 row-start-1 w-fit h-fit self-end px-4">
                 {isEmployee ? (
-                    <Avatar
+                    <ProfileImage
                         currentImageUrl={
                             image ? URL.createObjectURL(image) : company.avatar || ""
                         }
+                        alt={company.name}
                         size="xLarge"
                         onImageUpdate={updateImage}
                         maxFileSizeMB={5}
-                        className="h-[100px] w-[100px] rounded-full border-4 border-white shadow-md"
-                        imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
+                        imageClassName="border-4 border-white shadow-md"
                     />
                 ) : (
-                    <Image
-                        src={company.avatar || "/images/placeholder-avatar.svg"}
-                        alt="avatar"
-                        width={100}
-                        height={100}
-                        className="h-[100px] w-[100px] rounded-full border-4 border-white bg-white object-cover shadow-md"
+                    <Avatar
+                        src={company.avatar}
+                        alt={company.name}
+                        size={100}
+                        className=" border-4 border-white shadow-md"
                     />
                 )}
             </div>

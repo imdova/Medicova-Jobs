@@ -25,6 +25,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
     } = useForm({
         defaultValues: company,
     });
+    // TODO: add Is dirty handing
     const { isLoading, error, update } =
         useUpdateApi<Company>(handleSuccess);
 
@@ -41,32 +42,33 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
             companyEmail: updatedCompany.email,
             companyUserName: updatedCompany.username,
         });
+        window.location.reload();
     }
 
 
     return (
         <form onSubmit={handleSubmit(handleUpdate)} noValidate>
-            <div className="mb-8 flex gap-4">
+            <div className="px-2 md:px-0 mb-8 flex gap-4 flex-col md:flex-row">
                 <div className="flex-1">
-                    <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+                    <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
                         <MainInformation control={control} errors={errors} />
-                        <SectorSelection control={control} watch={watch} setValue={setValue} errors={errors} />
+                        <SectorSelection control={control} watch={watch} setValue={setValue} />
                     </div>
-                    <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+                    <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
                         <CompanyOwnership control={control} errors={errors} />
                         <CompanyContactInputs control={control} errors={errors} />
                     </div>
                 </div>
 
                 {/* Right Column */}
-                <div className="w-80">
-                    <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
-                        <h5 className="mb-4 text-2xl font-semibold text-main md:mt-4">
+                <div className="md:w-80">
+                    <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
+                        <h5 className=" text-2xl font-semibold text-main md:mt-4">
                             Company Images
                         </h5>
                         <CompanyImage company={company} />
                     </div>
-                    <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+                    <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
                         <h5 className="mb-8 text-2xl font-semibold text-main md:mt-4">
                             Company Location
                         </h5>
@@ -81,7 +83,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
                 </Typography>
             )}
 
-            <div className="flex justify-center rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-lg">
+            <div className="sticky bottom-2 z-30 md:static flex justify-end rounded-base border-gray-100 bg-white p-3 border md:p-5 shadow-soft">
                 <Button
                     type="submit"
                     variant="contained"

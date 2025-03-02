@@ -4,10 +4,8 @@ import { useState, useCallback } from "react";
 import {
   Menu,
   MenuItem,
-  Avatar,
   IconButton,
   Tooltip,
-  Button,
   Typography,
   Divider,
   Box,
@@ -20,6 +18,8 @@ import {
   SettingsOutlined,
   PersonOutlined,
 } from "@mui/icons-material";
+import Image from "next/image";
+import Avatar from "./Avatar";
 
 interface UserDropdownProps {
   user: UserState;
@@ -29,10 +29,10 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const userAvatar = user.photo;
-  const userName = user.userName || user.id;
   const isEmployer = user.type === "employer";
-  const displayName = user.firstName || userName || "";
+  const userName = isEmployer ? user.companyUserName : user.userName
+  const userAvatar = isEmployer ? user.companyPhoto : user.photo
+  const displayName = isEmployer ? user.companyName : user.firstName
 
   const handleOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -58,10 +58,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           aria-expanded={open ? "true" : undefined}
           sx={{ p: 0 }}
         >
+
           <Avatar
-            alt={displayName}
-            src={userAvatar || undefined}
-            sx={{ width: 48, height: 48 }}
+            src={userAvatar!}
+            alt={displayName!}
+            size={48}
           />
         </IconButton>
       </Tooltip>
@@ -106,7 +107,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           }}
         >
           <PersonOutlined sx={{ mr: 1, color: "text.secondary" }} />
-          <Typography variant="body2">Profile</Typography>
+          <Typography variant="body2">{isEmployer ? "Company Profile" : "Profile"}</Typography>
         </MenuItem>
 
         <MenuItem

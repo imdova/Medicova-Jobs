@@ -237,8 +237,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
-        {/* TODO: take it into company profile  */}
         {/* Latest jobs open    */}
         <div className="bg-[url('/images/jobs-background.jpg')] bg-cover bg-center">
           <div className="bg-white/80 shadow-md">

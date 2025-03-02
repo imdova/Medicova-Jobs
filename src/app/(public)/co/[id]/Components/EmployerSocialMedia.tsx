@@ -1,9 +1,6 @@
 'use client'
 import React, { KeyboardEvent, useState } from "react";
-import { Box, IconButton, Button, TextField } from "@mui/material";
-import Link from "next/link";
-import Image from "next/image";
-import post from "@/components/images/post.svg";
+import { IconButton, TextField } from "@mui/material";
 import {
   Add,
   Edit,
@@ -15,46 +12,11 @@ import {
 } from "@mui/icons-material";
 import DynamicFormModal from "@/components/form/DynamicFormModal";
 import { Company, FieldConfig } from "@/types";
-import PostJobModal from "./Modals/post-job-modal";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
+import Link from "next/link";
 
-export const PostYourFirstJob: React.FC<{ company: Company }> = ({
-  company,
-}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const onOpen = () => setIsModalOpen(true);
-  const onClose = () => setIsModalOpen(false);
-  return (
-    <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <PostJobModal key="right-section-post-job" company={company} isOpen={isModalOpen} onClose={onClose} />
-      <div className="flex flex-col items-center gap-2">
-        {/* Centered Image */}
-        <Image
-          src={post}
-          alt="Login Cover"
-          width={50}
-          height={50}
-          priority={true}
-        />
-
-        {/* Typography below the Image */}
-        <p className="mb-2 text-center font-semibold text-secondary">
-          To find better candidates, make your job description detailed, use
-          relevant keywords, and add screening questions to your job post.
-        </p>
-      </div>
-
-      {/* Centered Button */}
-      <div className="flex justify-center">
-        <Button onClick={onOpen} variant="contained">
-          Post a job for free
-        </Button>
-      </div>
-    </div>
-  );
-};
 
 type Props = {
   data?: Company; // Optional prop
@@ -95,9 +57,9 @@ const userFields: FieldConfig[] = [
   },
 ];
 
-export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
+const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   const companyId = data?.id;
-  const socialLinks: { [key: string]: string } = data?.socialLinks ? JSON.parse(data.socialLinks) : {};
+  const socialLinks = data?.socialLinks
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [fields, setFields] = useState(userFields);
@@ -111,9 +73,8 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   const close = () => { setIsModalOpen(false); reset(); };
 
   const handleUpdate = async (formData: Partial<Company>) => {
-    const data = JSON.stringify(formData)
     await update(API_UPDATE_COMPANY, {
-      body: { id: companyId, socialLinks: data } as Company,
+      body: { id: companyId, socialLinks: formData } as Company,
     }, TAGS.company);
   };
 
@@ -139,7 +100,7 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   };
 
   return (
-    <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
       <div className="flex justify-between items-center">
         <h6 className="mb-2 text-2xl font-semibold text-main">Social Links</h6>
         {isEmployee && (
@@ -198,3 +159,5 @@ export const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
     </div>
   );
 };
+
+export default EmployerSocialMedia

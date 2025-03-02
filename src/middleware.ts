@@ -15,7 +15,7 @@ export default withAuth(function middleware(req) {
     if (userType === "seeker") {
       return NextResponse.redirect(new URL(`/me/${token.userName}`, req.url));
     } else if (userType === "employer") {
-      return token.companyName
+      return token.companyUserName
         ? NextResponse.redirect(
             new URL(`/co/${token.companyUserName}`, req.url),
           )

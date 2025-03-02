@@ -1,5 +1,7 @@
 // imageUploader.ts
 
+import { API_UPLOAD_FILE } from "@/api/general";
+
 interface UploadResponse {
   message: string;
   fileId: string;
@@ -14,16 +16,15 @@ interface UploadError {
 type UploadResult = UploadResponse | UploadError;
 
 // Function to upload multiple images and return their URLs
-async function uploadImages(images: FileWithPreview[]): Promise<string[]> {
+async function uploadImages(images: File[]): Promise<string[]> {
   const uploadResults: UploadResult[] = [];
-  const apiUrl = "http://34.31.113.2/api/v1.0.0/files";
 
   // Upload each image sequentially
   for (const image of images) {
     const formData = new FormData();
     formData.append("file", image);
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(API_UPLOAD_FILE, {
         method: "POST",
         headers: {
           accept: "*/*",

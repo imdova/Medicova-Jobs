@@ -5,43 +5,48 @@ import {
   LocationOnOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
-import Image from "next/image";
 import Link from "next/link";
 import { jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
+import Avatar from "./Avatar";
 interface JobCardProps {
   job: JobData;
   className?: string;
 }
-
 const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
   const workPlace =
     jobWorkPlaceOptions.find((x) => x.id === job?.jobWorkPlace)?.label || "";
   const education = formatEducationAndSpecialty(job);
 
   return (
-    <Link
-      href={job.draft ? `/employer/job/posted/${job.id}` : `/job/${job.id}`}
-      className={`flex flex-col rounded-[10px] border border-gray-100 bg-white p-4 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-primary hover:shadow-2xl focus:ring-2 focus:ring-primary ${className}`}
+    <div
+      className={`flex flex-col rounded-[10px] border border-gray-100 bg-white p-4 shadow-soft transition-all duration-300 hover:scale-[1.02] hover:border-primary hover:shadow-2xl focus:ring-2 focus:ring-primary ${className}`}
     >
-      <h6 className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm">
-        {job.title}{" "}
+      <div className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm">
+        <Link
+          href={`/job/${job.id}`}
+          className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm hover:underline">
+          {job.title}{" "}
+        </Link>
         {job.draft ? (
-          <span className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black">
+          <Link
+            href={`/employer/job/posted/${job.id}`}
+            className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black hover:underline">
             Draft
-          </span>
+          </Link>
         ) : (
           ""
         )}
-      </h6>
+      </div>
       <div className="flex items-center gap-2">
-        <Image
-          src={job.company?.avatar || "/images/placeholder-avatar.svg"}
-          alt={job.title}
-          width={45}
-          height={45}
-          className="h-[45px] rounded-md border object-cover"
-        />
+        <Link href={`/co/${job.company?.username}`}>
+          <Avatar
+            src={job.company?.avatar}
+            alt={job.title}
+            size={45}
+            shape="square"
+          />
+        </Link>
         <div className="flex flex-wrap gap-2 text-secondary">
           {(job.country || job.city) && (
             <div className="mb-1 mr-2 flex gap-1 md:mb-0">
@@ -131,7 +136,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
