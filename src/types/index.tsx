@@ -272,7 +272,7 @@ export interface JobData {
 
   startDateType: StartDateType | null | "";
   created_at?: string | null; // ISO date string 
-  updatedAt?: string | null; // ISO date string 
+  updated_at?: string | null; // ISO date string 
   jobIndustry?: string | null;
   jobSpeciality?: string | null;
   jobCategory?: string | null;

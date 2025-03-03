@@ -20,7 +20,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
 
   return (
     <div
-      className={`flex flex-col rounded-[10px] border border-gray-100 bg-white p-4 shadow-soft transition-all duration-300 hover:scale-[1.02] hover:border-primary hover:shadow-2xl focus:ring-2 focus:ring-primary ${className}`}
+      className={`flex flex-col rounded-[10px] border border-gray-100 bg-white p-4 shadow-soft transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl focus:ring-2 focus:ring-primary ${className}`}
     >
       <div className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm">
         <Link
@@ -45,6 +45,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
             alt={job.title}
             size={45}
             shape="square"
+            className="border border-transparent hover:border-primary "
           />
         </Link>
         <div className="flex flex-wrap gap-2 text-secondary">

@@ -1,6 +1,8 @@
 import { TAGS } from "@/api";
 import { API_UPDATE_COMPANY } from "@/api/employer";
+import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import useFileUploader from "@/hooks/useFileUploader";
+import useIsLeaving from "@/hooks/useIsLeaving";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { Company } from "@/types";
 import { companyBanners } from "@/util/company/companyform";
@@ -25,8 +27,10 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>(companyBanners(company));
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFilesChanged, setIsFilesChanged] = useState(false);
-  //TODO: add value and onChange Handling for better Check
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({ preventDefault: isDirty });
+
   // Dropzone configuration
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -98,17 +102,24 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
   // Cleanup preview URLs
   useEffect(() => {
     if (selectedFiles.find(file => !file.uploaded)) {
-      setIsFilesChanged(true);
+      setIsDirty(true);
     } else {
-      setIsFilesChanged(false);
+      setIsDirty(false);
     }
-    // return () => {
-    //   selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-    // };
   }, [selectedFiles]);
 
   return (
     <div className="h-full">
+      <LeaveConfirmationModal
+        isOpen={isLeaving}
+        onLeave={() => {
+          handleUserDecision(true);
+        }}
+        onStay={() => {
+          setLeavingManually(false);
+          handleUserDecision(false);
+        }}
+      />
       <p className="mb-2 text-sm text-secondary">Share Moments of your company</p>
       {error && (
         <Alert severity="error" className="my-1">
@@ -164,7 +175,7 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
           </p>
         </div>
       )}
-      {isFilesChanged && selectedFiles.length > 0 && <Button
+      {isDirty && selectedFiles.length > 0 && <Button
         variant="contained"
         color="primary"
         startIcon={isUploading ? <CircularProgress size={20} /> : <CloudUpload />}

@@ -9,6 +9,7 @@ interface SearchProps extends ComponentProps<typeof TextField> {
   pathname?: string;
   children?: React.ReactNode;
   isBounce?: boolean;
+  formClassName?: string;
 }
 
 let timer: NodeJS.Timeout;
@@ -79,12 +80,61 @@ const Input: React.FC<SearchProps> = ({
     />
   );
 };
+const SearchInputForm: React.FC<SearchProps> = ({
+  onClick,
+  pathname: initialPathname,
+  children,
+  isBounce,
+  formClassName,
+  ...props
+}) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const newPathname = initialPathname || pathname;
+  const initialSearchText = searchParams.get("q") || "";
+  const [query, setQuery] = useState(initialSearchText);
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (query) {
+      newParams.set("q", query);
+      newParams.delete("page");
+    } else {
+      newParams.delete("q");
+    }
+    onClick?.();
+    router.push(createUrl(newPathname, newParams));
+  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
+  return (
+    <form
+      onSubmit={onSubmit}
+      className={formClassName}
+    >
+      <TextField
+        {...props}
+        value={query}
+        onChange={handleChange}
+      />
+      {children}
+    </form>
+  );
+};
 
 const SearchInput: React.FC<SearchProps> = (props) => {
-  return (
-    <Suspense>
-      <Input {...props} />
-    </Suspense>
-  );
+  return props.children ?
+    (<Suspense>
+      <SearchInputForm {...props} />
+    </Suspense>)
+    : (
+      <Suspense>
+        <Input {...props} />
+      </Suspense>
+    );
 };
 export default SearchInput;

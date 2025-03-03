@@ -130,7 +130,11 @@ export const getJobsByCompanyId = async (
       },
     );
     if (response.ok) {
-      const data = await response.json();
+      const data: PaginatedResponse<JobData> = await response.json();
+      data.data = data.data.sort(
+        (a, b) =>
+          new Date(b.updated_at!).getTime() - new Date(a.updated_at!).getTime(),
+      );
       return {
         success: true,
         message: "Jobs list fetched successfully",
