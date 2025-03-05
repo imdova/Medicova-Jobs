@@ -62,6 +62,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               error={!!errors?.jobIndustryId?.message}
               fullWidth
             >
+              {/* TODO add icons here  */}
               <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
                 {industries?.map((item) => (
                   <button

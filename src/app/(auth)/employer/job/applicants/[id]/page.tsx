@@ -5,7 +5,7 @@ import { getApplications } from "@/lib/actions/applications.actions";
 import { filterSections } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import { getPaginatedSeekers } from "@/lib/actions/employer.actions";
-import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
+import Filter from "@/components/Layout/filter/filter";
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const { data: job, success: jobSuccess } = await getJobById(id);
@@ -29,7 +29,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
       {/* Left Column: Filter Section */}
-      <FilterSideBar
+      <Filter
         sections={filterSections}
         searchKeys={["Residency (Location)"]}
       />

@@ -2,7 +2,12 @@ import { Button } from "@mui/material";
 import { Ellipse5, GridIcon } from "@/components/icons/icons";
 import EastIcon from "@mui/icons-material/East";
 import JobCard from "@/components/UI/job-card";
-import { GroupAddOutlined, GroupOutlined, Search, ShopOutlined, WorkOutline } from "@mui/icons-material";
+import {
+  GroupOutlined,
+  Search,
+  ShopOutlined,
+  WorkOutline,
+} from "@mui/icons-material";
 import { folders } from "@/constants";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -14,27 +19,28 @@ import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 import SearchInput from "@/components/UI/search-Input";
 import StatusCard from "@/components/UI/StatusCard";
 import { filteredJobs } from "@/lib/auth/utils";
+import { itemsPerDays } from "@/util/general";
 
 const INITIAL_JOBS = 5;
 const Page = async () => {
   const data = await getServerSession(authOptions);
-  const user = data?.user
-  if (!user?.companyId) return notFound()
+  const user = data?.user;
+  if (!user?.companyId) return notFound();
   const result = await getJobsByCompanyId(user?.companyId, 1, INITIAL_JOBS);
-  const { data: jobs } = result.data || { data: [], total: 0 };
+  const { data: jobs } = result.data || { data: [], total: 0 }; 
   return (
-    <div className="flex px-4 md:px-0 flex-col gap-8 lg:flex-row">
+    <div className="flex flex-col gap-8 px-4 md:px-0 lg:flex-row">
       <div className="flex-1">
         {/* cards */}
-        <div className=" grid grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
           <StatusCard
             title="Total Jobs"
             value={jobs.length}
             icon={WorkOutline}
             trend={{
-              value: '+2',
-              description: 'Since last week',
-              trendDirection: 'up',
+              value: "+" + itemsPerDays(jobs, 7),
+              description: "Since last week",
+              trendDirection: "up",
             }}
           />
 
@@ -43,20 +49,21 @@ const Page = async () => {
             value={filteredJobs(jobs, "active").length}
             icon={ShopOutlined}
             trend={{
-              value: '+2',
-              description: 'Since last week',
-              trendDirection: 'up',
+              value: "+" + itemsPerDays(filteredJobs(jobs, "active"), 7),
+              description: "Since last week",
+              trendDirection: "up",
             }}
           />
           <StatusCard
             className="col-span-2 md:col-span-1"
             title="New Applicants"
-            value={jobs.reduce((acc, job) => acc + (job.applicationCount || 0), 0) || 0}
+            value={
+              jobs.slice(0, INITIAL_JOBS).reduce((acc, job) => acc + (job.applicationCount || 0), 0) ||
+              0
+            }
             icon={GroupOutlined}
             trend={{
-              value: '0',
-              description: 'Since last week',
-              trendDirection: 'up',
+              description: `In Last ${INITIAL_JOBS} jobs`,
             }}
           />
         </div>
@@ -84,7 +91,7 @@ const Page = async () => {
         {jobs.length > 0 ? (
           <div>
             <div className="flex flex-col gap-4">
-              {jobs.slice(0, INITIAL_JOBS).map((job) => (
+              {jobs.map((job) => (
                 <JobCard key={job.id} job={job} isEdit={true} />
               ))}
             </div>
@@ -144,8 +151,20 @@ const Page = async () => {
       <div className="lg:max-w-[250px]">
         <div className="flex w-full flex-col gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
           <h6 className="text-center text-lg">{user.companyName}</h6>
-          <Button LinkComponent={Link} href={`/co/${user.companyUserName}`} variant="contained">View profile</Button>
-          <Button LinkComponent={Link} href="/employer/company-info" variant="outlined">Edit company page</Button>
+          <Button
+            LinkComponent={Link}
+            href={`/co/${user.companyUserName}`}
+            variant="contained"
+          >
+            View profile
+          </Button>
+          <Button
+            LinkComponent={Link}
+            href="/employer/company-info"
+            variant="outlined"
+          >
+            Edit company page
+          </Button>
         </div>
         <h6 className="mt-4 text-lg font-semibold text-main">
           You are now a <span className="text-light-primary">Silver Plan</span>{" "}
@@ -169,9 +188,7 @@ const Page = async () => {
           fullWidth
           className="mb-2"
           InputProps={{
-            startAdornment: (
-              <Search color="primary" />
-            ),
+            startAdornment: <Search color="primary" />,
           }}
         >
           <Button type="submit" variant="contained" className="text-xl">
@@ -184,4 +201,3 @@ const Page = async () => {
 };
 
 export default Page;
-

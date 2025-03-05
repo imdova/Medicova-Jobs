@@ -1,5 +1,5 @@
+import Filter from "@/components/Layout/filter/filter";
 import { searchFilters } from "@/constants";
-import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
 import { Suspense } from "react";
 
 const layout: React.FC<{
@@ -15,7 +15,7 @@ const layout: React.FC<{
           </div>
         }
       >
-        <FilterSideBar
+        <Filter
           sections={searchFilters}
           searchKeys={["Residency (Location)", "nationality"]}
         />

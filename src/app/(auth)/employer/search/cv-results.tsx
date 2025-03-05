@@ -23,7 +23,6 @@ import InviteModal from "@/components/UI/invite-to-apply-modal";
 import FolderModal from "@/components/UI/folder-modal";
 import AddToFolderModal from "@/components/UI/add-to-folder-modal";
 import CandideCard from "@/components/UI/CandideCard";
-import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
 import { Doctor } from "@/types";
 import SearchInput from "@/components/UI/search-Input";
 
@@ -35,19 +34,6 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
   const [available, setAvailable] = useState<string[]>(
     doctors.filter((x) => x.available).map((x) => x.id),
   );
-  const [selectedFilters, setSelectedFilters] = useState<{
-    [K in keyof typeof searchFilters]: (typeof searchFilters)[K][number]["value"][];
-  }>({
-    "Residency (Location)": [],
-    city: [],
-    nationality: [],
-    industry: [],
-    category: [],
-    "Education Level": [],
-    "Years Of Experience": [],
-    gender: [],
-    age: [],
-  });
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 

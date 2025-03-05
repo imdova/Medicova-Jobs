@@ -9,7 +9,6 @@ import {
   Snackbar,
   Divider,
 } from "@mui/material";
-import FilterSections from "@/components/UI/filter";
 import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -24,7 +23,7 @@ import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import FilterSideBar from "@/components/Layout/filter/silter-sidebar";
+import Filter from "@/components/Layout/filter/filter";
 
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
@@ -37,13 +36,6 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
     doctors.filter((x) => x.available).map((x) => x.id),
   );
   const [shortListed, setShortListed] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<{
-    [K in keyof typeof filterSections]: (typeof filterSections)[K][number]["value"][];
-  }>({
-    "Residency (Location)": [],
-    "Education Level": [],
-    "Years Of Experience": [],
-  });
 
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Items per page
   const [currentPage, setCurrentPage] = useState<number>(1); // Current page
@@ -134,7 +126,7 @@ const ApplicantsPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
       {/* Left Column: Filter Section */}
-      <FilterSideBar
+      <Filter
         sections={filterSections}
         searchKeys={["Residency (Location)"]}
       />

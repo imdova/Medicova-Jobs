@@ -24,6 +24,7 @@ interface ScreenQuestionsProps {
   onDraft: (data: Partial<JobData>) => void;
   onBack: (data: Partial<JobData>) => void;
   draftLoading: boolean;
+  isDirty: boolean;
 }
 
 const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
@@ -32,6 +33,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   onDraft,
   onSubmit,
   draftLoading,
+  isDirty
 }) => {
   const [questions, setQuestions] = useState<string[]>(jobData.questions || []);
   const [showCompany, setShowCompany] = useState(true);
@@ -96,7 +98,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         predefinedKey &&
         !updatedQuestions.includes(
           predefinedQuestions[
-            predefinedKey as keyof typeof predefinedQuestions
+          predefinedKey as keyof typeof predefinedQuestions
           ],
         )
       ) {
@@ -384,7 +386,8 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         </Button>
         <Button
           onClick={handleDraft}
-          className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
+          disabled={draftLoading || !isDirty}
+            className="bg-[#FFAE35] disabled:opacity-50 text-[#464748] hover:enabled:bg-[#e19e39]"
         >
           {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>

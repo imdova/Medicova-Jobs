@@ -7,6 +7,8 @@ import DynamicLayout from "@/components/Layout/layout";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { Suspense } from "react";
 import HeaderSelector from "@/components/Layout/Header/SelectedHeader";
+import SideBar from "@/components/Layout/SideBar/SideBar";
+import DynamicSideBar from "@/components/Layout/SideBar/dynamic-side-bar";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -41,7 +43,12 @@ export default function RootLayout({
               <Suspense fallback={<HeaderSelector />}>
                 <DynamicHeader />
               </Suspense>
-              <DynamicLayout>{children}</DynamicLayout>
+              <DynamicLayout>
+                <Suspense fallback={<DynamicSideBar />}>
+                  <SideBar />
+                </Suspense>
+                <div className="flex-1">{children}</div>
+              </DynamicLayout>
             </NextAuthProvider>
           </StoreProvider>
         </ThemeProviderClient>

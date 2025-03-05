@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect } from "react";
 import {
   Button,
   TextField,
@@ -13,8 +12,6 @@ import {
 import TextEditor from "@/components/editor/editor";
 import { EmploymentType, Industry, JobData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountries } from "@/store/slices/locationSlice";
 import { Add, Remove } from "@mui/icons-material";
 import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
@@ -26,18 +23,20 @@ import {
   startDateTypeOptions,
 } from "@/constants/job";
 import { disableEnterKey } from "@/util";
-import SearchableSelect from "@/components/UI/SearchableSelect";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
+import JobLocationSelection from "@/components/pages/post-job/locationSelection";
 
 interface JobDetailProps {
   jobData: JobData;
-  onSubmit: (data: JobData) => void;
+  onSubmit: (data: JobData, isClean?: boolean) => void;
   onDraft: (data: Partial<JobData>) => void;
   draftLoading: boolean;
-  industries: Industry[]
-  employmentTypes: EmploymentType[]
+  industries: Industry[];
+  initialJobData: JobData;
+  employmentTypes: EmploymentType[];
+  isDirty: boolean;
 }
 const JobDetailsStep: React.FC<JobDetailProps> = ({
   jobData,
@@ -45,11 +44,10 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
   onDraft,
   draftLoading,
   industries,
-  employmentTypes
+  employmentTypes,
+  initialJobData,
+  isDirty: initialIsDirty,
 }) => {
-  const { countries } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-
   const {
     control,
     handleSubmit,
@@ -57,7 +55,8 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     watch,
     setValue,
   } = useForm({
-    defaultValues: jobData,
+    values: jobData,
+    defaultValues: initialJobData,
   });
 
   const { isLeaving, handleUserDecision } = useIsLeaving({
@@ -69,15 +68,9 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     onDraft({ ...data, draft: true });
   };
 
-  const handleFetchCountries = async () => {
-    await dispatch(fetchCountries());
+  const submitHandler = (data: JobData) => {
+    onSubmit(data, !(initialIsDirty || isDirty));
   };
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      handleFetchCountries();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
 
   return (
     <>
@@ -101,13 +94,12 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
           handleUserDecision(false);
         }}
       />
-
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(submitHandler)}
         onKeyDown={disableEnterKey}
         noValidate
       >
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-lg">
+        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Job Details
           </h5>
@@ -368,77 +360,11 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             </div>
           </div>
           <div className="flex flex-wrap gap-2 md:flex-nowrap">
-            <div className="flex min-w-[300px] flex-1 flex-wrap gap-2 md:flex-nowrap">
-              <div className="min-w-[150px] flex-1">
-                <label className="mb-2 text-lg font-semibold text-main">
-                  Job Location *
-                </label>
-                <Controller
-                  name="country.name"
-                  control={control}
-                  rules={{ required: "country is required" }}
-                  render={({ field }) => (
-                    <FormControl error={Boolean(errors.country)} fullWidth>
-                      <SearchableSelect
-                        options={countries.data.map((x) => ({
-                          value: x.name,
-                          label: x.name,
-                        }))}
-                        {...field}
-                        onChange={(e) => {
-                          const country = countries.data.find(
-                            (country) => country.name === e.target.value,
-                          );
-                          field.onChange(e.target.value);
-                          setValue("country.code", country?.isoCode || "");
-                        }}
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (!selected) {
-                            return (
-                              <span className="text-gray-400">
-                                Job Location
-                              </span>
-                            );
-                          }
-                          return selected;
-                        }}
-                      />
-                      {errors.country && (
-                        <p className="mt-2 text-sm text-red-500">
-                          {errors.country.message}
-                        </p>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </div>
-              <div className="min-w-[150px] flex-1">
-                <label className="mb-2 text-lg font-semibold text-main">
-                  City/Area *
-                </label>
-                <Controller
-                  name="city"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: "city is required" }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className="w-full"
-                      name="city"
-                      placeholder="Enter The Job City / Area"
-                      error={!!errors?.city?.message}
-                    />
-                  )}
-                />
-                {errors.city && (
-                  <p className="mt-2 text-sm text-red-500">
-                    {errors.city.message}
-                  </p>
-                )}
-              </div>
-            </div>
+            <JobLocationSelection
+              control={control}
+              setValue={setValue}
+              watch={watch}
+            />
             <div className="mb-6 md:w-1/2 md:pr-3">
               <label className="mb-1 text-lg font-semibold text-main">
                 Gender *
@@ -480,7 +406,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         </div>
 
         {/* Job Details */}
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-lg">
+        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Experience & Salary Details
           </h5>
@@ -747,7 +673,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                   />
                 )}
               />
-
             </div>
           </div>
           <div className="flex flex-wrap gap-2 md:flex-nowrap">
@@ -849,7 +774,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             </div>
           </div>
         </div>
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-lg">
+        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             About The Job
           </h5>
@@ -857,22 +782,28 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             <h6 className="mb-2 text-xl font-bold text-main">
               Job Description
             </h6>
-            <TextEditor
-              value={watch("description") || ""}
-              onChange={(e) => setValue("description", e)}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextEditor {...field} value={jobData.description} />
+              )}
             />
           </div>
           <div className="w-full">
             <h6 className="mb-2 text-xl font-bold text-main">
               Job Requirements
             </h6>
-            <TextEditor
-              value={watch("requirements") || ""}
-              onChange={(e) => setValue("requirements", e)}
+            <Controller
+              name="requirements"
+              control={control}
+              render={({ field }) => (
+                <TextEditor {...field} value={jobData.requirements} />
+              )}
             />
           </div>
         </div>
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-lg">
+        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Skills & Keywords
           </h5>
@@ -881,10 +812,15 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             <h6 className="mb-2 text-xl font-semibold text-main">
               Skills related to the job post{" "}
             </h6>
-            <MultiTextInput
-              defaultValue={watch("skills") || []}
-              placeholder="Add your skills (press Enter after each)"
-              onChange={(items) => setValue("skills", items)}
+            <Controller
+              name="skills"
+              control={control}
+              render={({ field }) => (
+                <MultiTextInput
+                  {...field}
+                  placeholder="Add your skills (press Enter after each)"
+                />
+              )}
             />
           </div>
           {/* Keywords */}
@@ -894,21 +830,26 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
               Enter keywords including any related job titles, technologies, or
               keywords the candidate should have in his CV.
             </p>
-            <MultiTextInput
-              defaultValue={watch("keywords") || []}
-              placeholder="Add your Keywords (press Enter after each)"
-              onChange={(items) => setValue("keywords", items)}
+            <Controller
+              name="keywords"
+              control={control}
+              render={({ field }) => (
+                <MultiTextInput
+                  {...field}
+                  placeholder="Add your Keywords (press Enter after each)"
+                />
+              )}
             />
           </div>
         </div>
 
         {/* Navigation Buttons */}
-        <div className=""></div>
-        <div className="space-between flex gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:justify-end">
+        <div className="space-between flex gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:justify-end">
           {/* <Button variant="outlined" >Back</Button> */}
           <Button
             onClick={onDraftSubmit}
-            className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
+            disabled={draftLoading || !(initialIsDirty || isDirty)}
+            className="bg-[#FFAE35] text-[#464748] hover:enabled:bg-[#e19e39] disabled:opacity-50"
           >
             {draftLoading ? "Loading... " : "Save and Publish Later"}
           </Button>
