@@ -131,10 +131,6 @@ export const getJobsByCompanyId = async (
     );
     if (response.ok) {
       const data: PaginatedResponse<JobData> = await response.json();
-      data.data = data.data.sort(
-        (a, b) =>
-          new Date(b.updated_at!).getTime() - new Date(a.updated_at!).getTime(),
-      );
       return {
         success: true,
         message: "Jobs list fetched successfully",
@@ -220,7 +216,7 @@ export const getJobsByFilters = async (
         }
       }
     });
-
+    //  TODO: filter is draft and inactive jobs
     const response = await fetch(`${API_GET_JOBS}?${queryParams.toString()}`, {
       method: "GET",
       headers: {

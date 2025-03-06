@@ -10,16 +10,16 @@ export default withAuth(function middleware(req) {
   if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
-  const userType = token.type as string;
+
+  let userType = token.type as string;
+  if (userType === "employer" && !token.companyName) userType = "unEmployee";
   if (path == "/me") {
     if (userType === "seeker") {
       return NextResponse.redirect(new URL(`/me/${token.userName}`, req.url));
     } else if (userType === "employer") {
-      return token.companyUserName
-        ? NextResponse.redirect(
-            new URL(`/co/${token.companyUserName}`, req.url),
-          )
-        : NextResponse.redirect(new URL(`/employer/company-info`, req.url));
+      return NextResponse.redirect(new URL(`/co/${token.companyId}`, req.url));
+    } else if (userType === "unEmployee") {
+      return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
     }
   }
 

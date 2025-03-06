@@ -1,20 +1,27 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { Select, MenuItem, Pagination, SelectChangeEvent } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect } from "react";
+import {
+  Select,
+  MenuItem,
+  Pagination as MUIPagination,
+  SelectChangeEvent,
+} from "@mui/material";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createUrl } from "@/util";
 
-interface CustomPaginationProps {
+interface PaginationProps {
   fixedNumberPerPage?: number;
-  totalItems?: number;
+  totalItems: number;
 }
 
-const CustomPagination: React.FC<CustomPaginationProps> = ({
-  fixedNumberPerPage = 10,
-  totalItems = 20,
+const CustomPagination: React.FC<PaginationProps> = ({
+  fixedNumberPerPage,
+  totalItems,
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   // Get current values from search params
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -36,14 +43,17 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
   // Handle items per page change
   const handleItemsPerPageChange = (event: SelectChangeEvent<number>) => {
     const newLimit = event.target.value as number;
-    router.push(
-      `?${createQueryString("limit", newLimit.toString())}&${createQueryString("page", "1")}`,
-    );
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set("limit", newLimit.toString());
+    newParams.set("page", "1");
+    router.push(createUrl(pathName, newParams));
   };
 
   // Handle page change
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`?${createQueryString("page", value.toString())}`);
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set("page", value.toString());
+    router.push(createUrl(pathName, newParams));
   };
 
   // Validate current page on total items change
@@ -76,7 +86,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
       )}
 
       {/* Pagination Component */}
-      <Pagination
+      <MUIPagination
         count={totalPages}
         page={currentPage}
         color="primary"
@@ -94,4 +104,11 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
   );
 };
 
-export default CustomPagination;
+const Pagination: React.FC<PaginationProps> = (props) => {
+  return (
+    <Suspense>
+      <CustomPagination {...props} />
+    </Suspense>
+  );
+};
+export default Pagination;

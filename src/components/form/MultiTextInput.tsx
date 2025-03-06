@@ -1,19 +1,12 @@
 import { Add, Close } from "@mui/icons-material";
-import { IconButton, TextField, Button } from "@mui/material";
+import { IconButton, TextField, TextFieldProps } from "@mui/material";
 import { useState, KeyboardEvent } from "react";
 
-interface MultiTextInputProps {
-  defaultValue?: string[];
-  placeholder?: string;
-  onChange?: (items: string[]) => void;
-}
-
-const MultiTextInput = ({
-  defaultValue = [],
-  placeholder = "Type skills and press Enter",
+const MultiTextInput: React.FC<TextFieldProps> = ({
+  value,
+  placeholder = "Type multiple values and press Enter",
   onChange,
-}: MultiTextInputProps) => {
-  const [items, setItems] = useState<string[]>(defaultValue);
+}) => {
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -28,22 +21,32 @@ const MultiTextInput = ({
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-    const newItems = [...items, ...newEntries];
-    setItems(newItems);
+    const newItems = [...(value as string[]), ...newEntries];
+    if (onChange) {
+      const syntheticEvent = {
+        target: { value: newItems },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      onChange(syntheticEvent);
+    }
     setInputValue("");
-    onChange?.(newItems);
   };
 
   const removeItem = (indexToRemove: number) => {
-    const newItems = items.filter((_, index) => index !== indexToRemove);
-    setItems(newItems);
-    onChange?.(newItems);
+    const newItems = value
+      ? (value as string[]).filter((_, index) => index !== indexToRemove)
+      : [];
+    if (onChange) {
+      const syntheticEvent = {
+        target: { value: newItems },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      onChange(syntheticEvent);
+    }
   };
 
   return (
     <div className="w-full">
       <div className="mb-2 flex flex-wrap gap-2">
-        {items.map((item, index) => (
+        {(value as string[]).map((item, index) => (
           <div
             key={index}
             className="space-x-2 rounded-base border bg-white px-2 py-1 text-main duration-100"
@@ -74,9 +77,9 @@ const MultiTextInput = ({
         </IconButton>
       </div>
 
-      {items.length > 0 && (
+      {(value as string[]).length > 0 && (
         <div className="text-sm text-gray-500">
-          {items.length} item{items.length !== 1 ? "s" : ""} added
+          {(value as string[]).length} item{(value as string[]).length !== 1 ? "s" : ""} added
         </div>
       )}
     </div>

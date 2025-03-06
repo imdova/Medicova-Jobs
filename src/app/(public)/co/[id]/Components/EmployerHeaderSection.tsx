@@ -52,6 +52,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                 {(company.country || company.state || company.city) && (
                   <div className="mr-3 flex items-center gap-1">
                     <PlaceIcon className="text-primary" />
+                    {/* TODO no country or state or city  */}
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                       {(company.country?.name || "") +
                         ", " +

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { IconButton, InputAdornment } from "@mui/material";
 import Link from "next/link";
@@ -6,9 +6,9 @@ import { Company, FieldConfig } from "@/types";
 import { Edit } from "@mui/icons-material";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY_USER_NAME } from "@/api/employer";
-import { TAGS } from "@/api";
 import { useSession } from "next-auth/react";
 import FormModal from "@/components/form/FormModal/FormModal";
+import { useRouter } from "next/navigation";
 
 const userNameField: FieldConfig[] = [
   {
@@ -19,9 +19,7 @@ const userNameField: FieldConfig[] = [
       label: "User Name",
       placeholder: "Enter User Name",
       InputProps: {
-        startAdornment: (
-          <InputAdornment position="start">co/</InputAdornment>
-        ),
+        startAdornment: <InputAdornment position="start">co/</InputAdornment>,
       },
     },
     validation: {
@@ -41,30 +39,33 @@ const userNameField: FieldConfig[] = [
       },
     },
   },
-
 ];
 
 const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
+  const router = useRouter();
   const { update: updateSession } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoading, error, update, reset } = useUpdateApi<Company>(handleSuccess);
+  const { isLoading, error, update, reset } =
+    useUpdateApi<Company>(handleSuccess);
   const open = () => setIsModalOpen(true);
-  const close = () => { setIsModalOpen(false); reset(); };
+  const close = () => {
+    setIsModalOpen(false);
+    reset();
+  };
 
   async function handleSuccess(updatedCompany: Company) {
     close();
     await updateSession({
       companyUserName: updatedCompany.username,
     });
-    window.location.href = `/co/${updatedCompany.username}`
+    router.replace(`/co/${updatedCompany.username}`, { scroll: false });
   }
 
   const handleUpdate = async (formData: Partial<Company>) => {
     await update(API_UPDATE_COMPANY_USER_NAME, {
       body: { id: company.id, username: formData.username } as Company,
-    }, TAGS.company);
+    });
   };
-
 
   return (
     <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
@@ -80,9 +81,10 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
         initialValues={{ username: company.username }}
       />
 
-      <div className="flex justify-between items-center"
-      >
-        <h6 className="mb-2 text-2xl font-semibold text-main">Company Public Profile</h6>
+      <div className="flex items-center justify-between">
+        <h6 className="mb-2 text-2xl font-semibold text-main">
+          Company Public Profile
+        </h6>
         <IconButton
           onClick={open}
           className="rounded border border-solid border-gray-300 p-2"
@@ -101,7 +103,10 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
           <p className="text-sm text-secondary">
             Your company&apos;s public profile URL:
           </p>
-          <Link href={`https://www.medicova.net/co/${company.username}`} className="text-sm text-primary underline">
+          <Link
+            href={`https://www.medicova.net/co/${company.username}`}
+            className="text-sm text-primary underline"
+          >
             co/{company.username}
           </Link>
         </div>

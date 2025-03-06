@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { UserState } from "@/types";
 import {
   LogoutOutlined,
@@ -25,14 +25,18 @@ interface UserDropdownProps {
   user: UserState;
 }
 
-const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
+const UserDropdown: React.FC<UserDropdownProps> = ({ user: initialUser }) => {
+  const { data: session } = useSession();
+  const sessionUser = session?.user as UserState;
+  const user = sessionUser || initialUser;
+  
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const isEmployer = user.type === "employer";
-  const userName = isEmployer ? user.companyUserName : user.userName
-  const userAvatar = isEmployer ? user.companyPhoto : user.photo
-  const displayName = isEmployer ? user.companyName : user.firstName
+  const userName = isEmployer ? user.companyUserName : user.userName;
+  const userAvatar = isEmployer ? user.companyPhoto : user.photo;
+  const displayName = isEmployer ? user.companyName : user.firstName;
 
   const handleOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -58,12 +62,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           aria-expanded={open ? "true" : undefined}
           sx={{ p: 0 }}
         >
-
-          <Avatar
-            src={userAvatar!}
-            alt={displayName!}
-            size={48}
-          />
+          <Avatar src={userAvatar!} alt={displayName!} size={48} />
         </IconButton>
       </Tooltip>
 
@@ -107,7 +106,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           }}
         >
           <PersonOutlined sx={{ mr: 1, color: "text.secondary" }} />
-          <Typography variant="body2">{isEmployer ? "Company Profile" : "Profile"}</Typography>
+          <Typography variant="body2">
+            {isEmployer ? "Company Profile" : "Profile"}
+          </Typography>
         </MenuItem>
 
         <MenuItem

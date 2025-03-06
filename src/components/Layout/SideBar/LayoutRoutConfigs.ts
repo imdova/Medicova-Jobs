@@ -43,7 +43,7 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/job-seeker/*", sideBarType: "full", linksType: "userType" },
 ];
 
-export const matchRoute = (pathname: string) => {
+export const matchRoute = (pathname: string): RouteConfig | undefined => {
   // First, prioritize exact matches (including dynamic segments)
   const exactMatch = routeConfigs.find((route) => {
     // Handle dynamic segments (e.g., "/user/[id]")

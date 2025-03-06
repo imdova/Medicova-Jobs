@@ -67,8 +67,8 @@ function useUpdateApi<T>(
         }
 
         setData(result);
+        tags && await revalidateTag(tags);
         onSuccess?.(result);
-        tags && revalidateTag(tags);
         return result;
       } catch (err) {
         const errorInstance =

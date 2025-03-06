@@ -1,296 +1,309 @@
 "use client";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import {
-  BusinessOutlined,
-  DescriptionOutlined,
-  FolderOutlined,
-  HelpOutline,
-  HomeOutlined,
-  InfoOutlined,
-  MessageOutlined,
-  NotificationsActiveOutlined,
-  PaidOutlined,
-  Person,
-  PostAddOutlined,
-  Search,
-  SettingsOutlined,
-  WorkOutline,
-} from "@mui/icons-material";
 import { Divider } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { getLastSegment } from "@/util";
+import { isCurrentPage } from "@/util";
+import { NavItem, UserState } from "@/types";
+import { getSideBarLinks } from "./LayoutRoutConfigs";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import Avatar from "@/components/UI/Avatar";
+import { useSession } from "next-auth/react";
 
-type SideBarType = "employer" | "job-seeker";
-
-interface VerticalTabsProps {
-  sideBardType?: SideBarType;
+interface SideBarProps {
+  user?: UserState;
+  pathname: string;
 }
-type NavItem = {
-  icon?: React.ElementType;
-  label?: string;
-  path?: string;
-  notifications?: number;
-  section?: string; // Optional section header
-  type?: "divider" | "text" | "collapse";
-  links?: NavItem[];
-};
 
-const navigationItems: NavItem[] = [
-  {
-    icon: HomeOutlined,
-    label: "Home",
-    path: "/",
-  },
-  {
-    icon: Person,
-    label: "My Profile",
-    path: "/me/1",
-  },
-  {
-    icon: InfoOutlined,
-    label: "My Personal Information",
-    path: "/job-seeker/general-info",
-  },
-  {
-    icon: MessageOutlined,
-    label: "Messages",
-    path: "/chat",
-    notifications: 3,
-  },
-  {
-    icon: DescriptionOutlined,
-    label: "My Applications",
-    path: "/job-seeker/my-applications",
-  },
-  {
-    icon: Search,
-    label: "Find Jobs",
-    path: "/search",
-  },
-  {
-    icon: BusinessOutlined,
-    label: "Browse Companies",
-    path: "/job-seeker/browse-companies",
-  },
+const useActiveTab = (links: NavItem[], pathname: string) => {
+  const [activeTab, setActiveTab] = useState<number | null>(null);
 
-  {
-    icon: NotificationsActiveOutlined,
-    label: "Notifications",
-    path: "/notifications",
-    notifications: 4,
-  },
-  {
-    type: "divider",
-  },
-  {
-    section: "Settings",
-    type: "text",
-  },
-  {
-    icon: SettingsOutlined,
-    label: "Settings",
-    path: "/job-seeker/setting",
-  },
-  {
-    icon: HelpOutline,
-    label: "Help Center",
-    path: "#",
-  },
-];
-
-export const employerSideBarLinks: NavItem[] = [
-  {
-    label: "Dashboard",
-    icon: HomeOutlined,
-    path: "/employer/dashboard",
-  },
-  {
-    label: "Profile",
-    icon: Person,
-    path: "/me/1",
-  },
-  {
-    label: "Company Info",
-    icon: BusinessOutlined,
-    path: "/employer/company-info",
-  },
-  {
-    label: "Manage Jobs",
-    icon: WorkOutline,
-    path: "/employer/job/manage-jobs",
-  },
-  {
-    label: "Post New Job",
-    icon: PostAddOutlined,
-    path: "/employer/job/posted",
-  },
-  {
-    label: "Applicants",
-    icon: WorkOutline,
-    path: "/employer/job/applicants",
-  },
-  {
-    label: "Search",
-    icon: Search,
-    path: "/employer/search",
-    links: [
-      {
-        label: "Saved Searches",
-        path: "/employer/search/saved-search",
-      },
-    ],
-  },
-  {
-    label: "My Folders",
-    icon: FolderOutlined,
-    path: "/employer/search/saved-search",
-  },
-  {
-    label: "Billing & Subscription",
-    icon: PaidOutlined,
-    path: "/employer/subscription-plans",
-  },
-  {
-    label: "Report",
-    icon: DescriptionOutlined,
-  },
-  {
-    label: "Chat",
-    icon: MessageOutlined,
-    path: "/chat",
-  },
-  {
-    type: "divider",
-  },
-  {
-    type: "text",
-    section: "Settings",
-  },
-  {
-    label: "Settings",
-    icon: SettingsOutlined,
-    path: "/employer/setting",
-  },
-  {
-    label: "Help Center",
-    icon: HelpOutline,
-  },
-];
-function a11yProps(index: number) {
-  return {
-    className:
-      "duration-300 transition-color ease-in-out mx-4 rounded-[10px] h-[45px] min-h-[40px] flex flex-row justify-start text-secondary my-1",
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-    sx: {
-      "&.Mui-selected": {
-        backgroundColor: "var(--light-primary)", // Add hover effect
-        color: "white",
-      },
+  // Define updateActiveTab as a stable function
+  const updateActiveTab = useCallback(
+    (currentLinks: NavItem[]) => {
+      const activeTabIndex = currentLinks.findIndex((link) => {
+        const path = link.path || link.pattern;
+        return path ? isCurrentPage(pathname, path) : false;
+      });
+      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
     },
-  };
-}
-
-export default function VerticalTabs({ sideBardType }: VerticalTabsProps) {
-  const links =
-    sideBardType === "employer" ? employerSideBarLinks : navigationItems;
-  const pathname = usePathname(); // Get the current path
-  let currentPage = pathname.split("/").pop();
-  currentPage = pathname.includes("me") ? "me" : currentPage;
-  const activeTabIndex = links.findIndex((link) => {
-    return getLastSegment(link.path) == currentPage;
-  });
-  const [value, setValue] = useState(
-    activeTabIndex >= 0 ? activeTabIndex : null,
+    [pathname],
   );
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  // Run updateActiveTab when links or pathname change
+  useEffect(() => {
+    if (links.length > 0) {
+      updateActiveTab(links);
+    }
+  }, [links, pathname, updateActiveTab]);
+
+  return { activeTab, setActiveTab, updateActiveTab };
+};
+
+export default function VerticalTabs({
+  user: initialUser,
+  pathname,
+}: SideBarProps) {
+  const { data: session } = useSession();
+  const sessionUser = session?.user as UserState;
+  const user = sessionUser || initialUser;
+  const initialLinks = getSideBarLinks(user, pathname);
+  const [links, setLinks] = useState<NavItem[]>(initialLinks);
+  const { activeTab, setActiveTab, updateActiveTab } = useActiveTab(
+    links,
+    pathname,
+  );
+  // TODO: make active tab depend on the path name not a state that able to change by user
+  const handleTabChange = (_event: React.SyntheticEvent, newTab: number) => {
+    setActiveTab(newTab);
   };
+
+  useEffect(() => {
+    if (links.length === 0 && initialLinks.length > 0) {
+      setLinks(initialLinks);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialLinks]);
 
   return (
     <Tabs
       orientation="vertical"
-      value={value}
-      onChange={handleChange}
-      aria-label="nav tabs example"
+      value={activeTab ?? undefined}
+      onChange={handleTabChange}
+      aria-label="Sidebar navigation tabs"
       role="navigation"
       TabIndicatorProps={{
-        sx: {
-          backgroundColor: "var(--light-primary)", // Set the color of the indicator
-          left: 0, // Move the indicator to the left
-          width: 4, // Adjust the thickness of the indicator
-          maxHeight: "30px", // Center the indicator vertically relative to the tab height
-          borderRadius: 5, // Optional: Add rounded corners
-          transform: "translateY(10px)", // Center the indicator vertically relative to its smaller height
-        },
+        sx:
+          activeTab !== null
+            ? {
+                backgroundColor: "var(--light-primary)",
+                left: 0,
+                width: 4,
+                maxHeight: "30px",
+                borderRadius: 5,
+                transform: "translateY(10px)",
+              }
+            : { display: "none" },
       }}
     >
       {links.map((item, index) => {
-        const IconComponent = item.icon;
-        if (item.type === "divider") {
-          return <Divider key={index} className="mt-2" />;
-        } else if (item.type === "text") {
-          return (
-            <p key={index} className="p-4 text-sm normal-case text-secondary">
-              {item.section}
-            </p>
-          );
-        } else if (item.type === "collapse") {
-          return (
-            <Tab
-              key={index}
-              // icon={<IconComponent />}
-              // label={item.label}
-              label={
-                <div className="flex w-full flex-row items-center justify-between gap-2">
-                  <div className="flex flex-row items-center gap-2 text-left normal-case">
-                    {IconComponent && <IconComponent />}{" "}
-                    <span>{item.label}</span>
-                  </div>
-                  {item.notifications && (
-                    <div
-                      className={`${value === index ? "bg-primary-foreground text-light-primary" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
-                    >
-                      {item.notifications}
-                    </div>
-                  )}
-                </div>
-              }
-              // iconPosition="start"
-              {...a11yProps(index)}
-            />
-          );
+        switch (item.type) {
+          case "profile":
+            return user ? (
+              <ProfileTab
+                key={item.id}
+                user={user}
+                pathname={pathname}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            ) : null;
+          case "divider":
+            return <Divider key={item.id} className="mt-2" />;
+          case "text":
+            return (
+              <p
+                key={item.id}
+                className="p-4 text-sm normal-case text-gray-800"
+              >
+                {item.section}
+              </p>
+            );
+          case "collapse":
+            return (
+              <CollapseTab
+                key={item.id}
+                item={item}
+                index={index}
+                links={links}
+                setLinks={setLinks}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                updateActiveTab={updateActiveTab}
+              />
+            );
+          default:
+            return (
+              <LinkTab
+                key={item.id}
+                item={item}
+                index={index}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            );
         }
-        return (
-          <Tab
-            key={index}
-            // icon={<IconComponent />}
-            // label={item.label}
-            label={
-              <div className="flex w-full flex-row items-center justify-between gap-2">
-                <div className="flex flex-row items-center gap-2 text-left normal-case">
-                  {IconComponent && <IconComponent />} <span>{item.label}</span>
-                </div>
-                {item.notifications && (
-                  <div
-                    className={`${value === index ? "bg-primary-foreground text-light-primary" : "bg-secondary text-primary-foreground"} aspect-square rounded-full p-1 px-2 text-xs`}
-                  >
-                    {item.notifications}
-                  </div>
-                )}
-              </div>
-            }
-            // iconPosition="start"
-            component={Link}
-            href={item.path || "#"}
-            {...a11yProps(index)}
-          />
-        );
       })}
     </Tabs>
   );
+}
+
+// Type definition for navigation items
+
+const CollapseTab = ({
+  item,
+  index,
+  activeTab,
+  setLinks,
+  links,
+  updateActiveTab,
+  setActiveTab,
+}: {
+  item: NavItem;
+  index: number;
+  activeTab: number | null;
+  links: NavItem[];
+  setLinks: React.Dispatch<React.SetStateAction<NavItem[]>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
+  updateActiveTab: (links: NavItem[]) => void;
+}) => {
+  const isActive = activeTab === index;
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const IconComponent = item.icon;
+
+  // Toggle the collapse state when the tab is clicked
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+    if (isOpen) {
+      setLinks((e) => removeItems(e, index + 1, item.links?.length || 0));
+      setActiveTab(null);
+    } else {
+      const newLinks = insertItemsAfterIndex(links, item.links || [], index);
+      setLinks(newLinks);
+      updateActiveTab(newLinks);
+    }
+  };
+  // import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+  return (
+    <Tab
+      className={`transition-color mx-4 my-1 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
+      id={`vertical-tab-${index}`}
+      aria-controls={`vertical-tabpanel-${index}`}
+      value={index}
+      onClick={toggleCollapse}
+      label={
+        <div className="flex w-full flex-row items-center justify-between gap-2">
+          <div className="flex flex-row items-center gap-2 text-left normal-case">
+            {IconComponent && <IconComponent />} <span>{item.label}</span>
+          </div>
+          <KeyboardArrowDown
+            className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
+          />
+        </div>
+      }
+    />
+  );
+};
+const ProfileTab = ({
+  user,
+  pathname,
+  activeTab,
+  onTabChange,
+}: {
+  user: UserState;
+  pathname: string;
+  activeTab: number | null;
+  onTabChange: (index: number) => void;
+}) => {
+  const isEmployer = user.type === "employer";
+  const userAvatar = isEmployer ? user.companyPhoto : user.photo;
+  const displayName = isEmployer
+    ? user.companyName
+    : user.firstName + " ." + user.lastName?.[0];
+  const email = isEmployer ? user.companyEmail || user.email : user.email;
+
+  const path = isEmployer
+    ? `/co/${user?.companyUserName}`
+    : `/me/${user.userName}`;
+  const isActive =
+    activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
+
+  return (
+    <Tab
+      className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] opacity-100 duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"}`}
+      id={`vertical-tab-0`}
+      aria-controls={`vertical-tabpanel-0`}
+      value={0}
+      onClick={() => onTabChange(0)}
+      component={Link}
+      href={path}
+      label={
+        <div className="flex items-center gap-1">
+          <Avatar src={userAvatar!} alt={displayName + "photo"} size={40} />
+          <div>
+            <h6 className="text-left text-sm normal-case">{displayName}</h6>
+            <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
+              {email}
+            </p>
+          </div>
+        </div>
+      }
+    />
+  );
+};
+
+const LinkTab = ({
+  item,
+  index,
+  activeTab,
+  onTabChange,
+}: {
+  item: NavItem;
+  activeTab: number | null;
+  index: number;
+  onTabChange: (index: number) => void;
+}) => {
+  const isActive = activeTab === index;
+  const isSub = item.type === "supLink";
+  const IconComponent = item.icon;
+  return (
+    <Tab
+      className={`transition-color mx-4 my-1 ${isSub ? "ml-10" : ""} flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
+      id={`vertical-tab-${index}`}
+      aria-controls={`vertical-tabpanel-${index}`}
+      value={index}
+      onClick={() => onTabChange(index)}
+      component={Link}
+      href={item.path || "#"}
+      label={
+        <div className="flex w-full flex-row items-center justify-between gap-2">
+          <div className="flex flex-row items-center gap-2 text-left normal-case">
+            {IconComponent && <IconComponent />} <span>{item.label}</span>
+          </div>
+          {item.notifications && (
+            <div
+              className={`${
+                isActive
+                  ? "bg-primary-foreground text-light-primary"
+                  : "bg-secondary text-primary-foreground"
+              } aspect-square rounded-full p-1 px-2 text-xs`}
+            >
+              {item.notifications}
+            </div>
+          )}
+        </div>
+      }
+    />
+  );
+};
+
+function insertItemsAfterIndex<T>(array: T[], items: T[], index: number): T[] {
+  if (index < -1 || index >= array.length) {
+    throw new Error("Index out of bounds");
+  }
+  // Return a new array with the items inserted
+  return [...array.slice(0, index + 1), ...items, ...array.slice(index + 1)];
+}
+
+function removeItems<T>(array: T[], startIndex: number, count: number): T[] {
+  if (startIndex < 0 || startIndex >= array.length) {
+    throw new Error("Start index out of bounds");
+  }
+  if (count < 0) {
+    throw new Error("Count cannot be negative");
+  }
+
+  // Remove items by slicing around the specified range
+  return [...array.slice(0, startIndex), ...array.slice(startIndex + count)];
 }

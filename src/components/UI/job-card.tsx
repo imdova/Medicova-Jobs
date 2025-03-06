@@ -51,7 +51,7 @@ const JobCard: React.FC<JobCardProps> = ({
               alt={job.company?.name + " profile Image"}
               size={60}
               shape="square"
-              className={`hover:border-primary border border-gray-100 transition-color duration-300`}
+              className={`transition-color border border-gray-100 duration-300 hover:border-primary`}
             />
           </Link>
           <div>
@@ -69,7 +69,8 @@ const JobCard: React.FC<JobCardProps> = ({
                   {job.draft ? (
                     <Link
                       href={`/employer/job/posted/${job.id}`}
-                      className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black hover:underline">
+                      className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black hover:underline"
+                    >
                       Draft
                     </Link>
                   ) : (
@@ -102,7 +103,7 @@ const JobCard: React.FC<JobCardProps> = ({
             </div>
             <div className="flex flex-wrap text-secondary">
               {(job?.country?.name || job?.city || job?.state?.name) && (
-                <div className="mr-2 flex items-center gap-1 text-secondary ">
+                <div className="mr-2 flex items-center gap-1 text-secondary">
                   <LocationOnOutlined className="-ml-1 h-4 w-4 text-light-primary md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
                     {job?.country?.name ? `${job.country.name}, ` : ""}
@@ -112,7 +113,7 @@ const JobCard: React.FC<JobCardProps> = ({
                 </div>
               )}
               {education && job.jobSpeciality && (
-                <div className="mr-2 flex items-center gap-1 ">
+                <div className="mr-2 flex items-center gap-1">
                   <SchoolOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
                     {education} Degree at {job.jobSpeciality}{" "}
@@ -210,12 +211,14 @@ const JobCard: React.FC<JobCardProps> = ({
       <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col">
         {isEdit ? (
           <div className="flex justify-end">
-            <JobSwitch job={job} />
+            {!job.draft && <JobSwitch job={job} />}
             {/* <Switch defaultChecked /> */}
-            <ShareMenu
-              link={`https://www.example.com/job/${job.id}`}
-              className="h-12 w-12"
-            />
+            {!job.draft && (
+              <ShareMenu
+                link={`https://www.example.com/job/${job.id}`}
+                className="h-12 w-12"
+              />
+            )}
             <DropdownMenu job={job} />
           </div>
         ) : (

@@ -29,10 +29,14 @@ export const FormContent: React.FC<FormContentProps> = ({
     resetValues,
     onCancel,
 }) => {
-    const { control, handleSubmit, formState: { isDirty }, getValues } = formMethods;
+    const { control, handleSubmit, formState: { isDirty }, getValues, reset } = formMethods;
 
+    const submitHandler = (data: any) => {
+        onSubmit(data);
+        reset(data);
+      };
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
             <Grid container className="mt-1" spacing={2}>
                 {fields.map((field) => (
                     <Grid
@@ -47,6 +51,7 @@ export const FormContent: React.FC<FormContentProps> = ({
                             control={control}
                             hidden={hiddenFields.includes(String(field.name))}
                             onCheckboxChange={onCheckboxChange(field)}
+                            dependsOnField={fields.find(f => f.name === field.dependsOn)}
                             formValues={getValues()}
                             resetValues={resetValues}
                         />

@@ -8,6 +8,7 @@ import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, TextFieldProps } from "@mui/material";
+import { Path } from "react-hook-form";
 
 export type Country = {
   name: string;
@@ -271,13 +272,15 @@ export interface JobData {
   applicationCount?: number | null; // Not in NewJobData
 
   startDateType: StartDateType | null | "";
-  created_at?: string | null; // ISO date string 
-  updated_at?: string | null; // ISO date string 
+  
   jobIndustry?: string | null;
   jobSpeciality?: string | null;
   jobCategory?: string | null;
   jobCareerLevel?: string | null;
   jobEmploymentType?: string | null;
+
+  created_at?: string | null; // ISO date string 
+  updated_at?: string | null; // ISO date string 
 }
 
 export type JobStringData = Omit<
@@ -404,24 +407,24 @@ export interface Option {
 
 // Updated FieldConfig to support multiple hidden fields
 export interface FieldConfig<T = any> {
-  name: keyof T;
+  name: Path<T>;
   label?: string;
   type: FieldType;
   required?: boolean;
-  dependsOn?: string; // Field this depends on
+  dependsOn?: Path<T>; // Field this depends on
   validation?: any;
   gridProps?: {
     xs?: number;
     sm?: number;
     md?: number;
   };
-  resetFields?: (string | number)[]; // New property for fields to reset
+  resetFields?: Path<T>[]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
   // options?: { label: string; value: string | number }[];
   options?: Option[] // Updated to support dynamic options
-  hideFieldNames?: (keyof T)[];
+  hideFieldNames?: Path<T>[];
   onChange?: (value: any) => void; // Updated to include formMethods
 }
 export interface DynamicModalProps {

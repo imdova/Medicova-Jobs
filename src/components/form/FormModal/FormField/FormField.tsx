@@ -11,6 +11,7 @@ interface FormFieldProps {
     field: FieldConfig;
     control: any;
     hidden: boolean;
+    dependsOnField?: FieldConfig;
     onCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     formValues: Record<string, any>;
     resetValues: (fieldNames: (string | number)[]) => void;
@@ -23,7 +24,8 @@ export const FormField: React.FC<FormFieldProps> = ({
     hidden,
     onCheckboxChange,
     formValues,
-    resetValues
+    resetValues,
+    dependsOnField
 }) => {
     if (hidden) return null;
 
@@ -51,6 +53,7 @@ export const FormField: React.FC<FormFieldProps> = ({
                         error={error}
                         formValues={formValues}
                         resetValues={resetValues}
+                        dependsOnField={dependsOnField}
                     />
                 );
             case "search-select":
@@ -61,6 +64,7 @@ export const FormField: React.FC<FormFieldProps> = ({
                         error={error}
                         resetValues={resetValues}
                         formValues={formValues}
+                        dependsOnField={dependsOnField}
                     />
                 );
             case "textEditor":

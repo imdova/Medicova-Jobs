@@ -115,7 +115,6 @@ export const getSeekers = async ({
         credentials: "include",
       },
     );
-    console.log("🚀 ~ response:", response);
     if (response.ok) {
       const data = await response.json();
       console.log("🚀 ~ data:", data);

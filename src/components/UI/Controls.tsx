@@ -36,7 +36,7 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
   const toggleActive = () => {
     setAnchorEl(null);
     if (job.id) {
-      const newJob = { id: job.id, active: !job.active }
+      const newJob = { id: job.id, active: !job.active };
       update(API_CREATE_JOB, { body: newJob }, TAGS.jobs);
     }
   };
@@ -96,27 +96,29 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
             <span>Duplicate</span>
           </Link>
         </MenuItem>
-        <Divider className="!m-0" />
-        <Divider className="!m-0" />
-        <MenuItem onClick={toggleActive} className="flex items-center gap-2">
-          {job.active ? (
-            <Pause color="warning" fontSize="small" />
-          ) : (
-            <PlayArrow color="primary" fontSize="small" />
-          )}
-          <span>{job.active ? "Close Job" : "Open Job"}</span>
-        </MenuItem>
+        {!job.draft && (
+          <>
+            <Divider className="!m-0" />
+            <MenuItem
+              onClick={toggleActive}
+              className="flex items-center gap-2"
+            >
+              {job.active ? (
+                <Pause color="warning" fontSize="small" />
+              ) : (
+                <PlayArrow color="primary" fontSize="small" />
+              )}
+              <span>{job.active ? "Close Job" : "Open Job"}</span>
+            </MenuItem>
+          </>
+        )}
         <Divider className="!m-0" />
         <MenuItem onClick={handleClickOpen} className="flex items-center gap-2">
           <DeleteIcon color="error" fontSize="small" />
           <span>Remove</span>
         </MenuItem>
       </Menu>
-      <Snackbar
-        open={!!error}
-        autoHideDuration={6000}
-        onClose={() => reset()}
-      >
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => reset()}>
         <Alert
           onClose={() => reset()}
           severity="error"
@@ -129,4 +131,3 @@ export const DropdownMenu = ({ job }: { job: JobData }) => {
     </React.Fragment>
   );
 };
-

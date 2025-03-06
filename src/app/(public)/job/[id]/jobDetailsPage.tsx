@@ -24,6 +24,7 @@ import {
   fetchApplications,
   submitJobApplication,
 } from "@/store/slices/applications.slice";
+import { filteredJobs } from "@/lib/auth/utils";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
@@ -34,7 +35,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const [isApplied, setIsApplied] = useState(false);
   const education = formatEducationAndSpecialty(job);
 
-  const isOwner = job.companyId === companyId;
+  const isOwner = job.company?.id === companyId;
 
   const {
     jobs: { data: jobs, loading: jobsLoading, error },
@@ -60,8 +61,8 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   };
 
   useEffect(() => {
-    if (jobs.length === 0 && job.companyId) {
-      dispatch(fetchJobs(job.companyId));
+    if (jobs.length === 0 && job.company?.id) {
+      dispatch(fetchJobs(job.company?.id));
     }
     if (applications.length === 0 && user?.id) {
       dispatch(fetchApplications({ seekerId: user.id }));
@@ -234,13 +235,15 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
 
           {/* company details */}
           {/* {job.company && ( */}
-          <div
-            className={`mt-8 grid grid-cols-1 gap-4 ${false ? "md:grid-cols-2" : ""}`}
-          >
-            {/* <div className={`mt-8 grid grid-cols-1 gap-4 ${job.company.images "md:grid-cols-2"}`}> */}
-            {/* company details */}
-            {/* <div>
-                <div className="flex items-center gap-2">
+          {job.company && (
+            <div className={`mt-8 grid grid-cols-1 gap-4 md:grid-cols-2`}>
+              {/* <div className={`mt-8 grid grid-cols-1 gap-4 ${job.company.images "md:grid-cols-2"}`}> */}
+              {/* company details */}
+              <div>
+                <Link
+                  href={"/co/" + job?.company.username}
+                  className="flex items-center gap-2"
+                >
                   <Image
                     src={job.company.avatar || "/images/placeholder-avatar.svg"}
                     alt="company logo"
@@ -248,43 +251,49 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                     height={70}
                     className="rounded-md bg-primary-100 object-cover"
                   />
-                  <Link
-                    href={"/co/" + job.company.id}
-                    className="group flex items-center gap-2"
-                  >
+                  <h6 className="group flex items-center gap-2">
                     <span className="text-lg font-bold text-main group-hover:underline">
                       {job.company.name}
                     </span>
                     <ArrowForward className="text-primary transition-transform duration-300 group-hover:translate-x-4" />
-                  </Link>
-                </div>
-                <p className="mt-2 text-secondary">{job.company.about}</p>
-              </div> */}
-            {/* gallery */}
-            {/* <div className="grid grid-cols-3 grid-rows-2 gap-3">
-                <Image
-                  src="/images/company-image1.jpg"
-                  alt="company image 1"
-                  width={400}
-                  height={400}
-                  className="col-span-2 row-span-2 h-full w-full rounded-md object-cover"
-                />
-                <Image
-                  src="/images/company-image2.jpg"
-                  alt="company image 2"
-                  width={400}
-                  height={400}
-                  className="h-full w-full rounded-md object-cover"
-                />
-                <Image
-                  src="/images/company-image3.jpg"
-                  alt="company image 3"
-                  width={400}
-                  height={400}
-                  className="h-full w-full rounded-md object-cover"
-                />
-              </div> */}
-          </div>
+                  </h6>
+                </Link>
+                <p className="mt-2 line-clamp-6 text-secondary">
+                  {job.company.about}
+                </p>
+              </div>
+              {/* gallery */}
+              <div className="grid grid-cols-3 grid-rows-2 gap-3">
+                {job.company.banner1 && (
+                  <Image
+                    src={job.company.banner1}
+                    alt="company banner 1"
+                    width={400}
+                    height={400}
+                    className="col-span-2 row-span-2 h-full w-full rounded-md object-cover"
+                  />
+                )}
+                {job.company.banner2 && (
+                  <Image
+                    src={job.company.banner2}
+                    alt="company image 2"
+                    width={400}
+                    height={400}
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                )}
+                {job.company.banner3 && (
+                  <Image
+                    src={job.company.banner3}
+                    alt="company image 3"
+                    width={400}
+                    height={400}
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                )}
+              </div>
+            </div>
+          )}
           {/* )} */}
         </div>
         {/* Job Overview only on desktop */}
@@ -306,21 +315,17 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
                 </span>{" "}
                 Jobs
               </h2>
-              <p className="mx-auto mb-8 max-w-[700px] text-center text-2xl text-secondary">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry&apos;s standard
-                dummy
-              </p>
+              <p className="mx-auto mb-8 max-w-[700px] text-center text-2xl text-secondary"></p>
 
               <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
                 {/* card  */}
-                {relatedJobs.map((job, i) => (
+                {filteredJobs(relatedJobs, "active").map((job, i) => (
                   <MinJobCard job={job} key={i} />
                 ))}
               </div>
               <div className="mt-8 flex justify-center">
                 <Link
-                  href="#"
+                  href="/search"
                   className="rounded-[8px] bg-primary px-6 py-3 font-semibold uppercase text-primary-foreground transition-colors duration-300 hover:bg-primary-foreground hover:text-primary focus:ring-2 focus:ring-white"
                 >
                   Explore All

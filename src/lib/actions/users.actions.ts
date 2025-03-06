@@ -52,7 +52,6 @@ export const getUsersWithIds = async (
       credentials: "include",
       next: { tags: [TAGS.profile] },
     });
-    console.log("🚀 ~ response ~ response:", response);
 
     if (response.ok) {
       const data: UserProfile[] = await response.json();

@@ -11,73 +11,78 @@ import Avatar from "@/components/UI/Avatar";
 import ProfileImage from "@/components/UI/ProfileImage";
 
 interface EmployerHeaderSectionProps {
-    isEmployee: boolean;
-    company: Company;
+  isEmployee: boolean;
+  company: Company;
 }
 
-const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({ company, isEmployee }) => {
-    const { update: updateSession } = useSession();
+const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({
+  company,
+  isEmployee,
+}) => {
+  const { update: updateSession } = useSession();
 
-    const [image, setImage] = useState<File | null>(null);
-    const [cover, setCover] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [cover, setCover] = useState<File | null>(null);
 
-    const { update } = useUpdateApi<Company>(handleSuccess);
+  const { update } = useUpdateApi<Company>(handleSuccess);
 
-    const handleUpdateCompany = async (formData: Partial<Company>) => {
-        await update(API_UPDATE_COMPANY, {
-            body: { id: company.id, ...formData } as Company,
-        }, TAGS.company);
-    };
+  const handleUpdateCompany = async (formData: Partial<Company>) => {
+    await update(API_UPDATE_COMPANY, {
+      body: { id: company.id, ...formData } as Company,
+    }, TAGS.company);
+  };
 
-    async function handleSuccess(updatedCompany: Company) {
-        await updateSession({
-            companyPhoto: updatedCompany.avatar,
-        });
-        window.location.reload();
-    }
+  async function handleSuccess(updatedCompany: Company) {
+    await updateSession({
+      companyPhoto: updatedCompany.avatar,
+    });
+    // window.location.reload();
+  }
 
-    const updateImage = async (file: File) => {
-        const [avatar] = await uploadImages([file]);
-        handleUpdateCompany({ avatar });
-        setImage(file);
-    };
-    const updateCoverImage = async (file: File) => {
-        const [cover] = await uploadImages([file]);
-        handleUpdateCompany({ cover });
-        setCover(file);
-    };
-    return (
-        <div className="grid grid-cols-1 grid-rows-1">
-            {/* Avatar Positioned on Background Image */}
-            <div className="col-start-1 row-start-1 min-h-24 w-full">
-                <ProfileCoverImage
-                    currentImageUrl={cover ? URL.createObjectURL(cover) : company.cover || ""}
-                    onImageUpdate={isEmployee ? updateCoverImage : undefined}
-                />
-            </div>
-            <div className="col-start-1 row-start-1 w-fit h-fit self-end px-4">
-                {isEmployee ? (
-                    <ProfileImage
-                        currentImageUrl={
-                            image ? URL.createObjectURL(image) : company.avatar || ""
-                        }
-                        alt={company.name}
-                        size="xLarge"
-                        onImageUpdate={updateImage}
-                        maxFileSizeMB={5}
-                        imageClassName="border-4 border-white shadow-md"
-                    />
-                ) : (
-                    <Avatar
-                        src={company.avatar}
-                        alt={company.name}
-                        size={100}
-                        className=" border-4 border-white shadow-md"
-                    />
-                )}
-            </div>
-        </div>
-    )
-}
+  const updateImage = async (file: File) => {
+    const [avatar] = await uploadImages([file]);
+    handleUpdateCompany({ avatar });
+    setImage(file);
+  };
+  const updateCoverImage = async (file: File) => {
+    const [cover] = await uploadImages([file]);
+    handleUpdateCompany({ cover });
+    setCover(file);
+  };
+  return (
+    <div className="grid grid-cols-1 grid-rows-1">
+      {/* Avatar Positioned on Background Image */}
+      <div className="col-start-1 row-start-1 min-h-24 w-full">
+        <ProfileCoverImage
+          currentImageUrl={
+            cover ? URL.createObjectURL(cover) : company.cover || ""
+          }
+          onImageUpdate={isEmployee ? updateCoverImage : undefined}
+        />
+      </div>
+      <div className="col-start-1 row-start-1 h-fit w-fit self-end px-4">
+        {isEmployee ? (
+          <ProfileImage
+            currentImageUrl={
+              image ? URL.createObjectURL(image) : company.avatar || ""
+            }
+            alt={company.name}
+            size="xLarge"
+            onImageUpdate={updateImage}
+            maxFileSizeMB={5}
+            imageClassName="border-4 border-white shadow-md"
+          />
+        ) : (
+          <Avatar
+            src={company.avatar}
+            alt={company.name}
+            size={100}
+            className="border-4 border-white shadow-md"
+          />
+        )}
+      </div>
+    </div>
+  );
+};
 
-export default ProfileCoverSection
+export default ProfileCoverSection;

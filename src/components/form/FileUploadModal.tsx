@@ -101,7 +101,8 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   onUpload,
   multiple = false,
   maxFiles = 1,
-  maxFileSizeMB = 5,
+  //TODO: error handling for errors
+  maxFileSizeMB = 1,
   acceptedFileTypes = ACCEPTED_IMAGE_TYPES,
   title = "Upload Files",
   description,
@@ -169,7 +170,6 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
 
     setIsUploading(true);
     setError(null);
-    // TODO : add upload handler here
     try {
       await onUpload(selectedFiles);
       onClose();
