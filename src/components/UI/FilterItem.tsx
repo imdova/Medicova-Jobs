@@ -73,16 +73,19 @@ const FilterItem: React.FC<FilterItemProps> = ({
 
   return (
     <div className="border-b pb-4 last:border-b-0">
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Box
+        onClick={toggleExpand}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Typography
           variant="h6"
           className="mb-3 text-[14px] font-bold text-[#25324B]"
         >
           {section.title}
         </Typography>
-        <IconButton onClick={toggleExpand} size="small">
-          {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
+        {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </Box>
 
       <Collapse className="px-1" in={isExpanded}>

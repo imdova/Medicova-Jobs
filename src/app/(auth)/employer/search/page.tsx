@@ -1,7 +1,9 @@
+import Filter from "@/components/Layout/filter/filter";
 import CvResults from "./cv-results";
 import { getSeekers } from "@/lib/actions/applications.actions";
+import { searchFilters } from "@/constants";
 
-const ApplicantsPage: React.FC = async ({
+const page = async ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -11,9 +13,16 @@ const ApplicantsPage: React.FC = async ({
   };
 
   const result = await getSeekers();
-  if (!result.success || !result.data) return <h1>No Candidates found</h1>;
-  const { data: candidates, total } = result.data;
-  return <CvResults candidates={candidates} />;
+  const { data: candidates, total } = result.data || { data: [], total: 0 };
+  return (
+    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1170px]">
+      <Filter
+        sections={searchFilters}
+        searchKeys={["Residency (Location)", "nationality"]}
+      />
+      <CvResults candidates={candidates} />
+    </div>
+  );
 };
 
-export default ApplicantsPage;
+export default page;

@@ -37,7 +37,6 @@ const HeaderSection: React.FC<{
           alt="avatar"
           size="xLarge"
           onImageUpdate={updateImage}
-          maxFileSizeMB={5}
           imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
           className="h-[100px] w-[100px] rounded-full border-[6px] border-white object-cover shadow-xl lg:ml-8 xl:ml-14"
         />

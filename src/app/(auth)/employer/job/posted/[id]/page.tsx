@@ -5,6 +5,8 @@ import {
   getEmploymentTypes,
   getIndustries,
 } from "@/lib/actions/employer.actions";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/config";
 
 const page = async ({
   params: { id },
@@ -17,9 +19,19 @@ const page = async ({
   const result = await getJobById(id);
   const job = result.success && result.data;
   if (!job) return notFound();
+
+  const data = await getServerSession(authOptions);
+  const user = data?.user;
+
+  if (user?.companyId !== job.companyId) return notFound();
+
   job.country = job.country || { code: "", name: "" };
+  job.skills = job.skills || [];
+  job.keywords = job.keywords || [];
+  job.description = job.description || "<p></p>";
+  job.requirements = job.requirements || "<p></p>";
   // job.state = job.state || { code: "", name: "" };
-  
+
   const industriesResult = await getIndustries();
   const industries = (industriesResult.success && industriesResult.data) || [];
   const employmentResult = await getEmploymentTypes();

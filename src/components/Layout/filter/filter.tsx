@@ -4,20 +4,9 @@ import FilterItem from "@/components/UI/FilterItem";
 import { FilterOption } from "@/types";
 import { createUrl } from "@/util";
 import { Suspense } from "react";
+import FilterDrawer from "@/components/UI/FilterDrawer";
 
-type JobFilter = {
-  name: string;
-  key: string;
-  items: FilterOption[];
-};
-
-type FilterProps = {
-  className?: string;
-  sections: JobFilter[];
-  searchKeys?: string[];
-};
-// TODO: add filter drawer here 
-const FilterSideBar = ({ searchKeys, sections }: FilterProps) => {
+const FilterSideBar: React.FC<FilterProps> = ({ searchKeys, sections }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,24 +37,32 @@ const FilterSideBar = ({ searchKeys, sections }: FilterProps) => {
   const selectedFilters = getSelectedFilters();
 
   return (
-    <div className="hidden w-1/5 rounded-[10px] border border-gray-100 bg-white p-[20px] shadow-xl lg:block">
-      <div className="space-y-6">
-        {sections.map((section, index) => (
-          <FilterItem
-            key={section.key}
-            index={index}
-            section={{
-              key: section.key,
-              title: section.name,
-              options: section.items,
-            }}
-            value={selectedFilters[section.key] || []}
-            handleCheckChange={handleCheckChange}
-            isSearch={searchKeys ? searchKeys.includes(section.key) : false}
-          />
-        ))}
+    <>
+      <div className="hidden w-1/5 rounded-[10px] border border-gray-100 bg-white p-[20px] shadow-xl lg:block">
+        <div className="space-y-6">
+          {sections.map((section, index) => (
+            <FilterItem
+              key={section.key}
+              index={index}
+              section={{
+                key: section.key,
+                title: section.name,
+                options: section.items,
+              }}
+              value={selectedFilters[section.key] || []}
+              handleCheckChange={handleCheckChange}
+              isSearch={searchKeys ? searchKeys.includes(section.key) : false}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <FilterDrawer
+        searchKeys={searchKeys}
+        sections={sections}
+        selectedFilters={selectedFilters}
+        handleCheckChange={handleCheckChange}
+      />
+    </>
   );
 };
 

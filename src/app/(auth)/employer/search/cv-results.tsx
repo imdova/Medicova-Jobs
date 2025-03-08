@@ -106,6 +106,7 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
     <div className="w-full lg:w-[80%]">
       <div className="h-[80px] w-full pl-[39px]">
         <SearchInput
+        formClassName="flex gap-3"
           fullWidth
           variant="outlined"
           placeholder="Job Candidates CV's"
@@ -116,14 +117,8 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
               </InputAdornment>
             ),
           }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-            },
-            minWidth: 200,
-          }}
         >
-          <Button variant="contained" className="w-1/5">
+          <Button type="submit" variant="contained" className="w-1/5">
             Search
           </Button>
         </SearchInput>

@@ -3,10 +3,11 @@ import { IconButton, TextField, TextFieldProps } from "@mui/material";
 import { useState, KeyboardEvent } from "react";
 
 const MultiTextInput: React.FC<TextFieldProps> = ({
-  value,
+  value: valueProp,
   placeholder = "Type multiple values and press Enter",
   onChange,
 }) => {
+  const value = (valueProp || []) as string[];
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -21,7 +22,7 @@ const MultiTextInput: React.FC<TextFieldProps> = ({
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-    const newItems = [...(value as string[]), ...newEntries];
+    const newItems = [...value, ...newEntries];
     if (onChange) {
       const syntheticEvent = {
         target: { value: newItems },
@@ -30,11 +31,8 @@ const MultiTextInput: React.FC<TextFieldProps> = ({
     }
     setInputValue("");
   };
-
   const removeItem = (indexToRemove: number) => {
-    const newItems = value
-      ? (value as string[]).filter((_, index) => index !== indexToRemove)
-      : [];
+    const newItems = value.filter((_, index) => index !== indexToRemove);
     if (onChange) {
       const syntheticEvent = {
         target: { value: newItems },
@@ -46,7 +44,7 @@ const MultiTextInput: React.FC<TextFieldProps> = ({
   return (
     <div className="w-full">
       <div className="mb-2 flex flex-wrap gap-2">
-        {(value as string[]).map((item, index) => (
+        {value.map((item, index) => (
           <div
             key={index}
             className="space-x-2 rounded-base border bg-white px-2 py-1 text-main duration-100"
@@ -77,9 +75,10 @@ const MultiTextInput: React.FC<TextFieldProps> = ({
         </IconButton>
       </div>
 
-      {(value as string[]).length > 0 && (
+      {value.length > 0 && (
         <div className="text-sm text-gray-500">
-          {(value as string[]).length} item{(value as string[]).length !== 1 ? "s" : ""} added
+          {value.length} item
+          {value.length !== 1 ? "s" : ""} added
         </div>
       )}
     </div>

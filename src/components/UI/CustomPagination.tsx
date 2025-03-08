@@ -46,20 +46,20 @@ const CustomPagination: React.FC<PaginationProps> = ({
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("limit", newLimit.toString());
     newParams.set("page", "1");
-    router.push(createUrl(pathName, newParams));
+    router.push(createUrl(pathName, newParams), { scroll: false });
   };
 
   // Handle page change
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("page", value.toString());
-    router.push(createUrl(pathName, newParams));
+    router.push(createUrl(pathName, newParams), { scroll: false });
   };
 
   // Validate current page on total items change
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      router.push(`?${createQueryString("page", totalPages.toString())}`);
+      router.push(`?${createQueryString("page", totalPages.toString())}`, { scroll: false });
     }
   }, [totalItems, currentPage, totalPages, router, createQueryString]);
 

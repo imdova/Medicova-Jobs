@@ -69,7 +69,6 @@ const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({
             alt={company.name}
             size="xLarge"
             onImageUpdate={updateImage}
-            maxFileSizeMB={5}
             imageClassName="border-4 border-white shadow-md"
           />
         ) : (

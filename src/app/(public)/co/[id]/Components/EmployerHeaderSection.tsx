@@ -1,11 +1,9 @@
-import {
-  Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PlaceIcon from "@mui/icons-material/Place";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Verified } from "@mui/icons-material";
-import { Company, } from "@/types";
+import { Company } from "@/types";
 import { companySizeList } from "@/constants";
 import ProfileCoverSection from "./ProfileCoverSection";
 import EditCompanySection from "./EditCompanySection";
@@ -26,10 +24,10 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
       <ProfileCoverSection company={company} isEmployee={isEmployee} />
       {/* Profile Section */}
       <div className="rounded-base p-4">
-        <div className="flex" >
+        <div className="flex">
           {/* Text Section */}
           <div className="flex-1">
-            <div className="text-left" >
+            <div className="text-left">
               <h3 className="mb-2 text-2xl font-bold text-main">
                 {company.name}
                 <Verified className="ml-3 text-primary" />
@@ -49,16 +47,15 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
                     {company.companyTypeName}
                   </Typography>
                 </div>
-                {(company.country || company.state || company.city) && (
+                {(company.country?.name ||
+                  company.state?.name ||
+                  company.city) && (
                   <div className="mr-3 flex items-center gap-1">
                     <PlaceIcon className="text-primary" />
-                    {/* TODO no country or state or city  */}
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                       {(company.country?.name || "") +
-                        ", " +
-                        (company.state?.name || "") +
-                        ", " +
-                        (company.city || "")}
+                        (company.state?.name ? `, ${company.state.name}` : "") +
+                        (company.city ? `, ${company.city}` : "")}
                     </Typography>
                   </div>
                 )}

@@ -29,13 +29,13 @@ const userNameField: FieldConfig[] = [
         message: "Username must be at least 3 characters long",
       },
       maxLength: {
-        value: 20,
-        message: "Username cannot exceed 20 characters",
+        value: 50,
+        message: "Username cannot exceed 50 characters",
       },
       pattern: {
-        value: /^[a-z0-9_]+$/,
+        value: /^[a-z0-9-_]+$/,
         message:
-          "Username must contain only lowercase letters, numbers, or underscores (no spaces or uppercase)",
+          "Username must contain only lowercase letters, numbers, hyphens, or underscores (no spaces or uppercase)",
       },
     },
   },

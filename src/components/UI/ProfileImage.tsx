@@ -33,7 +33,7 @@ const SIZE_MAP = {
 } as const;
 
 const DEFAULT_IMAGE = "/images/placeholder-avatar.svg";
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({
@@ -41,7 +41,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
   size = "medium",
   onImageUpdate,
   onImageRemove,
-  maxFileSizeMB = 5,
+  maxFileSizeMB = 1,
   alt = "User",
   // Style props
   className,

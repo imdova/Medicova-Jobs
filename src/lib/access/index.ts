@@ -93,8 +93,7 @@ export const serverSignIn = async ({
       body: JSON.stringify({ email, password }),
     });
     if (!response.ok) return errorResult("serverSignIn");
-    const data = await response.json();
-    const user = transLoginData(data);
+    const user: UserState = await response.json();
     return {
       success: true,
       message: "OTP validated successfully",
@@ -119,7 +118,7 @@ export const register = async (data: registerData): Promise<Result> => {
     return {
       success: true,
       message: "Registered successfully",
-      data: transformRegisterData(user),
+      data: user,
     };
   } catch (error: any) {
     return {
