@@ -7,59 +7,69 @@ import { FieldConfig } from "@/types";
 import { FormField } from "./FormField/FormField";
 
 interface FormContentProps {
-    fields: FieldConfig[];
-    onSubmit: SubmitHandler<any>;
-    formMethods: UseFormReturn<Record<string, any>>;
-    hiddenFields: string[];
-    resetValues: (fieldNames: (string | number)[]) => void;
-    onCheckboxChange: (field: FieldConfig) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-    children?: React.ReactNode;
-    loading?: boolean;
-    onCancel: () => void;
+  fields: FieldConfig[];
+  onSubmit: SubmitHandler<any>;
+  formMethods: UseFormReturn<Record<string, any>>;
+  hiddenFields: string[];
+  resetValues: (fieldNames: (string | number)[]) => void;
+  onCheckboxChange: (
+    field: FieldConfig,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  children?: React.ReactNode;
+  loading?: boolean;
+  onCancel: () => void;
 }
 
 export const FormContent: React.FC<FormContentProps> = ({
-    fields,
-    onSubmit,
-    formMethods,
-    hiddenFields,
-    onCheckboxChange,
-    children,
-    loading,
-    resetValues,
-    onCancel,
+  fields,
+  onSubmit,
+  formMethods,
+  hiddenFields,
+  onCheckboxChange,
+  children,
+  loading,
+  resetValues,
+  onCancel,
 }) => {
-    const { control, handleSubmit, formState: { isDirty }, getValues, reset } = formMethods;
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+    getValues,
+    reset,
+  } = formMethods;
 
-    const submitHandler = (data: any) => {
-        onSubmit(data);
-        reset(data);
-      };
-    return (
-        <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-            <Grid container className="mt-1" spacing={2}>
-                {fields.map((field) => (
-                    <Grid
-                        item
-                        xs={field.gridProps?.xs ?? 12}
-                        sm={field.gridProps?.sm}
-                        md={field.gridProps?.md}
-                        key={String(field.name)}
-                    >
-                        <FormField
-                            field={field}
-                            control={control}
-                            hidden={hiddenFields.includes(String(field.name))}
-                            onCheckboxChange={onCheckboxChange(field)}
-                            dependsOnField={fields.find(f => f.name === field.dependsOn)}
-                            formValues={getValues()}
-                            resetValues={resetValues}
-                        />
-                    </Grid>
-                ))}
+  const submitHandler = (data: any) => {
+    onSubmit(data);
+    reset(data);
+  };
+  return (
+    <form onSubmit={handleSubmit(submitHandler)}>
+      <div className="scroll-bar-minimal max-h-[350px] overflow-y-auto p-4">
+        <Grid container spacing={2}>
+          {fields.map((field) => (
+            <Grid
+              item
+              xs={field.gridProps?.xs ?? 12}
+              sm={field.gridProps?.sm}
+              md={field.gridProps?.md}
+              key={String(field.name)}
+            >
+              <FormField
+                field={field}
+                control={control}
+                hidden={hiddenFields.includes(String(field.name))}
+                onCheckboxChange={onCheckboxChange(field)}
+                dependsOnField={fields.find((f) => f.name === field.dependsOn)}
+                formValues={getValues()}
+                resetValues={resetValues}
+              />
             </Grid>
-            {children && <div className="mt-4">{children}</div>}
-            <FormActions onCancel={onCancel} isDirty={isDirty} loading={loading} />
-        </form>
-    );
+          ))}
+        </Grid>
+      </div>
+      {children && <div className="mt-4">{children}</div>}
+      <FormActions onCancel={onCancel} isDirty={isDirty} loading={loading} />
+    </form>
+  );
 };

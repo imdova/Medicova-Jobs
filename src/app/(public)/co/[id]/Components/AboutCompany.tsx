@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { IconButton } from "@mui/material";
 import { Edit, PendingActions } from "@mui/icons-material";
 import ClampedText from "@/components/UI/ClampedText";
@@ -9,6 +9,7 @@ import DynamicFormModal from "@/components/form/DynamicFormModal";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
+import FormModal from "@/components/form/FormModal/FormModal";
 
 const fields: FieldConfig[] = [
   {
@@ -35,36 +36,46 @@ const AboutCompany: React.FC<{
   isEmployee: boolean;
 }> = ({ company, isEmployee }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoading, error, update, reset } = useUpdateApi<Company>(() => setIsModalOpen(false));
+  const { isLoading, error, update, reset } = useUpdateApi<Company>(() =>
+    setIsModalOpen(false),
+  );
 
   const open = () => setIsModalOpen(true);
-  const close = () => { setIsModalOpen(false); reset(); };
-
+  const close = () => {
+    setIsModalOpen(false);
+    reset();
+  };
 
   if (!isEmployee && company?.about?.length === 0) {
     return null;
   }
   const handleUpdate = async (formData: Partial<Company>) => {
-    await update(API_UPDATE_COMPANY, {
-      body: { id: company?.id, ...formData },
-    }, TAGS.company);
+    await update(
+      API_UPDATE_COMPANY,
+      {
+        body: { id: company?.id, ...formData },
+      },
+      TAGS.company,
+    );
   };
 
   return (
-    <div className=" rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
+    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
       {/* Title */}
-      {isEmployee && <DynamicFormModal
-        open={isModalOpen}
-        error={error?.message}
-        loading={isLoading}
-        onClose={close}
-        onSubmit={handleUpdate}
-        fields={fields}
-        title="About Company "
-        description="Add a brief company description for potential employees. This section is public."
-        initialValues={{ about: company?.about }}
-      />}
-      <div className="mb-2 flex  items-center justify-between">
+      {isEmployee && (
+        <FormModal
+          open={isModalOpen}
+          error={error?.message}
+          loading={isLoading}
+          onClose={close}
+          onSubmit={handleUpdate}
+          fields={fields}
+          title="About Company "
+          description="Add a brief company description for potential employees. This section is public."
+          initialValues={{ about: company?.about }}
+        />
+      )}
+      <div className="mb-2 flex items-center justify-between">
         <h3 className="text-2xl font-bold text-main">About Company :</h3>
         {isEmployee && (
           <IconButton

@@ -12,6 +12,8 @@ import { Close, Search } from "@mui/icons-material";
 import { folders } from "@/constants";
 import FolderSmallCard from "./folder-small-card";
 import { Folder } from "@/types";
+import DataTable from "./data-table";
+import Image from "next/image";
 
 interface NewUserModalProps {
   open: boolean;
@@ -98,34 +100,6 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
             ))}
           </div>
         </div>
-        {/* <div className="p-2">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">All folders</h2>
-            <TextField
-              variant="outlined"
-              placeholder="Search folders"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-                classes: {
-                  input: "p-2", // Add padding to the input element
-                },
-              }}
-            />
-          </div>
-          <div className="max-w-[calc(100vw-50px)] overflow-x-auto">
-            <CandidateTable
-              fixedNumberPerPage={5}
-              size="small"
-              data={folders.slice(5)}
-              onClick={handelTableItemClick}
-              selectedItem={folderId}
-            />
-          </div>
-        </div> */}
         {/* Modal Content */}
         <div className="flex justify-start gap-2">
           {/* Add Button */}

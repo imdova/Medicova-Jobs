@@ -65,7 +65,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
                 sx={{ "& .MuiDialog-paper": { borderRadius: "10px" } }}
             >
                 <ModalHeader title={title} description={description} error={error} />
-                <DialogContent>
+                <DialogContent className="p-0">
                     <FormContent
                         fields={fields}
                         onSubmit={onSubmit}

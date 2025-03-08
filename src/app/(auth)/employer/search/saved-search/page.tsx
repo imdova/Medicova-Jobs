@@ -1,10 +1,14 @@
 "use client";
+import DataTable from "@/components/UI/data-table";
 import FolderMainCard from "@/components/UI/folder-main-card";
 import FolderModal from "@/components/UI/folder-modal";
-import CandidateTable from "@/components/UI/folders-table";
+import SearchInput from "@/components/UI/search-Input";
 import { folders } from "@/constants";
+import { Folder } from "@/types";
 import { Add, Search } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
 import { Suspense, useState } from "react";
 
 const SavedSearchPage: React.FC = ({
@@ -12,7 +16,7 @@ const SavedSearchPage: React.FC = ({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const { fname } = searchParams as {
+  const { fname, q: query } = searchParams as {
     [key: string]: string;
   };
 
@@ -45,7 +49,8 @@ const SavedSearchPage: React.FC = ({
       <div className="p-2">
         <div className="mb-4">
           <h2 className="text-2xl font-semibold">All folders</h2>
-          <TextField
+          <SearchInput
+            isBounce={true}
             variant="outlined"
             placeholder="Search folders"
             InputProps={{
@@ -61,7 +66,45 @@ const SavedSearchPage: React.FC = ({
           />
         </div>
         <div className="max-w-[calc(100vw-50px)] overflow-x-auto">
-          <CandidateTable data={folders.slice(5)} />
+          <DataTable
+            data={folders}
+            fixedNumberPerPage={5}
+            searchQuery={query}
+            columns={[
+              {
+                key: "name",
+                header: "Name",
+                sortable: true,
+                render: (folder) => (
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src="/images/folder.png"
+                      width={20}
+                      height={20}
+                      alt="folder"
+                    />
+                    <Link
+                      className="hover:underline"
+                      href={`/folder/${folder.id}`}
+                    >
+                      {folder.name}
+                    </Link>
+                  </div>
+                ),
+              },
+              { key: "candidates", header: "Candidates", sortable: true },
+              {
+                key: "lastModified",
+                header: "Last Modified",
+                sortable: true,
+                render: (folder) =>
+                  new Date(folder.lastModified).toLocaleDateString(),
+              },
+            ]}
+            isSelectable
+            onEdit={(folder) => console.log("Edit", folder)}
+            onDelete={(folder) => console.log("Delete", folder)}
+          />
         </div>
       </div>
       <Suspense>

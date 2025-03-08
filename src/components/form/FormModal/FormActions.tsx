@@ -8,7 +8,7 @@ interface FormActionsProps {
 }
 
 export const FormActions: React.FC<FormActionsProps> = ({ onCancel, isDirty, loading }) => (
-    <DialogActions>
+    <DialogActions className="border-t border-gray-200" >
         <Button onClick={onCancel} variant="outlined" color="secondary">
             Cancel
         </Button>

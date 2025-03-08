@@ -9,10 +9,10 @@ interface ModalHeaderProps {
 
 export const ModalHeader: React.FC<ModalHeaderProps> = ({ title, description, error }) => (
     <>
-        <DialogTitle className="text-lg font-bold">
+        <DialogTitle className="text-lg font-bold border-b border-gray-200">
             {title}
             {description && (
-                <p className="mt-2 text-sm font-normal text-secondary">{description}</p>
+                <p className="mt-1 text-sm font-normal text-secondary">{description}</p>
             )}
         </DialogTitle>
         {error && (
