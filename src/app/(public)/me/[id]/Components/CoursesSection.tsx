@@ -36,7 +36,7 @@ const coursesData: Courses[] = [
 
 const INITIAL_VISIBLE_ITEMS = 2;
 const CoursesSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
   const [visibleItems, setVisibleItems] = useState(INITIAL_VISIBLE_ITEMS); // Initially show 2 items

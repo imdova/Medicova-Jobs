@@ -17,19 +17,21 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
     "Enter " +
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
-      : field.label?.replace("*", ""));
+      : field.label
+        ? field.label?.replace("*", "")
+        : field.name);
   return (
     <div>
       {field.label && (
-        <label
-          htmlFor={String(field.name)}
-          className="text-lg font-semibold text-main"
-        >
+        <label htmlFor={String(field.name)} className="mb-1 font-semibold">
           {field.label}
         </label>
       )}
       <TextField
         {...controllerField}
+        // label={
+        //   !field.textFieldProps?.label && !field.label ? field.name : undefined
+        // }
         {...field.textFieldProps}
         placeholder={field.textFieldProps?.placeholder || placeholder || ""}
         fullWidth

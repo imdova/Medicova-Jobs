@@ -4,7 +4,7 @@ import Image from 'next/image';
 import useImageValidation from '@/hooks/useImageValidation';
 
 interface AvatarProps {
-    src?: string; // Image source URL
+    src?: string | null; // Image source URL
     alt?: string; // Alt text for the image
     size?: number; // Size of the avatar (width and height)
     shape?: 'circle' | 'square'; // Shape of the avatar

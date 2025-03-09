@@ -26,7 +26,6 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { Doctor, UserState } from "@/types";
 import { formatName } from "@/util";
 import { KeyOutlined } from "@mui/icons-material";
-import { JobApplicationData } from "@/types/seeker";
 
 interface DoctorCardProps {
   doctor: UserState;

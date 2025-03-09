@@ -20,7 +20,7 @@ const GoogleButton = ({
         signIn(
           "google",
           {
-            callbackUrl: "/",
+            callbackUrl: "/?type=seeker",
             state: JSON.stringify({ customKey: userType }),
           },
           userType ? { type: userType } : {},

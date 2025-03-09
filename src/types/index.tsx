@@ -66,25 +66,25 @@ export interface UserState {
   permissions: Permission[];
 }
 
-export interface UserProfile extends UserState {
-  about: string | null;
-  title: string | null;
-  age: number | null;
-  languages: string[] | null;
-  resume: string | null;
-  socialLinks: { [key: string]: string } | null;
-  whatsapp: string | null;
-  nationality: string | null;
-  maritalStatus: string | null;
-  hasDrivingLicence: boolean | null;
-  country: CountryMin | null;
-  state: State | null;
-  city: City | null;
-  isPublic: boolean | null;
-  category: string | null;
-  speciality: string | null;
-  careerLevel: string | null;
-}
+// export interface UserProfile extends UserState {
+//   about: string | null;
+//   title: string | null;
+//   age: number | null;
+//   languages: string[] | null;
+//   resume: string | null;
+//   socialLinks: { [key: string]: string } | null;
+//   whatsapp: string | null;
+//   nationality: string | null;
+//   maritalStatus: string | null;
+//   hasDrivingLicence: boolean | null;
+//   country: CountryMin | null;
+//   state: State | null;
+//   city: City | null;
+//   isPublic: boolean | null;
+//   category: string | null;
+//   speciality: string | null;
+//   careerLevel: string | null;
+// }
 
 export interface registerData {
   firstName: string;

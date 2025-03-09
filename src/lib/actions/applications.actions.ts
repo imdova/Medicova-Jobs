@@ -1,13 +1,12 @@
 "use server";
-import { API_CREATE_JOB_APPLICATION, API_GET_SEEKERS } from "@/api/seeker";
+import { API_GET_SEEKERS } from "@/api/seeker";
 import { Doctor, Result } from "@/types";
-import { ApplicationsFilter, JobApplicationData } from "@/types/seeker";
 
 export const applyForJob = async (
   applicationData: Partial<JobApplicationData>,
 ): Promise<Result> => {
   try {
-    const response = await fetch(API_CREATE_JOB_APPLICATION, {
+    const response = await fetch("API_CREATE_JOB_APPLICATION", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +58,7 @@ export const getApplications = async ({
     if (companyId) queryParams.append("companyId", companyId);
     if (startDate) queryParams.append("startDate", startDate);
     const response = await fetch(
-      `${API_CREATE_JOB_APPLICATION}?${queryParams.toString()}`,
+      `${"API_CREATE_JOB_APPLICATION"}?${queryParams.toString()}`,
       {
         method: "GET",
         headers: {

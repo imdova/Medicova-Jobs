@@ -12,30 +12,28 @@ import Resume from "./Components/Resume";
 import ContactInfoSection from "./Components/ContactInfoSection";
 import SocialMediaSection from "./Components/SocialMediaSection";
 import LanguageSection from "./Components/LanguageSection";
-import { UserProfile, UserState } from "@/types";
+import {  UserState } from "@/types";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/loading/loading";
 
 export default function ProfileMe({
-  profileUser,
+  user,
 }: {
-  profileUser: UserProfile;
+  user: UserProfile;
 }) {
   const { data: session, status } = useSession();
-  const logeUser = session?.user as UserState;
-  const isMe = logeUser?.id === profileUser?.id;
+  const userSession = session?.user as UserState;
+  const isMe = userSession?.id === user?.id;
   const isLocked = true;
   if (status === "loading") {
     return <Loading />;
   }
-  const user: UserProfile = isMe
-    ? { ...logeUser, ...profileUser }
-    : { ...profileUser, ...({} as UserState) };
+
   return (
-    <div className="w-full">
+    <div className="w-full px-4 md:p-0">
       <div className="flex gap-5">
         {/* Left + Center Sections */}
-        <div className="w-full">
+        <div className="flex-1 space-y-2 md:space-y-5">
           {/* Header Section */}
           <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}

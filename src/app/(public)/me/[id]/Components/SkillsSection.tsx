@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { UserState } from "@/types";
 
 const skillsData: string[] = [];
 
 const SkillsSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
   const [keywords, setKeywords] = useState(skillsData);

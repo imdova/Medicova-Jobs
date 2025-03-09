@@ -25,7 +25,7 @@ const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState<RoleState>("employer");
+  const [userType, setUserType] = useState<RoleState>("seeker");
 
   const {
     control,
@@ -88,14 +88,14 @@ const RegisterForm: React.FC = () => {
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => setUserType("seeker")}
-          className={`${userType === "seeker" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
+          className={`${userType === "seeker" ? "bg-primary-100 text-primary" : "text-gray-300"} px-5 py-3 duration-200`}
           variant="text"
         >
           Job Seeker
         </Button>
         <Button
           onClick={() => setUserType("employer")}
-          className={`${userType === "employer" ? "bg-primary-100 text-primary" : "text-secondary"} px-5 py-3 duration-200`}
+          className={`${userType === "employer" ? "bg-primary-100 text-primary" : "text-gray-300"} px-5 py-3 duration-200`}
           variant="text"
         >
           Employer

@@ -41,7 +41,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
       body: formData,
     },TAGS.company);
     // reset the form
-    reset(formData);
+    reset(formData); 
   };
 
   async function handleSuccess(updatedCompany: Company) {

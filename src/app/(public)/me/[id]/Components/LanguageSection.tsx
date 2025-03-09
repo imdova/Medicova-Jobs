@@ -13,7 +13,6 @@ import AddModal from "./Modals/AddModal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Edit, LanguageOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
 
 // Data array for languages and proficiency levels
 const languageData = [
@@ -22,7 +21,7 @@ const languageData = [
 ];
 
 const LanguageSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
   const [openModal, setOpenModal] = useState(false);

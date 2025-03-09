@@ -5,7 +5,7 @@ import Image from "next/image";
 import experiencesImage from "@/components/icons/briefcase.png";
 import EditIcon from "@mui/icons-material/Edit";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { FieldConfig, UserProfile, UserState } from "@/types";
+import { FieldConfig } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
 import { expandItems } from "@/lib/auth/utils";
 import DynamicFormModal from "@/components/form/DynamicFormModal";

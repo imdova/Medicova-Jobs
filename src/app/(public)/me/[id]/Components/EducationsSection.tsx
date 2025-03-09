@@ -115,8 +115,8 @@ const fields: FieldConfig<Education>[] = [
 const INITIAL_VISIBLE_ITEMS = 2;
 
 const EducationsSection: React.FC<{
-  user: UserState;
-  isMe: boolean;
+  user: UserProfile;
+  isMe: boolean; 
 }> = ({ user, isMe }) => {
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();

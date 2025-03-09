@@ -7,7 +7,7 @@ import {
   API_GET_EMPLOYMENT_TYPES,
   API_GET_INDUSTRIES,
 } from "@/api/admin";
-import { API_GET_COMPANY_BY_USER_NAME, API_GET_JOBS } from "@/api/employer";
+import { API_GET_COMPANY_BY_ID, API_GET_COMPANY_BY_USER_NAME, API_GET_JOBS } from "@/api/employer";
 import { API_GET_SEEKERS } from "@/api/seeker";
 import {
   Company,
@@ -34,6 +34,31 @@ export const getCompanyByUserName = async (
       next: { tags: [TAGS.company] },
     });
     if (!response.ok) return errorResult("fetching company data by user name");
+    return {
+      success: true,
+      message: "Company fetched successfully",
+      data: await response.json(),
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getCompanyById = async (
+  id: string,
+): Promise<Result<Company>> => {
+  try {
+    const response = await fetch(API_GET_COMPANY_BY_ID + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.company] },
+    });
+    if (!response.ok) return errorResult("fetching company data by id");
     return {
       success: true,
       message: "Company fetched successfully",

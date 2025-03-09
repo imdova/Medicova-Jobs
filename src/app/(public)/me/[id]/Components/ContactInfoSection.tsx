@@ -3,11 +3,10 @@ import React, { useEffect } from "react";
 import { IconButton, Divider, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Edit, Email, KeyOutlined, PhoneIphone } from "@mui/icons-material";
-import { UserState } from "@/types";
 import Link from "next/link";
 
 const ContactInfoSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
   isLocked: boolean;
 }> = ({ user, isMe, isLocked }) => {
