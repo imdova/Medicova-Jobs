@@ -40,17 +40,9 @@ const layout: React.FC<{
       {/* Main Layout */}
       <main className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1170px]">
         {/* FilterSection */}
-        <Suspense
-          fallback={
-            <div className="hidden w-1/5 rounded-[10px] border border-gray-100 bg-white p-[20px] shadow-xl lg:block">
-              Loading...
-            </div>
-          }
-        >
-          <Filter sections={searchJopFilters} />
-        </Suspense>
+        <Filter sections={searchJopFilters} />
         {/* Jobs result Section */}
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        {children}
       </main>
       <Suspense>
         <CountrySearchResult />

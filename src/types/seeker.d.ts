@@ -1,10 +1,3 @@
-type JobApplicationData = {
-  id: string;
-  seekerId: string;
-  jobId: string;
-  answers?: { [key: string]: string };
-};
-
 interface ApplicationsFilter {
   page?: number;
   limit?: number;
@@ -32,17 +25,17 @@ type UserProfile = {
   state: LocationItem | null; // not in response
   city: string | null; // not in response
   isAvailable: boolean | null; // not in response --> this for "Open For Opportunities"
-  isMarried: boolean | null; // not in response 
-  
+  isMarried: boolean | null; // not in response
+
   categoryId: string | null; // not in response
   category?: string | null; // not in response
-  
+
   specialityId: string | null; // not in response
   speciality?: string | null; // not in response
-  
+
   careerLevelId: string | null; // not in response
   careerLevel?: string | null; // not in response
-  
+
   about: string | null;
   title: string | null;
   languages: string[] | null;
@@ -68,4 +61,63 @@ type UserProfile = {
   updated_at: string;
   deleted_at: string | null;
   _version: number;
+};
+
+type JobApplicationData = {
+  id: string;
+  created_at: string;
+  seekerId: string;
+  status: string;
+  answers: Record<string, string> | null;
+  job: {
+    id: string;
+  };
+};
+
+
+type DoctorData = {
+  id: string;
+  avatar: string;
+  firstName: string;
+  lastName: string;
+  applyDate: string;
+  title: string;
+  whatsApp: string;
+  phone: string;
+  email: string;
+  country: LocationItem;
+  state: LocationItem;
+  city: string;
+  yearsOfExperience: number;
+  category: string;
+  specialty: string;
+  careerLevel: string;
+  isShortlisted: boolean;
+  isLocked: boolean;
+  isAvailable: boolean;
+  lastExperience: ExperienceData | null;
+  lastEducation: EducationData | null;
+};
+
+
+type ExperienceData = {
+  id: string;
+  name: string;
+  title: string;
+  country: LocationItem;
+  state: LocationItem;
+  city: string;
+  startDate: string;
+  endDate: string;
+  isPresent: boolean;
+};
+
+type EducationData = {
+  id: string;
+  inistitute: string;
+  degree: string;
+  country: LocationItem;
+  startYear: number;
+  endYear: number;
+  grade: string;
 };

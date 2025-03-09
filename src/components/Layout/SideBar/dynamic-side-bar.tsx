@@ -9,7 +9,7 @@ export default function DynamicSideBar({ user }: { user?: UserState }) {
   const sideBarType = matchRoute(pathname)?.sideBarType || "";
   // TODO: add more styles of side bar , add minimal for the pages that contain a filter 
   return sideBarType === "full" ? (
-    <aside className="mt hidden w-80 rounded-base border border-gray-100 bg-white py-4 shadow-soft lg:block">
+    <aside className="mt hidden w-80 rounded-base border border-gray-100 bg-white py-4 shadow-soft ml-4 lg:block">
       <div className="sticky top-[85px]">
         <VerticalTabs user={user} pathname={pathname} />
       </div>

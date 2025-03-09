@@ -1,10 +1,10 @@
 "use client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FilterItem from "@/components/UI/FilterItem";
-import { FilterOption } from "@/types";
 import { createUrl } from "@/util";
 import { Suspense } from "react";
 import FilterDrawer from "@/components/UI/FilterDrawer";
+import FilterSkeleton from "@/components/loading/filterSkelton";
 
 const FilterSideBar: React.FC<FilterProps> = ({ searchKeys, sections }) => {
   const router = useRouter();
@@ -68,13 +68,7 @@ const FilterSideBar: React.FC<FilterProps> = ({ searchKeys, sections }) => {
 
 const Filter: React.FC<FilterProps> = (props) => {
   return (
-    <Suspense
-      fallback={
-        <div className="hidden w-1/5 rounded-[10px] border border-gray-100 bg-white p-[20px] shadow-xl lg:block">
-          Loading...
-        </div>
-      }
-    >
+    <Suspense fallback={<FilterSkeleton />}>
       <FilterSideBar {...props} />
     </Suspense>
   );

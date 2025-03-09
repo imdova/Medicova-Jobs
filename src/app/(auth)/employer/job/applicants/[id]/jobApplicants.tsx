@@ -26,19 +26,19 @@ import { Doctor, JobData, UserState } from "@/types";
 type TapType = "all" | "locked" | "unlocked" | "shortListed";
 const JobApplicantsResult: React.FC<{
   job: JobData;
-  doctors: UserState[];
-}> = ({ job, doctors }) => {
+  // doctors: UserState[];
+}> = ({ job }) => {
   const [selectedTab, setSelectedTab] = useState<TapType>("all");
   const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
 
   const [shortListed, setShortListed] = useState<string[]>([]);
 
-  const isAllSelect = selectedApplicants.length === doctors.length;
+  const isAllSelect = selectedApplicants.length === doctorsBase.length;
   const toggleSelectAll = () => {
     if (isAllSelect) {
       setSelectedApplicants([]);
     } else {
-      setSelectedApplicants(doctors.map((x) => x.id || ""));
+      setSelectedApplicants(doctorsBase.map((x) => x.id || ""));
     }
   };
 
@@ -253,7 +253,7 @@ const JobApplicantsResult: React.FC<{
         </div>
       </div>
       {/* Applicant Cards */}
-      {doctors.map((doctor, index) => (
+      {doctorsBase.map((doctor, index) => (
         <DoctorCard
           key={index}
           doctor={doctor}

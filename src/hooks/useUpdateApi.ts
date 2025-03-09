@@ -1,5 +1,5 @@
-import revalidateTag from "@/lib/revalidate";
 import { useState, useCallback } from "react";
+import revalidateTag from "@/lib/revalidate";
 
 // Define types
 interface FetchOptions extends RequestInit {
@@ -11,6 +11,7 @@ interface UseUpdateApiResponse<T> {
   data: T | null;
   isLoading: boolean; // Renamed for better convention
   error: Error | null; // Use Error type instead of string
+  isSuccess: boolean; // New success state
   update: (
     url: string,
     options?: Partial<FetchOptions>,
@@ -27,11 +28,13 @@ function useUpdateApi<T>(
   const [data, setData] = useState<T | null>(initialData ?? null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false); // New success state
 
   const update = useCallback(
     async (url: string, options: Partial<FetchOptions> = {}, tags?: string) => {
       setIsLoading(true);
       setError(null);
+      setIsSuccess(false); // Reset success state before making the request
 
       // Default headers and options
       const defaultOptions: FetchOptions = {
@@ -67,13 +70,15 @@ function useUpdateApi<T>(
         }
 
         setData(result);
-        tags && await revalidateTag(tags);
+        setIsSuccess(true); // Set success state to true
+        tags && (await revalidateTag(tags));
         onSuccess?.(result);
         return result;
       } catch (err) {
         const errorInstance =
           err instanceof Error ? err : new Error(String(err));
         setError(errorInstance);
+        setIsSuccess(false); // Ensure success state is false on error
         throw errorInstance;
       } finally {
         setIsLoading(false);
@@ -86,29 +91,10 @@ function useUpdateApi<T>(
     setData(initialData ?? null);
     setError(null);
     setIsLoading(false);
+    setIsSuccess(false); // Reset success state
   }, [initialData]);
 
-  return { data, isLoading, error, update, reset };
+  return { data, isLoading, error, isSuccess, update, reset };
 }
 
 export default useUpdateApi;
-
-// Example usage:
-/*
-const { data, isLoading, error, update, reset } = useUpdateApi<User>(
-  (result) => console.log("Success:", result),
-  { id: 0, name: "" } // initial data
-);
-
-// Using the hook
-const handleUpdate = async () => {
-  try {
-    const updatedUser = await update("/api/user/1", {
-      method: "PATCH", // override default PUT
-      body: { name: "John" },
-    });
-  } catch (err) {
-    console.error("Update failed:", err);
-  }
-};
-*/

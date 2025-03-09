@@ -1,6 +1,7 @@
 import JobsResult from "./jobsResult";
 import { getJobsByFilters } from "@/lib/actions/job.actions";
 import CustomPagination from "@/components/UI/CustomPagination";
+import { filteredJobs } from "@/lib/auth/utils";
 
 const SearchPage: React.FC = async ({
   searchParams,
@@ -25,7 +26,7 @@ const SearchPage: React.FC = async ({
   const { data: jobs, total } = result.data;
   return (
     <div className="w-full px-2 md:px-6 md:pl-9 lg:w-[80%]">
-      <JobsResult jobs={jobs} total={total} />
+      <JobsResult jobs={filteredJobs(jobs, "active")} total={total} />
       {total === 0 && (
         <div>
           <div className="p-4 text-center">
