@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 interface FetchOptions extends RequestInit {
   skip?: boolean;
@@ -10,6 +10,7 @@ interface FetchResult<T> {
   data: T | null;
   loading: boolean;
   error: Error | null;
+  refetch: () => void; // Add refetch function to the return type
 }
 
 const defaultOptions: FetchOptions = {
@@ -34,8 +35,53 @@ export default function useFetch<T>(
   const hasFetched = useRef<boolean>(false);
   const prevUrl = useRef<string | undefined | null>(url);
 
-  // Merge default options with provided options
-  const mergedOptions = { ...defaultOptions, ...options };
+  // Use useMemo to stabilize mergedOptions
+  const mergedOptions = useMemo(() => {
+    return { ...defaultOptions, ...options };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    options.method,
+    options.headers,
+    options.skip,
+    options.fetchOnUrlChange,
+    options.fetchOnce,
+  ]);
+
+  const fetchData = useCallback(async () => {
+    if (!url) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(url, mergedOptions);
+      console.log("response");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      setData(result);
+      hasFetched.current = true;
+      prevUrl.current = url;
+      if (onSuccess) {
+        onSuccess(result);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("An error occurred"));
+    } finally {
+      setLoading(false);
+    }
+  }, [url, mergedOptions, onSuccess]);
+
+  const refetch = useCallback(() => {
+    // Reset the hasFetched flag to allow refetching
+    hasFetched.current = false;
+    // Trigger the fetch logic
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     const shouldFetch = () => {
@@ -60,45 +106,17 @@ export default function useFetch<T>(
       return false;
     };
 
-    const fetchData = async () => {
-      if (!url) return setData(null);
-      if (!shouldFetch()) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(url!, mergedOptions);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        setData(result);
-        hasFetched.current = true;
-        prevUrl.current = url;
-        if (onSuccess) {
-          onSuccess(result);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("An error occurred"));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    // Cleanup function
-    return () => {
-      // Could add abort controller here if needed
-    };
+    if (shouldFetch()) {
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     url,
     mergedOptions.skip,
     mergedOptions.fetchOnUrlChange,
     mergedOptions.fetchOnce,
+    fetchData,
   ]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch }; // Return refetch function
 }

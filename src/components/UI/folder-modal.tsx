@@ -13,6 +13,7 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "@/util";
 
+// TODO: remove this page
 interface NewUserModalProps {
   open: boolean;
   onClose: () => void;
@@ -112,7 +113,7 @@ const FolderModal: React.FC<NewUserModalProps> = ({
             startAdornment: (
               <InputAdornment position="start">
                 <Image
-                  src="/images/folder.png"
+                  src="/images/folder.svg"
                   width={20}
                   height={20}
                   alt="folder icon"

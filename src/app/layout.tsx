@@ -1,5 +1,5 @@
 import ThemeProviderClient from "./ThemeProviderClient";
-import { DM_Serif_Display, Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import DynamicHeader from "@/components/Layout/Header/Header";
@@ -10,17 +10,36 @@ import HeaderSelector from "@/components/Layout/Header/SelectedHeader";
 import SideBar from "@/components/Layout/SideBar/SideBar";
 import DynamicSideBar from "@/components/Layout/SideBar/dynamic-side-bar";
 
-const dmSerifDisplay = DM_Serif_Display({
-  subsets: ["latin"],
-  variable: "--font-dmSerif",
-  weight: "400",
+const poppins = localFont({
+  src: [
+    {
+      path: "./fonts/Poppins-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Poppins-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Poppins-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Poppins-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-poppins", // Custom CSS variable
 });
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  weight: ["400", "500", "600", "700"],
-});
+// const poppins = Poppins({
+//   subsets: ["latin"],
+//   variable: "--font-poppins",
+//   weight: ["400", "500", "600", "700"],
+// });
 
 export const metadata = {
   title: "Medicova",
@@ -35,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSerifDisplay.variable} ${poppins.variable} font-poppins`}
+        className={`${poppins.variable} font-poppins`}
       >
         <ThemeProviderClient>
           <StoreProvider>

@@ -11,4 +11,5 @@ export const TAGS = {
   locations: "locations",
   companies: "companies",
   companySectors: "companySectors",
+  folders: "folders",
 };

@@ -98,3 +98,17 @@ function useUpdateApi<T>(
 }
 
 export default useUpdateApi;
+
+
+//  const { isLoading, error, update, reset } = useUpdateApi<Folder>(onSuccess);
+  
+//   const handleSubmit = async (body: Partial<Folder>) => {
+//     if (body.id) {
+//       await update(API_CREATE_FOLDER, { body }, TAGS.folders);
+//     } else {
+//       await update(API_CREATE_FOLDER, { method: "POST", body }, TAGS.folders);
+//     }
+//   };
+//   function onSuccess() {
+//     onClose();
+//   }

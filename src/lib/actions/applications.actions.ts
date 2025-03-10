@@ -116,9 +116,8 @@ export const getSeekers = async ({
     );
     if (response.ok) {
       const data = await response.json();
-      console.log("🚀 ~ data:", data);
 
-      return {
+      return { 
         success: true,
         message: "Seekers fetched successfully",
         data: data,

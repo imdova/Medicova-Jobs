@@ -16,3 +16,16 @@ export const companyBanners = (company: Company): FileWithPreview[] => {
     ) || []
   );
 };
+
+
+export function handleDuplicates(arr: string[], str: string): string {
+  let result: string = str;
+  let counter: number = 1;
+  
+  while (arr.includes(result)) {
+      result = `${str} (${counter})`;
+      counter++;
+  }
+  
+  return result;
+}

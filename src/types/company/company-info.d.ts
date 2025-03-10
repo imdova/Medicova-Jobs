@@ -17,3 +17,13 @@ interface UploadResponse {
   error?: string;
   fileName?: string;
 }
+
+interface Folder {
+  id: string;
+  name: string;
+  companyId: string;
+  totalUsers?: number;
+  _version: number;
+  created_at: string;
+  updated_at: string;
+}

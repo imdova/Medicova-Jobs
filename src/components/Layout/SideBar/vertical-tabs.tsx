@@ -66,10 +66,18 @@ export default function VerticalTabs({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLinks]);
 
+  useEffect(() => {
+    if (links.length === 1) {
+      const newLinks = getSideBarLinks(user, pathname);
+      setLinks(newLinks);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <Tabs
       orientation="vertical"
-      value={activeTab ?? undefined}
+      value={activeTab ?? false}
       onChange={handleTabChange}
       aria-label="Sidebar navigation tabs"
       role="navigation"

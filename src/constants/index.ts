@@ -360,68 +360,6 @@ export const searchFilters = [
   },
 ];
 
-export const folders: Folder[] = [
-  {
-    id: 1,
-    name: "Cardiology Specialists",
-    candidates: 25,
-    lastModified: new Date("2024-12-23"),
-  },
-  {
-    id: 2,
-    name: "Pediatricians",
-    candidates: 15,
-    lastModified: new Date("2024-12-20"),
-  },
-  {
-    id: 3,
-    name: "General Practitioners",
-    candidates: 30,
-    lastModified: new Date("2024-12-18"),
-  },
-  {
-    id: 4,
-    name: "Nursing Staff",
-    candidates: 12,
-    lastModified: new Date("2024-12-17"),
-  },
-  {
-    id: 5,
-    name: "Radiologists",
-    candidates: 20,
-    lastModified: new Date("2024-12-14"),
-  },
-  {
-    id: 6,
-    name: "Surgeons",
-    candidates: 18,
-    lastModified: new Date("2024-12-11"),
-  },
-  {
-    id: 7,
-    name: "Pharmacists",
-    candidates: 22,
-    lastModified: new Date("2024-12-07"),
-  },
-  {
-    id: 8,
-    name: "Physiotherapists",
-    candidates: 10,
-    lastModified: new Date("2024-12-06"),
-  },
-  {
-    id: 9,
-    name: "Dentists",
-    candidates: 8,
-    lastModified: new Date("2024-12-05"),
-  },
-  {
-    id: 10,
-    name: "Psychiatrists",
-    candidates: 15,
-    lastModified: new Date("2024-12-04"),
-  },
-];
 
 type FilterItem = {
   label: string;

@@ -168,7 +168,7 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
                     className="flex items-center gap-4 hover:bg-gray-200"
                   >
                     <Image
-                      src={"/images/folder.png"}
+                      src={"/images/folder.svg"}
                       alt="save"
                       width={24}
                       height={24}
@@ -181,7 +181,7 @@ const CvResults: React.FC<{ candidates: Doctor[] }> = ({ candidates }) => {
                     className="flex items-center gap-4 hover:bg-gray-200"
                   >
                     <Image
-                      src={"/images/folder.png"}
+                      src={"/images/folder.svg"}
                       alt="save"
                       width={24}
                       height={24}

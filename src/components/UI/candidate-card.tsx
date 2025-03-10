@@ -1,13 +1,5 @@
 "use client";
-import {
-  Avatar,
-  Button,
-  Typography,
-  Stack,
-  IconButton,
-  Collapse,
-} from "@mui/material";
-import React, { useState } from "react";
+import { Avatar, Button, IconButton } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import StarIcon from "@mui/icons-material/Star";
@@ -29,48 +21,32 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EmailIcon from "@mui/icons-material/Email";
 
 import DownloadIcon from "@mui/icons-material/Download";
-
-import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
-import { Doctor } from "@/types";
-import Flag from "./flagitem";
-import { formatFullName } from "@/util";
+import { formatName } from "@/util";
 import { KeyOutlined } from "@mui/icons-material";
+import { formatLocation, toggleId } from "@/util/general";
 
-interface DoctorCardProps {
-  doctor: Doctor;
-  selectedApplicants: string[];
-  availableApplicants: string[];
-  shortListed: string[];
-  setShortListed: React.Dispatch<React.SetStateAction<string[]>>;
-  setSelectedApplicants: React.Dispatch<React.SetStateAction<string[]>>;
-  setAvailableApplicants: React.Dispatch<React.SetStateAction<string[]>>;
+interface CandidateCardProps {
+  candidate: CandidateType;
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const DoctorCard: React.FC<DoctorCardProps> = ({
-  doctor,
-  availableApplicants,
-  shortListed,
-  setShortListed,
-  setAvailableApplicants,
-  selectedApplicants,
-  setSelectedApplicants,
+const CandidateCard: React.FC<CandidateCardProps> = ({
+  candidate,
+  selected,
+  setSelected,
 }) => {
-  const [showMore, setShowMore] = useState(false);
+  // states
+  const isAvailable = !candidate.isLocked;
+  const name = formatName(candidate, isAvailable);
+  const location = formatLocation(candidate);
+  const isSelected = selected.includes(candidate.id);
 
-  const isSelected = selectedApplicants.includes(doctor.id);
-  const isAvailable = availableApplicants.includes(doctor.id);
-  const isShortListed = shortListed.includes(doctor.id);
+  // functions
+  const toggleSelect = () => setSelected((pv) => toggleId(pv, candidate.id));
+  const toggleShortListed = () => console.log("shortlisted");
+  const unlock = () => console.log("shortlisted");
 
-  const toggleSelect = () =>
-    setSelectedApplicants((pv) => toggleId(pv, doctor.id));
-
-  const toggleShortListed = () =>
-    setShortListed((pv) => toggleId(pv, doctor.id));
-
-  const unlock = () => {
-    setAvailableApplicants((pv) => [...pv, doctor.id]);
-  };
   return (
     <div className="flex flex-col md:flex-row">
       <button
@@ -86,15 +62,13 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
               <Avatar
-                src={doctor.image}
-                alt={isAvailable ? doctor.name : formatFullName(doctor.name)}
+                src={candidate.avatar}
+                alt={name}
                 sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
               />
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h6 className="font-semibold text-main md:text-xl">
-                    {isAvailable ? doctor.name : formatFullName(doctor.name)}
-                  </h6>
+                  <h6 className="font-semibold text-main md:text-xl">{name}</h6>
                   {isAvailable ? (
                     <LockOpenIcon className="h-5 w-5 text-primary" />
                   ) : (
@@ -108,15 +82,6 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                 </p>
               </div>
             </div>
-            {/* <IconButton
-              onClick={handleSaveClick}
-              aria-controls={saveOpen ? "save-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={saveOpen ? "true" : undefined}
-              size="medium"
-            >
-              <BookmarkBorderOutlined className="h-8 w-8 text-secondary" />
-            </IconButton> */}
           </div>
           <div className="flex flex-col items-end md:flex-row">
             <div className="flex-1">
@@ -124,15 +89,11 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                 <h6 className="mr-2 hidden rounded-base bg-primary-100 px-2 py-1 text-main md:block">
                   Contact Info :
                 </h6>
-                {/* <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <LocalPhoneIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{doctor.location}</p>
-                </div> */}
                 <div className="flex min-w-[80px] items-center rounded-base bg-primary-100 px-2 py-1 text-main">
                   <LocalPhoneIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
                   {isAvailable ? (
                     <span className="text-xs md:text-base">
-                      {doctor.contactInfo.phoneNumber}
+                      {candidate.phone}
                     </span>
                   ) : (
                     <div className="col-span-1 row-span-1 grid h-fit">
@@ -143,7 +104,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={!doctor.available}
+                    disabled={candidate.isLocked}
                     className="p-0 md:ml-2"
                   >
                     <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
@@ -153,7 +114,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
                   {isAvailable ? (
                     <span className="h-fit text-sm text-main md:text-base">
-                      {doctor.contactInfo.email}
+                      {candidate.email}
                     </span>
                   ) : (
                     <div className="col-span-1 row-span-1 grid h-fit">
@@ -164,7 +125,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={!doctor.available}
+                    disabled={!candidate.isLocked}
                     className="p-0 md:ml-2"
                   >
                     <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
@@ -174,31 +135,37 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
               <div className="my-1 flex flex-wrap gap-2 text-main">
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{doctor.location}</p>
+                  <p className="text-xs md:text-base">{location}</p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <PeopleAltIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Doctors</p>
+                  <p className="text-xs md:text-base">
+                    Doctors{candidate.category}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {doctor.yearsOfExperience} years Experience
+                    {candidate.yearsOfExperience} years Experience
                   </p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <SchoolIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">
-                    {doctor.education[0].degree} Degree
-                  </p>
-                </div>
+                {candidate.lastEducation && (
+                  <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                    <SchoolIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">
+                      {candidate.lastEducation.degree} Degree
+                    </p>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Consultant</p>
+                  <p className="text-xs md:text-base">
+                    {candidate.careerLevel}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Cardiology</p>
+                  <p className="text-xs md:text-base">{candidate.specialty}</p>
                 </div>
               </div>
             </div>
@@ -244,7 +211,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     "&:hover": { border: 1, borderColor: "primary.main" },
                   }}
                 >
-                  {isShortListed ? (
+                  {candidate.isShortlisted ? (
                     <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
                   ) : (
                     <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
@@ -277,15 +244,4 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   );
 };
 
-export default DoctorCard;
-
-function toggleId(ids: string[], id: string): string[] {
-  // Check if the ID already exists in the array
-  if (ids.includes(id)) {
-    // If it exists, remove it
-    return ids.filter((existingId) => existingId !== id);
-  } else {
-    // If it doesn't exist, add it
-    return [...ids, id];
-  }
-}
+export default CandidateCard;

@@ -33,8 +33,32 @@ export function calculateAge(birthDate: Date): number {
 
   // Adjust age if birthday hasn't occurred yet this year
   if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-      age--;
+    age--;
   }
-  
+
   return age;
+}
+
+export function formatLocation(location: LocationType): string {
+  const parts: string[] = [];
+
+  if (location.city) {
+    parts.push(location.city);
+  }
+  if (location.state?.name) {
+    parts.push(location.state.name);
+  }
+  if (location.country?.name) {
+    parts.push(location.country.name);
+  }
+
+  return parts.join(", ") || "Unknown Location";
+}
+
+export function toggleId(ids: string[], id: string): string[] {
+  if (ids.includes(id)) {
+    return ids.filter((existingId) => existingId !== id);
+  } else {
+    return [...ids, id];
+  }
 }

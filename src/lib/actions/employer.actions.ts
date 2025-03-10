@@ -7,8 +7,17 @@ import {
   API_GET_EMPLOYMENT_TYPES,
   API_GET_INDUSTRIES,
 } from "@/api/admin";
-import { API_GET_COMPANY_BY_ID, API_GET_COMPANY_BY_USER_NAME, API_GET_JOBS } from "@/api/employer";
-import { API_GET_SEEKERS } from "@/api/seeker";
+import {
+  API_GET_COMPANY_BY_ID,
+  API_GET_COMPANY_BY_USER_NAME,
+  API_GET_JOBS,
+} from "@/api/employer";
+import {
+  API_GET_FOLDER_BY_ID,
+  API_GET_SEEKERS,
+  API_GET_SEEKERS_PROFILES_FROM_FOLDER,
+  API_READ_COMPANY_FOLDERS,
+} from "@/api/seeker";
 import {
   Company,
   EmploymentType,
@@ -46,9 +55,7 @@ export const getCompanyByUserName = async (
     };
   }
 };
-export const getCompanyById = async (
-  id: string,
-): Promise<Result<Company>> => {
+export const getCompanyById = async (id: string): Promise<Result<Company>> => {
   try {
     const response = await fetch(API_GET_COMPANY_BY_ID + id, {
       method: "GET",
@@ -310,6 +317,99 @@ export const getPaginatedSeekers = async (
     );
     if (response.ok) {
       const data: { total: number; data: UserState[] } = await response.json();
+      return {
+        success: true,
+        message: "Seekers list fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getPaginatedFolders = async (
+  companyId: string,
+): Promise<Result<PaginatedResponse<Folder>>> => {
+  try {
+    const response = await fetch(
+      API_READ_COMPANY_FOLDERS + companyId + `&page=1&limit=20`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        next: { tags: [TAGS.folders] },
+      },
+    );
+    if (!response.ok) return errorResult("fetching Folders data by user name");
+    return {
+      success: true,
+      message: "Folders fetched successfully",
+      data: await response.json(),
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getFolderById = async (
+  folderId: string,
+): Promise<Result<Folder>> => {
+  try {
+    const response = await fetch(API_GET_FOLDER_BY_ID + folderId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.folders] },
+    });
+    if (!response.ok) return errorResult("fetching folder data by id");
+    return {
+      success: true,
+      message: "Folder fetched successfully",
+      data: await response.json(),
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getPaginatedCandidatesByFolderId = async (
+  jobId: string,
+  page: number = 1,
+  limit: number = 10,
+): Promise<
+  Result<PaginatedResponse<CandidateType>>
+> => {
+  try {
+    const response = await fetch(
+      `${API_GET_SEEKERS_PROFILES_FROM_FOLDER}?id=${jobId}&page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        next: { tags: [TAGS.folders] },
+      },
+    );
+    if (response.ok) {
+      const data = await response.json();
       return {
         success: true,
         message: "Seekers list fetched successfully",

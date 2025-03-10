@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs, TextField } from "@mui/material";
+import { Button, Tab, Tabs } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import JobCard from "@/components/UI/job-card";
 import { JobsTabs } from "@/types";
@@ -70,7 +70,7 @@ const page = async ({
           scrollButtons={false}
           className="text-base"
         >
-            {tabs.map((tab) => (
+          {tabs.map((tab) => (
             <Link key={tab} href={{ query: { ...searchParams, tab } }}>
               <Tab
                 className="text-nowrap"

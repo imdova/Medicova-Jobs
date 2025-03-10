@@ -26,7 +26,7 @@ const fields: FieldConfig[] = [
       },
       multiline: true,
       minRows: 4,
-      maxRows: 4,
+      maxRows: 14,
     },
   },
 ];

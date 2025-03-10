@@ -22,7 +22,7 @@ import {
   BookmarkOutlined,
   KeyOutlined,
 } from "@mui/icons-material";
-import { formatName } from "@/util";
+import { formatFullName } from "@/util";
 import AddToFolderModal from "./add-to-folder-modal";
 import Link from "next/link";
 import FolderModal from "./folder-modal";
@@ -77,7 +77,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
             <div className="flex items-center gap-2">
               <Avatar
                 src={doctor.image}
-                alt={isAvailable ? doctor.name : formatName(doctor.name)}
+                alt={isAvailable ? doctor.name : formatFullName(doctor.name)}
                 sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
               />
               <div>
@@ -86,7 +86,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                     href={`/me/${doctor.name}`}
                     className="font-semibold text-main hover:underline md:text-[20px]"
                   >
-                    {isAvailable ? doctor.name : formatName(doctor.name)}
+                    {isAvailable ? doctor.name : formatFullName(doctor.name)}
                   </Link>
                   {isAvailable ? (
                     <LockOpenIcon className="h-5 w-5 text-primary" />
@@ -274,7 +274,7 @@ const SaveMenu: React.FC<SaveMenuProps> = ({
           onClick={handleOpenModal}
           className="flex items-center gap-4 hover:bg-gray-200"
         >
-          <Image src={"/images/folder.png"} alt="save" width={24} height={24} />
+          <Image src={"/images/folder.svg"} alt="save" width={24} height={24} />
           Add New Folder
           <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
         </MenuItem>
@@ -282,7 +282,7 @@ const SaveMenu: React.FC<SaveMenuProps> = ({
           onClick={handelAddToFolderModal}
           className="flex items-center gap-4 hover:bg-gray-200"
         >
-          <Image src={"/images/folder.png"} alt="save" width={24} height={24} />
+          <Image src={"/images/folder.svg"} alt="save" width={24} height={24} />
           Save in existing folder
         </MenuItem>
       </Menu>

@@ -8,3 +8,9 @@ interface TextEditorProps {
   value: string;
   onChange: (e: string) => void;
 }
+
+interface LocationType {
+  country?: { code?: string; name?: string } | null;
+  state?: { code?: string; name?: string } | null;
+  city?: string | null;
+};

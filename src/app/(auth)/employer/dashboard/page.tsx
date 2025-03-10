@@ -8,10 +8,8 @@ import {
   ShopOutlined,
   WorkOutline,
 } from "@mui/icons-material";
-import { folders } from "@/constants";
 import Link from "next/link";
 import { Suspense } from "react";
-import FolderMainCard from "@/components/UI/folder-main-card";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { notFound } from "next/navigation";
@@ -20,6 +18,7 @@ import SearchInput from "@/components/UI/search-Input";
 import StatusCard from "@/components/UI/StatusCard";
 import { filteredJobs } from "@/lib/auth/utils";
 import { itemsPerDays } from "@/util/general";
+import FolderSection from "./foldersSection";
 
 const INITIAL_JOBS = 5;
 const Page = async () => {
@@ -27,7 +26,7 @@ const Page = async () => {
   const user = data?.user;
   if (!user?.companyId) return notFound();
   const result = await getJobsByCompanyId(user?.companyId, 1, INITIAL_JOBS);
-  const { data: jobs } = result.data || { data: [], total: 0 }; 
+  const { data: jobs } = result.data || { data: [], total: 0 };
   return (
     <div className="flex flex-col gap-8 px-4 md:px-0 lg:flex-row">
       <div className="flex-1">
@@ -58,8 +57,9 @@ const Page = async () => {
             className="col-span-2 md:col-span-1"
             title="New Applicants"
             value={
-              jobs.slice(0, INITIAL_JOBS).reduce((acc, job) => acc + (job.applicationCount || 0), 0) ||
-              0
+              jobs
+                .slice(0, INITIAL_JOBS)
+                .reduce((acc, job) => acc + (job.applicationCount || 0), 0) || 0
             }
             icon={GroupOutlined}
             trend={{
@@ -122,31 +122,9 @@ const Page = async () => {
             </Button>
           </div>
         )}
-        <div>
-          <h2 className="mb-5 mt-10 text-3xl font-semibold text-main">
-            CV Search{" "}
-            <span className="mt-5 text-3xl font-semibold text-light-primary">
-              Folders
-            </span>
-          </h2>
-
-          <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
-            <Suspense>
-              {folders.slice(0, 6).map((folder, index) => (
-                <FolderMainCard key={index} folder={folder} />
-              ))}
-            </Suspense>
-          </div>
-          <div className="flex w-full justify-center">
-            <Link
-              href="/employer/search/saved-search"
-              className="group my-2 mt-5 text-xl text-primary hover:underline"
-            >
-              All Folders
-              <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
-            </Link>
-          </div>
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <FolderSection companyId={user.companyId} />
+        </Suspense>
       </div>
       <div className="lg:max-w-[250px]">
         <div className="flex w-full flex-col gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft">

@@ -22,15 +22,23 @@ export const formatDate = (date: Date): string => {
   const d = new Date(date);
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
-// export function formatName(
-//   firstName: string | null,
-//   lastName?: string | null,
-// ): string {
-//   if (!firstName || !lastName) return "";
-//   const lastNameInitial = lastName.charAt(0).toUpperCase();
-//   return `${firstName} .${lastNameInitial}`;
-// }
-export function formatName(fullName: string): string {
+export function formatName(
+  {
+    firstName,
+    lastName,
+  }: {
+    firstName: string;
+    lastName: string;
+  },
+  isAvailable?: boolean,
+): string {
+  if (isAvailable) {
+    return `${firstName} ${lastName}`;
+  }
+  const lastNameInitial = lastName.charAt(0).toUpperCase();
+  return `${firstName} .${lastNameInitial}`;
+}
+export function formatFullName(fullName: string): string {
   const nameParts = fullName.trim().split(" ");
   if (nameParts.length < 2) {
     return fullName;

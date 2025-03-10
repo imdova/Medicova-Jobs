@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Folder } from "@/types";
-import { getLastEdit } from "@/util";
+import { getFullLastEdit } from "@/util";
 
 interface FolderMainCardProps {
   folder: Folder;
@@ -22,7 +22,7 @@ const FolderSmallCard: React.FC<FolderMainCardProps> = ({
         className={`${isSelected ? "border border-green-400 bg-[#ddebf7]" : "bg-[#ECF0F3]"} group flex h-[80px] w-full items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB]`}
       >
         <Image
-          src="/images/folder.png"
+          src="/images/folder.svg"
           width={25}
           height={25}
           alt="folder icon"
@@ -31,7 +31,7 @@ const FolderSmallCard: React.FC<FolderMainCardProps> = ({
       </button>
       <h6 className="mt-2 px-2 text-sm">{folder.name}</h6>
       <p className="mb-2 px-2 text-xs text-black/50">
-        {getLastEdit(folder.lastModified)}
+        {getFullLastEdit(folder.created_at)}
       </p>
     </div>
   );

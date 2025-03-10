@@ -59,3 +59,12 @@ export const API_UPDATE_SEEKER_ACTIVITY = SEEKER_ACTIVITIES + "/"; // PATCH + [i
 export const API_GET_SEEKER_ACTIVITIES = SEEKER_ACTIVITIES + "/seeker/"; // GET + [seekerId]
 export const API_GET_SEEKER_ACTIVITY_BY_ID = SEEKER_ACTIVITIES + "/"; // GET + [id]
 export const API_DELETE_SEEKER_ACTIVITY = SEEKER_ACTIVITIES + "/"; // DELETE + [id]
+
+// Folders 
+export const SEEKER_FOLDERS = API_SEEKER_BASE + "/folders";
+export const API_CREATE_FOLDER = SEEKER_FOLDERS; // POST
+export const API_UPDATE_FOLDER = SEEKER_FOLDERS; // PATCH
+export const API_ADD_SEEKER_TO_FOLDER = SEEKER_FOLDERS + "/{folderId}/seekers/{seekerId}"; // POST
+export const API_READ_COMPANY_FOLDERS = SEEKER_FOLDERS + "/read-company-folders?id="; // GET + [companyId] page=1&limit=10
+export const API_GET_SEEKERS_PROFILES_FROM_FOLDER = SEEKER_FOLDERS + "/get-seekers-profiles"; // GET + [folderId]
+export const API_GET_FOLDER_BY_ID = SEEKER_FOLDERS + "/"; // GET + [id]

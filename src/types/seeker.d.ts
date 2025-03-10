@@ -74,10 +74,18 @@ type JobApplicationData = {
   };
 };
 
+type TapType = "all" | "locked" | "unlocked" | "shortListed";
 
-type DoctorData = {
-  id: string;
+// Represents the data structure for job applicants. This type is used to store and display
+// information about individuals who have applied for a specific job posting.
+type Applicants = {
+  id: string; // id of the application
+  seekerId: string; // id for the job seeker who applied.
+  status: string; // status of the application
+  answers: Record<string, string> | null; // stores the applicant's responses to job-specific questions, if any.
+  jobId: string; // id of the job
   avatar: string;
+  userName: string;
   firstName: string;
   lastName: string;
   applyDate: string;
@@ -97,8 +105,37 @@ type DoctorData = {
   isAvailable: boolean;
   lastExperience: ExperienceData | null;
   lastEducation: EducationData | null;
+  folders: string[]; // An array of folder IDs where the applicant's profile is organized or sto
 };
 
+// Represents the data structure for potential candidates who can be invited to apply for a job.
+// This type is used to store and display information about individuals who match the job criteria
+// but have not yet applied.
+type CandidateType = {
+  id: string; // id for the candidate (job seeker).
+  avatar: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  applyDate: string;
+  title: string;
+  whatsApp: string;
+  phone: string;
+  email: string;
+  country: LocationItem;
+  state: LocationItem;
+  city: string;
+  yearsOfExperience: number;
+  category: string;
+  specialty: string;
+  careerLevel: string;
+  isShortlisted: boolean;
+  isLocked: boolean;
+  isAvailable: boolean;
+  lastExperience: ExperienceData | null;
+  lastEducation: EducationData | null;
+  folders: string[]; // An array of folder IDs where the candidate's profile is organized or stored.
+};
 
 type ExperienceData = {
   id: string;

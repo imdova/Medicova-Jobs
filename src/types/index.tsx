@@ -306,10 +306,13 @@ export interface FilterSectionType {
 }
 
 export interface Folder {
-  id: number;
+  id: string;
   name: string;
-  candidates: number;
-  lastModified: Date;
+  companyId: string;
+  totalUsers?: number;
+  _version: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface SortFolders {

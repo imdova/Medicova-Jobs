@@ -9,7 +9,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Close, Search } from "@mui/icons-material";
-import { folders } from "@/constants";
 import FolderSmallCard from "./folder-small-card";
 import { Folder } from "@/types";
 import DataTable from "./data-table";
@@ -89,7 +88,8 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
               }}
             />
           </div>
-          <div className="grid grid-cols-3 gap-4 md:grid-cols-4">
+          {/* // TODO: Add To Folder Handler */}
+          {/* <div className="grid grid-cols-3 gap-4 md:grid-cols-4">
             {folders.slice(0, 8).map((folder, index) => (
               <FolderSmallCard
                 key={index}
@@ -98,7 +98,7 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({ open, onClose }) => {
                 selected={folderId}
               />
             ))}
-          </div>
+          </div> */}
         </div>
         {/* Modal Content */}
         <div className="flex justify-start gap-2">

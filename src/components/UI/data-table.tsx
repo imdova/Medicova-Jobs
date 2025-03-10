@@ -30,6 +30,7 @@ interface ColumnConfig<T> {
 
 interface DataTableProps<T> {
   data: T[];
+  total: number;
   columns: ColumnConfig<T>[]; // Column definitions
   isSelectable?: boolean; // Enable row selection
   onRowClick?: (item: T) => void; // Click handler for rows
@@ -51,6 +52,7 @@ const DataTable = <T extends { id: number | string }>({
   size,
   fixedNumberPerPage,
   searchQuery,
+  total,
 }: DataTableProps<T>) => {
   const isSmall = size === "small";
   const [selected, setSelected] = useState<(number | string)[]>([]);
@@ -119,7 +121,7 @@ const DataTable = <T extends { id: number | string }>({
 
   return (
     <div className="w-full">
-      <TableContainer component={Paper} className="border-0">
+      <TableContainer component={Paper} className="border-0 scroll-bar-minimal">
         <Table className="min-w-full">
           <TableHead className={`bg-gray-50`}>
             <TableRow>
@@ -137,7 +139,7 @@ const DataTable = <T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`p-2 font-semibold ${isSmall ? "text-xs" : ""}`}
+                  className={`p-2 font-semibold w-full ${isSmall ? "text-xs" : ""}`}
                   style={{ width: col.width }}
                 >
                   {col.sortable ? (
@@ -150,10 +152,11 @@ const DataTable = <T extends { id: number | string }>({
                       }
                       onClick={() => handleSort(col.key)}
                     >
-                      {col.header}
+                      <span className="text-nowrap line-clamp-1">{col.header}</span>
                     </TableSortLabel>
                   ) : (
-                    col.header
+                    <span className="text-nowrap line-clamp-1">{col.header}</span>
+
                   )}
                 </TableCell>
               ))}
@@ -200,6 +203,7 @@ const DataTable = <T extends { id: number | string }>({
                         {onEdit && (
                           <IconButton
                             size="small"
+                            disabled={selected.length > 0}
                             className="hover:bg-green-200 hover:text-green-600"
                             onClick={() => onEdit(item)}
                           >
@@ -209,6 +213,7 @@ const DataTable = <T extends { id: number | string }>({
                         {onDelete && (
                           <IconButton
                             size="small"
+                            disabled={selected.length > 0}
                             className="hover:bg-red-200 hover:text-red-600"
                             onClick={() => onDelete(item)}
                           >
@@ -224,10 +229,12 @@ const DataTable = <T extends { id: number | string }>({
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomPagination
-        fixedNumberPerPage={fixedNumberPerPage}
-        totalItems={sortedData.length}
-      />
+      {total > data.length && (
+        <CustomPagination
+          fixedNumberPerPage={fixedNumberPerPage}
+          totalItems={total}
+        />
+      )}
     </div>
   );
 };
