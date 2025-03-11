@@ -9,10 +9,11 @@ import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import SearchInput from "@/components/UI/search-Input";
-import { searchJobsByQueryAndDate } from "@/util/job/searchInJobs";
+import { searchJobsByQuery } from "@/util/job/searchInJobs";
 import { Add } from "@mui/icons-material";
 import CustomPagination from "@/components/UI/CustomPagination";
-import { TimeRangePicker } from "@/components/UI/TimeRangePicker.tsx";
+import TimeRangePicker from "@/components/UI/TimeRangePicker.tsx";
+import { filterItemsByDate } from "@/util/general";
 
 const tabs: JobsTabs[] = ["all", "active", "closed", "expired", "draft"];
 
@@ -23,6 +24,9 @@ const page = async ({
 }) => {
   const activeTab = (searchParams?.tab as JobsTabs) || "all";
   const query = (searchParams?.q as string) || "";
+  const startDate = (searchParams?.startDate as string) || null;
+  const endDate = (searchParams?.endDate as string) || null;
+
   const page = parseInt(String(searchParams?.page || 1));
   const limit = parseInt(String(searchParams?.limit || 10));
   const data = await getServerSession(authOptions);
@@ -34,11 +38,17 @@ const page = async ({
     activeTab === "all" ? limit : 100,
   );
   const { data: jobs, total } = result.data || { data: [], total: 0 };
-
+  const filteredJobsQuery = searchJobsByQuery(jobs, query);
+  const filteredJobsDate = filterItemsByDate(
+    filteredJobsQuery,
+    startDate,
+    endDate,
+  );
+  const tabJobs = filteredJobs(filteredJobsDate, activeTab);
   return (
     <div className="p-4">
       {/* Header Section */}
-      <div className="mb-3 flex flex-col items-center justify-between gap-3 md:flex-row">
+      <div className="mb-3 flex items-center justify-between gap-3">
         {/* Search Input */}
         <SearchInput
           isBounce={true}
@@ -57,7 +67,7 @@ const page = async ({
 
         {/* Filter Section */}
         <div className="flex gap-8">
-          <TimeRangePicker labelStart="From" labelEnd="To" />
+          <TimeRangePicker />
         </div>
       </div>
 
@@ -74,14 +84,14 @@ const page = async ({
             <Link key={tab} href={{ query: { ...searchParams, tab } }}>
               <Tab
                 className="text-nowrap"
-                label={`${tab} (${tab === "all" ? total : filteredJobs(jobs, tab).length})`}
+                label={`${tab} (${filteredJobs(filteredJobsDate, tab).length})`}
               />
             </Link>
           ))}
         </Tabs>
       </div>
       <div className="flex flex-col gap-4 p-2">
-        {filteredJobs(jobs, "all").length === 0 && (
+        {total === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 p-5">
             <h3 className="text-center text-xl font-semibold text-secondary">
               No jobs found
@@ -100,11 +110,9 @@ const page = async ({
             </Button>
           </div>
         )}
-        {searchJobsByQueryAndDate(filteredJobs(jobs, activeTab), query).map(
-          (job) => (
-            <JobCard key={job.id} job={job} isEdit={true} />
-          ),
-        )}
+        {tabJobs.map((job) => (
+          <JobCard key={job.id} job={job} isEdit={true} />
+        ))}
       </div>
       {activeTab === "all" && jobs.length < total && (
         <CustomPagination totalItems={total} />

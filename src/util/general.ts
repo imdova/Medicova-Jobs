@@ -24,6 +24,23 @@ export function itemsPerDays<T extends { created_at?: string | null }>(
   });
   return result;
 }
+export function itemsInLastDays<T extends { created_at?: string | null }>(
+  data: T[],
+  days: number,
+): T[] {
+  const now = new Date();
+  const result: T[] = [];
+  data.forEach((item) => {
+    if (!item.created_at) return;
+    const createdDate = new Date(item.created_at);
+    const timeDiff = now.getTime() - createdDate.getTime();
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    if (daysDiff <= days) {
+      result.push(item);
+    }
+  });
+  return result;
+}
 
 export function calculateAge(birthDate: Date): number {
   const today = new Date();
@@ -61,4 +78,32 @@ export function toggleId(ids: string[], id: string): string[] {
   } else {
     return [...ids, id];
   }
+}
+
+export function formatTimeDuration(days: number): string {
+  if (days < 7) return `${days} day${days !== 1 ? 's' : ''}`;
+  
+  const weeks = Math.floor(days / 7);
+  if (days < 30) return `${weeks} week${weeks !== 1 ? 's' : ''}`;
+  
+  const months = Math.floor(days / 30); // Ensuring 30 days count as 1 month
+  if (days < 365) return `${months || 1} month${months !== 1 ? 's' : ''}`;
+  
+  const years = Math.floor(days / 365.25); // Accounts for leap years
+  return `${years} year${years !== 1 ? 's' : ''}`;
+}
+
+export function filterItemsByDate<T extends { created_at: string }>(
+  items: T[],
+  startDate?: string | null,
+  endDate?: string | null
+): T[] {
+  const firstDate = items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())[0]?.created_at || 0;
+  const start = startDate ? new Date(startDate) : new Date(firstDate);
+  const end = endDate ? new Date(endDate) : new Date();
+
+  return items.filter(item => {
+      const itemDate = new Date(item.created_at);
+      return itemDate >= start && itemDate <= end;
+  });
 }

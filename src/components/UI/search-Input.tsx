@@ -55,7 +55,7 @@ const Input: React.FC<SearchProps> = ({
     newParams.set("q", value);
     newParams.delete("page");
     router.push(createUrl(pathname, newParams));
-  }, 500);
+  }, 300);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

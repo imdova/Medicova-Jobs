@@ -279,8 +279,8 @@ export interface JobData {
   jobCareerLevel?: string | null;
   jobEmploymentType?: string | null;
 
-  created_at?: string | null; // ISO date string 
-  updated_at?: string | null; // ISO date string 
+  created_at: string ; // ISO date string 
+  updated_at: string ; // ISO date string 
 }
 
 export type JobStringData = Omit<

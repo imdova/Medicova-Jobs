@@ -99,7 +99,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
     console.log("🚀 ~ handleDelete ~ handleDelete:");
     // await update(API_CREATE_FOLDER, { method: "DELETE" },TAGS.folders);
   };
-  console.log(folders.length , folders.length > RECENT_FOLDERS);
+  console.log(folders.length, folders.length > RECENT_FOLDERS);
 
   return (
     <div className="md:mr-4">
@@ -216,7 +216,12 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                     </div>
                   ),
                 },
-                { key: "totalUsers", header: "Candidates", sortable: true },
+                {
+                  key: "totalUsers",
+                  header: "Candidates",
+                  sortable: true,
+                  render: (folder) => folder.totalUsers? folder.totalUsers : 0,
+                },
                 {
                   key: "updated_at",
                   header: "Last Modified",

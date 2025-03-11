@@ -23,7 +23,7 @@ const page = async ({
   const data = await getServerSession(authOptions);
   const user = data?.user;
 
-  if (user?.companyId !== job.companyId) return notFound();
+  if (user?.companyId !== job.company?.id) return notFound();
 
   job.country = job.country || { code: "", name: "" };
   job.skills = job.skills || [];
