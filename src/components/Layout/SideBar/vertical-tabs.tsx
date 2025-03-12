@@ -1,34 +1,90 @@
 "use client";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { Divider } from "@mui/material";
+import { Collapse, Divider } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { isCurrentPage } from "@/util";
 import { NavItem, UserState } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import Avatar from "@/components/UI/Avatar";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface SideBarProps {
   user?: UserState;
   pathname: string;
 }
 
+const findActiveLinkIndex = (
+  links: NavItem[],
+  pathname: string,
+  isCollapsed: number | null,
+): { activeIndex: number; parentId: number | null } => {
+  for (let i = 0; i < links.length; i++) {
+    const link = links[i];
+
+    // Check if the current link is active
+    const path = link.path || link.pattern;
+    if (path && isCurrentPage(pathname, path)) {
+      const collapsedLinkIndex = links.findIndex(
+        (link) => link.id === isCollapsed,
+      );
+      const collapsedLink = links.find((link) => link.id === isCollapsed);
+      const additionalItems = isCollapsed
+        ? i > collapsedLinkIndex
+          ? collapsedLink?.links?.length || 0
+          : 0
+        : 0;
+      return { activeIndex: i + additionalItems, parentId: null };
+    }
+
+    // If the link has sublinks, recursively check them
+    if (link.links && link.links.length > 0) {
+      const subLinkResult = findActiveLinkIndex(
+        link.links,
+        pathname,
+        isCollapsed,
+      );
+      if (subLinkResult.activeIndex !== -1) {
+        const collapsedLinkIndex = links.findIndex(
+          (link) => link.id === isCollapsed,
+        );
+        const collapsedLink = links.find((link) => link.id === isCollapsed);
+
+        const additionalItems =
+          isCollapsed === link.id
+            ? subLinkResult.activeIndex + 1
+            : i > collapsedLinkIndex
+              ? collapsedLink?.links?.length || 0
+              : 0;
+        return {
+          activeIndex: i + additionalItems,
+          parentId: link.id,
+        };
+      }
+    }
+  }
+
+  // If no active link is found, return -1
+  return { activeIndex: -1, parentId: null };
+};
+
+
 const useActiveTab = (links: NavItem[], pathname: string) => {
   const [activeTab, setActiveTab] = useState<number | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState<number | null>(null);
 
   // Define updateActiveTab as a stable function
   const updateActiveTab = useCallback(
     (currentLinks: NavItem[]) => {
-      const activeTabIndex = currentLinks.findIndex((link) => {
-        const path = link.path || link.pattern;
-        return path ? isCurrentPage(pathname, path) : false;
-      });
-      setActiveTab(activeTabIndex >= 0 ? activeTabIndex : null);
+      const { activeIndex, parentId } = findActiveLinkIndex(
+        currentLinks,
+        pathname,
+        isCollapsed,
+      );
+      // !isCollapsed && setIsCollapsed(parentId);
+      setActiveTab(activeIndex);
     },
-    [pathname],
+    [pathname, isCollapsed],
   );
 
   // Run updateActiveTab when links or pathname change
@@ -38,7 +94,7 @@ const useActiveTab = (links: NavItem[], pathname: string) => {
     }
   }, [links, pathname, updateActiveTab]);
 
-  return { activeTab, setActiveTab, updateActiveTab };
+  return { activeTab, setActiveTab, isCollapsed, setIsCollapsed };
 };
 
 export default function VerticalTabs({
@@ -48,54 +104,31 @@ export default function VerticalTabs({
   const { data: session } = useSession();
   const sessionUser = session?.user as UserState;
   const user = sessionUser || initialUser;
-  const initialLinks = getSideBarLinks(user, pathname);
-  const [links, setLinks] = useState<NavItem[]>(initialLinks);
-  const { activeTab, setActiveTab, updateActiveTab } = useActiveTab(
+  const links = getSideBarLinks(user, pathname);
+  const { activeTab, setActiveTab, isCollapsed, setIsCollapsed } = useActiveTab(
     links,
     pathname,
   );
-  // TODO: make active tab depend on the path name not a state that able to change by user
-  const handleTabChange = (_event: React.SyntheticEvent, newTab: number) => {
-    setActiveTab(newTab);
-  };
-
-  useEffect(() => {
-    if (links.length === 0 && initialLinks.length > 0) {
-      setLinks(initialLinks);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialLinks]);
-
-  useEffect(() => {
-    if (links.length === 1) {
-      const newLinks = getSideBarLinks(user, pathname);
-      setLinks(newLinks);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   return (
-    <Tabs
-      orientation="vertical"
-      value={activeTab ?? false}
-      onChange={handleTabChange}
-      aria-label="Sidebar navigation tabs"
-      role="navigation"
-      TabIndicatorProps={{
-        sx:
-          activeTab !== null
-            ? {
-                backgroundColor: "var(--light-primary)",
-                left: 0,
-                width: 4,
-                maxHeight: "30px",
-                borderRadius: 5,
-                transform: "translateY(10px)",
-              }
-            : { display: "none" },
-      }}
-    >
+    <div className="relative overflow-hidden">
+      <div
+        style={{
+          top: `${activeTab ? activeTab * 45 + 7.5 : 7.5}px`,
+        }}
+        className="indicator absolute left-0 h-[30px] w-1 rounded-full bg-light-primary transition-all duration-700 ease-in-out"
+      ></div>
+
       {links.map((item, index) => {
+        const collapsedLinkIndex = links.findIndex(
+          (link) => link.id === isCollapsed,
+        );
+        const collapsedLink = links.find((link) => link.id === isCollapsed);
+        const additionalItems = isCollapsed
+          ? index > collapsedLinkIndex
+            ? collapsedLink?.links?.length || 0
+            : 0
+          : 0;
         switch (item.type) {
           case "profile":
             return user ? (
@@ -104,31 +137,19 @@ export default function VerticalTabs({
                 user={user}
                 pathname={pathname}
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
               />
             ) : null;
-          case "divider":
-            return <Divider key={item.id} className="mt-2" />;
           case "text":
-            return (
-              <p
-                key={item.id}
-                className="p-4 text-sm normal-case text-gray-800"
-              >
-                {item.section}
-              </p>
-            );
+            return <SectionHeader key={item.id} text={item.section} />;
           case "collapse":
             return (
               <CollapseTab
                 key={item.id}
                 item={item}
                 index={index}
-                links={links}
-                setLinks={setLinks}
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                updateActiveTab={updateActiveTab}
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
               />
             );
           default:
@@ -136,61 +157,46 @@ export default function VerticalTabs({
               <LinkTab
                 key={item.id}
                 item={item}
-                index={index}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
+                isActive={activeTab === index + additionalItems}
               />
             );
         }
       })}
-    </Tabs>
+    </div>
   );
 }
+
+const SectionHeader = ({ text }: { text?: string }) => (
+  <div className="h-[45px]">
+    <Divider />
+    <p className="p-4 text-sm font-medium normal-case text-gray-600">{text}</p>
+  </div>
+);
 
 // Type definition for navigation items
 
 const CollapseTab = ({
   item,
-  index,
+  isCollapsed,
+  setIsCollapsed,
   activeTab,
-  setLinks,
-  links,
-  updateActiveTab,
-  setActiveTab,
+  index,
 }: {
   item: NavItem;
   index: number;
   activeTab: number | null;
-  links: NavItem[];
-  setLinks: React.Dispatch<React.SetStateAction<NavItem[]>>;
-  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
-  updateActiveTab: (links: NavItem[]) => void;
+  isCollapsed: number | null;
+  setIsCollapsed: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
-  const isActive = activeTab === index;
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const isOpen = isCollapsed === item.id;
   const IconComponent = item.icon;
 
-  // Toggle the collapse state when the tab is clicked
-  const toggleCollapse = () => {
-    setIsOpen(!isOpen);
-    if (isOpen) {
-      setLinks((e) => removeItems(e, index + 1, item.links?.length || 0));
-      setActiveTab(null);
-    } else {
-      const newLinks = insertItemsAfterIndex(links, item.links || [], index);
-      setLinks(newLinks);
-      updateActiveTab(newLinks);
-    }
-  };
-  // import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
   return (
-    <Tab
-      className={`transition-color mx-4 my-1 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
-      id={`vertical-tab-${index}`}
-      aria-controls={`vertical-tabpanel-${index}`}
-      value={index}
-      onClick={toggleCollapse}
-      label={
+    <div>
+      <div
+        className="transition-color mx-4 flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-[10px] p-2 text-secondary duration-300 ease-in-out"
+        onClick={() => setIsCollapsed(isOpen ? null : item.id)}
+      >
         <div className="flex w-full flex-row items-center justify-between gap-2">
           <div className="flex flex-row items-center gap-2 text-left normal-case">
             {IconComponent && <IconComponent />} <span>{item.label}</span>
@@ -199,20 +205,28 @@ const CollapseTab = ({
             className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`}
           />
         </div>
-      }
-    />
+      </div>
+      <Collapse in={isOpen} timeout="auto" unmountOnExit>
+        <div className="ml-10">
+          {item.links?.map((link, linkIndex) => {
+            const isActive = isOpen
+              ? activeTab === index + linkIndex + 1
+              : false;
+            return <LinkTab key={link.id} item={link} isActive={isActive} />;
+          })}
+        </div>
+      </Collapse>
+    </div>
   );
 };
 const ProfileTab = ({
   user,
   pathname,
   activeTab,
-  onTabChange,
 }: {
   user: UserState;
   pathname: string;
   activeTab: number | null;
-  onTabChange: (index: number) => void;
 }) => {
   const isEmployer = user.type === "employer";
   const userAvatar = isEmployer ? user.companyPhoto : user.photo;
@@ -228,90 +242,46 @@ const ProfileTab = ({
     activeTab === 0 && decodeURIComponent(pathname) == decodeURIComponent(path);
 
   return (
-    <Tab
-      className={`transition-color mx-4 my-1 flex flex-row justify-start rounded-[10px] p-[5px] opacity-100 duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"}`}
-      id={`vertical-tab-0`}
-      aria-controls={`vertical-tabpanel-0`}
-      value={0}
-      onClick={() => onTabChange(0)}
-      component={Link}
+    <Link
+      className={`${isActive ? "bg-light-primary text-white" : "text-gray-800/60"} transition-color mx-4 flex h-[45px] flex-row justify-start rounded-[10px] p-[5px] opacity-100 duration-300 ease-in-out`}
       href={path}
-      label={
-        <div className="flex items-center gap-1">
-          <Avatar src={userAvatar!} alt={displayName + "photo"} size={40} />
-          <div>
-            <h6 className="text-left text-sm normal-case">{displayName}</h6>
-            <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
-              {email}
-            </p>
-          </div>
+    >
+      <div className="flex items-center gap-1">
+        <Avatar src={userAvatar!} alt={displayName + "photo"} size={40} />
+        <div>
+          <h6 className="text-left text-sm normal-case">{displayName}</h6>
+          <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
+            {email}
+          </p>
         </div>
-      }
-    />
+      </div>
+    </Link>
   );
 };
 
-const LinkTab = ({
-  item,
-  index,
-  activeTab,
-  onTabChange,
-}: {
-  item: NavItem;
-  activeTab: number | null;
-  index: number;
-  onTabChange: (index: number) => void;
-}) => {
-  const isActive = activeTab === index;
-  const isSub = item.type === "supLink";
+const LinkTab = ({ item, isActive }: { item: NavItem; isActive: boolean }) => {
   const IconComponent = item.icon;
   return (
-    <Tab
-      className={`transition-color mx-4 my-1 ${isSub ? "ml-10" : ""} flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] duration-300 ease-in-out ${isActive ? "bg-light-primary text-white opacity-100" : "text-gray-800"}`}
-      id={`vertical-tab-${index}`}
-      aria-controls={`vertical-tabpanel-${index}`}
-      value={index}
-      onClick={() => onTabChange(index)}
-      component={Link}
+    <Link
+      className={`${isActive ? "bg-light-primary text-white opacity-100" : "text-secondary"} transition-color mx-4 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 duration-300 ease-in-out`}
       href={item.path || "#"}
-      label={
-        <div className="flex w-full flex-row items-center justify-between gap-2">
-          <div className="flex flex-row items-center gap-2 text-left normal-case">
-            {IconComponent && <IconComponent />} <span>{item.label}</span>
-          </div>
-          {item.notifications && (
-            <div
-              className={`${
-                isActive
-                  ? "bg-primary-foreground text-light-primary"
-                  : "bg-secondary text-primary-foreground"
-              } aspect-square rounded-full p-1 px-2 text-xs`}
-            >
-              {item.notifications}
-            </div>
-          )}
+    >
+      <div className="flex w-full flex-row items-center justify-between gap-2">
+        <div className="flex flex-row items-center gap-2 text-left normal-case">
+          {IconComponent && <IconComponent />} <span>{item.label}</span>
         </div>
-      }
-    />
+        {item.notifications && (
+          <div
+            className={`${
+              isActive
+                ? "bg-primary-foreground text-light-primary"
+                : "bg-secondary text-primary-foreground"
+            } aspect-square rounded-full p-1 px-2 text-xs`}
+          >
+            {item.notifications}
+          </div>
+        )}
+      </div>
+    </Link>
   );
 };
-
-function insertItemsAfterIndex<T>(array: T[], items: T[], index: number): T[] {
-  if (index < -1 || index >= array.length) {
-    throw new Error("Index out of bounds");
-  }
-  // Return a new array with the items inserted
-  return [...array.slice(0, index + 1), ...items, ...array.slice(index + 1)];
-}
-
-function removeItems<T>(array: T[], startIndex: number, count: number): T[] {
-  if (startIndex < 0 || startIndex >= array.length) {
-    throw new Error("Start index out of bounds");
-  }
-  if (count < 0) {
-    throw new Error("Count cannot be negative");
-  }
-
-  // Remove items by slicing around the specified range
-  return [...array.slice(0, startIndex), ...array.slice(startIndex + count)];
-}

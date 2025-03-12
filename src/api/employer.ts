@@ -29,3 +29,10 @@ export const API_GET_JOB_APPLICATIONS = JOB_APPLICATIONS; // GET
 export const API_GET_JOB_APPLICATION_BY_ID = JOB_APPLICATIONS + "/"; // GET + [jobApplicationID]
 export const API_GET_JOB_APPLICATION_STATUS_COUNT_FOR_SEEKER =
   JOB_APPLICATIONS + "/seeker/"; // GET + [seekerID] + "/status-count"
+
+// unlocked lists
+export const UNLOCKED_SEEKERS = API_EMPLOYER_BASE + "/unlocked-seekers";
+export const API_UNLOCKED_SEEKER = UNLOCKED_SEEKERS; // POST "{companyId , seekerId}"
+export const API_GET_UNLOCKED_SEEKERS = UNLOCKED_SEEKERS; // GET ?id={id}
+export const API_CHECK_UNLOCKED_SEEKER = UNLOCKED_SEEKERS + "/company/"; // GET + {companyId}/seeker/{seekerId}
+export const API_DELETE_UNLOCKED_SEEKER = UNLOCKED_SEEKERS + "/company/"; // DELETE + {companyId}/seeker/{seekerId}

@@ -116,10 +116,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       notifications: 4,
     },
     {
-      id: 14,
-      type: "divider",
-    },
-    {
       id: 15,
       type: "text",
       section: "Settings",
@@ -188,10 +184,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       path: "/notifications",
       notifications: 4,
     },
-    {
-      id: 25,
-      type: "divider",
-    },
+ 
     {
       id: 26,
       section: "Settings",
