@@ -7,6 +7,7 @@ import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
 import FolderMainCard from "@/components/UI/folder-main-card";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { FieldConfig, Folder, UserState } from "@/types";
+import { getFullLastEdit } from "@/util";
 import { handleDuplicates } from "@/util/company/companyform";
 import { Add, Search } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
@@ -95,7 +96,11 @@ const FolderResults: React.FC<FolderResultsProps> = ({
   const onCloseDelete = () => setDeleteFolder(null);
   const handleDelete = async () => {
     onCloseDelete();
-    await update(API_DELETE_FOLDER_BY_ID + deleteFolder?.id, { method: "DELETE" },TAGS.folders);
+    await update(
+      API_DELETE_FOLDER_BY_ID + deleteFolder?.id,
+      { method: "DELETE" },
+      TAGS.folders,
+    );
   };
 
   return (
@@ -208,7 +213,10 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                         className="line-clamp-1 max-w-full hover:underline"
                         href={`/folder/${folder.id}`}
                       >
-                        {folder.name}
+                        <span>{folder.name}</span>
+                        <span className="text-xs text-secondary ml-2">
+                          ({getFullLastEdit(folder.created_at)})
+                        </span>
                       </Link>
                     </div>
                   ),
@@ -217,7 +225,8 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                   key: "seekersCount",
                   header: "Candidates",
                   sortable: true,
-                  render: (folder) => folder.seekersCount? folder.seekersCount : 0,
+                  render: (folder) =>
+                    folder.seekersCount ? folder.seekersCount : 0,
                 },
                 {
                   key: "updated_at",

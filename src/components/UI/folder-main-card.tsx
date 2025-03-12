@@ -34,7 +34,10 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({
       >
         {onEdit && (
           <MenuItem
-            onClick={() => onEdit(folder)}
+            onClick={() => {
+              onEdit(folder);
+              onClose();
+            }}
             className="group flex min-w-36 items-center gap-2 px-2 text-sm text-secondary hover:bg-primary-100"
           >
             <Edit className="h-4 w-4 group-hover:text-primary" />
@@ -43,7 +46,10 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({
         )}
         {onDelete && (
           <MenuItem
-            onClick={() => onDelete(folder)}
+            onClick={() => {
+              onDelete(folder);
+              onClose();
+            }}
             className="group flex min-w-24 items-center gap-2 px-2 text-sm text-secondary hover:bg-red-100"
           >
             <Delete className="h-4 w-4 group-hover:text-red-500" />
@@ -75,9 +81,9 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({
             <MoreHoriz className="h-6 w-6" />
           </IconButton>
         )}
-        <div className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-primary">
-          <span className="text-xs"> {folder.seekersCount || 0}</span>
-        </div>
+        <p className="absolute bottom-2 right-2 text-sm">
+          {folder.seekersCount || 0}
+        </p>
       </div>
 
       <Link

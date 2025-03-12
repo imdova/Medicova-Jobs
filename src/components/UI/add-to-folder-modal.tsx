@@ -20,8 +20,7 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({
   const fields: FieldConfig<Folder>[] = [
     {
       name: "id",
-      // TODO rename textEditor to be customComponent
-      type: "textEditor",
+      type: "component",
       componentProps: {
         label: "All Folder",
         folders: folders,

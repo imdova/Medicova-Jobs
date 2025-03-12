@@ -82,7 +82,11 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
   // TODO Allow Bulk save to folder and invite to job
   return (
     <div className="min-h-dvh">
-      <InviteModal open={!!inviteSeeker} onClose={onCloseInvite} />
+      <InviteModal
+        companyId={companyId}
+        seekerId={inviteSeeker}
+        onClose={onCloseInvite}
+      />
       <FolderModal
         companyId={companyId}
         seekerId={saveToNewFolder}

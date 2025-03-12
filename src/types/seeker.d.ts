@@ -81,7 +81,7 @@ type TapType = "all" | "locked" | "unlocked" | "shortListed";
 type Applicants = {
   id: string; // id of the application
   seekerId: string; // id for the job seeker who applied.
-  status: string; // status of the application
+  status: ApplicationStatus; // status of the application
   answers: Record<string, string> | null; // stores the applicant's responses to job-specific questions, if any.
   jobId: string; // id of the job
   avatar: string;

@@ -233,7 +233,17 @@ export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 export interface JobData {
   id?: string;
   companyId: string | null;
-  company?: Pick<Company, "id" | "name" | "username" | "about" | "banner1" | "banner2" | "banner3" | "avatar">;
+  company?: Pick<
+    Company,
+    | "id"
+    | "name"
+    | "username"
+    | "about"
+    | "banner1"
+    | "banner2"
+    | "banner3"
+    | "avatar"
+  >;
   title: string;
   jobIndustryId: string | null;
   jobSpecialityId: string | null;
@@ -272,15 +282,15 @@ export interface JobData {
   applicationCount?: number | null; // Not in NewJobData
 
   startDateType: StartDateType | null | "";
-  
+
   jobIndustry?: string | null;
   jobSpeciality?: string | null;
   jobCategory?: string | null;
   jobCareerLevel?: string | null;
   jobEmploymentType?: string | null;
 
-  created_at: string ; // ISO date string 
-  updated_at: string ; // ISO date string 
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
 }
 
 export type JobStringData = Omit<
@@ -401,7 +411,8 @@ export type FieldType =
   | "textEditor"
   | "select"
   | "search-select"
-  | "checkbox";
+  | "checkbox"
+  | "component";
 
 export interface Option {
   value: string | number;
@@ -426,7 +437,7 @@ export interface FieldConfig<T = any> {
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
   // options?: { label: string; value: string | number }[];
-  options?: Option[] // Updated to support dynamic options
+  options?: Option[]; // Updated to support dynamic options
   hideFieldNames?: Path<T>[];
   onChange?: (value: any) => void; // Updated to include formMethods
 }
