@@ -166,7 +166,7 @@ const Page = async () => {
 
         <SearchInput
           formClassName="mt-5 hidden flex-col gap-2 p-2 lg:flex"
-          pathname="/employer/search/cv"
+          pathname="/employer/search"
           variant="standard"
           placeholder="search by title eg: doctor"
           fullWidth

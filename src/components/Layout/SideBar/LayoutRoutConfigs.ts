@@ -29,7 +29,7 @@ export const routeConfigs: RouteConfig[] = [
     linksType: "userType",
   },
   {
-    pattern: "/employer/search/cv",
+    pattern: "/employer/search",
     sideBarType: "none",
     linksType: "userType",
   },

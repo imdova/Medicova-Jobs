@@ -1,6 +1,6 @@
 "use client";
-import { Avatar, Button, IconButton, Menu, MenuItem } from "@mui/material";
-import React, { useState } from "react";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useRef, useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import CheckIcon from "@mui/icons-material/Check";
@@ -13,40 +13,51 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EmailIcon from "@mui/icons-material/Email";
-import { Doctor } from "@/types";
 import Image from "next/image";
-import {
-  Add,
-  BookmarkAddOutlined,
-  BookmarkBorderOutlined,
-  BookmarkOutlined,
-  KeyOutlined,
-} from "@mui/icons-material";
-import { formatFullName } from "@/util";
-import AddToFolderModal from "./add-to-folder-modal";
+import { Add, BookmarkBorderOutlined, KeyOutlined } from "@mui/icons-material";
+import { formatName } from "@/util";
 import Link from "next/link";
-import FolderModal from "./folder-modal";
+import { formatLocation } from "@/util/general";
+import Avatar from "./Avatar";
 
-interface CandidateCardProps {
-  doctor: Doctor;
+interface SeekerCardProps {
+  seeker: CandidateType;
   selected: string[];
-  available: string[];
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
-  setInviteUser: React.Dispatch<React.SetStateAction<string>>;
-  setAvailable: React.Dispatch<React.SetStateAction<string[]>>;
+  onSave: (id: string) => void;
+  onCreate: (id: string) => void;
+  onInvite: (id: string) => void;
 }
 
-const CandideCard: React.FC<CandidateCardProps> = ({
-  doctor,
-  available,
+const SeekerCard: React.FC<SeekerCardProps> = ({
+  seeker,
   selected,
   setSelected,
-  setInviteUser,
-  setAvailable,
+  onSave,
+  onCreate,
+  onInvite,
 }) => {
-  const isSelected = selected.includes(doctor.id);
-  const isAvailable = available.includes(doctor.id);
-  const toggleSelect = () => setSelected((pv) => toggleId(pv, doctor.id));
+  const isAvailable = seeker.isUnlocked;
+  const name = formatName(seeker, isAvailable);
+  const location = formatLocation(seeker);
+  const isSelected = selected.includes(seeker.id);
+  const [isCopied, setIsCopied] = useState<"phone" | "email" | null>(null);
+
+  const toggleSelect = () => setSelected((pv) => toggleId(pv, seeker.id));
+  const unlock = () => console.log("Unlock");
+
+  // copy
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const copyText = (type: "phone" | "email", text: string) => {
+    setIsCopied(type);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => setIsCopied(null), 2000);
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+  };
 
   // save to folder
   const [saveAnchorEl, setSaveAnchorEl] = useState(null);
@@ -57,9 +68,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   const handleSaveClose = () => {
     setSaveAnchorEl(null);
   };
-  const unlock = () => {
-    setAvailable((pv) => [...pv, doctor.id]);
-  };
+
   return (
     <div className="flex flex-col md:flex-row">
       <button
@@ -75,18 +84,14 @@ const CandideCard: React.FC<CandidateCardProps> = ({
         <div className="w-full">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Avatar
-                src={doctor.image}
-                alt={isAvailable ? doctor.name : formatFullName(doctor.name)}
-                sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
-              />
+              <Avatar src={seeker.avatar} alt={name} size={70} />
               <div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/me/${doctor.name}`}
+                    href={`/me/${seeker.userName}`}
                     className="font-semibold text-main hover:underline md:text-[20px]"
                   >
-                    {isAvailable ? doctor.name : formatFullName(doctor.name)}
+                    {name}
                   </Link>
                   {isAvailable ? (
                     <LockOpenIcon className="h-5 w-5 text-primary" />
@@ -94,17 +99,21 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                     <LockIcon className="h-5 w-5 text-red-500" />
                   )}
                 </div>
-                <p className="text-secondary">
-                  Cardiology Consultant at{" "}
-                  <strong className="text-main">Saudi German Hospital</strong>
-                </p>
-                <div className="flex items-center gap-2 rounded-base text-secondary">
-                  <SchoolIcon className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">
-                    Master&apos;s Degree in Cardiology{" "}
-                    <span className="mx-1 text-sm">(2022 - 2026)</span>
-                  </p>
-                </div>
+                {seeker.title && (
+                  <p className="text-secondary">{seeker.title}</p>
+                )}
+                {seeker.lastEducation && (
+                  <div className="flex items-center gap-2 rounded-base text-secondary">
+                    <SchoolIcon className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">
+                      {`${seeker.lastEducation.degree} in ${seeker.specialty}`}
+                      <span className="mx-1 text-sm">
+                        ({seeker.lastEducation.startYear} -{" "}
+                        {seeker.lastEducation.endYear})
+                      </span>
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
             <IconButton
@@ -116,11 +125,45 @@ const CandideCard: React.FC<CandidateCardProps> = ({
             >
               <BookmarkBorderOutlined className="h-8 w-8 text-secondary" />
             </IconButton>
-            <SaveMenu
-              saveAnchorEl={saveAnchorEl}
-              saveOpen={saveOpen}
-              handleSaveClose={handleSaveClose}
-            />
+            <Menu
+              id="save-menu"
+              anchorEl={saveAnchorEl}
+              open={saveOpen}
+              onClose={handleSaveClose}
+              className="mt-2"
+            >
+              <MenuItem
+                onClick={() => {
+                  handleSaveClose();
+                  onCreate(seeker.id);
+                }}
+                className="flex items-center gap-4 hover:bg-gray-200"
+              >
+                <Image
+                  src={"/images/folder.svg"}
+                  alt="save"
+                  width={24}
+                  height={24}
+                />
+                Add New Folder
+                <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onSave(seeker.id);
+                  handleSaveClose();
+                }}
+                className="flex items-center gap-4 hover:bg-gray-200"
+              >
+                <Image
+                  src={"/images/folder.svg"}
+                  alt="save"
+                  width={24}
+                  height={24}
+                />
+                Save in existing folder
+              </MenuItem>
+            </Menu>
           </div>
           <div className="flex flex-col items-end md:flex-row">
             <div className="flex-1">
@@ -130,14 +173,12 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 </h6>
                 {/* <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <LocalPhoneIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{doctor.location}</p>
+                  <p className="text-xs md:text-base">{seeker.location}</p>
                 </div> */}
                 <div className="flex min-w-[80px] items-center rounded-base bg-primary-100 px-2 py-1 text-main">
                   <LocalPhoneIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
                   {isAvailable ? (
-                    <span className="text-xs md:text-base">
-                      {doctor.contactInfo.phoneNumber}
-                    </span>
+                    <span className="text-xs md:text-base">{seeker.phone}</span>
                   ) : (
                     <div className="col-span-1 row-span-1 grid h-fit">
                       <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
@@ -147,7 +188,8 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={!doctor.available}
+                    disabled={!isAvailable}
+                    onClick={() => copyText("phone", seeker.phone)}
                     className="p-0 md:ml-2"
                   >
                     <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
@@ -157,7 +199,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                   <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
                   {isAvailable ? (
                     <span className="h-fit text-sm text-main md:text-base">
-                      {doctor.contactInfo.email}
+                      {seeker.email}
                     </span>
                   ) : (
                     <div className="col-span-1 row-span-1 grid h-fit">
@@ -168,7 +210,8 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={!doctor.available}
+                    disabled={!isAvailable}
+                    onClick={() => copyText("email", seeker.email)}
                     className="p-0 md:ml-2"
                   >
                     <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
@@ -176,27 +219,29 @@ const CandideCard: React.FC<CandidateCardProps> = ({
                 </div>
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
-                <div className="flex items-center gap-2 rounded-base text-secondary">
-                  <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{doctor.location}</p>
-                </div>
+                {location && (
+                  <div className="flex items-center gap-2 rounded-base text-secondary">
+                    <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">{location}</p>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <PeopleAltIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Doctors</p>
+                  <p className="text-xs md:text-base">{seeker.category}</p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {doctor.yearsOfExperience} years Experience
+                    {seeker.yearsOfExperience} years Experience
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Consultant</p>
+                  <p className="text-xs md:text-base">{seeker.careerLevel}</p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">Cardiology</p>
+                  <p className="text-xs md:text-base">{seeker.specialty}</p>
                 </div>
               </div>
             </div>
@@ -215,7 +260,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
               )}
               <Button
                 className="flex-1 text-nowrap"
-                onClick={() => setInviteUser("id")}
+                onClick={() => onInvite(seeker.id)}
                 variant="contained"
               >
                 Invite To Apply
@@ -228,67 +273,7 @@ const CandideCard: React.FC<CandidateCardProps> = ({
   );
 };
 
-export default CandideCard;
-
-interface SaveMenuProps {
-  saveAnchorEl: null | HTMLElement;
-  saveOpen: boolean;
-  handleSaveClose: () => void;
-}
-
-const SaveMenu: React.FC<SaveMenuProps> = ({
-  saveAnchorEl,
-  saveOpen,
-  handleSaveClose,
-}) => {
-  const [openModal, setOpenModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-    handleSaveClose();
-  };
-  const handleCloseModal = () => setOpenModal(false);
-
-  const [userToFolder, setUserToFolder] = useState<string | null>("");
-
-  const handleCloseAddToFolderModal = () => setUserToFolder(null);
-  const handelAddToFolderModal = () => {
-    setUserToFolder("folder");
-    handleSaveClose();
-  };
-  return (
-    <>
-      <FolderModal open={openModal} onClose={handleCloseModal} />
-      <AddToFolderModal
-        open={!!userToFolder}
-        onClose={handleCloseAddToFolderModal}
-      />
-      <Menu
-        id="save-menu"
-        anchorEl={saveAnchorEl}
-        open={saveOpen}
-        onClose={handleSaveClose}
-        className="mt-2"
-      >
-        <MenuItem
-          onClick={handleOpenModal}
-          className="flex items-center gap-4 hover:bg-gray-200"
-        >
-          <Image src={"/images/folder.svg"} alt="save" width={24} height={24} />
-          Add New Folder
-          <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
-        </MenuItem>
-        <MenuItem
-          onClick={handelAddToFolderModal}
-          className="flex items-center gap-4 hover:bg-gray-200"
-        >
-          <Image src={"/images/folder.svg"} alt="save" width={24} height={24} />
-          Save in existing folder
-        </MenuItem>
-      </Menu>
-    </>
-  );
-};
+export default SeekerCard;
 
 function toggleId(ids: string[], id: string): string[] {
   // Check if the ID already exists in the array

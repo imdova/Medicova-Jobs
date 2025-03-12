@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Button, IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import StarIcon from "@mui/icons-material/Star";
@@ -24,6 +24,9 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { formatName } from "@/util";
 import { KeyOutlined } from "@mui/icons-material";
 import { formatLocation, toggleId } from "@/util/general";
+import Avatar from "./Avatar";
+import { useRef, useState } from "react";
+import Link from "next/link";
 
 interface CandidateCardProps {
   candidate: CandidateType;
@@ -37,15 +40,31 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
   setSelected,
 }) => {
   // states
-  const isAvailable = !candidate.isLocked;
+  const isAvailable = candidate.isUnlocked;
+  /// TODO: isShortlisted 
+  const isShortlisted = candidate.isShortlisted;
   const name = formatName(candidate, isAvailable);
   const location = formatLocation(candidate);
   const isSelected = selected.includes(candidate.id);
+  const [isCopied, setIsCopied] = useState<"phone" | "email" | null>(null);
 
   // functions
   const toggleSelect = () => setSelected((pv) => toggleId(pv, candidate.id));
   const toggleShortListed = () => console.log("shortlisted");
   const unlock = () => console.log("shortlisted");
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const copyText = (type: "phone" | "email", text: string) => {
+    setIsCopied(type);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => setIsCopied(null), 2000);
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -61,14 +80,22 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
         <div className="w-full">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Avatar
-                src={candidate.avatar}
-                alt={name}
-                sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
-              />
+              <Link href={`/me/${candidate.userName}`}>
+                <Avatar
+                  src={candidate.avatar}
+                  alt={name}
+                  size={70}
+                  // sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
+                />
+              </Link>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h6 className="font-semibold text-main md:text-xl">{name}</h6>
+                  <Link
+                    href={`/me/${candidate.userName}`}
+                    className="font-semibold text-main hover:underline md:text-xl"
+                  >
+                    {name}
+                  </Link>
                   {isAvailable ? (
                     <LockOpenIcon className="h-5 w-5 text-primary" />
                   ) : (
@@ -76,10 +103,9 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                   )}
                   <p className="text-xs text-secondary md:text-sm">3d ago</p>
                 </div>
-                <p className="text-secondary">
-                  Cardiology Consultant at{" "}
-                  <strong className="text-main">Saudi German Hospital</strong>
-                </p>
+                {candidate.title && (
+                  <p className="text-secondary">{candidate.title}</p>
+                )}
               </div>
             </div>
           </div>
@@ -104,10 +130,15 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={candidate.isLocked}
+                    disabled={!isAvailable}
+                    onClick={() => copyText("phone", candidate.phone)}
                     className="p-0 md:ml-2"
                   >
-                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    {isCopied === "phone" ? (
+                      <CheckIcon className="h-4 w-4 text-primary md:h-5 md:w-5" />
+                    ) : (
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    )}
                   </IconButton>
                 </div>
                 <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
@@ -125,18 +156,25 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     </div>
                   )}
                   <IconButton
-                    disabled={!candidate.isLocked}
+                    disabled={!isAvailable}
+                    onClick={() => copyText("email", candidate.email)}
                     className="p-0 md:ml-2"
                   >
-                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    {isCopied === "email" ? (
+                      <CheckIcon className="h-4 w-4 text-primary md:h-5 md:w-5" />
+                    ) : (
+                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    )}
                   </IconButton>
                 </div>
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{location}</p>
-                </div>
+                {location && (
+                  <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                    <LocationOnIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">{location}</p>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <PeopleAltIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
@@ -157,16 +195,22 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     </p>
                   </div>
                 )}
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">
-                    {candidate.careerLevel}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
-                  <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{candidate.specialty}</p>
-                </div>
+                {candidate.careerLevel && (
+                  <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                    <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">
+                      {candidate.careerLevel}
+                    </p>
+                  </div>
+                )}
+                {candidate.specialty && (
+                  <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                    <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-xs md:text-base">
+                      {candidate.specialty}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
             <div className="mt-2 flex w-full flex-row gap-2 md:w-auto md:flex-col">

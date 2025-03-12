@@ -81,7 +81,7 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
         initialValues={{ username: company.username }}
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <h6 className="mb-2 text-2xl font-semibold text-main">
           Company Public Profile
         </h6>

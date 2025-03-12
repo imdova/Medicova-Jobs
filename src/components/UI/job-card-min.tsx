@@ -129,7 +129,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
           )}
           {job.country && (
             <Link
-              href={`/search?country=${job.country}&cCd=SA`}
+              href={`/search?country=${job.country.name}&cCd=${job.country.code}`}
               className="mr-2 text-sm text-primary underline hover:no-underline"
             >
               #{job.country.name}

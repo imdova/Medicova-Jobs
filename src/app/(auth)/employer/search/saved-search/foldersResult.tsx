@@ -1,11 +1,10 @@
 "use client";
 import { TAGS } from "@/api";
-import { API_CREATE_FOLDER } from "@/api/seeker";
+import { API_CREATE_FOLDER, API_DELETE_FOLDER_BY_ID } from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import DataTable from "@/components/UI/data-table";
 import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
 import FolderMainCard from "@/components/UI/folder-main-card";
-import SearchInput from "@/components/UI/search-Input";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { FieldConfig, Folder, UserState } from "@/types";
 import { handleDuplicates } from "@/util/company/companyform";
@@ -96,10 +95,8 @@ const FolderResults: React.FC<FolderResultsProps> = ({
   const onCloseDelete = () => setDeleteFolder(null);
   const handleDelete = async () => {
     onCloseDelete();
-    console.log("🚀 ~ handleDelete ~ handleDelete:");
-    // await update(API_CREATE_FOLDER, { method: "DELETE" },TAGS.folders);
+    await update(API_DELETE_FOLDER_BY_ID + deleteFolder?.id, { method: "DELETE" },TAGS.folders);
   };
-  console.log(folders.length, folders.length > RECENT_FOLDERS);
 
   return (
     <div className="md:mr-4">
@@ -217,10 +214,10 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                   ),
                 },
                 {
-                  key: "totalUsers",
+                  key: "seekersCount",
                   header: "Candidates",
                   sortable: true,
-                  render: (folder) => folder.totalUsers? folder.totalUsers : 0,
+                  render: (folder) => folder.seekersCount? folder.seekersCount : 0,
                 },
                 {
                   key: "updated_at",
@@ -237,14 +234,6 @@ const FolderResults: React.FC<FolderResultsProps> = ({
           </div>
         </div>
       ) : null}
-      {/* <Suspense>
-    <FolderModal
-      open={openModal || !!fname}
-      type={fname ? "edit" : "create"}
-      folderName={fname}
-      onClose={handleCloseModal}
-    />
-  </Suspense> */}
     </div>
   );
 };

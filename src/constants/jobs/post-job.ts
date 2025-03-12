@@ -50,4 +50,6 @@ export const INITIAL_JOB_DATA: JobData = {
   jobIndustry: null,
   jobSpeciality: null,
   jobEmploymentType: null,
+  created_at: "",
+  updated_at: "",
 };

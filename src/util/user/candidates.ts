@@ -6,9 +6,9 @@ export function filterCandidates(
     case "all":
       return candidates;
     case "locked":
-      return candidates.filter((candidate) => candidate.isLocked);
+      return candidates.filter((candidate) => !candidate.isUnlocked);
     case "unlocked":
-      return candidates.filter((candidate) => !candidate.isLocked);
+      return candidates.filter((candidate) => candidate.isUnlocked);
     case "shortListed":
       return candidates.filter((candidate) => candidate.isShortlisted);
     default:

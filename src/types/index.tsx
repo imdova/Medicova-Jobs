@@ -309,7 +309,7 @@ export interface Folder {
   id: string;
   name: string;
   companyId: string;
-  totalUsers?: number;
+  seekersCount: number;
   _version: number;
   created_at: string;
   updated_at: string;

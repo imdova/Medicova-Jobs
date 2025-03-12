@@ -58,7 +58,6 @@ export default function useFetch<T>(
 
     try {
       const response = await fetch(url, mergedOptions);
-      console.log("response");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

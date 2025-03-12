@@ -76,7 +76,7 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({
           </IconButton>
         )}
         <div className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-primary">
-          <span className="text-xs"> {folder.totalUsers || 0}</span>
+          <span className="text-xs"> {folder.seekersCount || 0}</span>
         </div>
       </div>
 

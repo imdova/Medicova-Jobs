@@ -189,21 +189,30 @@ const JobCard: React.FC<JobCardProps> = ({
               </div>
             )}
           </div>
-          <div className="ml-5 flex gap-3">
+          <div className="mt-3 flex flex-wrap">
             {job.jobIndustry && (
-              <button className="text-sm text-primary underline hover:no-underline">
+              <Link
+                href={`/search?q=${job.jobIndustry}`}
+                className="mr-2 text-sm text-primary underline hover:no-underline"
+              >
                 #{job.jobIndustry}
-              </button>
+              </Link>
             )}
             {job.jobCategory && (
-              <button className="text-sm text-primary underline hover:no-underline">
+              <Link
+                href={`/search?q=${job.jobCategory}`}
+                className="mr-2 text-sm text-primary underline hover:no-underline"
+              >
                 #{job.jobCategory}
-              </button>
+              </Link>
             )}
-            {job.country?.name && (
-              <button className="text-sm text-primary underline hover:no-underline">
-                #{job.country?.name}
-              </button>
+            {job.country && (
+              <Link
+                href={`/search?country=${job.country.name}&cCd=${job.country.code}`}
+                className="mr-2 text-sm text-primary underline hover:no-underline"
+              >
+                #{job.country.name}
+              </Link>
             )}
           </div>
         </div>

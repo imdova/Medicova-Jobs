@@ -27,7 +27,7 @@ const SearchPage = () => {
                 <SearchForm
                   fields={["Search"]}
                   button={"Search CVs"}
-                  pathname="/employer/search/cv"
+                  pathname="/employer/search"
                 />
               </Suspense>
               <p className="my-4 text-white">
@@ -48,7 +48,7 @@ const SearchPage = () => {
                     : frequentSearchTopics
                   ).map((topic, index) => (
                     <li key={index}>
-                      <Link href={`/employer/search/cv?q=${topic}`}>
+                      <Link href={`/employer/search?q=${topic}`}>
                         <button className="rounded-full border border-white p-2 px-4 text-white duration-300 hover:!opacity-100 group-hover:opacity-20">
                           {topic}
                         </button>

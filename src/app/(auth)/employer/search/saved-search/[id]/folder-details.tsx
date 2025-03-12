@@ -217,17 +217,17 @@ const FolderDetails: React.FC<{ candidates: CandidateType[] }> = ({
       {candidates.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 p-5">
           <h3 className="text-center text-xl font-semibold text-secondary">
-            No candidates found
+            No candidates in this folder
           </h3>
           <p className="text-center text-sm text-secondary">
-            You can invite candidates to apply by clicking the button below
+            You can add candidates to this folder by adding them to the folder
           </p>
           <Button
             LinkComponent={Link}
             href="/employer/search/"
             variant="contained"
           >
-            Invite Candidates
+            Search for Candidates
           </Button>
         </div>
       )}

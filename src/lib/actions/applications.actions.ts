@@ -97,7 +97,7 @@ export const getSeekers = async ({
   page = 1,
   limit = 10,
 }: ApplicationsFilter = {}): Promise<
-  Result<{ data: Doctor[]; total: number }>
+  Result<{ data: CandidateType[]; total: number }>
 > => {
   try {
     const queryParams = new URLSearchParams();

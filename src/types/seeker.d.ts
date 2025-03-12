@@ -130,7 +130,8 @@ type CandidateType = {
   specialty: string;
   careerLevel: string;
   isShortlisted: boolean;
-  isLocked: boolean;
+  isUnlocked: boolean;
+  // isLocked: boolean;
   isAvailable: boolean;
   lastExperience: ExperienceData | null;
   lastEducation: EducationData | null;
