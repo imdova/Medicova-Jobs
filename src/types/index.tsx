@@ -382,7 +382,10 @@ export type NavItem = {
   type?: "divider" | "text" | "collapse" | "supLink" | "profile";
   links?: NavItem[];
 };
-
+export interface ActiveLinkResult {
+  activeIndex: number;
+  parentId: number | null;
+}
 export type Role = {
   permissions: { name: Permission }[];
 };
