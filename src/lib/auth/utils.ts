@@ -64,7 +64,7 @@ export const filteredJobs = (jobs: JobData[], activeTab: JobsTabs) => {
     case "active": // Active
       return jobs.filter((job) => job.active && !job.draft);
     case "closed": // Closed
-      return jobs.filter((job) => !job.active);
+      return jobs.filter((job) => !job.active && !job.draft);
     case "expired": // Expired (based on validity date)
       return jobs.filter(
         (job) => job.validTo && new Date(job.validTo) < new Date(),

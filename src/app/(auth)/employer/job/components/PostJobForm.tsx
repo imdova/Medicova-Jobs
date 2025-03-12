@@ -67,7 +67,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
     error: draftingError,
     update: draft,
     reset: resetDraftError,
-  } = useUpdateApi<JobData>(handleDraftSuccess);
+  } = useUpdateApi<JobData>();
 
   const createJob = async () => {
     const body = { ...jobData, companyId, draft: false, active: true };
@@ -77,18 +77,28 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
     const body = { ...jobData, draft: false, active: true };
     await update(API_CREATE_JOB, { body }, TAGS.jobs);
   };
-  const draftJob = async (body: Partial<JobData>) => {
+  const draftJob = async (body: Partial<JobData>, preventDefault: boolean) => {
+    body.country =
+      body.country?.name && body.country?.code ? body.country : null;
+    body.city = body.city ? body.city : null;
     if (body.id) {
-      await draft(API_CREATE_JOB, { body }, TAGS.jobs);
+      const data = await draft(API_CREATE_JOB, { body }, TAGS.jobs);
+      handleDraftSuccess(data, preventDefault);
     } else {
-      await draft(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);
+      const data = await draft(
+        API_CREATE_JOB,
+        { method: "POST", body },
+        TAGS.jobs,
+      );
+      handleDraftSuccess(data, preventDefault);
     }
   };
 
   async function handleSuccess(newJob: JobData) {
-    router.push(`/job/${newJob.id}`)
+    router.push(`/job/${newJob.id}`);
   }
-  async function handleDraftSuccess(newJob: JobData) {
+  async function handleDraftSuccess(newJob: JobData, preventDefault: boolean) {
+    if (preventDefault) return;
     setJobData(newJob);
     !jobData.id &&
       router.replace("/employer/job/posted/" + newJob.id, { scroll: false });
@@ -117,7 +127,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
         createJob();
       }
     },
-    draft: async (data?: Partial<JobData>) => {
+    draft: async (data?: Partial<JobData>, preventDefault: boolean = false) => {
       setIsDirty(false);
       const jobToSave = {
         ...jobData,
@@ -126,7 +136,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
         draft: true,
         active: false,
       };
-      draftJob(jobToSave);
+      draftJob(jobToSave, preventDefault);
     },
   };
 
@@ -139,7 +149,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
             text: "Save Draft",
             onClick: () => {
               handleUserDecision(true);
-              handleStepSubmit.draft();
+              handleStepSubmit.draft({}, true);
             },
             color: "warning",
             variant: "contained",

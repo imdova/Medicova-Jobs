@@ -64,6 +64,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "Post New Job",
           icon: PostAddOutlined,
           path: "/employer/job/posted",
+          pattern: "/employer/job/posted/*",
           type: "supLink",
         },
       ],
@@ -184,7 +185,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       path: "/notifications",
       notifications: 4,
     },
- 
+
     {
       id: 26,
       section: "Settings",

@@ -31,7 +31,7 @@ import JobLocationSelection from "@/components/pages/post-job/locationSelection"
 interface JobDetailProps {
   jobData: JobData;
   onSubmit: (data: JobData, isClean?: boolean) => void;
-  onDraft: (data: Partial<JobData>) => void;
+  onDraft: (data: Partial<JobData>, preventDefault: boolean) => void;
   draftLoading: boolean;
   industries: Industry[];
   initialJobData: JobData;
@@ -54,6 +54,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     formState: { errors, isDirty },
     watch,
     setValue,
+    reset,
   } = useForm({
     values: jobData,
     defaultValues: initialJobData,
@@ -63,9 +64,11 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     preventDefault: isDirty,
   });
 
-  const onDraftSubmit = () => {
+  const onDraftSubmit = (preventDefault?: boolean) => {
     const data = watch();
-    onDraft({ ...data, draft: true });
+    const jobData = { ...data, draft: true };
+    reset(jobData);
+    onDraft(jobData, preventDefault || false);
   };
 
   const submitHandler = (data: JobData) => {
@@ -81,7 +84,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             text: "Save Draft",
             onClick: () => {
               handleUserDecision(true);
-              onDraftSubmit();
+              onDraftSubmit(true);
             },
             color: "warning",
             variant: "contained",
@@ -847,7 +850,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         <div className="space-between flex gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:justify-end">
           {/* <Button variant="outlined" >Back</Button> */}
           <Button
-            onClick={onDraftSubmit}
+            onClick={() => onDraftSubmit()}
             disabled={draftLoading || !(initialIsDirty || isDirty)}
             className="bg-[#FFAE35] text-[#464748] hover:enabled:bg-[#e19e39] disabled:opacity-50"
           >

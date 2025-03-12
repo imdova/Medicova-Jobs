@@ -104,18 +104,24 @@ export function getLastSegment(url?: string) {
   return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
 }
 
-export const isCurrentPage = (
-  pathname?: string,
-  linkPath?: string,
-): boolean => {
-  if (!pathname || !linkPath) return false;
+export const isCurrentPage = (pathname?: string, pattern?: string): boolean => {
+  if (!pathname || !pattern) return false;
+  // Handle dynamic segments (e.g., "/user/[id]")
+  const regexPattern = pattern
+    .replace(/\[.*?\]/g, "[^/]+") // Replace dynamic segments with wildcard regex
+    .replace(/\//g, "\\/"); // Escape slashes
 
-  const regexPattern = linkPath
-    .replace(/\[.*?\]/g, "[^/]+")
-    .replace(/\//g, "\\/");
+  const exactRegex = new RegExp(`^${regexPattern}$`);
+  if (exactRegex.test(pathname)) return true;
 
-  const regex = new RegExp(`^${regexPattern}$`);
-  return regex.test(pathname);
+  // Handle wildcard patterns (e.g., "/dashboard/*")
+  if (pattern.includes("*")) {
+    const wildcardPattern = pattern.replace(/\*/g, ".*");
+    const wildcardRegex = new RegExp(`^${wildcardPattern}`);
+    return wildcardRegex.test(pathname);
+  }
+
+  return false;
 };
 
 export const createUrl = (

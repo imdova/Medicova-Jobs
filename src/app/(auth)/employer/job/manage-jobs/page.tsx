@@ -35,7 +35,7 @@ const page = async ({
   const result = await getJobsByCompanyId(
     user?.companyId,
     page,
-    activeTab === "all" ? limit : 100,
+     100,
   );
   const { data: jobs, total } = result.data || { data: [], total: 0 };
   const filteredJobsQuery = searchJobsByQuery(jobs, query);

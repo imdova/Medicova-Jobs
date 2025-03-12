@@ -100,7 +100,7 @@ export function filterItemsByDate<T extends { created_at: string }>(
   endDate?: string | null,
 ): T[] {
   const firstDate =
-    items.sort(
+    [...items].sort(
       (a, b) =>
         new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
     )[0]?.created_at || 0;
@@ -123,7 +123,7 @@ export const findActiveLinkIndex = (
     const link = links[i];
 
     // Check if the current link is active
-    const path = link.path || link.pattern;
+    const path = link.pattern || link.path;
     if (path && isCurrentPage(pathname, path)) {
       const collapsedLinkIndex = links.findIndex(
         (link) => link.id === isCollapsed,

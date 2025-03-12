@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 import Avatar from "@/components/UI/Avatar";
-import { isCurrentPage } from "@/util";
 import { NavItem, UserState } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
 import useActiveTab from "@/hooks/useActiveTab";
