@@ -7,14 +7,16 @@ import { API_ADD_SEEKER_TO_FOLDER } from "@/api/seeker";
 
 interface NewUserModalProps {
   folders: Folder[];
-  seekerId: string | null;
+  seekers: string[] | null;
+  refetch: () => void;
   onClose: () => void;
 }
 
 const AddToFolderModal: React.FC<NewUserModalProps> = ({
-  seekerId,
+  seekers,
   onClose,
   folders,
+  refetch,
 }) => {
   const { isLoading, error, update } = useUpdateApi();
   const fields: FieldConfig<Folder>[] = [
@@ -30,15 +32,19 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({
   ];
 
   const onSubmit = async (data: Folder) => {
-    await update(API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekerId, {
-      method: "POST",
-    });
+    await update(
+      API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekers?.[0],
+      {
+        method: "POST",
+      },
+    );
+    refetch();
     onClose();
   };
 
   return (
     <FormModal
-      open={!!seekerId}
+      open={!!seekers}
       onClose={onClose}
       loading={isLoading}
       error={error?.message}

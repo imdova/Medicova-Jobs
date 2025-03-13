@@ -12,17 +12,20 @@ import useActiveTab from "@/hooks/useActiveTab";
 interface SideBarProps {
   user?: UserState;
   pathname: string;
+  isMinimal: boolean;
 }
 
 interface TabComponentProps {
   item: NavItem;
   isActive: boolean;
+  isMinimal: boolean;
 }
 
 interface ProfileTabProps {
   user: UserState;
   pathname: string;
   activeTab: number | null;
+  isMinimal: boolean;
 }
 
 interface CollapseTabProps {
@@ -31,27 +34,38 @@ interface CollapseTabProps {
   activeTab: number | null;
   isCollapsed: number | null;
   setIsCollapsed: React.Dispatch<React.SetStateAction<number | null>>;
+  isMinimal: boolean;
 }
 
-const SectionHeader = ({ text }: { text?: string }) => (
+const SectionHeader = ({
+  text,
+  isMinimal,
+}: {
+  text?: string;
+  isMinimal: boolean;
+}) => (
   <div className="h-[45px]">
     <Divider />
-    <p className="p-4 text-sm font-medium normal-case text-gray-600">{text}</p>
+    <p
+      className={`${isMinimal ? "px-1 text-xs" : "text-xs px-1 lg:text-sm"} lg:p-4 font-medium normal-case text-gray-600`}
+    >
+      {text}
+    </p>
   </div>
 );
 
-const LinkTab = ({ item, isActive }: TabComponentProps) => {
+const LinkTab = ({ item, isActive, isMinimal }: TabComponentProps) => {
   const IconComponent = item.icon;
 
   return (
     <Link
-      className={`mx-4 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 transition-all duration-300 ease-in-out ${
+      className={`mx-2 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 transition-all duration-300 ease-in-out ${
         isActive ? "bg-light-primary text-white opacity-100" : "text-secondary"
       } `}
       href={item.path || "#"}
     >
       <div className="flex w-full flex-row items-center justify-between gap-2">
-        <div className="flex flex-row items-center gap-2 text-left normal-case">
+        <div className="flex flex-row items-center gap-4 text-left normal-case">
           {IconComponent && <IconComponent />}
           <span>{item.label}</span>
         </div>
@@ -77,6 +91,7 @@ const CollapseTab = ({
   setIsCollapsed,
   activeTab,
   index,
+  isMinimal,
 }: CollapseTabProps) => {
   const isOpen = isCollapsed === item.id;
   const IconComponent = item.icon;
@@ -84,11 +99,11 @@ const CollapseTab = ({
   return (
     <div>
       <div
-        className="mx-4 flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-[10px] p-2 text-secondary transition-all duration-300 ease-in-out"
+        className={`mx-2 flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-[10px] p-2 text-secondary transition-all duration-300 ease-in-out`}
         onClick={() => setIsCollapsed(isOpen ? null : item.id)}
       >
         <div className="flex w-full flex-row items-center justify-between gap-2">
-          <div className="flex flex-row items-center gap-2 text-left normal-case">
+          <div className="flex flex-row items-center gap-4 text-left normal-case">
             {IconComponent && <IconComponent />}
             <span>{item.label}</span>
           </div>
@@ -98,12 +113,21 @@ const CollapseTab = ({
         </div>
       </div>
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <div className="ml-10">
+        <div
+          className={`${isMinimal ? "" : "lg:ml-10"} transition-all duration-300`}
+        >
           {item.links?.map((link, linkIndex) => {
             const isActive = isOpen
               ? activeTab === index + linkIndex + 1
               : false;
-            return <LinkTab key={link.id} item={link} isActive={isActive} />;
+            return (
+              <LinkTab
+                key={link.id}
+                item={link}
+                isActive={isActive}
+                isMinimal={isMinimal}
+              />
+            );
           })}
         </div>
       </Collapse>
@@ -111,7 +135,12 @@ const CollapseTab = ({
   );
 };
 
-const ProfileTab = ({ user, pathname, activeTab }: ProfileTabProps) => {
+const ProfileTab = ({
+  user,
+  pathname,
+  activeTab,
+  isMinimal,
+}: ProfileTabProps) => {
   const isEmployer = user.type === "employer";
   const userAvatar = isEmployer ? user.companyPhoto : user.photo;
   const displayName = isEmployer
@@ -128,7 +157,7 @@ const ProfileTab = ({ user, pathname, activeTab }: ProfileTabProps) => {
 
   return (
     <Link
-      className={`mx-4 flex h-[45px] flex-row justify-start rounded-[10px] p-[5px] opacity-100 transition-all duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"} `}
+      className={`${isMinimal ? "mx-0" : "lg:mx-2"} flex h-[45px] flex-row justify-start rounded-[10px] p-[5px] opacity-100 transition-all duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"} `}
       href={path}
     >
       <div className="flex items-center gap-1">
@@ -143,11 +172,12 @@ const ProfileTab = ({ user, pathname, activeTab }: ProfileTabProps) => {
     </Link>
   );
 };
-
+ // TODO : add hover effect 
 // ====== MAIN COMPONENT ======
 export default function VerticalTabs({
   user: initialUser,
   pathname,
+  isMinimal = false,
 }: SideBarProps) {
   const { data: session } = useSession();
   const sessionUser = session?.user as UserState;
@@ -191,11 +221,18 @@ export default function VerticalTabs({
                 user={user}
                 pathname={pathname}
                 activeTab={activeTab}
+                isMinimal={isMinimal}
               />
             ) : null;
 
           case "text":
-            return <SectionHeader key={item.id} text={item.section} />;
+            return (
+              <SectionHeader
+                key={item.id}
+                text={item.section}
+                isMinimal={isMinimal}
+              />
+            );
 
           case "collapse":
             return (
@@ -206,6 +243,7 @@ export default function VerticalTabs({
                 activeTab={activeTab}
                 isCollapsed={isCollapsed}
                 setIsCollapsed={setIsCollapsed}
+                isMinimal={isMinimal}
               />
             );
 
@@ -215,6 +253,7 @@ export default function VerticalTabs({
                 key={item.id}
                 item={item}
                 isActive={activeTab === index + additionalItems}
+                isMinimal={isMinimal}
               />
             );
         }

@@ -20,7 +20,7 @@ const page = async ({ params }: { params: { id: string } }) => {
     total: 0,
   };
   return (
-    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
+    <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
       <Filter sections={filterSections} searchKeys={["Residency (Location)"]} />
       {/* Right Column: Results Section */}
@@ -37,9 +37,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         </div>
         <FolderDetails candidates={candidates} />
         {/* Pagination */}
-        {candidates.length < total && (
-          <CustomPagination totalItems={total} />
-        )}
+        {candidates.length < total && <CustomPagination totalItems={total} />}
       </div>
     </div>
   );

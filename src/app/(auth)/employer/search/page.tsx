@@ -16,7 +16,7 @@ const page = async ({
   const result = await getSeekers();
   const { data: seekers, total } = result.data || { data: [], total: 0 };
   return (
-    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
+    <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
       <Filter
         sections={searchFilters}

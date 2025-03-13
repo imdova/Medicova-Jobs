@@ -7,13 +7,13 @@ import SelectJob from "../form/select.jobs";
 
 interface InviteModalProps {
   companyId?: string | null;
-  seekerId: string | null;
+  seekers: string[] | null;
   onClose: () => void;
 }
 
 const InviteModal: React.FC<InviteModalProps> = ({
   companyId,
-  seekerId,
+  seekers,
   onClose,
 }) => {
   const { data } = useFetch<PaginatedResponse<Folder>>(
@@ -40,7 +40,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   };
   return (
     <FormModal
-      open={!!seekerId}
+      open={!!seekers}
       onClose={onClose}
       onSubmit={onSubmit}
       fields={fields}

@@ -42,6 +42,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
   // states
   const isAvailable = candidate.isUnlocked;
   /// TODO: isShortlisted 
+  // TODO : Unlock users
   const isShortlisted = candidate.isShortlisted;
   const name = formatName(candidate, isAvailable);
   const location = formatLocation(candidate);

@@ -22,20 +22,19 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },
   // auth
   //employer
-  { pattern: "/employer/search", sideBarType: "none", linksType: "userType" },
   {
-    pattern: "/employer/job/applicants/[id]",
-    sideBarType: "none",
+    pattern: "/employer/search",
+    sideBarType: "minimal",
     linksType: "userType",
   },
   {
-    pattern: "/employer/search",
-    sideBarType: "none",
+    pattern: "/employer/job/manage-jobs/[id]", 
+    sideBarType: "minimal",
     linksType: "userType",
   },
   {
     pattern: "/employer/search/saved-search/[slug]",
-    sideBarType: "none",
+    sideBarType: "minimal",
     linksType: "userType",
   },
   { pattern: "/employer/*", sideBarType: "full", linksType: "userType" },

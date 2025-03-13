@@ -32,13 +32,15 @@ const fields: FieldConfig<Folder>[] = [
 
 interface NewUserModalProps {
   companyId?: string | null;
-  seekerId: string | null;
+  seekers: string[] | null;
   onClose: () => void;
+  refetch: () => void;
 }
 
 const FolderModal: React.FC<NewUserModalProps> = ({
+  refetch,
   companyId,
-  seekerId,
+  seekers,
   onClose,
 }) => {
   const { isLoading, error, update } = useUpdateApi<Folder>();
@@ -49,15 +51,19 @@ const FolderModal: React.FC<NewUserModalProps> = ({
       { method: "POST", body },
       TAGS.folders,
     );
-    await update(API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekerId, {
-      method: "POST",
-    });
+    await update(
+      API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekers?.[0],
+      {
+        method: "POST",
+      },
+    );
+    refetch();
     onClose();
   };
 
   return (
     <FormModal
-      open={!!seekerId}
+      open={!!seekers}
       error={error?.message}
       loading={isLoading}
       onClose={onClose}

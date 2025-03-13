@@ -57,6 +57,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "Manage Jobs",
           icon: WorkOutline,
           path: "/employer/job/manage-jobs",
+          pattern: "/employer/job/manage-jobs/*",
           type: "supLink",
         },
         {
@@ -87,6 +88,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "My Folders",
           icon: FolderOutlined,
           path: "/employer/search/saved-search",
+          pattern: "/employer/search/saved-search/*",
           type: "supLink",
         },
       ],

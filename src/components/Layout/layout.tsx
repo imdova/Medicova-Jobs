@@ -8,8 +8,8 @@ const DynamicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={
-        sideBarType === "full"
-          ? "container mx-auto my-4 flex min-h-[calc(100vh-150px)] gap-5 w-full flex-row md:my-8 lg:max-w-[1300px]"
+        sideBarType === "full" || sideBarType === "minimal"
+          ? "container mx-auto my-4 flex min-h-[calc(100vh-150px)] w-full flex-row md:my-8 lg:max-w-[1300px]"
           : ""
       }
     >

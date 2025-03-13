@@ -11,8 +11,7 @@ import React, { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
-import { Add, Mail, Search } from "@mui/icons-material";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { Add, BookmarkBorderOutlined, Mail, Search } from "@mui/icons-material";
 import Image from "next/image";
 import InviteModal from "@/components/UI/invite-to-apply-modal";
 import FolderModal from "@/components/UI/folder-modal";
@@ -40,7 +39,7 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
     }
   };
 
-  const { data } = useFetch<PaginatedResponse<Folder>>(
+  const { data, refetch } = useFetch<PaginatedResponse<Folder>>(
     companyId
       ? API_READ_COMPANY_FOLDERS + companyId + "&page=1&limit=100"
       : null,
@@ -67,16 +66,19 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
     setSaveAnchorEl(null);
   };
 
-  const [saveToFolder, setSaveToFolder] = useState<string | null>(null);
-  const onSave = (id: string) => setSaveToFolder(id);
+  const [saveToFolder, setSaveToFolder] = useState<string[] | null>(null);
+  const onSave = (id: string) => setSaveToFolder([id]);
+  const onBulkSave = () => setSaveToFolder(selected);
   const onCloseSave = () => setSaveToFolder(null);
 
-  const [saveToNewFolder, setSaveToNewFolder] = useState<string | null>(null);
-  const onCreate = (id: string) => setSaveToNewFolder(id);
+  const [saveToNewFolder, setSaveToNewFolder] = useState<string[] | null>(null);
+  const onCreate = (id: string) => setSaveToNewFolder([id]);
+  const onCreateBulk = () => setSaveToNewFolder(selected);
   const onCloseCreate = () => setSaveToNewFolder(null);
 
-  const [inviteSeeker, setInviteSeeker] = useState<string | null>(null);
-  const onInvite = (id: string) => setInviteSeeker(id);
+  const [inviteSeeker, setInviteSeeker] = useState<string[] | null>(null);
+  const onInvite = (id: string) => setInviteSeeker([id]);
+  const onBulkInvite = () => setInviteSeeker(selected);
   const onCloseInvite = () => setInviteSeeker(null);
 
   // TODO Allow Bulk save to folder and invite to job
@@ -84,18 +86,20 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
     <div className="min-h-dvh">
       <InviteModal
         companyId={companyId}
-        seekerId={inviteSeeker}
+        seekers={inviteSeeker}
         onClose={onCloseInvite}
       />
       <FolderModal
         companyId={companyId}
-        seekerId={saveToNewFolder}
+        seekers={saveToNewFolder}
         onClose={onCloseCreate}
+        refetch={refetch}
       />
       <AddToFolderModal
         folders={folders}
-        seekerId={saveToFolder}
+        seekers={saveToFolder}
         onClose={onCloseSave}
+        refetch={refetch}
       />
       {/* search  */}
       <div className="h-[80px] w-full pl-[39px]">
@@ -143,7 +147,7 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
                   size="medium"
                   className="p-0"
                 >
-                  <BookmarkIcon color="primary" className="h-8 w-8" />
+                  <BookmarkBorderOutlined color="primary" className="h-8 w-8" />
                 </IconButton>
                 <Menu
                   id="save-menu"
@@ -153,7 +157,10 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
                   className="mt-2"
                 >
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() => {
+                      onCreateBulk();
+                      handleClose();
+                    }}
                     className="flex items-center gap-4 hover:bg-gray-200"
                   >
                     <Image
@@ -166,7 +173,10 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
                     <Add className="h-5 w-5 rounded-full bg-green-500 text-white" />
                   </MenuItem>
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() => {
+                      onBulkSave();
+                      handleClose();
+                    }}
                     className="flex items-center gap-4 hover:bg-gray-200"
                   >
                     <Image
@@ -198,7 +208,10 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
                   className="mt-2"
                 >
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() => {
+                      handleClose();
+                      onBulkInvite();
+                    }}
                     className="flex items-center gap-2 hover:bg-gray-200"
                   >
                     <Mail color="primary" className="h-5 w-5" />

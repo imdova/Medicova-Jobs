@@ -28,7 +28,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   //   applicantsIds.includes(x.id as string),
   // );
   return (
-    <div className="container mx-auto my-8 flex min-h-screen w-full flex-row gap-5 p-2 lg:max-w-[1300px]">
+    <div className=" flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
       <Filter sections={filterSections} searchKeys={["Residency (Location)"]} />
       {/* {job && <JobApplicantsResult job={job} doctors={doctors || []} />} */}
