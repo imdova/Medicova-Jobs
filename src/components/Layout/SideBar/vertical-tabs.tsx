@@ -114,7 +114,7 @@ const CollapseTab = ({
       </div>
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
         <div
-          className={`${isMinimal ? "" : "lg:ml-10"} transition-all duration-300`}
+          className={`${isMinimal ? "group-hover:ml-10" : "max-lg:group-hover:ml-10 lg:ml-10"} transition-all duration-300`}
         >
           {item.links?.map((link, linkIndex) => {
             const isActive = isOpen
