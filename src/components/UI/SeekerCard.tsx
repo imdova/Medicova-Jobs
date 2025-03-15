@@ -1,6 +1,13 @@
 "use client";
-import { Button, IconButton, Menu, MenuItem } from "@mui/material";
-import React, { useRef, useState } from "react";
+import {
+  Alert,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Snackbar,
+} from "@mui/material";
+import React, { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import CheckIcon from "@mui/icons-material/Check";
@@ -11,18 +18,22 @@ import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EmailIcon from "@mui/icons-material/Email";
 import Image from "next/image";
 import { Add, BookmarkBorderOutlined, KeyOutlined } from "@mui/icons-material";
 import { formatName } from "@/util";
 import Link from "next/link";
-import { formatLocation } from "@/util/general";
+import { formatLocation, toggleId } from "@/util/general";
 import Avatar from "./Avatar";
+import CopyButton from "../form/CopyButton";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { UNLOCKED_SEEKERS } from "@/api/employer";
+import { TAGS } from "@/api";
 
 interface SeekerCardProps {
   seeker: CandidateType;
   selected: string[];
+  companyId: string;
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
   onSave: (id: string) => void;
   onCreate: (id: string) => void;
@@ -34,30 +45,23 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
   selected,
   setSelected,
   onSave,
+  companyId,
   onCreate,
   onInvite,
 }) => {
-  const isAvailable = seeker.isUnlocked;
+  const isAvailable = !seeker.isLocked;
   const name = formatName(seeker, isAvailable);
   const location = formatLocation(seeker);
   const isSelected = selected.includes(seeker.id);
-  const [isCopied, setIsCopied] = useState<"phone" | "email" | null>(null);
+  const { isLoading, error, reset, update } = useUpdateApi();
 
   const toggleSelect = () => setSelected((pv) => toggleId(pv, seeker.id));
-  const unlock = () => console.log("Unlock");
-
-  // copy
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const copyText = (type: "phone" | "email", text: string) => {
-    setIsCopied(type);
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = setTimeout(() => setIsCopied(null), 2000);
-    navigator.clipboard.writeText(text).catch((err) => {
-      console.error("Failed to copy text: ", err);
-    });
-  };
+  const unlock = () =>
+    update(
+      UNLOCKED_SEEKERS,
+      { method: "POST", body: { companyId, seekerId: seeker.id } },
+      TAGS.applicants,
+    );
 
   // save to folder
   const [saveAnchorEl, setSaveAnchorEl] = useState(null);
@@ -102,7 +106,8 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                 {seeker.title && (
                   <p className="text-secondary">{seeker.title}</p>
                 )}
-                {seeker.lastEducation && (
+                {/* // TODO: lastEducation */}
+                {/* {seeker.lastEducation && (
                   <div className="flex items-center gap-2 rounded-base text-secondary">
                     <SchoolIcon className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                     <p className="text-xs md:text-base">
@@ -113,7 +118,7 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                       </span>
                     </p>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
             <IconButton
@@ -187,13 +192,7 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                       </span>
                     </div>
                   )}
-                  <IconButton
-                    disabled={!isAvailable}
-                    onClick={() => copyText("phone", seeker.phone)}
-                    className="p-0 md:ml-2"
-                  >
-                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  </IconButton>
+                  <CopyButton text={seeker.phone} disabled={!isAvailable} />
                 </div>
                 <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
                   <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
@@ -209,13 +208,7 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                       </span>
                     </div>
                   )}
-                  <IconButton
-                    disabled={!isAvailable}
-                    onClick={() => copyText("email", seeker.email)}
-                    className="p-0 md:ml-2"
-                  >
-                    <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  </IconButton>
+                  <CopyButton text={seeker.email} disabled={!isAvailable} />
                 </div>
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
@@ -232,7 +225,7 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {seeker.yearsOfExperience} years Experience
+                    {/* TODO: {seeker.yearsOfExperience} years Experience */}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
@@ -241,7 +234,7 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">{seeker.specialty}</p>
+                  <p className="text-xs md:text-base">{seeker.speciality}</p>
                 </div>
               </div>
             </div>
@@ -252,10 +245,11 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                 <Button
                   startIcon={<KeyOutlined />}
                   variant="text"
+                  disabled={isLoading}
                   className="mb-2 flex-1 text-nowrap p-0"
                   onClick={unlock}
                 >
-                  Unlock Now
+                  {isLoading ? "Loading..." : "Unlock Now"}
                 </Button>
               )}
               <Button
@@ -269,19 +263,18 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
           </div>
         </div>
       </div>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={reset}>
+        <Alert
+          onClose={reset}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error?.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
 export default SeekerCard;
-
-function toggleId(ids: string[], id: string): string[] {
-  // Check if the ID already exists in the array
-  if (ids.includes(id)) {
-    // If it exists, remove it
-    return ids.filter((existingId) => existingId !== id);
-  } else {
-    // If it doesn't exist, add it
-    return [...ids, id];
-  }
-}

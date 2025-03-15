@@ -124,7 +124,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       gridProps: { xs: 6 },
     },
     {
-      name: "birthday",
+      name: "birth",
       type: "date",
       label: "Date of Birth*",
       gridProps: { xs: 6 },

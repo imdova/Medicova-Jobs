@@ -36,8 +36,8 @@ const HeaderSection: React.FC<{
     setImage(file);
   };
 
-  const age = user.birthday ? calculateAge(new Date(user.birthday)) : "";
-
+  const age = user.birth ? calculateAge(new Date(user.birth)) : "";
+  const isMarried = user?.maritalStatus === "Married";
   return (
     <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
       {isMe ? (
@@ -69,7 +69,7 @@ const HeaderSection: React.FC<{
             <p className="text-sm text-secondary">
               {age ? `${age} years old` : ""}{" "}
               {user.nationality ? `- ${user.nationality}` : ""}{" "}
-              {user.isMarried ? `- ${user.isMarried}` : ""}{" "}
+              {user.maritalStatus ? `- ${user.maritalStatus}` : ""}{" "}
               {user.speciality ? `- ${user.speciality}` : ""}{" "}
               {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "}
             </p>
@@ -83,7 +83,7 @@ const HeaderSection: React.FC<{
                 </p>
               </div>
             )}
-            {user.isAvailable && (
+            {user.isPublic && (
               <p className="font-medium text-primary">
                 <FlagOutlined className="mr-1 font-medium text-primary" />
                 Open For Opportunities

@@ -19,7 +19,7 @@ import AddToFolderModal from "@/components/UI/add-to-folder-modal";
 import SearchInput from "@/components/UI/search-Input";
 import SeekerCard from "@/components/UI/SeekerCard";
 import { useSession } from "next-auth/react";
-import { API_READ_COMPANY_FOLDERS } from "@/api/seeker";
+import { API_GET_FOLDERS } from "@/api/seeker";
 import useFetch from "@/hooks/useFetch";
 
 const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
@@ -27,7 +27,7 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
   total,
 }) => {
   const { data: session } = useSession();
-  const companyId = session?.user?.companyId;
+  const companyId = session?.user?.companyId as string;
 
   const [selected, setSelected] = useState<string[]>([]);
   const isAllSelect = selected.length === seekers.length;
@@ -40,9 +40,7 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
   };
 
   const { data, refetch } = useFetch<PaginatedResponse<Folder>>(
-    companyId
-      ? API_READ_COMPANY_FOLDERS + companyId + "&page=1&limit=100"
-      : null,
+    companyId ? API_GET_FOLDERS + companyId + "&page=1&limit=100" : null,
   );
   const folders = data?.data || [];
 
@@ -232,6 +230,7 @@ const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
           seeker={seeker}
           selected={selected}
           setSelected={setSelected}
+          companyId={companyId}
           onSave={onSave}
           onCreate={onCreate}
           onInvite={onInvite}

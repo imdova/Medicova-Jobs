@@ -167,3 +167,9 @@ export const findActiveLinkIndex = (
   // If no active link is found, return -1
   return { activeIndex: -1, parentId: null };
 };
+
+export const whatsAppLink = (phone: string, message?: string) => {
+  const cleanedNumber = phone.replace(/\D/g, "");
+  const encodedMessage = encodeURIComponent(message || "");
+  return `https://api.whatsapp.com/send?phone=${cleanedNumber}&text=${encodedMessage}`;
+};

@@ -23,14 +23,18 @@ import CandidateCard from "@/components/UI/candidate-card";
 import { filterCandidates } from "@/util/user/candidates";
 import Link from "next/link";
 
-const tabs: TapType[] = ["all", "locked", "unlocked", "shortListed"];
-
-const IconByTab: Record<TapType, React.ReactNode> = {
-  all: null,
-  locked: <LockIcon className="mr-2 h-4 w-4 text-red-500" />,
-  unlocked: <LockOpenIcon className="mr-2 h-4 w-4 text-green-500" />,
-  shortListed: <StarIcon className="mr-2 h-4 w-4 text-yellow-500" />,
-};
+const tabs: { type: TapType; icon: React.ReactNode }[] = [
+  { type: "all", icon: null },
+  { type: "locked", icon: <LockIcon className="mr-2 h-4 w-4 text-red-500" /> },
+  {
+    type: "unlocked",
+    icon: <LockOpenIcon className="mr-2 h-4 w-4 text-green-500" />,
+  },
+  {
+    type: "shortListed",
+    icon: <StarIcon className="mr-2 h-4 w-4 text-yellow-500" />,
+  },
+];
 
 const FolderDetails: React.FC<{ candidates: CandidateType[] }> = ({
   candidates,
@@ -86,12 +90,12 @@ const FolderDetails: React.FC<{ candidates: CandidateType[] }> = ({
           >
             {tabs.map((tab) => (
               <Tab
-                key={tab}
+                key={tab.type}
                 value={tab}
                 label={
                   <span className="flex items-center normal-case">
-                    {IconByTab[tab]}
-                    {tab} ({filterCandidates(candidates, tab).length})
+                    {tab.icon}
+                    {tab.type} ({filterCandidates(candidates, tab.type).length})
                   </span>
                 }
               />

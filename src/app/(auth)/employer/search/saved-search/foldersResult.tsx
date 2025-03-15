@@ -1,6 +1,6 @@
 "use client";
 import { TAGS } from "@/api";
-import { API_CREATE_FOLDER, API_DELETE_FOLDER_BY_ID } from "@/api/seeker";
+import { API_CREATE_FOLDER, API_DELETE_FOLDER_BY_ID, API_UPDATE_FOLDER } from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import DataTable from "@/components/UI/data-table";
 import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
@@ -72,7 +72,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
       : formData.name;
     if (formData.id) {
       await update(
-        API_CREATE_FOLDER,
+        API_UPDATE_FOLDER,
         { body: { ...formData, name } },
         TAGS.folders,
       );

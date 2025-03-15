@@ -8,15 +8,17 @@ import {
   API_GET_INDUSTRIES,
 } from "@/api/admin";
 import {
+  API_CHECK_UNLOCKED_SEEKER,
   API_GET_COMPANY_BY_ID,
   API_GET_COMPANY_BY_USER_NAME,
   API_GET_JOBS,
+  API_GET_UNLOCKED_SEEKERS,
 } from "@/api/employer";
 import {
   API_GET_FOLDER_BY_ID,
   API_GET_SEEKERS,
-  API_GET_SEEKERS_PROFILES_FROM_FOLDER,
-  API_READ_COMPANY_FOLDERS,
+  API_GET_FOLDER_SEEKERS,
+  API_GET_FOLDERS,
 } from "@/api/seeker";
 import {
   Company,
@@ -341,7 +343,7 @@ export const getPaginatedFolders = async (
 ): Promise<Result<PaginatedResponse<Folder>>> => {
   try {
     const response = await fetch(
-      API_READ_COMPANY_FOLDERS + companyId + `&page=1&limit=20`,
+      API_GET_FOLDERS + companyId + `&page=1&limit=20`,
       {
         method: "GET",
         headers: {
@@ -393,12 +395,10 @@ export const getPaginatedCandidatesByFolderId = async (
   jobId: string,
   page: number = 1,
   limit: number = 10,
-): Promise<
-  Result<PaginatedResponse<CandidateType>>
-> => {
+): Promise<Result<PaginatedResponse<CandidateType>>> => {
   try {
     const response = await fetch(
-      `${API_GET_SEEKERS_PROFILES_FROM_FOLDER}?id=${jobId}&page=${page}&limit=${limit}`,
+      `${API_GET_FOLDER_SEEKERS}?id=${jobId}&page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -422,6 +422,66 @@ export const getPaginatedCandidatesByFolderId = async (
         message: errorData.message || "An error occurred",
       };
     }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const checkIsUnlocked = async (
+  seekerId: string,
+  companyId: string,
+): Promise<Result<{ isUnlocked: boolean }>> => {
+  try {
+    const response = await fetch(
+      `${API_GET_UNLOCKED_SEEKERS}?id=${companyId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      },
+    );
+    if (!response.ok) return errorResult("error checking is unlocked");
+    const data: PaginatedResponse<{ seekerId: string }> = await response.json();
+    const isUnlocked = data.data.find(
+      (item: any) => item.seekerId === seekerId,
+    );
+    return {
+      success: true,
+      message: "Seekers list fetched successfully",
+      data: { isUnlocked: !!isUnlocked },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getUnlockedSeeker = async (
+  companyId: string,
+): Promise<Result<PaginatedResponse<{ seekerId: string }>>> => {
+  try {
+    const response = await fetch(
+      `${API_GET_UNLOCKED_SEEKERS}?id=${companyId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      },
+    );
+    if (!response.ok) return errorResult("error checking is unlocked");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Seekers list fetched successfully",
+      data: data,
+    };
   } catch (error: any) {
     return {
       success: false,

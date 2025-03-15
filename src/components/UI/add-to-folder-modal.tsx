@@ -3,7 +3,7 @@ import { FieldConfig, Folder } from "@/types";
 import FormModal from "../form/FormModal/FormModal";
 import SelectFolder from "../form/folders/selectFolder";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { API_ADD_SEEKER_TO_FOLDER } from "@/api/seeker";
+import { API_ADD_SEEKERS_TO_FOLDER } from "@/api/seeker";
 
 interface NewUserModalProps {
   folders: Folder[];
@@ -32,12 +32,14 @@ const AddToFolderModal: React.FC<NewUserModalProps> = ({
   ];
 
   const onSubmit = async (data: Folder) => {
-    await update(
-      API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekers?.[0],
-      {
-        method: "POST",
-      },
-    );
+    const body = {
+      folderId: data.id,
+      seekers: seekers?.map((x) => ({ seekerId: x })),
+    };
+    await update(API_ADD_SEEKERS_TO_FOLDER, {
+      method: "POST",
+      body,
+    });
     refetch();
     onClose();
   };

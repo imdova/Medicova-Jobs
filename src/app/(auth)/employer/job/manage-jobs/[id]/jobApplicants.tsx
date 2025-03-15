@@ -5,7 +5,6 @@ import {
   Select,
   MenuItem,
   Menu,
-  Snackbar,
   Divider,
   InputLabel,
   FormControl,
@@ -17,52 +16,59 @@ import StarIcon from "@mui/icons-material/Star";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
-import { doctorsBase, filterSections } from "@/constants";
-import DoctorCard from "@/components/UI/DoctorCard";
 import { Delete, Mail } from "@mui/icons-material";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-import { Doctor, JobData, UserState } from "@/types";
+import { Doctor } from "@/types";
+import ApplicantCard from "@/components/UI/ApplicantCard";
+import { useSession } from "next-auth/react";
+import { filterApplicants } from "@/util/user/applicants";
 
-type TapType = "all" | "locked" | "unlocked" | "shortListed";
+const tabs: { key: TapType; title: string; icon: React.ReactNode }[] = [
+  { key: "all", title: "All Applicants", icon: null },
+  {
+    key: "locked",
+    title: "Locked",
+    icon: <LockIcon className="mr-2 h-4 w-4 text-red-500" />,
+  },
+  {
+    key: "unlocked",
+    title: "Unlocked",
+    icon: <LockOpenIcon className="mr-2 h-4 w-4 text-green-500" />,
+  },
+  {
+    key: "shortListed",
+    title: "Shortlisted",
+    icon: <StarIcon className="mr-2 h-4 w-4 text-yellow-500" />,
+  },
+];
+
 const JobApplicantsResult: React.FC<{
-  job: JobData;
-  // doctors: UserState[];
-}> = ({ job }) => {
+  applications: ApplicationsType[];
+}> = ({ applications }) => {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const companyId = user?.companyId || "";
+
   const [selectedTab, setSelectedTab] = useState<TapType>("all");
-  const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
 
-  const [shortListed, setShortListed] = useState<string[]>([]);
-
-  const isAllSelect = selectedApplicants.length === doctorsBase.length;
+  const [selected, setSelected] = useState<string[]>([]);
+  const isAllSelect = selected.length === applications.length;
   const toggleSelectAll = () => {
     if (isAllSelect) {
-      setSelectedApplicants([]);
+      setSelected([]);
     } else {
-      setSelectedApplicants(doctorsBase.map((x) => x.id || ""));
+      setSelected(applications.map((x) => x.id || ""));
     }
   };
 
   // actions
   const [anchorEl, setAnchorEl] = useState(null);
-  const [showCopyAlert, setShowCopyAlert] = useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  // - // short list action
-  const removeFromShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) => pv.filter((id) => !selectedApplicants.includes(id)));
-  };
-  const addToShortListed = () => {
-    if (!selectedApplicants.length) return;
-    setShortListed((pv) =>
-      pv.concat(selectedApplicants.filter((id) => !pv.includes(id))),
-    );
   };
 
   // export
@@ -78,57 +84,31 @@ const JobApplicantsResult: React.FC<{
   return (
     <div className="w-full p-2 md:p-4 lg:w-[80%]">
       <div className="w-full pl-[39px]">
-        <h2 className="mb-5 text-3xl font-bold text-main">{job.title}</h2>
+        <h2 className="mb-5 text-3xl font-bold text-main">{"job.title"}</h2>
       </div>
 
       <div className="flex justify-between pl-[39px]">
-        <div className="max-w-[calc(100vw-72px)]">
+        <div className="max-w-[calc(100vw-64px)]">
           <Tabs
             value={selectedTab}
-            onChange={(event, value) => setSelectedTab(value)}
-            variant="scrollable"
-            scrollButtons="auto"
+            onChange={(e, newValue) => setSelectedTab(newValue)}
+            // variant="scrollable"
+            // scrollButtons="auto"
             aria-label="responsive tabs example"
-            sx={{
-              overflowX: { xs: "auto", sm: "visible" }, // Horizontal scroll for small screens
-            }}
           >
-            <Tab
-              value="all"
-              label={
-                <span className="flex items-center normal-case">
-                  All Applicants ({doctorsBase.length})
-                </span>
-              }
-            />
-            <Tab
-              value="locked"
-              label={
-                <span className="flex items-center gap-1 normal-case">
-                  {/* Locked ({doctorsBase.length - availableApplicants.length}) */}
-                  Locked (0)
-                  <LockIcon className="h-5 w-5 text-red-500" />
-                </span>
-              }
-            />
-            <Tab
-              value="unlocked"
-              label={
-                <span className="flex items-center gap-1 normal-case">
-                  Unlocked (0)
-                  <LockOpenIcon className="h-5 w-5 text-primary" />
-                </span>
-              }
-            />
-            <Tab
-              value="shortListed"
-              label={
-                <span className="flex items-center gap-1 normal-case">
-                  Shortlisted ({shortListed.length})
-                  <StarIcon className="h-5 w-5 text-primary" />
-                </span>
-              }
-            />
+            {tabs.map((tab) => (
+              <Tab
+                key={tab.key}
+                value={tab.key}
+                label={
+                  <span className="flex items-center normal-case">
+                    {tab.icon}
+                    {tab.title} (
+                    {filterApplicants(applications, tab.key).length})
+                  </span>
+                }
+              />
+            ))}
           </Tabs>
         </div>
         <FormControl className="hidden min-w-32 md:block">
@@ -158,7 +138,7 @@ const JobApplicantsResult: React.FC<{
               <SelectAllIcon className="m-auto h-6 w-6" />
             )}
           </button>
-          {selectedApplicants.length > 0 && (
+          {selected.length > 0 && (
             <div>
               <button
                 onClick={handleClick}
@@ -199,7 +179,7 @@ const JobApplicantsResult: React.FC<{
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    addToShortListed();
+                    // addToShortListed();
                   }}
                   className="flex items-center gap-2 hover:bg-gray-200"
                 >
@@ -210,21 +190,21 @@ const JobApplicantsResult: React.FC<{
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    removeFromShortListed();
+                    // removeFromShortListed();
                   }}
                   className="flex items-center gap-2 hover:bg-gray-200"
                 >
                   <StarBorderOutlinedIcon color="warning" className="h-5 w-5" />
                   remove from Shortlist
                 </MenuItem>
-                <Divider className="!m-0" />
-                <MenuItem
+                {/* <Divider className="!m-0" /> */}
+                {/* <MenuItem
                   onClick={handleClose}
                   className="flex items-center gap-2 hover:bg-gray-200"
                 >
                   <Delete className="h-5 w-5" color="error" />
                   Delete
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </div>
           )}
@@ -253,27 +233,15 @@ const JobApplicantsResult: React.FC<{
         </div>
       </div>
       {/* Applicant Cards */}
-      {doctorsBase.map((doctor, index) => (
-        <DoctorCard
-          key={index}
-          doctor={doctor}
-          shortListed={shortListed}
-          setShortListed={setShortListed}
-          setSelectedApplicants={setSelectedApplicants}
-          availableApplicants={[]} // Replace with actual availableApplicants state
-          setAvailableApplicants={() => {}} // Replace with actual setAvailableApplicants function
-          selectedApplicants={selectedApplicants}
+      {filterApplicants(applications, selectedTab).map((application) => (
+        <ApplicantCard
+          key={application.id}
+          application={application}
+          setSelected={setSelected}
+          companyId={companyId}
+          selected={selected}
         />
       ))}
-
-      {/* Pagination */}
-      <Snackbar
-        open={showCopyAlert}
-        autoHideDuration={3000}
-        onClose={() => setShowCopyAlert(false)}
-        message="Link copied to clipboard!"
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      />
     </div>
   );
 };

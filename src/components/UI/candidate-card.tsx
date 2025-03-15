@@ -27,6 +27,7 @@ import { formatLocation, toggleId } from "@/util/general";
 import Avatar from "./Avatar";
 import { useRef, useState } from "react";
 import Link from "next/link";
+import CopyButton from "../form/CopyButton";
 
 interface CandidateCardProps {
   candidate: CandidateType;
@@ -39,11 +40,10 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
   selected,
   setSelected,
 }) => {
-  // states
-  const isAvailable = candidate.isUnlocked;
-  /// TODO: isShortlisted 
+  const isAvailable = !candidate.isLocked;
+  /// TODO: isShortlisted
   // TODO : Unlock users
-  const isShortlisted = candidate.isShortlisted;
+  const isShortlisted = "isShortlisted";
   const name = formatName(candidate, isAvailable);
   const location = formatLocation(candidate);
   const isSelected = selected.includes(candidate.id);
@@ -82,12 +82,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
               <Link href={`/me/${candidate.userName}`}>
-                <Avatar
-                  src={candidate.avatar}
-                  alt={name}
-                  size={70}
-                  // sx={{ width: { xs: 50, md: 70 }, height: { xs: 50, md: 70 } }}
-                />
+                <Avatar src={candidate.avatar} alt={name} size={70} />
               </Link>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -126,21 +121,11 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     <div className="col-span-1 row-span-1 grid h-fit">
                       <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
                       <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                        this is dumy number
+                        +00 000 000 000
                       </span>
                     </div>
                   )}
-                  <IconButton
-                    disabled={!isAvailable}
-                    onClick={() => copyText("phone", candidate.phone)}
-                    className="p-0 md:ml-2"
-                  >
-                    {isCopied === "phone" ? (
-                      <CheckIcon className="h-4 w-4 text-primary md:h-5 md:w-5" />
-                    ) : (
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    )}
-                  </IconButton>
+                  <CopyButton text={candidate.phone} disabled={!isAvailable} />
                 </div>
                 <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
                   <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
@@ -152,21 +137,11 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     <div className="col-span-1 row-span-1 grid h-fit">
                       <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
                       <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                        this is dumy number
+                        email@example.com
                       </span>
                     </div>
                   )}
-                  <IconButton
-                    disabled={!isAvailable}
-                    onClick={() => copyText("email", candidate.email)}
-                    className="p-0 md:ml-2"
-                  >
-                    {isCopied === "email" ? (
-                      <CheckIcon className="h-4 w-4 text-primary md:h-5 md:w-5" />
-                    ) : (
-                      <ContentCopyIcon className="h-4 w-4 md:h-5 md:w-5" />
-                    )}
-                  </IconButton>
+                  <CopyButton text={candidate.phone} disabled={!isAvailable} />
                 </div>
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
@@ -182,20 +157,20 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     Doctors{candidate.category}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
+                {/* <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {candidate.yearsOfExperience} years Experience
+                    {candidate.yearsOfExperience.totalYears} years Experience
                   </p>
-                </div>
-                {candidate.lastEducation && (
+                </div> */}
+                {/* {candidate.lastEducation && (
                   <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                     <SchoolIcon className="h-4 w-4 md:h-5 md:w-5" />
                     <p className="text-xs md:text-base">
                       {candidate.lastEducation.degree} Degree
                     </p>
                   </div>
-                )}
+                )} */}
                 {candidate.careerLevel && (
                   <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                     <PersonIcon className="h-4 w-4 md:h-5 md:w-5" />
@@ -204,11 +179,11 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     </p>
                   </div>
                 )}
-                {candidate.specialty && (
+                {candidate.speciality && (
                   <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                     <MedicalServicesIcon className="h-4 w-4 md:h-5 md:w-5" />
                     <p className="text-xs md:text-base">
-                      {candidate.specialty}
+                      {candidate.speciality}
                     </p>
                   </div>
                 )}
@@ -256,7 +231,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     "&:hover": { border: 1, borderColor: "primary.main" },
                   }}
                 >
-                  {candidate.isShortlisted ? (
+                  {isShortlisted ? (
                     <StarIcon className="h-5 w-5 md:h-6 md:w-6" />
                   ) : (
                     <StarBorderOutlinedIcon className="h-5 w-5 md:h-6 md:w-6" />
