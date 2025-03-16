@@ -7,7 +7,8 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
-import { TextFieldProps } from "@mui/material";
+import { AlertColor, TextFieldProps } from "@mui/material";
+import { Path } from "react-hook-form";
 
 export type Country = {
   name: string;
@@ -23,6 +24,10 @@ export type CountryMin = {
   code: string;
 };
 
+export type NotificationType = {
+  message: string;
+  severity: AlertColor;
+};
 export type State = {
   name: string;
   isoCode: string;
@@ -55,30 +60,31 @@ export interface UserState {
   phone: string | null;
   companyId: string | null;
   companyName: string | null;
+  companyUserName: string | null;
   companyEmail: string | null;
   companyPhoto: string | null;
   permissions: Permission[];
 }
 
-export interface UserProfile extends UserState {
-  about: string | null;
-  title: string | null;
-  age: number | null;
-  languages: string[] | null;
-  resume: string | null;
-  socialLinks: { [key: string]: string } | null;
-  whatsapp: string | null;
-  nationality: string | null;
-  maritalStatus: string | null;
-  hasDrivingLicence: boolean | null;
-  country: CountryMin | null;
-  state: State | null;
-  city: City | null;
-  isPublic: boolean | null;
-  category: string | null;
-  speciality: string | null;
-  careerLevel: string | null;
-}
+// export interface UserProfile extends UserState {
+//   about: string | null;
+//   title: string | null;
+//   age: number | null;
+//   languages: string[] | null;
+//   resume: string | null;
+//   socialLinks: { [key: string]: string } | null;
+//   whatsapp: string | null;
+//   nationality: string | null;
+//   maritalStatus: string | null;
+//   hasDrivingLicence: boolean | null;
+//   country: CountryMin | null;
+//   state: State | null;
+//   city: City | null;
+//   isPublic: boolean | null;
+//   category: string | null;
+//   speciality: string | null;
+//   careerLevel: string | null;
+// }
 
 export interface registerData {
   firstName: string;
@@ -90,7 +96,7 @@ export interface registerData {
 
 export interface BaseHeaderProps {
   user?: UserState;
-  pathname: string;
+  pathname?: string;
 }
 
 export interface Notification {
@@ -145,6 +151,7 @@ type CountryInData = {
 export interface Company {
   id: string;
   name: string;
+  username: string;
   title?: string | null;
   about?: string;
   completencePercent?: number;
@@ -156,22 +163,20 @@ export interface Company {
   city?: string;
   size?: CompanySize | null;
   phone?: string;
+  cover?: string;
   email?: string;
   yearFounded?: number | string;
-  photo?: string;
-  socialLinks?: { [key: string]: string };
+  avatar?: string;
+  socialLinks?: Record<string, string>;
   visible?: boolean;
   profileUrl?: string;
-  typeId: string;
-  sectorId?: string | null;
-  type: {
-    id: string;
-    name: string;
-    sector: {
-      id: string;
-      name: string;
-    };
-  } | null;
+  companyTypeId?: string | null;
+  companySectorId?: string | null;
+  companySectorName?: string | null;
+  companyTypeName?: string | null;
+  banner1?: string | null;
+  banner2?: string | null;
+  banner3?: string | null;
 }
 export interface MiniCompany {
   name: string;
@@ -211,8 +216,8 @@ export type CareerLevels = {
 export interface JobCategory {
   id: string;
   name: string;
-  specialities: SpecialtyItem[];
-  careerLevels: CareerLevels[];
+  // specialities: SpecialtyItem[];
+  // careerLevels: CareerLevels[];
 }
 export interface EmploymentType {
   id: string;
@@ -222,31 +227,36 @@ export interface EmploymentType {
 export interface Industry {
   id: string;
   name: string;
-  categories: JobCategory[];
 }
 export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
 export interface JobData {
   id?: string;
   companyId: string | null;
-  company?: Company;
+  company?: Pick<
+    Company,
+    | "id"
+    | "name"
+    | "username"
+    | "about"
+    | "banner1"
+    | "banner2"
+    | "banner3"
+    | "avatar"
+  >;
   title: string;
   jobIndustryId: string | null;
-  jobIndustryName: string | null;
   jobSpecialityId: string | null;
-  jobSpecialityName: string | null;
   jobCategoryId: string | null;
-  jobCategoryName: string | null;
   jobCareerLevelId: string | null;
-  jobCareerLevelName: string | null;
   jobEmploymentTypeId: string | null;
-  jobEmploymentTypeName: string | null;
   jobWorkPlace: JobWorkPlace | null | "";
   gender: Gender | null;
   minAge: number | null;
   maxAge: number | null;
   educationLevel: EducationLevel | null | "";
   country: CountryInData | null;
+  state: CountryInData | null;
   city: string | null;
   maxExpYears: number | null;
   minExpYears: number | null;
@@ -268,31 +278,30 @@ export interface JobData {
   active: boolean | null;
   closed: boolean | null;
   validTo: string | null; // ISO date string
-  applications?: number | null;
+
+  applicationCount?: number | null; // Not in NewJobData
+
   startDateType: StartDateType | null | "";
-  jobIndustry?: {
-    id: string;
-    name: string;
-  } | null;
-  jobSpeciality?: {
-    id: string;
-    name: string;
-  } | null;
-  jobCategory?: {
-    id: string;
-    name: string;
-  } | null;
-  jobCareerLevel?: {
-    id: string;
-    name: string;
-  } | null;
-  jobEmploymentType?: {
-    id: string;
-    name: string;
-  } | null;
-  created_at?: string | null; // ISO date string
-  updatedAt?: string | null; // ISO date string
+
+  jobIndustry?: string | null;
+  jobSpeciality?: string | null;
+  jobCategory?: string | null;
+  jobCareerLevel?: string | null;
+  jobEmploymentType?: string | null;
+
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
 }
+
+export type JobStringData = Omit<
+  JobData,
+  "country" | "keywords" | "skills" | "questions"
+> & {
+  country: string;
+  keywords: string;
+  skills: string;
+  questions: string;
+};
 
 export interface FilterOption {
   label: string;
@@ -307,10 +316,13 @@ export interface FilterSectionType {
 }
 
 export interface Folder {
-  id: number;
+  id: string;
   name: string;
-  candidates: number;
-  lastModified: Date;
+  companyId: string;
+  seekersCount: number;
+  _version: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface SortFolders {
@@ -364,12 +376,16 @@ export type NavItem = {
   icon?: React.ElementType;
   label?: string;
   path?: string;
+  pattern?: string;
   notifications?: number;
   section?: string; // Optional section header
   type?: "divider" | "text" | "collapse" | "supLink" | "profile";
   links?: NavItem[];
 };
-
+export interface ActiveLinkResult {
+  activeIndex: number;
+  parentId: number | null;
+}
 export type Role = {
   permissions: { name: Permission }[];
 };
@@ -397,24 +413,46 @@ export type FieldType =
   | "date"
   | "textEditor"
   | "select"
-  | "checkbox";
+  | "search-select"
+  | "checkbox"
+  | "component";
+
+export interface Option {
+  value: string | number;
+  label: string;
+}
 
 // Updated FieldConfig to support multiple hidden fields
 export interface FieldConfig<T = any> {
-  name: keyof T;
+  name: Path<T>;
   label?: string;
   type: FieldType;
   required?: boolean;
+  dependsOn?: Path<T>; // Field this depends on
   validation?: any;
   gridProps?: {
     xs?: number;
     sm?: number;
     md?: number;
   };
+  resetFields?: Path<T>[]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
-  options?: { label: string; value: string | number }[];
-  hideFieldNames?: (keyof T)[];
-  onChange?: (value: any) => void; // Add this line
+  // options?: { label: string; value: string | number }[];
+  options?: Option[]; // Updated to support dynamic options
+  hideFieldNames?: Path<T>[];
+  onChange?: (value: any) => void; // Updated to include formMethods
+}
+export interface DynamicModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+  fields: FieldConfig[];
+  title: string;
+  description?: string;
+  initialValues?: Record<string, any>;
+  children?: React.ReactNode;
+  loading?: boolean;
+  error?: string;
 }

@@ -1,13 +1,10 @@
 import React, { KeyboardEvent, useState } from "react";
 import {
-  Box,
-  Typography,
   TextField,
   Button,
   IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
   Checkbox,
   RadioGroup,
@@ -17,7 +14,7 @@ import {
   FormControl,
   TextareaAutosize,
 } from "@mui/material";
-import { Add, Close, Delete, Edit, FormatSize } from "@mui/icons-material";
+import { Add, Close, Delete, FormatSize } from "@mui/icons-material";
 import { JobData } from "@/types";
 import { disableEnterKey } from "@/util";
 
@@ -25,8 +22,9 @@ interface ScreenQuestionsProps {
   jobData: JobData;
   onSubmit: (data: Partial<JobData>) => void;
   onDraft: (data: Partial<JobData>) => void;
-  onBack: () => void;
+  onBack: (data: Partial<JobData>) => void;
   draftLoading: boolean;
+  isDirty: boolean;
 }
 
 const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
@@ -35,6 +33,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   onDraft,
   onSubmit,
   draftLoading,
+  isDirty
 }) => {
   const [questions, setQuestions] = useState<string[]>(jobData.questions || []);
   const [showCompany, setShowCompany] = useState(true);
@@ -82,18 +81,6 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
     location: "Are you comfortable communting to this job's [Location]?",
   };
 
-  const formatQuestionText = (text: string) => {
-    return text.split(/(\[[^\]]*\])/g).map((part, index) =>
-      part.startsWith("[") && part.endsWith("]") ? (
-        <span key={index} style={{ color: "green" }}>
-          {part}
-        </span>
-      ) : (
-        part
-      ),
-    );
-  };
-
   const handleAddOrEditQuestion = () => {
     if (editingIndex !== null) {
       const updatedQuestions = [...questions];
@@ -111,7 +98,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         predefinedKey &&
         !updatedQuestions.includes(
           predefinedQuestions[
-            predefinedKey as keyof typeof predefinedQuestions
+          predefinedKey as keyof typeof predefinedQuestions
           ],
         )
       ) {
@@ -132,11 +119,6 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
       setQuestions([...questions, newQuestion]);
       setNewQuestion("");
     }
-  };
-
-  const handleEdit = (index: number) => {
-    setNewQuestion(questions[index]);
-    setEditingIndex(index);
   };
 
   const handleDelete = (index: number) => {
@@ -181,6 +163,14 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
       setIsEditing(true);
     }
   };
+  const handleBack = () => {
+    onBack({
+      questions: questions,
+      showCompany,
+      recieveEmails,
+      jobEmail: email,
+    });
+  };
   const handleDraft = () => {
     onDraft({
       questions: questions,
@@ -215,8 +205,12 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} onKeyDown={disableEnterKey}>
-      <div className="bg-primary-100 p-3">
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={disableEnterKey}
+      className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-lg"
+    >
+      <div className="rounded-md bg-green-50 p-3">
         <div className="m-4">
           <label className="mb-2 text-lg font-semibold text-main">
             Screening Questions
@@ -374,23 +368,26 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
             </div>
             <p className="text-xs text-red-500">{emailError}</p>
 
-            <Button
-              variant="text"
-              className="p-0 text-main hover:underline"
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              {isEditing ? "Save email address" : "Change email address"}
-            </Button>
+            {!isEditing && (
+              <Button
+                variant="text"
+                className="p-0 text-main hover:underline"
+                onClick={() => setIsEditing(true)}
+              >
+                Change email address
+              </Button>
+            )}
           </div>
         </div>
       </div>
       <div className="space-between mt-5 flex gap-2 md:justify-end">
-        <Button onClick={onBack} variant="outlined">
+        <Button onClick={handleBack} variant="outlined">
           Back
         </Button>
         <Button
           onClick={handleDraft}
-          className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
+          disabled={draftLoading || !isDirty}
+            className="bg-[#FFAE35] disabled:opacity-50 text-[#464748] hover:enabled:bg-[#e19e39]"
         >
           {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>

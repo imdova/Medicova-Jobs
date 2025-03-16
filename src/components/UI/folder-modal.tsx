@@ -1,145 +1,78 @@
-import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  Box,
-  Button,
-  IconButton,
-  FormControl,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { InputAdornment } from "@mui/material";
 import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { createUrl } from "@/util";
+import { API_ADD_SEEKER_TO_FOLDER, API_CREATE_FOLDER } from "@/api/seeker";
+import { TAGS } from "@/api";
+import { FieldConfig } from "@/types";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import FormModal from "../form/FormModal/FormModal";
+
+const fields: FieldConfig<Folder>[] = [
+  {
+    name: "name",
+    type: "text",
+    label: "Folder Name",
+    textFieldProps: {
+      placeholder: "Enter Folder Name",
+      InputProps: {
+        startAdornment: (
+          <InputAdornment position="start">
+            <Image
+              src="/images/folder.svg"
+              width={20}
+              height={20}
+              alt="folder icon"
+              className="object-contain"
+            />
+          </InputAdornment>
+        ),
+      },
+    },
+  },
+];
 
 interface NewUserModalProps {
-  open: boolean;
+  companyId?: string | null;
+  seekers: string[] | null;
   onClose: () => void;
-  type?: "create" | "edit";
-  folderName?: string;
-  onCreate?: (folderName: string) => void;
+  refetch: () => void;
 }
 
 const FolderModal: React.FC<NewUserModalProps> = ({
-  open,
+  refetch,
+  companyId,
+  seekers,
   onClose,
-  type = "create",
-  folderName: name,
-  onCreate,
 }) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [folderName, setFolderName] = useState("");
+  const { isLoading, error, update } = useUpdateApi<Folder>();
 
-  const handleFolderNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setFolderName(event.target.value);
-  };
-
-  const handleCreateFolder = () => {
-    console.log("Folder Created: ", folderName);
-    onCreate && onCreate(folderName);
-    closeHandler(); // Close the modal
-  };
-
-  const closeHandler = () => {
-    setFolderName("");
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.delete("fname");
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl, { scroll: false });
+  const handleSubmit = async (body: Partial<Folder>) => {
+    const data = await update(
+      API_CREATE_FOLDER,
+      { method: "POST", body },
+      TAGS.folders,
+    );
+    await update(
+      API_ADD_SEEKER_TO_FOLDER + data.id + "/seekers/" + seekers?.[0],
+      {
+        method: "POST",
+      },
+    );
+    refetch();
     onClose();
   };
-  const captionText =
-    type === "create"
-      ? "Enter a name for your new folder."
-      : "Edit the name of your existing folder.";
-
-  useEffect(() => {
-    setFolderName(name || "");
-  }, [name]);
 
   return (
-    <Modal open={open} onClose={closeHandler}>
-      <FormControl
-        fullWidth
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          maxWidth: "700px",
-          width: "90%",
-          maxHeight: "90dvh",
-          overflowY: "auto",
-          backgroundColor: "#fff",
-          borderRadius: "8px",
-          boxShadow: 24,
-          py: 2,
-          px: 4,
-        }}
-      >
-        {/* Modal Header */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3,
-          }}
-        >
-          <div>
-            <h2 className="text-2xl font-bold">
-              {type === "create" ? "Create Folder" : "Edit Folder"}
-            </h2>
-            <p className="mb-3 text-sm text-gray-500">{captionText}</p>
-          </div>
-          <IconButton onClick={closeHandler}>
-            <Close />
-          </IconButton>
-        </Box>
-        {/* Folder Name Input */}
-        <TextField
-          label="Folder Name"
-          variant="outlined"
-          fullWidth
-          value={folderName}
-          onChange={handleFolderNameChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Image
-                  src="/images/folder.png"
-                  width={20}
-                  height={20}
-                  alt="folder icon"
-                  className="object-contain"
-                />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ mb: 3 }}
-        />
-
-        {/* Modal Content */}
-        <div className="flex justify-start gap-2">
-          {/* Cancel and Create Folder Buttons */}
-          <Button onClick={closeHandler} variant="outlined">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleCreateFolder}
-            variant="contained"
-            disabled={!folderName} // Disable if folderName is empty
-          >
-            {type === "create" ? "Create Folder" : "Edit Folder"}
-          </Button>
-        </div>
-      </FormControl>
-    </Modal>
+    <FormModal
+      open={!!seekers}
+      error={error?.message}
+      loading={isLoading}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+      fields={fields}
+      title={"Create New Folder"}
+      description={"Enter a name for your new folder."}
+      initialValues={{ name: "", companyId: companyId }}
+    />
   );
 };
 

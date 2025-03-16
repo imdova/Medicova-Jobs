@@ -12,7 +12,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import pdf from "@/components/icons/pdf.png";
 import Image from "next/image";
-import { UserState } from "@/types";
 
 const getFileNameFromUrl = (url: string): string => {
   const urlSplit = url.split("/");
@@ -20,7 +19,7 @@ const getFileNameFromUrl = (url: string): string => {
 };
 const myCv = "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf";
 const Resume: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
   isLocked: boolean;
 }> = ({ user, isMe, isLocked }) => {

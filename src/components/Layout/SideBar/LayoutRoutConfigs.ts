@@ -22,20 +22,19 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },
   // auth
   //employer
-  { pattern: "/employer/search", sideBarType: "none", linksType: "userType" },
   {
-    pattern: "/employer/job/applicants/[id]",
-    sideBarType: "none",
+    pattern: "/employer/search",
+    sideBarType: "minimal",
     linksType: "userType",
   },
   {
-    pattern: "/employer/search/cv",
-    sideBarType: "none",
+    pattern: "/employer/job/manage-jobs/[id]", 
+    sideBarType: "minimal",
     linksType: "userType",
   },
   {
     pattern: "/employer/search/saved-search/[slug]",
-    sideBarType: "none",
+    sideBarType: "minimal",
     linksType: "userType",
   },
   { pattern: "/employer/*", sideBarType: "full", linksType: "userType" },
@@ -43,7 +42,7 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/job-seeker/*", sideBarType: "full", linksType: "userType" },
 ];
 
-export const matchRoute = (pathname: string) => {
+export const matchRoute = (pathname: string): RouteConfig | undefined => {
   // First, prioritize exact matches (including dynamic segments)
   const exactMatch = routeConfigs.find((route) => {
     // Handle dynamic segments (e.g., "/user/[id]")
@@ -78,7 +77,7 @@ export function getSideBarLinks(user?: UserState, pathname?: string) {
       if (userType === "seeker") {
         return roleBasedSideBarLinks.seeker;
       } else if (userType === "employer") {
-        if (user?.companyId) {
+        if (user?.companyName) {
           return roleBasedSideBarLinks.employer;
         } else {
           return roleBasedSideBarLinks.unEmployee;

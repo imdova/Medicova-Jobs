@@ -1,52 +1,61 @@
 "use client";
 import { useState } from "react";
-import { IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { Verified } from "@mui/icons-material";
-import ShareMenu from "@/components/UI/ShareMenu";
-import { UserProfile } from "@/types";
-import Link from "next/link";
+import { FlagOutlined, LocationOn, Verified } from "@mui/icons-material";
+import ProfileImage from "@/components/UI/ProfileImage";
+import { useSession } from "next-auth/react";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { TAGS } from "@/api";
+import uploadImages from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
-import Image from "next/image";
+import { calculateAge } from "@/util/general";
+import EditProfile from "./editProfile";
 
 const HeaderSection: React.FC<{
   user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
+  const { update: updateSession } = useSession();
   const [image, setImage] = useState<File | null>(null);
 
-  const updateImage = async (file: File) => {
-    setImage(file);
-  };
-  const removeImage = async () => {
-    console.log("remove image");
+  const { update } = useUpdateApi<UserProfile>(handleSuccess);
+
+  const handleUpdateProfile = async (body: Partial<UserProfile>) => {
+    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
   };
 
+  async function handleSuccess(newProfile: UserProfile) {
+    await updateSession({
+      companyPhoto: newProfile.category,
+    });
+  }
+
+  const updateImage = async (file: File) => {
+    const [category] = await uploadImages([file]);
+    handleUpdateProfile({ category });
+    setImage(file);
+  };
+
+  const age = user.birth ? calculateAge(new Date(user.birth)) : "";
+  const isMarried = user?.maritalStatus === "Married";
   return (
     <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
-      {/* <Avatar
-        alt="Profile"
-        src={avatarImage || undefined}
-        className="min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
-      /> */}
       {isMe ? (
-        <Avatar
+        <ProfileImage
           currentImageUrl={
-            image ? URL.createObjectURL(image) : user.photo || ""
+            image ? URL.createObjectURL(image) : user.avatar || ""
           }
+          alt={user.firstName + " " + user.lastName + " profile image"}
           size="xLarge"
           onImageUpdate={updateImage}
-          maxFileSizeMB={5}
-          imageClassName="w-full h-full object-cover bg-white hover:bg-gray-50"
-          className="h-[100px] w-[100px] rounded-full border-[6px] border-white object-cover shadow-xl lg:ml-8 xl:ml-14"
+          imageClassName="border-4 border-white shadow-md"
         />
       ) : (
-        <Image
-          src={user.photo || "/images/placeholder-avatar.svg"}
-          alt="avatar"
-          width={100}
-          height={100}
-          className="min-h-[100px] min-w-[100px] border-[6px] border-white shadow-xl lg:ml-8 xl:ml-14"
+        <Avatar
+          src={user.avatar}
+          alt={user.firstName + " " + user.lastName + " profile image"}
+          size={100}
+          className="border-4 border-white shadow-md"
         />
       )}
       <div className="flex">
@@ -58,31 +67,31 @@ const HeaderSection: React.FC<{
           <p className="text-sm text-secondary">{user.title}</p>
           <div>
             <p className="text-sm text-secondary">
-              {user.age ? `${user.age} years old` : ""}{" "}
+              {age ? `${age} years old` : ""}{" "}
               {user.nationality ? `- ${user.nationality}` : ""}{" "}
-              {/* {user.isMarried ? `- ${user.isMarried}` : ""}{" "} */}
+              {user.maritalStatus ? `- ${user.maritalStatus}` : ""}{" "}
               {user.speciality ? `- ${user.speciality}` : ""}{" "}
               {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "}
             </p>
-            {/* <p className="text-sm text-secondary">
-              <LocationOnIcon sx={{ fontSize: { xs: 14, sm: 16 } }} /> {user.location}
-            </p> */}
-            {/* <Button variant="text" className="p-1">
-              <FlagIcon color="primary" sx={{ fontSize: { xs: 18, sm: 20 } }} />
-              Open For Opportunities
-            </Button> */}
+            {(user.country?.name || user.state?.name || user.city) && (
+              <div className="mr-3 flex items-center gap-1">
+                <LocationOn className="text-primary" />
+                <p className="text-sm text-secondary">
+                  {(user.country?.name || "") +
+                    (user.state?.name ? `, ${user.state.name}` : "") +
+                    (user.city ? `, ${user.city}` : "")}
+                </p>
+              </div>
+            )}
+            {user.isPublic && (
+              <p className="font-medium text-primary">
+                <FlagOutlined className="mr-1 font-medium text-primary" />
+                Open For Opportunities
+              </p>
+            )}
           </div>
         </div>
-        <div className="fex h-full flex-col items-center justify-center gap-1">
-          {/* Edit Button */}
-          {isMe && (
-            <IconButton LinkComponent={Link} href="/job-seeker/setting">
-              <EditIcon />
-            </IconButton>
-          )}
-          {/* Share Button */}
-          <ShareMenu link="https://medicova.com" />
-        </div>
+        <EditProfile isMe={isMe} user={user} />
       </div>
     </div>
   );

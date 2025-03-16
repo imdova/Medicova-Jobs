@@ -1,61 +1,77 @@
-"use client";
 import { Button } from "@mui/material";
-import Image from "next/image";
 import { Ellipse5, GridIcon } from "@/components/icons/icons";
 import EastIcon from "@mui/icons-material/East";
 import JobCard from "@/components/UI/job-card";
-import { GroupAddOutlined, Search, WorkOutline } from "@mui/icons-material";
-import { folders } from "@/constants";
+import {
+  GroupOutlined,
+  Search,
+  ShopOutlined,
+  WorkOutline,
+} from "@mui/icons-material";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
-import FolderMainCard from "@/components/UI/folder-main-card";
-import { useSession } from "next-auth/react";
-import { JobData, UserState } from "@/types";
+import { Suspense } from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/config";
+import { notFound } from "next/navigation";
 import { getJobsByCompanyId } from "@/lib/actions/job.actions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchJobs } from "@/store/slices/jobSlice";
+import SearchInput from "@/components/UI/search-Input";
+import StatusCard from "@/components/UI/StatusCard";
+import { filteredJobs } from "@/lib/auth/utils";
+import { formatTimeDuration, itemsInLastDays, itemsPerDays } from "@/util/general";
+import FolderSection from "./foldersSection";
 
-interface Card {
-  title: string;
-  content: string;
-  icon?: React.ElementType;
-  url: string;
-}
+const INITIAL_JOBS = 5;
+const INITIAL_DURATIONS = 29;
+const Duration = formatTimeDuration(INITIAL_DURATIONS);
 
-const cards: Card[] = [
-  { title: "All Jobs", content: "120", icon: WorkOutline, url: "" },
-  { title: "Active Jobs", content: "07", icon: WorkOutline, url: "" },
-  { title: "New Applicants", content: "120", icon: GroupAddOutlined, url: "" },
-];
-
-const Page = () => {
-  const { data: session } = useSession();
-  const user = session?.user as UserState;
-  const companyId = user?.companyId || "";
-
-  const {
-    jobs: { data: jobs, loading: jobsLoading, error },
-  } = useAppSelector((state) => state.companyJobs);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (jobs.length === 0 && companyId) {
-      dispatch(fetchJobs(companyId));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, companyId]);
+const Page = async () => {
+  const data = await getServerSession(authOptions);
+  const user = data?.user;
+  if (!user?.companyId) return notFound();
+  const result = await getJobsByCompanyId(user?.companyId, 1, 30);
+  const { data: jobs, total } = result.data || { data: [], total: 0 };
+  const activeJobs = filteredJobs(jobs, "active");
+  const jobsInLastDays = itemsInLastDays(jobs, INITIAL_DURATIONS);
   return (
-    <div className="flex flex-col gap-8 lg:flex-row">
+    <div className="flex flex-col gap-8 px-4 md:px-0 lg:flex-row">
       <div className="flex-1">
         {/* cards */}
-        <div className="grid w-full grid-cols-2 justify-between gap-5 md:grid-cols-3">
-          {cards.map((card, index) => (
-            <StatusCard
-              key={index}
-              card={card}
-              lastOne={index === cards.length - 1}
-            />
-          ))}
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+          <StatusCard
+            title="Total Jobs"
+            value={total}
+            icon={WorkOutline}
+            trend={{
+              value: "+" + itemsPerDays(jobs, INITIAL_DURATIONS),
+              description: "Since last "+Duration,
+              trendDirection: "up",
+            }}
+          />
+
+          <StatusCard
+            title="Active Jobs"
+            value={activeJobs.length}
+            icon={ShopOutlined}
+            trend={{
+              value: "+" + itemsPerDays(activeJobs, INITIAL_DURATIONS),
+              description: "Since last "+Duration,
+              trendDirection: "up",
+            }}
+          />
+          <StatusCard
+            className="col-span-2 md:col-span-1"
+            title="New Applicants"
+            value={
+              jobsInLastDays.reduce(
+                (acc, job) => acc + (job.applicationCount || 0),
+                0,
+              ) || 0
+            }
+            icon={GroupOutlined}
+            trend={{
+              description: `In Last ${jobsInLastDays.length} jobs`,
+            }}
+          />
         </div>
         {/* search */}
         <div className="flex gap-2 pt-5 lg:hidden">
@@ -78,17 +94,15 @@ const Page = () => {
           </span>
         </h2>
 
-        {jobsLoading ? (
-          <div>Loading...</div>
-        ) : jobs.length > 0 ? (
+        {jobs.length > 0 ? (
           <div>
             <div className="flex flex-col gap-4">
-              {jobs.slice(0, 4).map((job) => (
+              {jobs.slice(0, INITIAL_JOBS).map((job) => (
                 <JobCard key={job.id} job={job} isEdit={true} />
               ))}
             </div>
 
-            {jobs.length > 4 && (
+            {jobs.length > INITIAL_JOBS && (
               <div className="flex w-full justify-center">
                 <Link
                   href="/employer/job/manage-jobs"
@@ -114,37 +128,27 @@ const Page = () => {
             </Button>
           </div>
         )}
-        <div>
-          <h2 className="mb-5 mt-10 text-3xl font-semibold text-main">
-            CV Search{" "}
-            <span className="mt-5 text-3xl font-semibold text-light-primary">
-              Folders
-            </span>
-          </h2>
-
-          <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
-            <Suspense>
-              {folders.slice(0, 6).map((folder, index) => (
-                <FolderMainCard key={index} folder={folder} />
-              ))}
-            </Suspense>
-          </div>
-          <div className="flex w-full justify-center">
-            <Link
-              href="/employer/search/saved-search"
-              className="group my-2 mt-5 text-xl text-primary hover:underline"
-            >
-              All Folders
-              <EastIcon className="mx-2 inline-block transition group-hover:translate-x-3" />
-            </Link>
-          </div>
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <FolderSection companyId={user.companyId} />
+        </Suspense>
       </div>
       <div className="lg:max-w-[250px]">
-        <div className="flex w-full flex-col gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-xl">
-          <h6 className="text-center text-lg">ELsalam Hospital</h6>
-          <Button variant="contained">View profile page</Button>
-          <Button variant="outlined">Edit company page</Button>
+        <div className="flex w-full flex-col gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+          <h6 className="text-center text-lg">{user.companyName}</h6>
+          <Button
+            LinkComponent={Link}
+            href={`/co/${user.companyUserName}`}
+            variant="contained"
+          >
+            View profile
+          </Button>
+          <Button
+            LinkComponent={Link}
+            href="/employer/company-info"
+            variant="outlined"
+          >
+            Edit company page
+          </Button>
         </div>
         <h6 className="mt-4 text-lg font-semibold text-main">
           You are now a <span className="text-light-primary">Silver Plan</span>{" "}
@@ -155,81 +159,29 @@ const Page = () => {
           <h4 className="mb-2 text-lg font-bold text-white">
             Upgrade your Account to Get more applicants
           </h4>
-          <button className="rounded-xl bg-white px-4 py-2 text-black shadow-xl transition-colors duration-300 hover:bg-black hover:text-white">
+          <button className="rounded-xl bg-white px-4 py-2 text-black shadow-soft transition-colors duration-300 hover:bg-black hover:text-white">
             Upgrade
           </button>
         </div>
-        <div className="mt-5 hidden flex-col gap-2 p-2 lg:flex">
-          <div className="flex items-center gap-2">
-            <Search color="primary" />
-            <input
-              className="block w-full min-w-52 appearance-none border-b-2 border-gray-300 px-3 py-2 focus:border-[#2EAE7D] focus:outline-none"
-              placeholder="search by title eg: doctor"
-            />
-          </div>
-          <Button variant="contained" className="text-xl">
+
+        <SearchInput
+          formClassName="mt-5 hidden flex-col gap-2 p-2 lg:flex"
+          pathname="/employer/search"
+          variant="standard"
+          placeholder="search by title eg: doctor"
+          fullWidth
+          className="mb-2"
+          InputProps={{
+            startAdornment: <Search color="primary" />,
+          }}
+        >
+          <Button type="submit" variant="contained" className="text-xl">
             Search
           </Button>
-        </div>
+        </SearchInput>
       </div>
     </div>
   );
 };
 
 export default Page;
-
-const StatusCard: React.FC<{ lastOne: boolean; card: Card }> = ({
-  card,
-  lastOne,
-}) => {
-  const IconComponent = card.icon;
-  return (
-    <div
-      className={`${lastOne ? "col-span-2 md:col-span-1" : ""} flex justify-center gap-2 text-nowrap rounded-base border border-gray-100 bg-white p-4 pb-1 text-secondary shadow-xl`}
-    >
-      {IconComponent ? (
-        <IconComponent className="h-[30px] w-[30px] text-primary" />
-      ) : null}
-      <div>
-        <p className="text-[16px] font-medium text-secondary md:text-[22px]">
-          {card.title}
-        </p>
-        <p className="inline text-[24px] font-bold text-main md:text-[40px]">
-          {card.content}
-        </p>
-        <button className="ml-4 inline rounded-full bg-primary-100 px-3 py-[2px] text-xs text-primary md:text-base">
-          View
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const CvCard: React.FC = () => {
-  return (
-    <Button
-      variant="outlined"
-      className="group flex-col p-5 text-center text-black"
-    >
-      <div className="flex items-center justify-center gap-5">
-        <Image
-          src="/images/folder.png"
-          alt="folder"
-          width={50}
-          height={50}
-          className="object-contain"
-        />
-        <p className="font-semibold text-[#185D43] group-hover:text-white">
-          25/09/2024
-        </p>
-        <div className="flex flex-col rounded-xl border p-3 px-4">
-          <span className="font-outline-1 text-3xl font-semibold">5</span>
-          <span className="font-outline-1 font-semibold"> CVs</span>
-        </div>
-      </div>
-      <p className="text-wrap text-xl font-semibold md:text-2xl lg:text-nowrap">
-        Doctors December 2024
-      </p>
-    </Button>
-  );
-};

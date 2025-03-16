@@ -1,11 +1,10 @@
 import React from "react";
-import { Typography, Grid, Card, Box, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 
 type CompleteProfileProps = {
   percentage?: number;
 };
-
 const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
   // Function to determine color based on value
   const getProgressColor = (progress: number): string => {
@@ -14,20 +13,20 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
     return "var(--error)";
   };
 
-  if (!percentage || percentage === 100) return null;
+  if (!percentage || percentage >= 100) return null;
 
   const progressColor = getProgressColor(percentage);
 
   return (
-    <div className="mb-5 flex rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mb-5 flex rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
       <div className="flex-1">
         <Link
-          href="#"
+          href={"/employer/company-info"}
           className="mb-2 text-2xl font-bold hover:underline"
           style={{ color: progressColor }}
         >
-          Complete Your Profile!
+          Complete your company profile!
         </Link>
         <p className="max-w-60 text-secondary">
           You are almost there—lets finish setting things up!

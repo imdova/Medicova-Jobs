@@ -15,7 +15,6 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
 import AddModal from "./Modals/AddModal";
 import { Edit, LanguageOutlined, LinkOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
 import Link from "next/link";
 
 const socialMedia: { url: string; name: string; icon: React.ElementType }[] = [
@@ -24,7 +23,7 @@ const socialMedia: { url: string; name: string; icon: React.ElementType }[] = [
   { name: "Website", icon: LanguageIcon, url: "https://www.instagram.com/" },
 ];
 const SocialMediaSection: React.FC<{
-  user: UserState;
+  user: UserProfile;
   isMe: boolean;
   isLocked: boolean;
 }> = ({ user, isMe, isLocked }) => {

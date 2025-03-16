@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, Method, AxiosError } from "axios";
 
 // Define the options type
 type UserType = "employer-user" | "job-seeker-user";
-const BASE_URL = process.env.NEXT_SERVER_BASE;
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_BASE;
 
 export interface UseApiOptions {
   method?: Method;

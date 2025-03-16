@@ -28,6 +28,7 @@ export const callbacks = {
       token.phone = user.phone;
       token.companyId = user.companyId;
       token.companyName = user.companyName;
+      token.companyUserName = user.companyUserName;
       token.companyPhoto = user.companyPhoto;
       token.companyEmail = user.companyEmail;
       token.permissions = user.permissions;
@@ -37,6 +38,8 @@ export const callbacks = {
       if (session?.companyId) token.companyId = session.companyId;
       if (session?.companyName) token.companyName = session.companyName;
       if (session?.companyPhoto) token.companyPhoto = session.companyPhoto;
+      if (session?.companyUserName)
+        token.companyUserName = session.companyUserName;
       if (session?.companyEmail) token.companyEmail = session.companyEmail;
     }
     return token;
@@ -53,6 +56,7 @@ export const callbacks = {
       session.user.phone = token.phone as string | null;
       session.user.companyId = token.companyId as string | null;
       session.user.companyName = token.companyName as string | null;
+      session.user.companyUserName = token.companyUserName as string | null;
       session.user.companyPhoto = token.companyPhoto as string | null;
       session.user.companyEmail = token.companyEmail as string | null;
       session.user.permissions = token.permissions as Permission[];
@@ -61,31 +65,33 @@ export const callbacks = {
     return session;
   },
 
-  async signIn({ user, account }: { user: any; account: any }) {
-    if (account?.provider === "google" || account?.provider === "facebook") {
-      return handleSocialLogin(user, account);
-    }
-    return true;
-  },
+  // async signIn(data: any) {
+  //   console.log("🚀 ~ signIn ~ data:", data);
+  //   // if (account?.provider === "google" || account?.provider === "facebook") {
+  //   //   return handleSocialLogin(user, account);
+  //   // }
+  //   return true;
+  // },
 
   // async redirect({ url, baseUrl }: { url: any; baseUrl: any }) {
+  //   console.log("🚀 ~ redirect ~ baseUrl:", baseUrl);
   //   // Redirect to /me/[name] after login
-  //   // console.log("🚀 ~ redirect ~ url:", url)
+  //   console.log("🚀 ~ redirect ~ url:", url);
   //   if (url === "/me") {
-  //     const session = await getServerSession();
-  //     console.log("🚀 ~ redirect ~ session:", session);
+  //     // const session = await getServerSession();
+  //     // console.log("🚀 ~ redirect ~ session:", session);
   //   }
   //   return baseUrl;
   // },
 
-  async authorize(credentials: any, req: any) {
-    console.log("🚀 ~ authorize ~ credentials:", credentials);
-    const { state } = req.query; // Retrieve state from query params
-    const parsedState = state ? JSON.parse(state) : null;
+  // async authorize(credentials: any, req: any) {
+  //   console.log("🚀 ~ authorize ~ credentials:", credentials);
+  //   const { state } = req.query; // Retrieve state from query params
+  //   const parsedState = state ? JSON.parse(state) : null;
 
-    console.log("Custom state:", parsedState);
+  //   console.log("Custom state:", parsedState);
 
-    // Proceed with authentication
-    return { id: 1, name: "User" }; // Example user
-  },
+  //   // Proceed with authentication
+  //   return { id: 1, name: "User" }; // Example user
+  // },
 };

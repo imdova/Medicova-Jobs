@@ -5,13 +5,13 @@ import Image from "next/image";
 import experiencesImage from "@/components/icons/briefcase.png";
 import EditIcon from "@mui/icons-material/Edit";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { FieldConfig, UserProfile, UserState } from "@/types";
+import { FieldConfig } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
 import { expandItems } from "@/lib/auth/utils";
 import DynamicFormModal from "@/components/form/DynamicFormModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries } from "@/store/slices/locationSlice";
-import { fetchIndustries } from "@/store/slices/industrySlice";
+// import { fetchIndustries } from "@/store/slices/industrySlice";
 
 export interface ExperienceData {
   company: string;
@@ -110,7 +110,7 @@ const ExperienceSection: React.FC<{
   user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const { industries } = useAppSelector((state) => state.industry);
+  // const { industries } = useAppSelector((state) => state.industry);
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
 
@@ -134,9 +134,9 @@ const ExperienceSection: React.FC<{
     if (countries.data.length === 0) {
       dispatch(fetchCountries());
     }
-    if (industries.data.length === 0) {
-      dispatch(fetchIndustries());
-    }
+    // if (industries.data.length === 0) {
+    //   dispatch(fetchIndustries());
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
@@ -145,7 +145,7 @@ const ExperienceSection: React.FC<{
   }
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
-      <DynamicFormModal
+      {/* <DynamicFormModal
         open={isModalOpen}
         onClose={close}
         onSubmit={handleSubmit}
@@ -173,7 +173,7 @@ const ExperienceSection: React.FC<{
           },
         ]}
         title="Add Experience to Your Profile"
-      />
+      /> */}
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-2xl font-bold text-main">Experience</h3>
         {isMe && (

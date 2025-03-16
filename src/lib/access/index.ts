@@ -10,10 +10,8 @@ import {
   API_VALIDATE_OTP,
 } from "@/api/users";
 import { registerData, Result, Role, UserState } from "@/types";
-
-import { RoleState } from "@/types/next-auth";
-import { getEmployerWithID } from "../actions/employer.actions";
-import { getPermissionNames } from "@/util";
+import { errorResult } from "@/util/general";
+import { transformRegisterData, transLoginData } from "@/util/user";
 
 interface UserResponse {
   user: UserState;
@@ -94,51 +92,13 @@ export const serverSignIn = async ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    if (response.ok) {
-      const user: UserState = await response.json();
-      if (user && user.id) {
-        if (user.type === "employer") {
-          const response = await getEmployerWithID(user.id);
-          if (response.success) {
-            const companyId = response.data.id;
-            const companyName = response.data.name;
-            const companyPhoto = response.data.photo;
-            const companyEmail = response.data.email;
-            return {
-              success: true,
-              message: user.type + " Registered successfully",
-              data: {
-                ...user,
-                companyId,
-                companyName,
-                companyPhoto,
-                companyEmail,
-              },
-            };
-          }
-          return {
-            success: true,
-            message: user.type + " Registered successfully",
-            data: user,
-          };
-        }
-        return {
-          success: true,
-          message: user.type + " Registered successfully",
-          data: user,
-        };
-      }
-      return {
-        success: false,
-        message: "User not found",
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
+    if (!response.ok) return errorResult("serverSignIn");
+    const user: UserState = await response.json();
+    return {
+      success: true,
+      message: "OTP validated successfully",
+      data: user,
+    };
   } catch (error: any) {
     return {
       success: false,
@@ -146,30 +106,20 @@ export const serverSignIn = async ({
     };
   }
 };
-export const register = async (
-  data: registerData,
-  userType: RoleState,
-): Promise<Result> => {
+export const register = async (data: registerData): Promise<Result> => {
   try {
-    const response = await fetch(API_REGISTER_USER + userType, {
+    const response = await fetch(API_REGISTER_USER, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (response.ok) {
-      const data: UserState = await response.json();
-      return {
-        success: true,
-        message: "Registered successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
+    if (!response.ok) return errorResult("register");
+    const user: UserState = await response.json();
+    return {
+      success: true,
+      message: "Registered successfully",
+      data: user,
+    };
   } catch (error: any) {
     return {
       success: false,
@@ -188,7 +138,6 @@ export const forgetPassword = async (data: {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    console.log("🚀 ~ response:", response);
     if (response.ok) {
       return {
         success: true,

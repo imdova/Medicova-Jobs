@@ -9,9 +9,10 @@ import {
   Alert,
   styled,
 } from "@mui/material";
-import { CloudUpload, Delete } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 import Image from "next/image";
 import clsx from "clsx";
+import { ACCEPTED_IMAGE_TYPES } from "@/constants";
 
 // Types for the modal
 interface FileWithPreview extends File {
@@ -100,8 +101,8 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   onUpload,
   multiple = false,
   maxFiles = 1,
-  maxFileSizeMB = 5,
-  acceptedFileTypes = ["*"],
+  maxFileSizeMB = 1,
+  acceptedFileTypes = ACCEPTED_IMAGE_TYPES,
   title = "Upload Files",
   description,
   uploadButtonText = "Upload",
@@ -116,54 +117,50 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      setError(null);
-
-      // Check file size
-      const oversizedFiles = acceptedFiles.filter(
-        (file) => file.size > maxFileSizeMB * 1024 * 1024,
-      );
-      if (oversizedFiles.length > 0) {
-        setError(`Some files exceed the ${maxFileSizeMB}MB limit`);
-        return;
-      }
-
-      // Check number of files
-      if (acceptedFiles.length > maxFiles) {
-        setError(`Maximum ${maxFiles} files allowed`);
-        return;
-      }
-
-      const filesWithPreview = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: file.type.startsWith("image/")
-            ? URL.createObjectURL(file)
-            : undefined,
-        }),
-      );
-
-      setSelectedFiles(multiple ? filesWithPreview : [filesWithPreview[0]]);
-    },
-    [maxFileSizeMB, maxFiles, multiple],
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: acceptedFileTypes.reduce(
-      (acc, curr) => ({ ...acc, [curr]: [] }),
-      {},
-    ),
-    multiple,
-    maxFiles,
-  });
+   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+      onDrop: (acceptedFiles) => {
+        setError(null);
+  
+        const oversizedFiles = acceptedFiles.filter(
+          (file) => file.size > maxFileSizeMB * 1024 * 1024,
+        );
+        if (oversizedFiles.length > 0) {
+          setError(`Some files exceed the ${maxFileSizeMB}MB limit`);
+          return;
+        }
+  
+        // Check number of files
+        if (acceptedFiles.length > maxFiles) {
+          setError(`Maximum ${maxFiles} files allowed`);
+          return;
+        }
+        
+        if (acceptedFiles.length === 0) {
+          setError(`Unsupported file type. Only ${acceptedFileTypes.join(", ")} allowed.`);
+          return;
+        }
+  
+        if (selectedFiles.length + acceptedFiles.length > 3) {
+          setError("You can only upload up to 3 files.");
+          return;
+        }
+  
+        const filesWithPreview = acceptedFiles.map((file) =>
+          Object.assign(file, { preview: URL.createObjectURL(file), uploaded: false })
+        );
+  
+        setSelectedFiles((prev) => [...prev, ...filesWithPreview]);
+      },
+      accept: acceptedFileTypes.reduce((acc, curr) => ({ ...acc, [curr]: [] }), {}),
+      multiple: multiple,
+      maxFiles: maxFiles,
+    });
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
 
     setIsUploading(true);
     setError(null);
-
     try {
       await onUpload(selectedFiles);
       onClose();

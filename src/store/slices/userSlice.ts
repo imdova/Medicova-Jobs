@@ -13,6 +13,7 @@ const InitialUserData: UserState = {
   photo: null,
   type: "seeker",
   companyName: null,
+  companyUserName: null,
   companyPhoto: null,
   companyEmail: null,
 };

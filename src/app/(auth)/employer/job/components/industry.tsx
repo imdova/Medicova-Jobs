@@ -1,19 +1,10 @@
+import { API_GET_CAREER_LEVELS_BY_CATEGORY, API_GET_CATEGORIES_BY_INDUSTRY, API_GET_INDUSTRIES, API_GET_SPECIALITIES_BY_CATEGORY } from "@/api/admin";
+import useFetch from "@/hooks/useFetch";
 import {
-  getCategoryFromIndustryId,
-  getIndustries,
-  getSpecialtyFromCategoryId,
-} from "@/lib/actions/employer.actions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCategories, fetchIndustries } from "@/store/slices/industrySlice";
-import {
-  CareerLevels,
   Industry,
-  JobCategory,
   JobData,
-  SpecialtyItem,
 } from "@/types";
 import { FormControl, MenuItem, Select, Tooltip } from "@mui/material";
-import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -27,56 +18,33 @@ interface IndustryFormProps {
   errors: FieldErrors<JobData>;
   watch: UseFormWatch<JobData>;
   setValue: UseFormSetValue<JobData>;
+  industries: Industry[]
+
 }
 const IndustryForm: React.FC<IndustryFormProps> = ({
   control,
   errors,
   watch,
   setValue,
+  industries,
 }) => {
-  const {
-    categories: { data: categories, loading: categoriesLoading },
-    industries: { data: industries, loading: industryLoading },
-  } = useAppSelector((state) => state.industry);
-  const dispatch = useAppDispatch();
+  const selectedJobIndustryId = watch("jobIndustryId");
+  const selectedJobCategoryId = watch("jobCategoryId");
 
-  const selectedIndustry = watch("jobIndustryId");
-  const selectedCategory = watch("jobCategoryId");
 
-  const [specialties, setSpecialties] = useState<SpecialtyItem[]>([]);
-  const [careerLevels, setCareerLevels] = useState<CareerLevels[]>([]);
+  const { loading: categoriesLoading, data: categories } = useFetch<PaginatedResponse<Industry>>(selectedJobIndustryId && `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${selectedJobIndustryId}`, {
+    fetchOnce: false,
+    fetchOnUrlChange: true,
+  });
+  const { loading: careerLevelsLoading, data: jobCareerLevels } = useFetch<PaginatedResponse<Industry>>(selectedJobCategoryId && `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${selectedJobCategoryId}`, {
+    fetchOnce: false,
+    fetchOnUrlChange: true,
+  });
+  const { loading: specialtyLoading, data: jobSpecialities } = useFetch<PaginatedResponse<Industry>>(selectedJobCategoryId && API_GET_SPECIALITIES_BY_CATEGORY + selectedJobCategoryId, {
+    fetchOnce: false,
+    fetchOnUrlChange: true,
+  });
 
-  const specialtyHandler = async () => {
-    if (!selectedCategory) return;
-    const selectedCategoryObject = categories.find(
-      (c) => c.id === selectedCategory,
-    );
-    const specialties = selectedCategoryObject?.specialities;
-    const careerLevels = selectedCategoryObject?.careerLevels;
-    setSpecialties(specialties || []);
-    setCareerLevels(careerLevels || []);
-  };
-  useEffect(() => {
-    specialtyHandler();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, categories]);
-
-  const handleFetchCategories = async (selectedIndustry: string) => {
-    await dispatch(fetchCategories(selectedIndustry));
-  };
-  useEffect(() => {
-    if (selectedIndustry) {
-      handleFetchCategories(selectedIndustry);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedIndustry]);
-
-  useEffect(() => {
-    if (industries.length === 0) {
-      dispatch(fetchIndustries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
 
   return (
     <div>
@@ -94,41 +62,25 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               error={!!errors?.jobIndustryId?.message}
               fullWidth
             >
-              <Tooltip
-                title={!industryLoading ? undefined : "Industries are loading"}
-                placement="bottom"
-              >
-                <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
-                  {industryLoading
-                    ? [1, 2, 3, 4].map((i) => (
-                        <div
-                          key={i}
-                          className="flex h-[42px] max-w-[150px] animate-pulse items-center justify-center rounded-base border border-neutral-300"
-                        >
-                          <span className="rounded-md bg-gray-300 text-transparent">
-                            Demo Industry
-                          </span>
-                        </div>
-                      ))
-                    : industries.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => {
-                            setValue("jobCategoryId", "");
-                            setValue("jobSpecialityId", "");
-                            setValue("jobCareerLevelId", "");
-                            field.onChange(item.id);
-                            setValue("jobIndustryName", item.name);
-                          }}
-                          className={`h-[42px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
-                        >
-                          {item.name}
-                        </button>
-                      ))}
-                </div>
-              </Tooltip>
-
+              {/* TODO add icons here  */}
+              <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+                {industries?.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setValue("jobCategoryId", null);
+                      setValue("jobSpecialityId", null);
+                      setValue("jobCareerLevelId", null);
+                      setValue("jobIndustry", item.name);
+                      field.onChange(item.id);
+                    }}
+                    className={`h-[42px] w-full max-w-[150px] rounded-base border font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.jobIndustryId ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
               {errors.jobIndustryId && (
                 <p className="mt-2 text-sm text-red-500">
                   {errors.jobIndustryId.message}
@@ -149,7 +101,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               <FormControl error={Boolean(errors.jobCategoryId)} fullWidth>
                 <Tooltip
                   title={
-                    selectedIndustry
+                    selectedJobIndustryId
                       ? categoriesLoading
                         ? "loading..."
                         : undefined
@@ -162,8 +114,10 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const category = categories.find((x) => x.id === id);
-                      setValue("jobCategoryName", category?.name || "");
+                      const category = categories?.data?.find((x) => x.id === id);
+                      setValue("jobSpecialityId", null);
+                      setValue("jobCareerLevelId", null);
+                      setValue("jobCategory", category?.name || "");
                     }}
                     displayEmpty
                     MenuProps={{
@@ -172,9 +126,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                         sx: { maxHeight: 300 },
                       },
                     }}
-                    disabled={!selectedIndustry || categoriesLoading}
+                    disabled={!selectedJobIndustryId || categoriesLoading}
                     renderValue={(selected) => {
-                      const category = categories.find(
+                      const category = categories?.data.find(
                         (i) => i.id === selected,
                       );
                       if (!category) {
@@ -188,7 +142,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     <MenuItem value="" disabled>
                       <em>Select Job Category</em>
                     </MenuItem>
-                    {categories.map((item) => (
+                    {categories?.data?.map((item) => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.name}
                       </MenuItem>
@@ -215,7 +169,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               <FormControl fullWidth error={Boolean(errors.jobSpecialityId)}>
                 <Tooltip
                   title={
-                    selectedCategory
+                    selectedJobCategoryId
                       ? undefined
                       : "Please select Category first"
                   }
@@ -226,8 +180,8 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const specialty = specialties.find((x) => x.id === id);
-                      setValue("jobSpecialityName", specialty?.name || "");
+                      const specialty = jobSpecialities?.data?.find((x) => x.id === id);
+                      setValue("jobSpeciality", specialty?.name || "");
                     }}
                     MenuProps={{
                       disableScrollLock: true,
@@ -235,10 +189,10 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                         sx: { maxHeight: 300 },
                       },
                     }}
-                    disabled={!selectedCategory}
+                    disabled={!selectedJobCategoryId}
                     displayEmpty
                     renderValue={(selected) => {
-                      const specialty = specialties.find(
+                      const specialty = jobSpecialities?.data?.find(
                         (i) => i.id === selected,
                       );
                       if (!specialty) {
@@ -252,7 +206,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     <MenuItem value="" disabled>
                       <em>Select Specialty</em>
                     </MenuItem>
-                    {specialties.map((item) => (
+                    {jobSpecialities?.data?.map((item) => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.name}
                       </MenuItem>
@@ -280,7 +234,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
               <FormControl fullWidth error={Boolean(errors.jobCareerLevelId)}>
                 <Tooltip
                   title={
-                    selectedCategory
+                    selectedJobCategoryId
                       ? undefined
                       : "Please select Category first"
                   }
@@ -291,8 +245,8 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const career = careerLevels.find((x) => x.id === id);
-                      setValue("jobCareerLevelName", career?.name || "");
+                      const career = jobCareerLevels?.data?.find((x) => x.id === id);
+                      setValue("jobCareerLevel", career?.name || "");
                     }}
                     MenuProps={{
                       disableScrollLock: true,
@@ -301,9 +255,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                       },
                     }}
                     displayEmpty
-                    disabled={!selectedCategory}
+                    disabled={!selectedJobCategoryId}
                     renderValue={(selected) => {
-                      const careerLevel = careerLevels.find(
+                      const careerLevel = jobCareerLevels?.data.find(
                         (i) => i.id === selected,
                       );
                       if (!careerLevel) {
@@ -319,7 +273,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     <MenuItem value="" disabled>
                       <em>Select Career Level</em>
                     </MenuItem>
-                    {careerLevels.map((item) => (
+                    {jobCareerLevels?.data.map((item) => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.name}
                       </MenuItem>

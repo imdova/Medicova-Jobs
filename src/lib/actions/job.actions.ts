@@ -5,12 +5,14 @@ import {
   API_DELETE_JOB,
   API_GET_JOB_BY_ID,
   API_GET_JOBS,
+  API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_JOB,
 } from "@/api/employer";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { Gender } from "@/constants/enums/gender.enum";
 import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { JobData, Result } from "@/types";
+import { transformFromJsonStrings } from "@/util/job/post-job";
 import { revalidateTag } from "next/cache";
 
 export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
@@ -114,10 +116,10 @@ export const getJobsByCompanyId = async (
   companyId: string,
   page: number = 1,
   limit: number = 10,
-): Promise<Result<{ data: JobData[]; total: number }>> => {
+): Promise<Result<PaginatedResponse<JobData>>> => {
   try {
     const response = await fetch(
-      `${API_GET_JOBS}?page=${page}&limit=${limit}&companyIds=${companyId}`,
+      `${API_GET_JOBS_BY_COMPANY_ID}${companyId}?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -128,7 +130,7 @@ export const getJobsByCompanyId = async (
       },
     );
     if (response.ok) {
-      const data = await response.json();
+      const data: PaginatedResponse<JobData> = await response.json();
       return {
         success: true,
         message: "Jobs list fetched successfully",
@@ -159,18 +161,7 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
       next: { tags: [TAGS.jobs] },
     });
     if (response.ok) {
-      const data: JobData = await response.json();
-      data.companyId = data.company?.id || null;
-      data.jobCategoryId = data.jobCategory?.id || null;
-      data.jobCategoryName = data.jobCategory?.name || null;
-      data.jobIndustryId = data.jobIndustry?.id || null;
-      data.jobIndustryName = data.jobIndustry?.name || null;
-      data.jobSpecialityId = data.jobSpeciality?.id || null;
-      data.jobSpecialityName = data.jobSpeciality?.name || null;
-      data.jobCareerLevelId = data.jobCareerLevel?.id || null;
-      data.jobCareerLevelName = data.jobCareerLevel?.name || null;
-      data.jobEmploymentTypeId = data.jobEmploymentType?.id || null;
-      data.jobEmploymentTypeName = data.jobEmploymentType?.name || null;
+      const data = await response.json();
       return {
         success: true,
         message: "Job fetched successfully",
@@ -225,7 +216,7 @@ export const getJobsByFilters = async (
         }
       }
     });
-
+    //  TODO: filter is draft and inactive jobs
     const response = await fetch(`${API_GET_JOBS}?${queryParams.toString()}`, {
       method: "GET",
       headers: {

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Flag from "./flagitem";
 import SearchableSelect from "./SearchableSelect";
 import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js";
+import { isValidEgyptianPhoneNumber } from "@/util/forms";
 
 const formatCode = (code: string): string => {
   if (!code.startsWith("+")) {
@@ -21,7 +22,6 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
 
   const [countryCode, setCountryCode] = useState<string>("20"); // Default to Egypt
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [isValid, setIsValid] = useState<boolean>(true);
 
   useEffect(() => {
     if (countries.length === 0) {
@@ -50,24 +50,23 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
       input,
       country.isoCode as CountryCode,
     );
-    if (phoneNumberObj && phoneNumberObj.isValid()) {
-      // setPhoneNumber(phoneNumberObj.formatInternational());
-      setIsValid(true);
-      if (props.onChange) {
-        const syntheticEvent = {
-          target: { value: phoneNumberObj.number },
-        } as unknown as React.ChangeEvent<HTMLInputElement>;
-        props.onChange(syntheticEvent);
-      }
-    } else {
-      setIsValid(false);
+    if (props.onChange) {
+      const syntheticEvent = {
+        target: { value: phoneNumberObj?.number || "" },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      props.onChange(syntheticEvent);
     }
   };
 
+  const getOnlyPhoneNumber = (number: string) => {
+    const phoneNumberObj = parsePhoneNumberFromString(number);
+    return phoneNumberObj?.nationalNumber;
+  };
   return (
     <div className="flex">
       <SearchableSelect
         displayEmpty
+        IconComponent={() => null}
         options={countries.map((x) => ({
           value: x.phonecode,
           label: `${x.name} (${formatCode(x.phonecode)})`,
@@ -83,7 +82,7 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
             item && (
               <div className="flex items-center">
                 <Flag code={item.isoCode.toLowerCase()} name={item.name} />
-                <p className="ml-2 min-w-12">{formatCode(selected)}</p>
+                <p className="ml-2 max-w-12">{formatCode(selected)}</p>
               </div>
             )
           );
@@ -91,13 +90,12 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
       />
       <TextField
         {...props}
-        error={!isValid}
-        helperText={!isValid ? "Invalid phone number" : ""}
         sx={{
           "& fieldset": { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
           ...props.sx,
         }}
-        value={phoneNumber}
+        defaultValue={phoneNumber || getOnlyPhoneNumber(props.value as string)}
+        value={phoneNumber ? phoneNumber : undefined}
         onChange={handlePhoneChange}
       />
     </div>

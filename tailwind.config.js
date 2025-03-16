@@ -21,6 +21,9 @@ module.exports = {
       scale: {
         102: "1.02",
       },
+      boxShadow: {
+        soft: "0 0 15px 0 rgba(0,0,0,0.05)",
+      },
       borderRadius: {
         base: "10px",
       },

@@ -16,6 +16,7 @@ interface ReviewPublishStepProps {
   onBack: () => void;
   loading: boolean;
   draftLoading: boolean;
+  isDirty: boolean;
   error: string;
 }
 const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
@@ -26,6 +27,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
   loading,
   draftLoading,
   error,
+  isDirty,
 }) => {
   const education = formatEducationAndSpecialty(jobData);
   return (
@@ -55,7 +57,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
               <div className="rounded-md text-sm text-gray-500">
                 <MedicalServicesOutlined className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
                 <span className="ml-2 text-xs md:text-base">
-                  {jobData.jobCategoryName}
+                  {jobData.jobCategory}
                 </span>
               </div>
             </div>
@@ -142,17 +144,23 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
         </div>
       </div>
       <p className="text-red-500"> {error}</p>
-      <div className="space-between sticky bottom-0 mt-5 flex gap-2 md:justify-end">
-        <Button onClick={onBack} variant="outlined">
+      <div className="space-between sticky bottom-5 mt-5 flex gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:justify-end">
+        <Button onClick={() => onBack()} variant="outlined">
           Back
         </Button>
         <Button
           onClick={() => onDraft()}
+          disabled={draftLoading || !isDirty}
           className="bg-[#FFAE35] text-[#464748] hover:bg-[#e19e39]"
         >
           {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>
-        <Button onClick={onSubmit} type="submit" variant="contained">
+        <Button
+          disabled={loading || !isDirty}
+          onClick={() => onSubmit()}
+          type="submit"
+          variant="contained"
+        >
           {loading ? "Loading..." : jobData.id ? "Update" : "Publish"}
         </Button>
       </div>

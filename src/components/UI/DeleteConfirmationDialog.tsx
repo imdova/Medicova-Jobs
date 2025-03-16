@@ -33,15 +33,15 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         },
       }}
     >
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle className="text-red-600" >{title}</DialogTitle>
       <DialogContent>
         <p className="text-secondary">{message}</p>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary" variant="outlined">
+        <Button onClick={onClose} color="secondary" variant="outlined">
           No
         </Button>
-        <Button onClick={onDelete} color="primary" variant="contained" >
+        <Button onClick={onDelete} color="error" variant="contained" >
           Yes, Delete
         </Button>
       </DialogActions>

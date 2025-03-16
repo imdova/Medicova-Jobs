@@ -5,22 +5,20 @@ import { extensions } from "./extensions";
 import { BlockEditorToolbar, EditorToolbar } from "./editor-toolbar";
 import { EditorContentWrapper } from "./editor-content";
 import { useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, TextFieldProps } from "@mui/material";
 
-interface TextEditorProps {
-  value: string;
-  onChange: (e: string) => void;
-}
-
-export default function TextEditor({ value, onChange }: TextEditorProps) {
+const TextEditor: React.FC<TextFieldProps> = ({ value, onChange }) => {
   const editor = useEditor({
     extensions,
-    content: value,
+    content: value as string,
   });
 
   useEffect(() => {
-    if (editor) {
-      onChange(editor.getHTML());
+    if (editor && onChange) {
+      const syntheticEvent = {
+        target: { value: editor.getHTML() || "" },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      onChange(syntheticEvent);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor?.getHTML()]);
@@ -34,7 +32,7 @@ export default function TextEditor({ value, onChange }: TextEditorProps) {
       <EditorContentWrapper editor={editor} />
     </div>
   );
-}
+};
 
 export const BlockTextEditor: React.FC<{
   value: string;
@@ -82,3 +80,5 @@ export const BlockTextEditor: React.FC<{
     </div>
   );
 };
+
+export default TextEditor;

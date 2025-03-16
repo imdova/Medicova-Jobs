@@ -26,7 +26,6 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/auth/*", headerType: "minimal", linksType: "userType" },
   //employer
   { pattern: "/employer/*", headerType: "full", linksType: "userType" },
-  { pattern: "/employer/search", headerType: "transparent", linksType: "userType" },
   //job-seeker
   { pattern: "/job-seeker/*", headerType: "full", linksType: "userType" },
 ];

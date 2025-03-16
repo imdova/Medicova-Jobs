@@ -1,29 +1,21 @@
-import Image from "next/image";
-
 export default function NotFoundPage() {
   return (
-    <div className="flex h-full flex-col items-center justify-center bg-white text-main">
-      <div className="px-6 text-center">
-        <h1 className="mb-6 bg-gradient-to-r from-primary to-light-primary bg-clip-text text-[9rem] font-extrabold tracking-tight text-transparent">
-          404
-        </h1>
-        <p className="mb-4 text-2xl font-semibold text-secondary">
-          Page Not Found
+    <div className="grid h-[90vh] place-content-center bg-white px-4">
+      <div className="text-center">
+        <h1 className="text-9xl font-black text-gray-200">404</h1>
+
+        <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Sorry!
         </p>
-        <p className="mb-8 text-lg text-secondary">
-          We couldn&apos;t find the page you were looking for. It might have
-          been moved or deleted.
-        </p>
+
+        <p className="mt-4 text-gray-500">We can&apos;t find that page.</p>
+
         <a
           href="/"
-          className="inline-block transform rounded-lg bg-primary px-8 py-3 text-lg font-semibold text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary-900"
+          className="focus:ring-3 focus:outline-hidden bg-primary mt-6 inline-block rounded-3xl px-5 py-3 font-medium text-white hover:bg-primary-900"
         >
           Go Back Home
         </a>
-      </div>
-
-      <div className="absolute bottom-4 text-sm text-secondary">
-        <p>© {new Date().getFullYear()} Medicova. All rights reserved.</p>
       </div>
     </div>
   );

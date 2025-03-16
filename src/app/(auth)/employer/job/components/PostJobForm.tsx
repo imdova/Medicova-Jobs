@@ -1,326 +1,245 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Typography, Stepper, Step, StepLabel } from "@mui/material";
+import React, { act } from "react";
+import { useSession } from "next-auth/react";
+import { Stepper, Step, StepLabel, Alert, Snackbar } from "@mui/material";
+import {
+  JobData,
+  UserState,
+  NotificationType,
+  Industry,
+  EmploymentType,
+} from "@/types";
+// Components
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
 import ReviewPublishStep from "./steps/ReviewPublishStep";
-import { JobData, UserState } from "@/types";
-import { useSession } from "next-auth/react";
-import { createJob, updateJob } from "@/lib/actions/job.actions";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store/hooks";
-import { addNewJob, updateJobOptimistic } from "@/store/slices/jobSlice";
-import { useFormDirty } from "@/hooks/useFormDirty";
-import { usePrompt } from "@/hooks/usePrompt";
-import { convertEmptyStringsToNull, hasDataChanged } from "@/util";
-import { SalaryCurrency } from "@/constants/enums/currency.enum";
+import { INITIAL_JOB_DATA } from "@/constants/jobs/post-job";
+import { API_CREATE_JOB } from "@/api/employer";
+import { TAGS } from "@/api";
+import useUpdateApi from "@/hooks/useUpdateApi";
 import useIsLeaving from "@/hooks/useIsLeaving";
+import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
+import { useRouter } from "next/navigation";
 
-const steps = [
+// Constants
+const FORM_STEPS = [
   "Job Details",
-  "Screening Questions(Optional)",
+  "Screening Questions (Optional)",
   "Review & Publish",
-];
+] as const;
 
-const initialJob: JobData = {
-  companyId: null,
-  title: "",
-  jobIndustryId: null,
-  jobIndustryName: null,
-  jobSpecialityId: null,
-  jobSpecialityName: null,
-  jobCategoryId: null,
-  jobCategoryName: null,
-  jobCareerLevelId: null,
-  jobCareerLevelName: null,
-  jobEmploymentTypeId: null,
-  jobEmploymentTypeName: null,
-  jobWorkPlace: null,
-  gender: null,
-  minAge: null,
-  maxAge: null,
-  educationLevel: null,
-  country: null,
-  city: null,
-  maxExpYears: null,
-  minExpYears: null,
-  hideSalary: true,
-  salaryRangeStart: null,
-  salaryRangeEnd: null,
-  salaryCurrency: SalaryCurrency.USD,
-  availableVacancies: 1,
-  description: null,
-  requirements: null,
-  salaryDetails: null,
-  keywords: [],
-  skills: [],
-  questions: [],
-  showCompany: true,
-  recieveEmails: true,
-  jobEmail: null,
-  draft: false,
-  active: true,
-  closed: false,
-  startDateType: null,
-  validTo: null,
-};
-//   companyId: "",
-//   title: "",
-//   jobIndustryId: "",
-//   jobSpecialityId: "",
-//   jobCategoryId: "",
-//   jobCareerLevelId: "",
-//   jobEmploymentTypeId: "",
-//   jobWorkPlace: null,
-//   gender: null,
-//   minAge: null,
-//   maxAge: null,
-//   educationLevel: null,
-//   country: "",
-//   city: null,
-//   maxExpYears: null,
-//   minExpYears: null,
-//   hideSalary: true,
-//   salaryRangeStart: null,
-//   salaryRangeEnd: null,
-//   salaryCurrency: null,
-//   availableVacancies: null,
-//   description: null,
-//   requirements: null,
-//   salaryDetails: null,
-//   keywords: [],
-//   skills: [],
-//   questions: [],
-//   showCompany: true,
-//   recieveEmails: true,
-//   jobEmail: null,
-//   draft: false,
-//   active: true,
-//   closed: false,
-//   startDateType: null,
-//   jobSectorId: "",
-//   validTo: null,
-// };
-type PostJobFormProps = {
+interface PostJobFormProps {
   job?: JobData;
-};
-const PostJobForm: React.FC<PostJobFormProps> = ({ job }) => {
-  const route = useRouter();
+  industries: Industry[];
+  employmentTypes: EmploymentType[];
+}
+
+const PostJobForm: React.FC<PostJobFormProps> = ({
+  job,
+  industries,
+  employmentTypes,
+}) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user as UserState;
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
-
-  const dispatch = useAppDispatch();
-  const { isDirty, markAsDirty, markAsClean } = useFormDirty();
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [jobData, setJobData] = React.useState(job || INITIAL_JOB_DATA);
+  const [notification, setNotification] =
+    React.useState<NotificationType | null>(null);
+  const [isDirty, setIsDirty] = React.useState(false);
   const { isLeaving, handleUserDecision } = useIsLeaving({
-    preventDefault: true,
+    preventDefault: isDirty,
   });
-
-  const [activeStep, setActiveStep] = useState(0);
-  const [jobData, setJobData] = useState(job ? job : initialJob);
-
-  const [loading, setLoading] = useState(false);
-  const [draftLoading, setDraftLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-
-  const handleNext = () => {
-    if (activeStep !== null && activeStep < steps.length - 1) {
-      setActiveStep((prevStep) => (prevStep !== null ? prevStep + 1 : 0));
-    }
+  const handleNavigation = {
+    next: () =>
+      setActiveStep((prev) => Math.min(prev + 1, FORM_STEPS.length - 1)),
+    back: (data?: Partial<JobData>) => {
+      data && setJobData({ ...jobData, ...data, companyId });
+      setActiveStep((prev) => Math.max(prev - 1, 0));
+    },
   };
 
-  const handleBack = () => {
-    if (activeStep !== null && activeStep > 0) {
-      setActiveStep((prevStep) => (prevStep !== null ? prevStep - 1 : 0));
-    }
-  };
+  const { isLoading, error, update } = useUpdateApi<JobData>(handleSuccess);
+  const {
+    isLoading: draftLoading,
+    error: draftingError,
+    update: draft,
+    reset: resetDraftError,
+  } = useUpdateApi<JobData>();
 
-  const onFirstStepSubmit = (data: JobData) => {
-    const newData = { ...jobData, ...data, companyId };
-    handleNext();
-    setJobData(newData);
-    console.log(newData);
+  const createJob = async () => {
+    const body = { ...jobData, companyId, draft: false, active: true };
+    await update(API_CREATE_JOB, { method: "POST", body }, TAGS.jobs);
   };
-  const onSecondStepSubmit = (data: Partial<JobData>) => {
-    const newData = { ...jobData, ...data, companyId };
-    handleNext();
-    setJobData(newData);
-    console.log(newData);
+  const updateJob = async () => {
+    const body = { ...jobData, draft: false, active: true };
+    await update(API_CREATE_JOB, { body }, TAGS.jobs);
   };
-  const publish = async () => {
-    const newData = {
-      ...jobData,
-      companyId,
-      draft: false,
-    };
-    setLoading(true);
-    if (jobData.id) {
-      await handleUpdate(newData);
+  const draftJob = async (body: Partial<JobData>, preventDefault: boolean) => {
+    body.country =
+      body.country?.name && body.country?.code ? body.country : null;
+    body.city = body.city ? body.city : null;
+    if (body.id) {
+      const data = await draft(API_CREATE_JOB, { body }, TAGS.jobs);
+      handleDraftSuccess(data, preventDefault);
     } else {
-      await handleCreate(newData);
+      const data = await draft(
+        API_CREATE_JOB,
+        { method: "POST", body },
+        TAGS.jobs,
+      );
+      handleDraftSuccess(data, preventDefault);
     }
-    setLoading(false);
   };
 
-  const onDraft = async (data?: Partial<JobData>) => {
-    const newData = {
-      ...jobData,
-      ...data,
-      companyId,
-      draft: true,
-    };
-    setDraftLoading(true);
-    if (jobData.id) {
-      await handleUpdate(newData);
-    } else {
-      await handleCreate(newData);
-    }
-    setDraftLoading(false);
-  };
-  const handleCreate = async (data: JobData) => {
-    const result = await createJob(convertEmptyStringsToNull(data));
-    if (result.success && result.data) {
-      const job = result.data;
-      dispatch(addNewJob(job));
-      markAsClean();
-      route.push(`/job/${job.id}`);
-      console.log("Job Created successfully");
-    } else {
-      setError(result.message);
-    }
-    return result;
-  };
-  const handleUpdate = async (data: JobData) => {
-    const result = await updateJob(convertEmptyStringsToNull(data));
-    if (result.success && result.data) {
-      const job = result.data;
-      route.push(`/job/${job.id}`);
-      dispatch(updateJobOptimistic(job));
-      markAsClean();
-      console.log("Job Updated successfully");
-    } else {
-      setError(result.message);
-    }
-    return result;
-  };
-
-  // Effect to determine if the form data has been modified.
-  // usePrompt("You have unsaved changes. Leave screen?", isDirty); // Prompts the user if they attempt to leave with unsaved changes.
-
-  useEffect(() => {
-    if (job && jobData) {
-      if (hasDataChanged(job, jobData)) {
-        markAsDirty();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [job, jobData]);
-
-  if (activeStep === null) {
-    // Prevent rendering until `activeStep` is initialized
-    return null;
+  async function handleSuccess(newJob: JobData) {
+    router.push(`/job/${newJob.id}`);
+  }
+  async function handleDraftSuccess(newJob: JobData, preventDefault: boolean) {
+    if (preventDefault) return;
+    setJobData(newJob);
+    !jobData.id &&
+      router.replace("/employer/job/posted/" + newJob.id, { scroll: false });
+    setNotification({
+      message: "Your job has been saved to draft",
+      severity: "success",
+    });
   }
 
+  const handleStepSubmit = {
+    jobDetails: (data: JobData, isClean?: boolean) => {
+      setIsDirty(!isClean);
+      setJobData({ ...jobData, ...data, companyId });
+      handleNavigation.next();
+    },
+    screening: (data: Partial<JobData>) => {
+      setIsDirty(true);
+      setJobData({ ...jobData, ...data, companyId });
+      handleNavigation.next();
+    },
+    publish: async () => {
+      setIsDirty(false);
+      if (jobData.id) {
+        updateJob();
+      } else {
+        createJob();
+      }
+    },
+    draft: async (data?: Partial<JobData>, preventDefault: boolean = false) => {
+      setIsDirty(false);
+      const jobToSave = {
+        ...jobData,
+        ...data,
+        companyId,
+        draft: true,
+        active: false,
+      };
+      draftJob(jobToSave, preventDefault);
+    },
+  };
+
   return (
-    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      {/* Header */}
-      {isLeaving && (
-        <div className="modal">
-          <h2>Are you sure you want to leave?</h2>
-          <p>You might have unsaved changes.</p>
-          <div>
-            <button onClick={() => handleUserDecision(true)}>Yes, Leave</button>
-            <button onClick={() => handleUserDecision(false)}>Stay</button>
-          </div>
-        </div>
-      )}
-      <Typography
-        className="text-main"
-        variant="h4"
-        sx={{
-          textAlign: "center",
-          fontWeight: "bold",
-          mb: 4,
+    <div className="space-y-4">
+      <LeaveConfirmationModal
+        isOpen={isLeaving && isDirty}
+        additionalButtons={[
+          {
+            text: "Save Draft",
+            onClick: () => {
+              handleUserDecision(true);
+              handleStepSubmit.draft({}, true);
+            },
+            color: "warning",
+            variant: "contained",
+          },
+        ]}
+        onLeave={() => {
+          handleUserDecision(true);
         }}
-      >
-        Post Job Now
-      </Typography>
+        onStay={() => {
+          handleUserDecision(false);
+        }}
+      />
+      <div className="rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+        <h1 className="text-center text-xl font-semibold tracking-tight text-main focus:outline-none md:text-2xl">
+          Post Job Now
+        </h1>
 
-      {/* Progress Indicator using Stepper */}
-      <Stepper
-        activeStep={activeStep}
-        alternativeLabel
-        sx={{
-          mb: 4,
-          "& .MuiStepConnector-line": {
-            borderColor: (theme) =>
-              activeStep > 0 ? "rgba(46, 174, 125, 1)" : theme.palette.divider,
-          },
-          "& .MuiStepIcon-root": {
-            color: "var(--text-secondary)",
-          },
-          "& .MuiStepIcon-text": {
-            fill: "var(--primary-foreground)", // Example: White text
-          },
-          "& .MuiStepIcon-root.Mui-active": {
-            color: "var(--primary)",
-          },
-          "& .MuiStepIcon-root.Mui-completed": {
-            color: "var(--primary)",
-          },
-        }}
-      >
-        {steps.map((label, index) => (
-          <Step key={label} completed={activeStep > index}>
-            <StepLabel
-              sx={{
-                "& .MuiStepLabel-label": {
-                  fontWeight: activeStep === index ? "bold" : "normal",
-                  color:
-                    activeStep === index
-                      ? "rgba(24, 93, 67, 1)"
-                      : "rgba(81, 91, 111, 1)",
-                },
-              }}
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {FORM_STEPS.map((label) => (
+            <Step
+              key={label}
+              completed={activeStep > FORM_STEPS.indexOf(label)}
             >
-              {label}
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </div>
 
-      {/* Form Section */}
       <div className="grid gap-3">
         {activeStep === 0 && (
           <JobDetailsStep
             jobData={jobData}
-            onDraft={onDraft}
-            onSubmit={onFirstStepSubmit}
+            initialJobData={job || INITIAL_JOB_DATA}
+            industries={industries}
+            employmentTypes={employmentTypes}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.jobDetails}
             draftLoading={draftLoading}
+            isDirty={isDirty}
           />
         )}
+
         {activeStep === 1 && (
           <ScreeningQuestionsStep
-            jobData={{ ...jobData, jobEmail: companyEmail }}
-            onBack={handleBack}
-            onDraft={onDraft}
-            onSubmit={onSecondStepSubmit}
+            jobData={{ ...jobData, jobEmail: jobData.jobEmail || companyEmail }}
+            onBack={handleNavigation.back}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.screening}
             draftLoading={draftLoading}
+            isDirty={isDirty}
           />
         )}
+
         {activeStep === 2 && (
           <ReviewPublishStep
-            onBack={handleBack}
             jobData={jobData}
-            onDraft={onDraft}
-            onSubmit={publish}
-            loading={loading}
+            onBack={handleNavigation.back}
+            onDraft={handleStepSubmit.draft}
+            onSubmit={handleStepSubmit.publish}
+            loading={isLoading}
             draftLoading={draftLoading}
-            error={error}
+            error={error?.message || ""}
+            isDirty={isDirty}
           />
         )}
       </div>
+
+      <Snackbar
+        open={!!notification || !!draftingError}
+        autoHideDuration={6000}
+        onClose={() => {
+          setNotification(null);
+          resetDraftError();
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setNotification(null);
+            resetDraftError();
+          }}
+          severity={
+            notification?.severity || (draftingError ? "error" : "info")
+          }
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {notification?.message || draftingError?.message || ""}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

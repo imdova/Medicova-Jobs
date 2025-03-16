@@ -4,35 +4,24 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Folder } from "@/types";
-import { createUrl, getLastEdit } from "@/util";
+import { getFullLastEdit, getLastEdit } from "@/util";
 
 interface FolderMainCardProps {
   folder: Folder;
+  onEdit?: (folder: Folder) => void;
+  onDelete?: (folder: Folder) => void;
 }
 
-const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
+const FolderMainCard: React.FC<FolderMainCardProps> = ({
+  folder,
+  onEdit,
+  onDelete,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  function edit() {
-    handleClose();
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set("fname", "Cardiology Specialists");
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl, { scroll: false });
-  }
+  const onOpen = (event: any) => setAnchorEl(event.currentTarget);
+  const onClose = () => setAnchorEl(null);
 
   return (
     <div>
@@ -40,23 +29,33 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
         id="Action-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
         className="mt-2"
       >
-        <MenuItem
-          onClick={edit}
-          className="flex items-center gap-2 px-2 text-black/80 hover:bg-gray-200"
-        >
-          <Edit className="h-5 w-5" />
-          Edit
-        </MenuItem>
-        <MenuItem
-          onClick={handleClose}
-          className="flex items-center gap-2 px-2 text-black/80 hover:bg-gray-200"
-        >
-          <Delete className="h-5 w-5" />
-          Delete
-        </MenuItem>
+        {onEdit && (
+          <MenuItem
+            onClick={() => {
+              onEdit(folder);
+              onClose();
+            }}
+            className="group flex min-w-36 items-center gap-2 px-2 text-sm text-secondary hover:bg-primary-100"
+          >
+            <Edit className="h-4 w-4 group-hover:text-primary" />
+            Edit
+          </MenuItem>
+        )}
+        {onDelete && (
+          <MenuItem
+            onClick={() => {
+              onDelete(folder);
+              onClose();
+            }}
+            className="group flex min-w-24 items-center gap-2 px-2 text-sm text-secondary hover:bg-red-100"
+          >
+            <Delete className="h-4 w-4 group-hover:text-red-500" />
+            Delete
+          </MenuItem>
+        )}
       </Menu>
       <div className="relative">
         <Link
@@ -64,32 +63,37 @@ const FolderMainCard: React.FC<FolderMainCardProps> = ({ folder }) => {
           className="group relative flex h-[100px] items-center justify-center rounded-md bg-[#ECF0F3] duration-150 hover:bg-[#D6DDEB] md:min-w-40"
         >
           <Image
-            src="/images/folder.png"
+            src="/images/folder.svg"
             width={40}
             height={40}
             alt="folder icon"
             className="object-contain duration-300 group-hover:scale-110"
           />
         </Link>
-        <IconButton
-          onClick={handleClick}
-          aria-controls={open ? "save-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-secondary"
-        >
-          <MoreHoriz />
-        </IconButton>
-        <div className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary">
-          <span>{folder.candidates}</span>
-        </div>
+        {(onDelete || onEdit) && (
+          <IconButton
+            onClick={onOpen}
+            aria-controls={open ? "save-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white text-secondary"
+          >
+            <MoreHoriz className="h-6 w-6" />
+          </IconButton>
+        )}
+        <p className="absolute bottom-2 right-2 text-sm">
+          {folder.seekersCount || 0}
+        </p>
       </div>
 
-      <h6 className="mt-2 px-2 text-base font-semibold md:text-lg">
+      <Link
+        href={`/employer/search/saved-search/${folder.id}`}
+        className="mt-2 line-clamp-2 px-2 text-base font-semibold hover:underline md:text-lg"
+      >
         {folder.name}
-      </h6>
+      </Link>
       <p className="mb-2 px-2 text-xs text-black/50 md:text-sm">
-        {getLastEdit(folder.lastModified)}
+        {getFullLastEdit(folder.created_at)}
       </p>
     </div>
   );

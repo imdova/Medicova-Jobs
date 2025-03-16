@@ -32,7 +32,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 0,
       type: "profile",
-      path: "/co/[id]",
+      pattern: "/co/[id]",
     },
     {
       id: 1,
@@ -57,6 +57,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "Manage Jobs",
           icon: WorkOutline,
           path: "/employer/job/manage-jobs",
+          pattern: "/employer/job/manage-jobs/*",
           type: "supLink",
         },
         {
@@ -64,6 +65,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "Post New Job",
           icon: PostAddOutlined,
           path: "/employer/job/posted",
+          pattern: "/employer/job/posted/*",
           type: "supLink",
         },
       ],
@@ -86,6 +88,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           label: "My Folders",
           icon: FolderOutlined,
           path: "/employer/search/saved-search",
+          pattern: "/employer/search/saved-search/*",
           type: "supLink",
         },
       ],
@@ -116,10 +119,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       notifications: 4,
     },
     {
-      id: 14,
-      type: "divider",
-    },
-    {
       id: 15,
       type: "text",
       section: "Settings",
@@ -148,7 +147,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 0,
       type: "profile",
-      path: "/me/[id]",
+      pattern: "/me/[id]",
     },
     {
       id: 18,
@@ -188,10 +187,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       path: "/notifications",
       notifications: 4,
     },
-    {
-      id: 25,
-      type: "divider",
-    },
+
     {
       id: 26,
       section: "Settings",

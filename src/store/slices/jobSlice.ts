@@ -1,10 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { JobData } from "@/types";
-import {
-  deleteJob,
-  getJobsByCompanyId,
-  updateJob,
-} from "@/lib/actions/job.actions";
+import { TAGS } from "@/api";
+import { API_DELETE_JOB, API_GET_JOBS, API_UPDATE_JOB } from "@/api/employer";
+import revalidateTag from "@/lib/revalidate";
 
 interface JobState {
   jobs: {
@@ -27,9 +25,17 @@ export const fetchJobs = createAsyncThunk(
   "job/fetchJobs",
   async (companyId: string, { rejectWithValue }) => {
     try {
-      const result = await getJobsByCompanyId(companyId);
-      if (result.success && result.data) {
-        return result.data.data;
+      const response = await fetch(`${API_GET_JOBS}?companyIds=${companyId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        next: { tags: [TAGS.jobs] },
+      });
+      if (response.ok) {
+        const data: PaginatedResponse<JobData> = await response.json();
+        return data.data;
       }
       return rejectWithValue("Failed to fetch jobs");
     } catch (error) {
@@ -45,9 +51,18 @@ export const updateCompanyJob = createAsyncThunk(
   "job/updateCompanyJob",
   async (job: Partial<JobData>, { rejectWithValue }) => {
     try {
-      const result = await updateJob(job);
-      if (result.success && result.data) {
-        return result.data;
+      const response = await fetch(API_UPDATE_JOB, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(job),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        revalidateTag(TAGS.jobs);
+        return data;
       }
       return rejectWithValue("Failed to update job");
     } catch (error) {
@@ -62,8 +77,15 @@ export const removeCompanyJob = createAsyncThunk(
   "job/removeCompanyJob",
   async (jobId: string, { rejectWithValue }) => {
     try {
-      const result = await deleteJob(jobId);
-      if (result.success) {
+      const response = await fetch(API_DELETE_JOB + jobId, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      });
+      if (response.ok) {
+        revalidateTag(TAGS.jobs);
         return jobId;
       }
       return rejectWithValue("Failed to remove job");

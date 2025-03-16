@@ -22,15 +22,34 @@ export const formatDate = (date: Date): string => {
   const d = new Date(date);
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
-
 export function formatName(
-  firstName: string | null,
-  lastName?: string | null,
+  {
+    firstName,
+    lastName,
+  }: {
+    firstName: string;
+    lastName: string;
+  },
+  isAvailable?: boolean,
 ): string {
-  if (!firstName || !lastName) return "";
+  if (isAvailable) {
+    return `${firstName} ${lastName}`;
+  }
   const lastNameInitial = lastName.charAt(0).toUpperCase();
   return `${firstName} .${lastNameInitial}`;
 }
+export function formatFullName(fullName: string): string {
+  const nameParts = fullName.trim().split(" ");
+  if (nameParts.length < 2) {
+    return fullName;
+  }
+  const firstName = nameParts[0];
+  const lastNameInitial = nameParts[nameParts.length - 1]
+    .charAt(0)
+    .toUpperCase();
+  return `${firstName} .${lastNameInitial}`;
+}
+
 export function getLastEdit(date: Date): string {
   const currentDate = new Date();
   const diffTime = Math.abs(currentDate.getTime() - date.getTime());
@@ -85,15 +104,24 @@ export function getLastSegment(url?: string) {
   return segments.length > 0 ? segments[segments.length - 1] : null; // Return the last segment
 }
 
-export const isCurrentPage = (pathname: string, linkPath: string): boolean => {
-  // Convert the linkPath into a regex pattern
-  const regexPattern = linkPath
-    .replace(/\[.*?\]/g, "[^/]+") // Replace dynamic segments (e.g., [id]) with a regex to match any non-slash characters
-    .replace(/\//g, "\\/"); // Escape slashes for regex
+export const isCurrentPage = (pathname?: string, pattern?: string): boolean => {
+  if (!pathname || !pattern) return false;
+  // Handle dynamic segments (e.g., "/user/[id]")
+  const regexPattern = pattern
+    .replace(/\[.*?\]/g, "[^/]+") // Replace dynamic segments with wildcard regex
+    .replace(/\//g, "\\/"); // Escape slashes
 
-  // Create the regex and test the pathname
-  const regex = new RegExp(`^${regexPattern}$`);
-  return regex.test(pathname);
+  const exactRegex = new RegExp(`^${regexPattern}$`);
+  if (exactRegex.test(pathname)) return true;
+
+  // Handle wildcard patterns (e.g., "/dashboard/*")
+  if (pattern.includes("*")) {
+    const wildcardPattern = pattern.replace(/\*/g, ".*");
+    const wildcardRegex = new RegExp(`^${wildcardPattern}`);
+    return wildcardRegex.test(pathname);
+  }
+
+  return false;
 };
 
 export const createUrl = (
@@ -144,13 +172,13 @@ export const formatEducationAndSpecialty = (job: JobData): string | null => {
   }
   switch (education.id) {
     case EducationLevel.HIGH_SCHOOL:
-      return `High School Diploma in ${job.jobSpecialityName}`;
+      return `High School Diploma in ${job.jobSpeciality}`;
     case EducationLevel.BACHELORS:
-      return `Bachelor's Degree in ${job.jobSpecialityName}`;
+      return `Bachelor's Degree in ${job.jobSpeciality}`;
     case EducationLevel.MASTERS:
-      return `Master's Degree in ${job.jobSpecialityName}`;
+      return `Master's Degree in ${job.jobSpeciality}`;
     case EducationLevel.PHD:
-      return `PhD in ${job.jobSpecialityName}`;
+      return `PhD in ${job.jobSpeciality}`;
     default:
       return null;
   }

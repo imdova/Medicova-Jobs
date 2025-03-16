@@ -1,79 +1,16 @@
-"use client";
-import FolderMainCard from "@/components/UI/folder-main-card";
-import FolderModal from "@/components/UI/folder-modal";
-import CandidateTable from "@/components/UI/folders-table";
-import { folders } from "@/constants";
-import { Add, Search } from "@mui/icons-material";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import { Suspense, useState } from "react";
+import { getServerSession } from "next-auth";
+import FolderResults from "./foldersResult";
+import { authOptions } from "@/lib/auth/config";
+import { notFound } from "next/navigation";
+import { getPaginatedFolders } from "@/lib/actions/employer.actions";
 
-const SavedSearchPage: React.FC = ({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
-  const { fname } = searchParams as {
-    [key: string]: string;
-  };
-
-  const [openModal, setOpenModal] = useState(false);
-
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  return (
-    <div className="p-2 md:p-5">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Folders</h1>
-        <IconButton
-          onClick={handleOpenModal}
-          className="rounded-md border border-solid border-[#D6DDEB] p-2"
-        >
-          <Add />
-        </IconButton>
-      </div>
-      <div className="p-2">
-        <h2 className="mb-4 text-2xl font-semibold">Recently Used</h2>
-        <div className="grid grid-cols-2 flex-wrap gap-2 md:grid-cols-3 lg:grid-cols-5">
-          {folders.slice(0, 5).map((folder, index) => (
-            <FolderMainCard key={index} folder={folder} />
-          ))}
-        </div>
-      </div>
-      <div className="p-2">
-        <div className="mb-4">
-          <h2 className="text-2xl font-semibold">All folders</h2>
-          <TextField
-            variant="outlined"
-            placeholder="Search folders"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-              classes: {
-                input: "p-2", // Add padding to the input element
-              },
-            }}
-          />
-        </div>
-        <div className="max-w-[calc(100vw-50px)] overflow-x-auto">
-          <CandidateTable data={folders.slice(5)} />
-        </div>
-      </div>
-      <Suspense>
-        <FolderModal
-          open={openModal || !!fname}
-          type={fname ? "edit" : "create"}
-          folderName={fname}
-          onClose={handleCloseModal}
-        />
-      </Suspense>
-    </div>
-  );
+const Page = async () => {
+  const data = await getServerSession(authOptions);
+  const user = data?.user;
+  if (!user?.companyId) return notFound();
+  const result = await getPaginatedFolders(user?.companyId);
+  const { data: folders } = result.data || { data: [], total: 0 };
+  return <FolderResults folders={folders} total={result.data?.total || 0} companyId={user.companyId} />;
 };
 
-export default SavedSearchPage;
+export default Page;

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { FieldConfig, UserProfile } from "@/types";
+import { FieldConfig } from "@/types";
 import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
 import DynamicFormModal from "@/components/form/DynamicFormModal";

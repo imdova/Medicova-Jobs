@@ -73,17 +73,13 @@ const FilterItem: React.FC<FilterItemProps> = ({
 
   return (
     <div className="border-b pb-4 last:border-b-0">
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography
-          variant="h6"
-          className="mb-3 text-[14px] font-bold text-[#25324B]"
-        >
-          {section.title}
-        </Typography>
-        <IconButton onClick={toggleExpand} size="small">
-          {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
-      </Box>
+      <div
+        className="flex mb-3 cursor-pointer items-center justify-between"
+        onClick={toggleExpand}
+      >
+        <h6 className=" font-bold text-[#25324B]">{section.title}</h6>
+        {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      </div>
 
       <Collapse className="px-1" in={isExpanded}>
         <FormControl component="fieldset">

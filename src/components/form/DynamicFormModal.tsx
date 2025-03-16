@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import {
   Dialog,
   DialogTitle,
@@ -14,9 +14,11 @@ import {
   Checkbox,
   FormControlLabel,
   FormHelperText,
+  Alert,
 } from "@mui/material";
-import { useFormDirty } from "@/hooks/useFormDirty";
 import { FieldConfig } from "@/types";
+import useIsLeaving from "@/hooks/useIsLeaving";
+import LeaveConfirmationModal from "../UI/LeaveConfirmationModal";
 
 interface DynamicModalProps {
   open: boolean;
@@ -27,8 +29,10 @@ interface DynamicModalProps {
   description?: string;
   initialValues?: Record<string, any>;
   children?: React.ReactNode;
+  loading?: boolean;
+  error?: string;
 }
-
+// TODO: Remove Dynamic form modal
 const DynamicFormModal: React.FC<DynamicModalProps> = ({
   open,
   onClose,
@@ -38,7 +42,13 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
   title,
   initialValues = {},
   children,
+  loading,
+  error,
 }) => {
+  const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
+    preventDefault: open,
+  });
+
   const [hiddenFields, setHiddenFields] = useState<string[]>([]);
   const previousFieldsRef = useRef<FieldConfig[]>([]);
   const previousInitialValuesRef = useRef<Record<string, any>>({});
@@ -56,18 +66,9 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
   };
 
   const {
-    isDirty: isFormDirty,
-    handleNavigateAway,
-    markAsDirty,
-    markAsClean,
-  } = useFormDirty();
-
-  const {
     control,
     handleSubmit,
     reset,
-    watch,
-    setValue,
     getValues,
     formState: { isDirty },
   } = useForm({
@@ -83,6 +84,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       previousFieldsRef.current = fields;
       previousInitialValuesRef.current = initialValues;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   // Handle fields or initialValues changes while maintaining existing values
@@ -91,7 +93,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
       open &&
       (JSON.stringify(fields) !== JSON.stringify(previousFieldsRef.current) ||
         JSON.stringify(initialValues) !==
-          JSON.stringify(previousInitialValuesRef.current))
+        JSON.stringify(previousInitialValuesRef.current))
     ) {
       const currentValues = getValues();
       const newDefaults = getDefaultValues(fields, initialValues);
@@ -117,23 +119,14 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
     }
   }, [fields, initialValues, open, reset, getValues]);
 
-  const submitHandler: SubmitHandler<any> = (data) => {
-    onSubmit(data);
-    markAsClean();
-    onClose();
-    reset(getDefaultValues(fields, initialValues));
-  };
-
   const handleClose = () => {
+    if (isDirty) {
+      setLeavingManually(true);
+      return;
+    }
     reset(getDefaultValues(fields, initialValues));
     onClose();
   };
-
-  useEffect(() => {
-    if (isDirty) {
-      markAsDirty();
-    }
-  }, [isDirty, markAsDirty]);
 
   const handleCheckboxChange =
     (field: FieldConfig) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,57 +273,83 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="sm"
-      fullWidth
-      sx={{
-        "& .MuiDialog-paper": {
-          borderRadius: "10px",
-        },
-      }}
-    >
-      <DialogTitle className="text-lg font-bold">
-        {title}
-        {description && (
-          <p className="mt-2 text-sm font-normal text-secondary">
-            {description}
-          </p>
+    <>
+      <LeaveConfirmationModal
+        isOpen={isLeaving && isDirty}
+        onLeave={() => {
+          handleUserDecision(true);
+          reset(getDefaultValues(fields, initialValues));
+          onClose();
+        }}
+        onStay={() => {
+          setLeavingManually(false);
+          handleUserDecision(false);
+        }}
+      />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "10px",
+          },
+        }}
+      >
+        <DialogTitle className="text-lg font-bold">
+          {title}
+          {description && (
+            <p className="mt-2 text-sm font-normal text-secondary">
+              {description}
+            </p>
+          )}
+        </DialogTitle>
+        {error && (
+          <Alert severity="error" className="my-1">
+            <p className="text-xs">{error}</p>
+          </Alert>
         )}
-      </DialogTitle>
-      <DialogContent>
-        <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-          <Grid container className="mt-1" spacing={2}>
-            {fields.map((field) => (
-              <Grid
-                item
-                xs={field.gridProps?.xs ?? 12}
-                sm={field.gridProps?.sm}
-                md={field.gridProps?.md}
-                key={String(field.name)}
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Grid container className="mt-1" spacing={2}>
+              {fields.map((field) => (
+                <Grid
+                  item
+                  xs={field.gridProps?.xs ?? 12}
+                  sm={field.gridProps?.sm}
+                  md={field.gridProps?.md}
+                  key={String(field.name)}
+                >
+                  {renderField(field)}
+                </Grid>
+              ))}
+            </Grid>
+            {children && <div className="mt-4">{children}</div>}
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  reset(getDefaultValues(fields, initialValues));
+                  onClose();
+                }}
+                variant="outlined"
+                color="secondary"
               >
-                {renderField(field)}
-              </Grid>
-            ))}
-          </Grid>
-          {children && <div className="mt-4">{children}</div>}
-          <DialogActions>
-            <Button onClick={handleClose} variant="outlined" color="secondary">
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              disabled={!isFormDirty}
-            >
-              Submit
-            </Button>
-          </DialogActions>
-        </form>
-      </DialogContent>
-    </Dialog>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                disabled={!isDirty}
+              >
+                {loading ? "Loading..." : "Submit"}
+              </Button>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

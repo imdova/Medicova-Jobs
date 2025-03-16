@@ -1,13 +1,15 @@
 "use server";
-import { API_CREATE_JOB_APPLICATION, API_GET_SEEKERS } from "@/api/seeker";
+import { TAGS } from "@/api";
+import { API_CREATE_JOB_APPLICATION } from "@/api/employer";
+import { API_GET_SEEKERS } from "@/api/seeker";
 import { Doctor, Result } from "@/types";
-import { ApplicationsFilter, JobApplicationData } from "@/types/seeker";
+import { errorResult } from "@/util/general";
 
 export const applyForJob = async (
   applicationData: Partial<JobApplicationData>,
 ): Promise<Result> => {
   try {
-    const response = await fetch(API_CREATE_JOB_APPLICATION, {
+    const response = await fetch("API_CREATE_JOB_APPLICATION", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,6 +18,7 @@ export const applyForJob = async (
       credentials: "include",
       body: JSON.stringify(applicationData),
     });
+
     if (response.ok) {
       const data = await response.json();
       data.jobId = data.job.id;
@@ -48,7 +51,7 @@ export const getApplications = async ({
   companyId,
   startDate,
 }: ApplicationsFilter = {}): Promise<
-  Result<{ data: JobApplicationData[]; total: number }>
+  Result<PaginatedResponse<ApplicationsType>>
 > => {
   try {
     const queryParams = new URLSearchParams();
@@ -67,26 +70,16 @@ export const getApplications = async ({
           accept: "application/json",
         },
         credentials: "include",
+        next: { tags: [TAGS.applicants] },
       },
     );
-    if (response.ok) {
-      const data = await response.json();
-      data.data.forEach((application: any) => {
-        application.jobId = application.job.id;
-        application.seekerId = application.seeker.id;
-      });
-      return {
-        success: true,
-        message: "Job applications fetched successfully",
-        data: data,
-      };
-    } else {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "An error occurred",
-      };
-    }
+    if (!response.ok) return errorResult("fetching Applicants data ");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Job applications fetched successfully",
+      data: data,
+    };
   } catch (error: any) {
     return {
       success: false,
@@ -98,7 +91,7 @@ export const getSeekers = async ({
   page = 1,
   limit = 10,
 }: ApplicationsFilter = {}): Promise<
-  Result<{ data: Doctor[]; total: number }>
+  Result<{ data: CandidateType[]; total: number }>
 > => {
   try {
     const queryParams = new URLSearchParams();
@@ -115,10 +108,8 @@ export const getSeekers = async ({
         credentials: "include",
       },
     );
-    console.log("🚀 ~ response:", response);
     if (response.ok) {
       const data = await response.json();
-      console.log("🚀 ~ data:", data);
 
       return {
         success: true,

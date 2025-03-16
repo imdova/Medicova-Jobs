@@ -8,8 +8,8 @@ import MinJobCard from "@/components/UI/job-card-min";
 const JobsResult: React.FC<{ jobs: JobData[],total: number }> = ({ jobs,total }) => {
   const [view, setView] = useState("list");
   return (
-    <div>
-      <div className="mb-9 flex flex-wrap-reverse items-center justify-between md:flex-nowrap">
+    <div className="min-h-dvh">
+      <div className="mb-9 flex  flex-wrap-reverse items-center justify-between md:flex-nowrap">
         <div>
           <h3 className="text-[24px] font-bold text-main">Search Results</h3>
           <p className="text-sm text-secondary">{total === 0 ? "No results" : `Showing ${total} Results`} </p>

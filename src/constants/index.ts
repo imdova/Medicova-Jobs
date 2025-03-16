@@ -14,6 +14,7 @@ import {
   Search,
 } from "@mui/icons-material";
 import { CompanySize } from "./enums/company-size.enum";
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export const DEFAULT_COVER_IMAGE =
   "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
@@ -240,190 +241,216 @@ export const doctorsBase: Doctor[] = [
   // Add 5 more doctors here in a similar structure
 ];
 
-export const filterSections = {
-  "Residency (Location)": [
-    { label: "Egypt", count: 3, value: "egypt" },
-    { label: "Qatar", count: 2, value: "Qatar" },
-  ],
-  "Education Level": [
-    { label: "Technical Institute", count: 50, value: "institute" },
-    { label: "Bachelor's Degree", count: 100, value: "bachelor" },
-    { label: "Doctorate Degree", count: 70, value: "doctorate" },
-    { label: "Fellowship", count: 30, value: "fellowship" },
-  ],
-  "Years Of Experience": [
-    { label: "1-3", count: 50, value: "1-3" },
-    { label: "3-5", count: 40, value: "3-5" },
-    { label: "5-10", count: 30, value: "5-10" },
-    { label: "+10", count: 30, value: "10+" },
-  ],
-};
-export const searchFilters = {
-  "Residency (Location)": [
-    { label: "Egypt", count: 3, value: "egypt" },
-    { label: "Qatar", count: 2, value: "Qatar" },
-  ],
-  city: [
-    { label: "cairo", count: 3, value: "cairo" },
-    { label: "riyadh", count: 2, value: "riyadh" },
-  ],
-  nationality: [
-    { label: "egyptian", count: 3, value: "egyptian" },
-    { label: "saudi arabian", count: 2, value: "saudi arabian" },
-  ],
-  industry: [
-    { label: "Physicians", count: 10, value: "Physicians" },
-    { label: "Dentists", count: 100, value: "Dentists" },
-    { label: "Physiotherapists", count: 50, value: "Physiotherapists" },
-    { label: "Pharmacists", count: 30, value: "Pharmacists" },
-    { label: "Nurses", count: 10, value: "Nurses" },
-  ],
-  category: [
-    { label: "Doctor", count: 100, value: "doctor" },
-    { label: "Nurse", count: 50, value: "nurse" },
-    { label: "Pharmaceutical", count: 30, value: "pharmaceutical" },
-    { label: "physical therapy", count: 10, value: "physical therapy" },
-    { label: "Specialized", count: 10, value: "specialized" },
-  ],
-  "Education Level": [
-    { label: "Institute", count: 50, value: "institute" },
-    { label: "Bachelor's Degree", count: 100, value: "bachelor" },
-    { label: "Master's Degree", count: 100, value: "master" },
-    { label: "Doctorate Degree", count: 70, value: "doctorate" },
-    { label: "Fellowship", count: 30, value: "fellowship" },
-  ],
-  "Years Of Experience": [
-    { label: "1-3", count: 50, value: "1-3" },
-    { label: "3-5", count: 40, value: "3-5" },
-    { label: "5-10", count: 30, value: "5-10" },
-    { label: "+10", count: 30, value: "10+" },
-  ],
-  gender: [
-    { label: "Male", count: 200, value: "male" },
-    { label: "Female", count: 100, value: "female" },
-  ],
-  age: [
-    { label: "18-25", count: 40, value: "18-25" },
-    { label: "26-35", count: 50, value: "26-35" },
-    { label: "36-45", count: 30, value: "36-45" },
-    { label: "46-60", count: 20, value: "46-60" },
-    { label: "60+", count: 10, value: "60+" },
-  ],
-};
-
-export const folders: Folder[] = [
+export const filterSections = [
   {
-    id: 1,
-    name: "Cardiology Specialists",
-    candidates: 25,
-    lastModified: new Date("2024-12-23"),
+    name: "Residency (Location)",
+    key: "loc",
+    items: [
+      { label: "Egypt", count: 3, value: "egypt" },
+      { label: "Qatar", count: 2, value: "Qatar" },
+    ],
   },
   {
-    id: 2,
-    name: "Pediatricians",
-    candidates: 15,
-    lastModified: new Date("2024-12-20"),
+    name: "Education Level",
+    key: "edu",
+    items: [
+      { label: "Technical Institute", count: 50, value: "institute" },
+      { label: "Bachelor's Degree", count: 100, value: "bachelor" },
+      { label: "Doctorate Degree", count: 70, value: "doctorate" },
+      { label: "Fellowship", count: 30, value: "fellowship" },
+    ],
   },
   {
-    id: 3,
-    name: "General Practitioners",
-    candidates: 30,
-    lastModified: new Date("2024-12-18"),
+    name: "Years Of Experience",
+    key: "exp",
+    items: [
+      { label: "1-3", count: 50, value: "1-3" },
+      { label: "3-5", count: 40, value: "3-5" },
+      { label: "5-10", count: 30, value: "5-10" },
+      { label: "+10", count: 30, value: "10+" },
+    ],
+  },
+];
+export const searchFilters = [
+  {
+    name: "Residency (Location)",
+    key: "loc",
+    items: [
+      { label: "Egypt", count: 3, value: "egypt" },
+      { label: "Qatar", count: 2, value: "Qatar" },
+    ],
   },
   {
-    id: 4,
-    name: "Nursing Staff",
-    candidates: 12,
-    lastModified: new Date("2024-12-17"),
+    name: "City",
+    key: "city",
+    items: [
+      { label: "Cairo", count: 3, value: "cairo" },
+      { label: "Riyadh", count: 2, value: "riyadh" },
+    ],
   },
   {
-    id: 5,
-    name: "Radiologists",
-    candidates: 20,
-    lastModified: new Date("2024-12-14"),
+    name: "Nationality",
+    key: "nat",
+    items: [
+      { label: "Egyptian", count: 3, value: "egyptian" },
+      { label: "Saudi Arabian", count: 2, value: "saudi arabian" },
+    ],
   },
   {
-    id: 6,
-    name: "Surgeons",
-    candidates: 18,
-    lastModified: new Date("2024-12-11"),
+    name: "Industry",
+    key: "ind",
+    items: [
+      { label: "Physicians", count: 10, value: "Physicians" },
+      { label: "Dentists", count: 100, value: "Dentists" },
+      { label: "Physiotherapists", count: 50, value: "Physiotherapists" },
+      { label: "Pharmacists", count: 30, value: "Pharmacists" },
+      { label: "Nurses", count: 10, value: "Nurses" },
+    ],
   },
   {
-    id: 7,
-    name: "Pharmacists",
-    candidates: 22,
-    lastModified: new Date("2024-12-07"),
+    name: "Category",
+    key: "cat",
+    items: [
+      { label: "Doctor", count: 100, value: "doctor" },
+      { label: "Nurse", count: 50, value: "nurse" },
+      { label: "Pharmaceutical", count: 30, value: "pharmaceutical" },
+      { label: "Physical Therapy", count: 10, value: "physical therapy" },
+      { label: "Specialized", count: 10, value: "specialized" },
+    ],
   },
   {
-    id: 8,
-    name: "Physiotherapists",
-    candidates: 10,
-    lastModified: new Date("2024-12-06"),
+    name: "Education Level",
+    key: "edu",
+    items: [
+      { label: "Institute", count: 50, value: "institute" },
+      { label: "Bachelor's Degree", count: 100, value: "bachelor" },
+      { label: "Master's Degree", count: 100, value: "master" },
+      { label: "Doctorate Degree", count: 70, value: "doctorate" },
+      { label: "Fellowship", count: 30, value: "fellowship" },
+    ],
   },
   {
-    id: 9,
-    name: "Dentists",
-    candidates: 8,
-    lastModified: new Date("2024-12-05"),
+    name: "Years Of Experience",
+    key: "exp",
+    items: [
+      { label: "1-3", count: 50, value: "1-3" },
+      { label: "3-5", count: 40, value: "3-5" },
+      { label: "5-10", count: 30, value: "5-10" },
+      { label: "+10", count: 30, value: "10+" },
+    ],
   },
   {
-    id: 10,
-    name: "Psychiatrists",
-    candidates: 15,
-    lastModified: new Date("2024-12-04"),
+    name: "Gender",
+    key: "gen",
+    items: [
+      { label: "Male", count: 200, value: "male" },
+      { label: "Female", count: 100, value: "female" },
+    ],
+  },
+  {
+    name: "Age",
+    key: "age",
+    items: [
+      { label: "18-25", count: 40, value: "18-25" },
+      { label: "26-35", count: 50, value: "26-35" },
+      { label: "36-45", count: 30, value: "36-45" },
+      { label: "46-60", count: 20, value: "46-60" },
+      { label: "60+", count: 10, value: "60+" },
+    ],
   },
 ];
 
-export const searchJopFilters = {
-  Industry: [
-    { label: "Pharmacist", count: 3, value: "pharmacist" },
-    { label: "HealthCare", count: 5, value: "healthcare" },
-    { label: "Administrator", count: 2, value: "administrator" },
-  ],
-  "Main Specialty": [
-    { label: "Physicians", count: 3, value: "physicians" },
-    { label: "Dentists", count: 5, value: "dentists" },
-    { label: "Physiotherapists", count: 2, value: "physiotherapists" },
-    { label: "Pharmacists", count: 24, value: "pharmacists" },
-    { label: "Nurses", count: 3, value: "nurses" },
-  ],
-  "Work Time": [
-    { label: "Full-time", count: 3, value: "full_time" },
-    { label: "Part-Time", count: 5, value: "part_time" },
-  ],
-  "Work Place": [
-    { label: "Remote", count: 2, value: "remote" },
-    { label: "On site", count: 24, value: "on_site" },
-    { label: "Hybrid", count: 3, value: "hybrid" },
-  ],
-  Categories: [
-    { label: "Medical", count: 24, value: "medical" },
-    { label: "Physician/Doctor", count: 3, value: "physician_doctor" },
-    { label: "Medical Sonographer", count: 3, value: "medical_sonographer" },
-    { label: "Pharmacist", count: 3, value: "pharmacist" },
-    { label: "Clinical Healthcare", count: 6, value: "clinical_healthcare" },
-    {
-      label: "Radiologic Technologist",
-      count: 4,
-      value: "radiologic_technologist",
-    },
-    { label: "Nutritionist", count: 4, value: "nutritionist" },
-    { label: "Technology", count: 5, value: "technology" },
-  ],
-  "Job Level": [
-    { label: "General", count: 57, value: "general" },
-    { label: "Specialist", count: 3, value: "specialist" },
-    { label: "Consultant", count: 5, value: "consultant" },
-    { label: "Director", count: 12, value: "director" },
-    { label: "CEO", count: 8, value: "ceo" },
-  ],
-  "Salary Range": [
-    { label: "$700 - $1000", count: 4, value: "700_1000" },
-    { label: "$100 - $1500", count: 6, value: "100_1500" },
-    { label: "$1500 - $2000", count: 10, value: "1500_2000" },
-    { label: "$3000 or above", count: 4, value: "3000_above" },
-  ],
+
+type FilterItem = {
+  label: string;
+  count: number;
+  value: string;
 };
+
+type JobFilter = {
+  name: string;
+  key: string;
+  items: FilterItem[];
+};
+
+export const searchJopFilters: JobFilter[] = [
+  {
+    name: "Industry",
+    key: "industry",
+    items: [
+      { label: "Pharmacist", count: 3, value: "pharmacist" },
+      { label: "HealthCare", count: 5, value: "healthcare" },
+      { label: "Administrator", count: 2, value: "administrator" },
+    ],
+  },
+  {
+    name: "Main Specialty",
+    key: "main_specialty",
+    items: [
+      { label: "Physicians", count: 3, value: "physicians" },
+      { label: "Dentists", count: 5, value: "dentists" },
+      { label: "Physiotherapists", count: 2, value: "physiotherapists" },
+      { label: "Pharmacists", count: 24, value: "pharmacists" },
+      { label: "Nurses", count: 3, value: "nurses" },
+    ],
+  },
+  {
+    name: "Work Time",
+    key: "work_time",
+    items: [
+      { label: "Full-time", count: 3, value: "full_time" },
+      { label: "Part-Time", count: 5, value: "part_time" },
+    ],
+  },
+  {
+    name: "Work Place",
+    key: "work_place",
+    items: [
+      { label: "Remote", count: 2, value: "remote" },
+      { label: "On site", count: 24, value: "on_site" },
+      { label: "Hybrid", count: 3, value: "hybrid" },
+    ],
+  },
+  {
+    name: "Categories",
+    key: "category",
+    items: [
+      { label: "Medical", count: 24, value: "medical" },
+      { label: "Physician/Doctor", count: 3, value: "physician_doctor" },
+      { label: "Medical Sonographer", count: 3, value: "medical_sonographer" },
+      { label: "Pharmacist", count: 3, value: "pharmacist" },
+      { label: "Clinical Healthcare", count: 6, value: "clinical_healthcare" },
+      {
+        label: "Radiologic Technologist",
+        count: 4,
+        value: "radiologic_technologist",
+      },
+      { label: "Nutritionist", count: 4, value: "nutritionist" },
+      { label: "Technology", count: 5, value: "technology" },
+    ],
+  },
+  {
+    name: "Job Level",
+    key: "job_level",
+    items: [
+      { label: "General", count: 57, value: "general" },
+      { label: "Specialist", count: 3, value: "specialist" },
+      { label: "Consultant", count: 5, value: "consultant" },
+      { label: "Director", count: 12, value: "director" },
+      { label: "CEO", count: 8, value: "ceo" },
+    ],
+  },
+  {
+    name: "Salary Range",
+    key: "salary_range",
+    items: [
+      { label: "$700 - $1000", count: 4, value: "700_1000" },
+      { label: "$100 - $1500", count: 6, value: "100_1500" },
+      { label: "$1500 - $2000", count: 10, value: "1500_2000" },
+      { label: "$3000 or above", count: 4, value: "3000_above" },
+    ],
+  },
+];
 
 export const jobs: Job[] = [
   {

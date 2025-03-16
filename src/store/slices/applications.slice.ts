@@ -2,7 +2,6 @@ import {
   applyForJob,
   getApplications,
 } from "@/lib/actions/applications.actions";
-import { ApplicationsFilter, JobApplicationData } from "@/types/seeker";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface JobApplicationState {
