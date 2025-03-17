@@ -20,6 +20,7 @@ import { RoleState } from "@/types/next-auth";
 import { signIn } from "next-auth/react";
 import PhoneNumberInput from "@/components/UI/phoneNumber";
 import { isValidPhoneNumber } from "@/util/forms";
+import { passwordRules } from "@/constants";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -260,19 +261,7 @@ const RegisterForm: React.FC = () => {
                 }}
               />
             )}
-            rules={{
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
-                message:
-                  "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol",
-              },
-            }}
+            rules={passwordRules}
           />
         </Box>
         <Box sx={{ mb: 1, position: "relative" }}>
@@ -283,7 +272,8 @@ const RegisterForm: React.FC = () => {
             rules={{
               required: "Phone Number is required",
               validate: (value) =>
-                isValidPhoneNumber(value || "") || "Please enter a valid phone number",
+                isValidPhoneNumber(value || "") ||
+                "Please enter a valid phone number",
             }}
             render={({ field }) => (
               <PhoneNumberInput
@@ -297,9 +287,7 @@ const RegisterForm: React.FC = () => {
             )}
           />
           {errors.phone && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.phone.message}
-            </p>
+            <p className="mt-2 text-sm text-red-500">{errors.phone.message}</p>
           )}
         </Box>
 

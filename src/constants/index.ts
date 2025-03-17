@@ -19,6 +19,20 @@ export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 export const DEFAULT_COVER_IMAGE =
   "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
 
+export const passwordRules = {
+  required: "Password is required",
+  minLength: {
+    value: 6,
+    message: "Password must be at least 6 characters",
+  },
+  pattern: {
+    value:
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+    message:
+      "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol",
+  },
+};
+
 export const doctorsBase: Doctor[] = [
   {
     id: "doc-001", // Unique ID
@@ -359,7 +373,6 @@ export const searchFilters = [
     ],
   },
 ];
-
 
 type FilterItem = {
   label: string;

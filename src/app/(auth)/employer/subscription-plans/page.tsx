@@ -11,6 +11,13 @@ import {
   Chip,
 } from "@mui/material";
 
+const PLANE_TABS = [
+  "1 Month Access",
+  "3 Months Access",
+  "6 Months Access",
+  "6 Year Access",
+];
+
 const SubscriptionPlansPage: React.FC = () => {
   const [selectedAccess, setSelectedAccess] =
     useState<string>("1 Month Access");
@@ -104,48 +111,19 @@ const SubscriptionPlansPage: React.FC = () => {
       </Typography>
 
       {/* Access Buttons */}
-      <Box
-        className="bg-primary-100"
-        sx={{
-          display: "flex",
-          justifyContent: "center", // Centers horizontally
-          alignItems: "center", // Centers vertically
-          gap: 2,
-          padding: 1,
-          width: "60%",
-          margin: "0 auto",
-          borderRadius: 5,
-        }}
-      >
-        {[
-          "1 Month Access",
-          "3 Months Access",
-          "6 Months Access",
-          "6 Year Access",
-        ].map((access) => (
+      <div className="mx-auto flex w-3/5 mb-4 items-center justify-center gap-2 rounded-base bg-primary-100 p-1">
+        {PLANE_TABS.map((access) => (
           <Button
             key={access}
             onClick={() => handleAccessSelection(access)}
-            sx={{
-              px: 2,
-              py: 1,
-              borderRadius: 2,
-              backgroundColor:
-                selectedAccess === access ? "white" : "transparent",
-              color: selectedAccess === access ? "#000" : "#333",
-              fontWeight: 600,
-              "&:hover": {
-                backgroundColor: "var(--primary)",
-                color: "var(--primary-foreground)",
-              },
-            }}
+            className={`${selectedAccess === access ? "bg-primary-foreground text-primary" : ""} rounded-md px-6 py-3 font-semibold hover:bg-primary hover:text-primary-foreground`}
           >
             {access}
           </Button>
         ))}
-      </Box>
+      </div>
 
-      <Grid container spacing={3} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
+      <Grid container spacing={3} justifyContent="center">
         {plans.map((plan, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Card
@@ -434,61 +412,18 @@ const SubscriptionPlansPage: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-      <Typography
-        variant="h4"
-        textAlign="center"
-        color={"#000B33"}
-        sx={{ mb: 2, fontWeight: 700 }}
-      >
-        Try our 100% free Plan
-      </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: { xs: "column", md: "row" },
-          gap: 2,
-          mt: 2,
-          padding: 2.5,
-          border: "2px solid #4CAF50",
-          width: "60%",
-          margin: "0 auto",
-        }}
-      >
-        {/* Text with green border */}
-        <Typography
-          variant="subtitle1"
-          sx={{
-            padding: "8px 16px",
-            borderRadius: "10px",
-            fontWeight: 500,
-            textAlign: "center",
-            backgroundColor: "#F9FFF9",
-            color: "#000",
-          }}
-        >
+      {/* <h4 className="mb-2 text-center text-2xl font-bold text-main">
+        Try our 100% free Plan
+      </h4> */}
+
+      {/* <div className="mx-auto mt-2 flex w-3/5 flex-col items-center justify-center gap-2 border-2 rounded-base border-primary p-3 md:flex-row">
+        <p className="rounded-base px-2 py-1 text-sm font-medium text-gray-600 text-main">
           Get started with our free plan and make 10 lookups per month
           absolutely free!
-        </Typography>
-
-        {/* Signup for Free button */}
-        <Button
-          sx={{
-            backgroundColor: "#4CAF50",
-            color: "#fff",
-            fontWeight: "bold",
-            px: 3,
-            py: 1,
-            "&:hover": {
-              backgroundColor: "#45A049",
-            },
-          }}
-        >
-          Signup for Free
-        </Button>
-      </Box>
+        </p>
+        <Button variant="contained">Signup for Free</Button>
+      </div> */}
     </Box>
   );
 };

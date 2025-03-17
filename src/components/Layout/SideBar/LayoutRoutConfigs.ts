@@ -28,6 +28,11 @@ export const routeConfigs: RouteConfig[] = [
     linksType: "userType",
   },
   {
+    pattern: "/employer/subscription-plans",
+    sideBarType: "minimal",
+    linksType: "userType",
+  },
+  {
     pattern: "/employer/job/manage-jobs/[id]", 
     sideBarType: "minimal",
     linksType: "userType",

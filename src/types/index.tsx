@@ -52,6 +52,7 @@ export interface Result<T = any> {
 export interface UserState {
   id: string | null;
   email: string | null;
+  isVerified: boolean;
   firstName: string | null;
   lastName: string | null;
   userName: string | null;

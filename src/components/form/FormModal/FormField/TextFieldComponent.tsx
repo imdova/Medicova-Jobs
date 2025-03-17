@@ -1,5 +1,7 @@
-import React from "react";
-import { TextField } from "@mui/material";
+import React, { useState } from "react";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { FieldConfig } from "@/types";
 
 interface TextFieldProps {
@@ -13,6 +15,18 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
   controllerField,
   error,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+  };
+
   const placeholder =
     "Enter " +
     (field.textFieldProps?.label
@@ -20,6 +34,7 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
       : field.label
         ? field.label?.replace("*", "")
         : field.name);
+
   return (
     <div>
       {field.label && (
@@ -29,16 +44,31 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
       )}
       <TextField
         {...controllerField}
-        // label={
-        //   !field.textFieldProps?.label && !field.label ? field.name : undefined
-        // }
         {...field.textFieldProps}
         placeholder={field.textFieldProps?.placeholder || placeholder || ""}
         fullWidth
-        type={field.type}
+        type={field.type === "password" && !showPassword ? "password" : "text"} // Conditional type
         variant="outlined"
         error={!!error}
         helperText={error?.message}
+        InputProps={
+          field.type === "password"
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : {}
+        }
       />
     </div>
   );
