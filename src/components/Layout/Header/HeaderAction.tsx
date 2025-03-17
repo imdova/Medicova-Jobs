@@ -1,10 +1,10 @@
 import NotificationDropdown from "@/components/UI/NotificationDropdown";
 import UserDropdown from "@/components/UI/UserDropdown";
-import { UserState } from "@/types";
+import { User } from "next-auth";
 import Link from "next/link";
 
 interface UserActionProps {
-  user?: UserState;
+  user?: User;
   pathname?: string;
 }
 

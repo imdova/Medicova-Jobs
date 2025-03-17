@@ -1,10 +1,10 @@
 "use client";
-import { UserState } from "@/types";
 import { matchRoute } from "./LayoutRoutConfigs";
 import { usePathname } from "next/navigation";
 import VerticalTabs from "./vertical-tabs";
+import { User } from "next-auth";
 
-export default function DynamicSideBar({ user }: { user?: UserState }) {
+export default function DynamicSideBar({ user }: { user?: User }) {
   const pathname = usePathname() || "/";
   const sideBarType = matchRoute(pathname)?.sideBarType || "";
 

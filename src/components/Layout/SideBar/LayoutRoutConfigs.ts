@@ -1,6 +1,6 @@
 import { roleBasedSideBarLinks } from "@/constants/side-bar";
-import { UserState } from "@/types";
 import { RoleState } from "@/types/next-auth";
+import { User } from "next-auth";
 
 type SideBarType = "minimal" | "full" | "none";
 type LinksType = "default" | "userType";
@@ -74,7 +74,7 @@ export const matchRoute = (pathname: string): RouteConfig | undefined => {
   return wildcardMatch;
 };
 
-export function getSideBarLinks(user?: UserState, pathname?: string) {
+export function getSideBarLinks(user?: User, pathname?: string) {
   const userType = user?.type as RoleState;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;

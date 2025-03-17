@@ -16,7 +16,6 @@ import AddModal from "./Modals/AddModal";
 import courses from "@/components/icons/courses.png";
 import EmptyCard from "@/components/UI/emptyCard";
 import { Add, Edit, LocationOnOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
 import Image from "next/image";
 
 type Activities = {

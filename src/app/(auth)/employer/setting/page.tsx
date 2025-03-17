@@ -2,16 +2,15 @@
 import React, { useState } from "react";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { UserState } from "@/types";
 import { notFound } from "next/navigation";
 import UpdateEmail from "./components/UpdateEmail";
 import UpdatePassword from "./components/UpdatePassword";
 import UsersTab from "./components/usersTab";
-
+import { User } from "next-auth";
 
 const SettingsPage = () => {
   const { data: session, status } = useSession();
-  const user = session?.user as UserState;
+  const user = session?.user as User
   const [tabValue, setTabValue] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {

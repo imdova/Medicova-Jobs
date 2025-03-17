@@ -1,11 +1,11 @@
 import useIsLeaving from "@/hooks/useIsLeaving";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { UserState } from "@/types";
 import { Button, CircularProgress, Divider, TextField } from "@mui/material";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 
-const UpdateEmail: React.FC<{ user: UserState }> = ({ user }) => {
+const UpdateEmail: React.FC<{ user: User }> = ({ user }) => {
   const { update: updateSession } = useSession();
   const {
     control,
@@ -21,9 +21,9 @@ const UpdateEmail: React.FC<{ user: UserState }> = ({ user }) => {
     preventDefault: isDirty,
   });
 
-  const { isLoading, error, update } = useUpdateApi<UserState>(handleSuccess);
+  const { isLoading, error, update } = useUpdateApi<User>(handleSuccess);
 
-  const handleUpdate = async (formData: Partial<UserState>) => {
+  const handleUpdate = async (formData: Partial<User>) => {
     // await update(
     //   API_UPDATE_COMPANY,
     //   {
@@ -35,7 +35,7 @@ const UpdateEmail: React.FC<{ user: UserState }> = ({ user }) => {
     // reset(formData);
   };
 
-  async function handleSuccess(updatedCompany: UserState) {
+  async function handleSuccess(updatedCompany: User) {
     // await updateSession({
     //   companyName: updatedCompany.name,
     //   companyEmail: updatedCompany.email,

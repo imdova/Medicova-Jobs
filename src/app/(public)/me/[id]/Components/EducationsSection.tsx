@@ -14,7 +14,7 @@ import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import education from "@/components/icons/education.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { FieldConfig, UserState } from "@/types";
+import { FieldConfig } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
 import { expandItems } from "@/lib/auth/utils";
 import DynamicFormModal from "@/components/form/DynamicFormModal";
@@ -116,7 +116,7 @@ const INITIAL_VISIBLE_ITEMS = 2;
 
 const EducationsSection: React.FC<{
   user: UserProfile;
-  isMe: boolean; 
+  isMe: boolean;
 }> = ({ user, isMe }) => {
   const { countries } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();

@@ -1,12 +1,16 @@
 "use client";
 import { TAGS } from "@/api";
-import { API_CREATE_FOLDER, API_DELETE_FOLDER_BY_ID, API_UPDATE_FOLDER } from "@/api/seeker";
+import {
+  API_CREATE_FOLDER,
+  API_DELETE_FOLDER_BY_ID,
+  API_UPDATE_FOLDER,
+} from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import DataTable from "@/components/UI/data-table";
 import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
 import FolderMainCard from "@/components/UI/folder-main-card";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { FieldConfig, Folder, UserState } from "@/types";
+import { FieldConfig, Folder } from "@/types";
 import { getFullLastEdit } from "@/util";
 import { handleDuplicates } from "@/util/company/companyform";
 import { Add, Search } from "@mui/icons-material";
@@ -214,7 +218,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                         href={`/folder/${folder.id}`}
                       >
                         <span>{folder.name}</span>
-                        <span className="text-xs text-secondary ml-2">
+                        <span className="ml-2 text-xs text-secondary">
                           ({getFullLastEdit(folder.created_at)})
                         </span>
                       </Link>

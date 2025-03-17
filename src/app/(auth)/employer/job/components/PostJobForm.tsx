@@ -2,13 +2,7 @@
 import React, { act } from "react";
 import { useSession } from "next-auth/react";
 import { Stepper, Step, StepLabel, Alert, Snackbar } from "@mui/material";
-import {
-  JobData,
-  UserState,
-  NotificationType,
-  Industry,
-  EmploymentType,
-} from "@/types";
+import { JobData, NotificationType, Industry, EmploymentType } from "@/types";
 // Components
 import JobDetailsStep from "./steps/JobDetailsStep";
 import ScreeningQuestionsStep from "./steps/ScreeningQuestionsStep";
@@ -41,7 +35,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
-  const user = session?.user as UserState;
+  const user = session?.user;
   const companyId = user?.companyId || "";
   const companyEmail = user?.companyEmail || "";
   const [activeStep, setActiveStep] = React.useState(0);

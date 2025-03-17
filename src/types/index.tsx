@@ -9,6 +9,7 @@ import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, TextFieldProps } from "@mui/material";
 import { Path } from "react-hook-form";
+import { User } from "next-auth";
 
 export type Country = {
   name: string;
@@ -49,43 +50,6 @@ export interface Result<T = any> {
   data?: T;
 }
 
-export interface UserState {
-  id: string | null;
-  email: string | null;
-  isVerified: boolean;
-  firstName: string | null;
-  lastName: string | null;
-  userName: string | null;
-  type: RoleState;
-  photo: string | null;
-  phone: string | null;
-  companyId: string | null;
-  companyName: string | null;
-  companyUserName: string | null;
-  companyEmail: string | null;
-  companyPhoto: string | null;
-  permissions: Permission[];
-}
-
-// export interface UserProfile extends UserState {
-//   about: string | null;
-//   title: string | null;
-//   age: number | null;
-//   languages: string[] | null;
-//   resume: string | null;
-//   socialLinks: { [key: string]: string } | null;
-//   whatsapp: string | null;
-//   nationality: string | null;
-//   maritalStatus: string | null;
-//   hasDrivingLicence: boolean | null;
-//   country: CountryMin | null;
-//   state: State | null;
-//   city: City | null;
-//   isPublic: boolean | null;
-//   category: string | null;
-//   speciality: string | null;
-//   careerLevel: string | null;
-// }
 
 export interface registerData {
   firstName: string;
@@ -96,7 +60,7 @@ export interface registerData {
 }
 
 export interface BaseHeaderProps {
-  user?: UserState;
+  user?: User;
   pathname?: string;
 }
 

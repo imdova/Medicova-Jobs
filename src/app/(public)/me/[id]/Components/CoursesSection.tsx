@@ -14,7 +14,6 @@ import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import courses from "@/components/icons/courses.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
-import { UserState } from "@/types";
 import EmptyCard from "@/components/UI/emptyCard";
 
 type Courses = {

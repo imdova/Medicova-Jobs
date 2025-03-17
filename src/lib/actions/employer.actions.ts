@@ -28,9 +28,9 @@ import {
   JobCategory,
   Result,
   Sector,
-  UserState,
 } from "@/types";
 import { errorResult } from "@/util/general";
+import { User } from "next-auth";
 
 export const getCompanyByUserName = async (
   userName: string,
@@ -300,12 +300,7 @@ export const getSpecialtyFromCategoryId = async (
 export const getPaginatedSeekers = async (
   page: number = 1,
   limit: number = 10,
-): Promise<
-  Result<{
-    data: UserState[];
-    total: number;
-  }>
-> => {
+): Promise<Result<PaginatedResponse<User>>> => {
   try {
     const response = await fetch(
       `${API_GET_SEEKERS}?page=${page}&limit=${limit}`,
@@ -318,7 +313,7 @@ export const getPaginatedSeekers = async (
       },
     );
     if (response.ok) {
-      const data: { total: number; data: UserState[] } = await response.json();
+      const data = await response.json();
       return {
         success: true,
         message: "Seekers list fetched successfully",

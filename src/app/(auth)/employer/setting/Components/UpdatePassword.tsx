@@ -2,8 +2,8 @@ import { TextFieldComponent } from "@/components/form/FormModal/FormField/TextFi
 import { passwordRules } from "@/constants";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { UserState } from "@/types";
 import { Button, CircularProgress } from "@mui/material";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -12,7 +12,7 @@ type ResetPasswordFormData = {
   newPassword: string;
 };
 
-const UpdatePassword: React.FC<{ user: UserState }> = ({ user }) => {
+const UpdatePassword: React.FC<{ user?: User }> = ({ user }) => {
   const { update: updateSession } = useSession();
   const {
     control,

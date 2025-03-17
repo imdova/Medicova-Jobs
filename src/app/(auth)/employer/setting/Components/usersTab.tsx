@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { UserState } from "@/types";
+import { User } from "next-auth";
 
-const UsersTab: React.FC<{ user: UserState }> = ({ user }) => {
+const UsersTab: React.FC<{ user: User }> = ({ user }) => {
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = () => setOpenModal(true);
