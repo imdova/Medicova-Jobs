@@ -23,7 +23,7 @@ export const API_GET_ALL_SEEKER_SKILLS = SKILLS; // GET
 // User Experience
 export const EXPERIENCE = BASE + "/experience";
 export const API_CREATE_SEEKER_EXPERIENCE = EXPERIENCE; // POST
-export const API_UPDATE_SEEKER_EXPERIENCE = EXPERIENCE + "/"; // PATCH + [id]
+export const API_UPDATE_SEEKER_EXPERIENCE = EXPERIENCE; // PATCH + [id]
 export const API_GET_SEEKER_EXPERIENCE = EXPERIENCE + "/seeker/"; // GET + [seekerId]
 export const API_GET_SEEKER_EXPERIENCE_BY_ID = EXPERIENCE + "/"; // GET + [id]
 export const API_DELETE_SEEKER_EXPERIENCE = EXPERIENCE + "/"; // DELETE + [id]

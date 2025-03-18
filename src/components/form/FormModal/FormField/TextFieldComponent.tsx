@@ -38,16 +38,24 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
   return (
     <div>
       {field.label && (
-        <label htmlFor={String(field.name)} className="mb-1 font-semibold">
-          {field.label}
-        </label>
+        <div className="mb-1">
+          <label htmlFor={String(field.name)} className="font-semibold">
+            {field.label}
+          </label>
+        </div>
       )}
       <TextField
         {...controllerField}
         {...field.textFieldProps}
         placeholder={field.textFieldProps?.placeholder || placeholder || ""}
         fullWidth
-        type={field.type === "password" && !showPassword ? "password" : "text"} // Conditional type
+        type={
+          field.type === "password"
+            ? !showPassword
+              ? "password"
+              : "text"
+            : field.type
+        } // Conditional type
         variant="outlined"
         error={!!error}
         helperText={error?.message}

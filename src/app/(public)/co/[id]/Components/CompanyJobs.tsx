@@ -30,7 +30,7 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
     <React.Fragment >
       {/* Title */}
       <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
-        <h3 className="text-2xl font-bold text-main">Latest jobs:</h3>
+        <h3 className="text-xl font-semibold text-main">Latest jobs:</h3>
         {isEmployee && (
           <AddNewJobButton company={company}
             className="rounded border border-solid border-gray-300 p-2"

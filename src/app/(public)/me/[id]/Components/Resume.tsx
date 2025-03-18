@@ -72,9 +72,9 @@ const Resume: React.FC<{
     return null;
   }
   return (
-    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mb-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
-      <h3 className="mb-2 text-2xl font-bold text-main">Resume</h3>
+      <h3 className="mb-2 text-xl font-semibold text-main">Resume</h3>
 
       {/* Alert */}
       {alertMessage && (

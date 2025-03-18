@@ -27,16 +27,19 @@ export function formatName(
     firstName,
     lastName,
   }: {
-    firstName: string;
-    lastName: string;
+    firstName?: string | null;
+    lastName?: string | null;
   },
   isAvailable?: boolean,
 ): string {
+  const capitalize = (name: string | null | undefined) =>
+    name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
+
   if (isAvailable) {
-    return `${firstName} ${lastName}`;
+    return `${capitalize(firstName)} ${capitalize(lastName)}`;
   }
-  const lastNameInitial = lastName.charAt(0).toUpperCase();
-  return `${firstName} .${lastNameInitial}`;
+  const lastNameInitial = lastName?.charAt(0).toUpperCase();
+  return `${capitalize(firstName)} .${lastNameInitial}`;
 }
 export function formatFullName(fullName: string): string {
   const nameParts = fullName.trim().split(" ");

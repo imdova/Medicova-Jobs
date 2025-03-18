@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import AddModal from "./Modals/AddModal";
+// import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import education from "@/components/icons/education.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
@@ -148,9 +148,9 @@ const EducationsSection: React.FC<{
   }
 
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">Educations</h3>
+        <h3 className="mb-2 text-xl font-semibold text-main">Educations</h3>
         {isMe && (
           <IconButton
             onClick={open}

@@ -11,13 +11,18 @@ interface FormContentProps {
   onSubmit: SubmitHandler<any>;
   formMethods: UseFormReturn<Record<string, any>>;
   hiddenFields: string[];
+  onDelete?: (data: any) => void;
   resetValues: (fieldNames: (string | number)[]) => void;
   onCheckboxChange: (
     field: FieldConfig,
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   children?: React.ReactNode;
   loading?: boolean;
+  deleteLoading?: boolean;
   onCancel: () => void;
+  submitButtonText?: string;
+  deleteButtonText?: string;
+  cancelButtonText?: string;
 }
 
 export const FormContent: React.FC<FormContentProps> = ({
@@ -28,8 +33,13 @@ export const FormContent: React.FC<FormContentProps> = ({
   onCheckboxChange,
   children,
   loading,
+  deleteLoading,
   resetValues,
+  onDelete,
   onCancel,
+  submitButtonText,
+  deleteButtonText,
+  cancelButtonText,
 }) => {
   const {
     control,
@@ -40,13 +50,23 @@ export const FormContent: React.FC<FormContentProps> = ({
   } = formMethods;
 
   const submitHandler = (data: any) => {
-    onSubmit(data);
-    reset(data);
+    if (isDirty) {
+      onSubmit(data);
+      reset(data);
+    } else {
+      onCancel();
+    }
   };
+
+  const handleDelete = () => {
+    const data = getValues();
+    onDelete?.(data);
+  };
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal max-h-[calc(100dvh-200px)] overflow-y-auto p-4">
-        <Grid container spacing={2}>
+      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] overflow-y-auto p-4">
+        <Grid container spacing={1}>
           {fields.map((field) => (
             <Grid
               item
@@ -69,7 +89,15 @@ export const FormContent: React.FC<FormContentProps> = ({
         </Grid>
       </div>
       {children && <div className="mt-4">{children}</div>}
-      <FormActions onCancel={onCancel} isDirty={isDirty} loading={loading} />
+      <FormActions
+        onDelete={onDelete && handleDelete}
+        onCancel={onCancel}
+        loading={loading}
+        deleteLoading={deleteLoading}
+        submitButtonText={submitButtonText}
+        deleteButtonText={deleteButtonText}
+        cancelButtonText={cancelButtonText}
+      />
     </form>
   );
 };

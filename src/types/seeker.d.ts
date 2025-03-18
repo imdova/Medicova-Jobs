@@ -50,42 +50,9 @@ type UserProfile = {
   updated_at: string;
   deleted_at: string | null;
   _version: number;
-};
 
-const user: UserProfile = {
-  id: "aaeb9e66-ef4e-4a46-8bdd-fe687edd5794",
-  userName: "abdelrahman-ahmed",
-  about: "I'm Abd El-Rahman Ahmed, a Full Stack Developer and UI/UX Designer with expertise in creating user-focused digital solutions. I specialize in Next.js, Tailwind CSS, TypeScript, and MongoDB, developing high-performing, accessible, and visually stunning web applications. I have a strong foundation in both frontend and backend development, as well as mobile app development with React Native. My focus is on blending creative design with",
-  title: "Senior Software Engineer",
-  languages: ["English", "Spanish"],
-  resume: "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf",
-  socialLinks: {
-    linkedin: "https://linkedin.com/in/johndoe",
-    github: "https://github.com/johndoe",
-    twitter: "https://twitter.com/johndoe",
-  },
-  whatsapp: "1234567890",
-  nationality: "American",
-  maritalStatus: MaritalStatus.Single,
-  hasDrivingLicence: true,
-  country: { code: "EG", name: "Egypt" },
-  state: { code: "C", name: "Cairo" },
-  city: "Naser City",
-  isPublic: true,
-  categoryId: "9669773b-f883-4946-95ed-9da81caf6e0b",
-  category: "Doctors",
-  specialityId: "8daaf757-0e3f-4d4f-81d8-c3febad21617",
-  speciality: "Cardiology",
-  careerLevelId: "88fd0a64-ba36-463e-9713-905ce2be62ef",
-  careerLevel: "Consultant",
-  phone: "+201015753327",
-  firstName: "abdelrahman",
-  lastName: "ahmed",
-  email: "abdelrahman.27@gmail.com",
-  birth: "1990-06-15",
-  avatar: "https://avatars.githubusercontent.com/u/104017661?v=4",
-  type: "seeker",
-  active: true,
+  /// TODO: need to add
+  isVerified: boolean;
 };
 
 type JobApplicationData = {

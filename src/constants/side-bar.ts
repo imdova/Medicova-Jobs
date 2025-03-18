@@ -1,4 +1,4 @@
-import { NavItem } from "@/types";
+import { NavItem, RoleBasedLinks } from "@/types";
 import { RoleState } from "@/types/next-auth";
 import {
   BusinessOutlined,
@@ -17,14 +17,7 @@ import {
   WorkOutline,
 } from "@mui/icons-material";
 
-export type CommonLinksType = "home";
 
-export type RoleBasedLinks = {
-  [key: string]: NavItem[];
-};
-export type CommonLinks = {
-  [key in CommonLinksType]: NavItem[];
-};
 
 export const roleBasedSideBarLinks: RoleBasedLinks = {
   admin: [],
@@ -149,12 +142,12 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       type: "profile",
       pattern: "/me/[id]",
     },
-    {
-      id: 18,
-      icon: HomeOutlined,
-      label: "Home",
-      path: "/",
-    },
+    // {
+    //   id: 18,
+    //   icon: HomeOutlined,
+    //   label: "Home",
+    //   path: "/",
+    // },
     {
       id: 20,
       icon: MessageOutlined,

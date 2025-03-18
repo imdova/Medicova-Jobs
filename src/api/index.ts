@@ -5,7 +5,7 @@ export const TAGS = {
   company: "company",
   employers: "employers",
   users: "users",
-  profile: "profile",
+
   roles: "roles",
   permissions: "permissions",
   locations: "locations",
@@ -13,4 +13,7 @@ export const TAGS = {
   companySectors: "companySectors",
   folders: "folders",
   applicants: "applicants",
+  /// profile /me
+  profile: "profile",
+  experience: "experience",
 };

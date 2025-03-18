@@ -47,6 +47,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           <CheckboxField
             field={field}
             controllerField={controllerField}
+            resetValues={resetValues}
             onCheckboxChange={onCheckboxChange}
           />
         );
@@ -91,7 +92,6 @@ export const FormField: React.FC<FormFieldProps> = ({
             error={error}
           />
         );
-        break;
       default:
         return (
           <TextFieldComponent
@@ -117,7 +117,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       control={control}
       rules={{
         required: field.required
-          ? `${field.label || String(field.name)} is required`
+          ? `${field.label?.replace("*", "") || String(field.name)} is required`
           : false,
         ...field.validation,
       }}

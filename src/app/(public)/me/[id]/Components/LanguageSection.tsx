@@ -9,7 +9,7 @@ import {
   InputLabel,
   Divider,
 } from "@mui/material";
-import AddModal from "./Modals/AddModal";
+// import AddModal from "./Modals/AddModal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Edit, LanguageOutlined } from "@mui/icons-material";
@@ -57,7 +57,7 @@ const LanguageSection: React.FC<{
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">Languages</h3>
+        <h3 className="mb-2 text-xl font-semibold text-main">Languages</h3>
         {isMe && (
           <IconButton
             className="rounded border border-solid border-gray-300 p-2"
@@ -82,7 +82,7 @@ const LanguageSection: React.FC<{
           </div>
         ))}
       </div>
-      <AddModal
+      {/* <AddModal
         open={openModal}
         onClose={handleCloseModal}
         modalTitle={modalTitle}
@@ -116,7 +116,7 @@ const LanguageSection: React.FC<{
             </Button>
           </Box>,
         ]}
-      />
+      /> */}
     </div>
   );
 };

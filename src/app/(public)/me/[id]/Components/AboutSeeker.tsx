@@ -5,15 +5,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import { FieldConfig } from "@/types";
 import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
-import DynamicFormModal from "@/components/form/DynamicFormModal";
-import TextEditor from "@/components/editor/editor";
+import FormModal from "@/components/form/FormModal/FormModal";
+import { TAGS } from "@/api";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
+import useUpdateApi from "@/hooks/useUpdateApi";
 
 const fields: FieldConfig[] = [
   {
     name: "about",
     type: "textEditor",
-    component: TextEditor,
-  },
+  }, 
 ];
 
 const AboutSeeker: React.FC<{
@@ -21,37 +22,49 @@ const AboutSeeker: React.FC<{
   isMe: boolean;
 }> = ({ user, isMe }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isLoading, error, update, reset } = useUpdateApi<UserProfile>();
   const open = () => setIsModalOpen(true);
-  const close = () => setIsModalOpen(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (data: { [key: string]: string }) => {
-    console.log("🚀 ~ handleSubmit ~ data:", data);
-    setLoading(true);
+  const onClose = () => {
+    setIsModalOpen(false);
+    reset();
   };
 
   if (!isMe && user.about?.length === 0) {
     return null;
   }
+  const handleUpdate = async (formData: Partial<UserProfile>) => {
+    await update(
+      API_UPDATE_SEEKER,
+      {
+        body: { id: user.id, ...formData },
+      },
+      TAGS.profile,
+    );
+    setIsModalOpen(false);
+  };
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
-      <DynamicFormModal
-        open={isModalOpen}
-        onClose={close}
-        onSubmit={handleSubmit}
-        fields={fields}
-        title="Introduce Yourself to Employers"
-        description="Highlight your skills, experience, and commitment. Let potential employers know why you are the right fit to make a difference in their team!"
-        initialValues={{ about: user.about }}
-      >
-        <p className="mt-2 rounded bg-primary-100 p-2 text-sm font-normal text-secondary">
-          <strong className="text-main">Note:</strong> Please avoid sharing any
-          contact information or external links in this section.
-        </p>
-      </DynamicFormModal>
+    <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
+      {isMe && (
+        <FormModal
+          open={isModalOpen}
+          onClose={onClose}
+          error={error?.message}
+          loading={isLoading}
+          onSubmit={handleUpdate}
+          fields={fields}
+          title="Introduce Yourself to Employers"
+          description="Highlight your skills, experience, and commitment. Let potential employers know why you are the right fit to make a difference in their team!"
+          initialValues={{ about: user.about }}
+        >
+          <p className="my-2 rounded bg-primary-100 p-2 px-4 text-sm font-normal text-secondary">
+            <strong className="text-main">Note:</strong> Please avoid sharing
+            any contact information or external links in this section.
+          </p>
+        </FormModal>
+      )}
 
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">About</h3>
+        <h5 className="mb-2 text-xl font-semibold text-main">About</h5>
         {isMe && (
           <IconButton
             className="rounded border border-solid border-gray-300 p-2"
@@ -62,8 +75,11 @@ const AboutSeeker: React.FC<{
         )}
       </div>
       {user.about ? (
-        <ClampedText className="px-2 text-secondary" lines={3}>
-          {user.about}
+        <ClampedText className="px-2 text-secondary text-sm " lines={3}>
+          <div
+            className="prose  text-wrap"
+            dangerouslySetInnerHTML={{ __html: user.about }}
+          />
         </ClampedText>
       ) : isMe ? (
         <EmptyCard

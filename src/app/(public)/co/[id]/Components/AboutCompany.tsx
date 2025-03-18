@@ -41,7 +41,7 @@ const AboutCompany: React.FC<{
   );
 
   const open = () => setIsModalOpen(true);
-  const close = () => {
+  const onClose = () => {
     setIsModalOpen(false);
     reset();
   };
@@ -67,7 +67,7 @@ const AboutCompany: React.FC<{
           open={isModalOpen}
           error={error?.message}
           loading={isLoading}
-          onClose={close}
+          onClose={onClose}
           onSubmit={handleUpdate}
           fields={fields}
           title="About Company "
@@ -76,7 +76,7 @@ const AboutCompany: React.FC<{
         />
       )}
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-2xl font-bold text-main">About Company :</h3>
+        <h3 className="text-xl font-semibold text-main">About Company :</h3>
         {isEmployee && (
           <IconButton
             onClick={open}

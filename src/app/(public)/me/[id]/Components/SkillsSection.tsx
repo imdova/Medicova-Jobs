@@ -36,9 +36,9 @@ const SkillsSection: React.FC<{
     return null;
   }
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="flex flex-col items-center justify-between md:flex-row">
-        <h3 className="text-2xl font-bold text-main">Skills</h3>
+        <h3 className="text-xl font-semibold text-main">Skills</h3>
 
         {/* TextField and Add Skill Button in the same row */}
         {isMe && (

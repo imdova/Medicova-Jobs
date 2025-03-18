@@ -14,13 +14,18 @@ const FormModal: React.FC<DynamicModalProps> = ({
   open,
   onClose,
   onSubmit,
+  onDelete,
   fields,
   title,
   description,
   initialValues = {},
   children,
   loading,
+  deleteLoading,
   error,
+  submitButtonText,
+  deleteButtonText,
+  cancelButtonText,
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -78,7 +83,12 @@ const FormModal: React.FC<DynamicModalProps> = ({
           "& .MuiPaper-root": { overflowX: "hidden" },
         }}
       >
-        <ModalHeader title={title} description={description} error={error} />
+        <ModalHeader
+          title={title}
+          description={description}
+          error={error}
+          handleCancel={handleCancel}
+        />
         <DialogContent className="p-0">
           <FormContent
             fields={fields}
@@ -87,8 +97,13 @@ const FormModal: React.FC<DynamicModalProps> = ({
             hiddenFields={hiddenFields}
             onCheckboxChange={handleCheckboxChange}
             loading={loading}
+            deleteLoading={deleteLoading}
+            onDelete={onDelete}
             resetValues={resetValues}
             onCancel={handleCancel}
+            submitButtonText={submitButtonText}
+            deleteButtonText={deleteButtonText}
+            cancelButtonText={cancelButtonText}
           >
             {children}
           </FormContent>

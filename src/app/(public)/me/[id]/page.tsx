@@ -19,13 +19,13 @@ import { checkIsUnlocked } from "@/lib/actions/employer.actions";
 
 const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
-  const { success, data: profile } = await getUser(id);
-  if (!success || !profile) return notFound();
-  const user = data?.user;
-  const isMe = user?.id === profile.id;
+  const { success, data: user } = await getUser(id);
+  if (!success || !user) return notFound();
+  const sessionUser = data?.user;
+  const isMe = sessionUser?.id === user.id;
   let isLocked = !isMe;
-  if (!isMe && user?.type === "employer" && user?.companyId) {
-    const { data } = await checkIsUnlocked(profile.id, user?.companyId);
+  if (!isMe && sessionUser?.type === "employer" && sessionUser?.companyId) {
+    const { data } = await checkIsUnlocked(user.id, sessionUser?.companyId);
     isLocked = !data?.isUnlocked;
   }
 
@@ -33,40 +33,45 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
     <div className="w-full px-4 md:px-2">
       <div className="flex gap-5">
         {/* Left + Center Sections */}
-        <div className="flex-1 space-y-2 md:space-y-5">
+        <div className="flex-1 space-y-2 md:space-y-2">
           {/* Header Section */}
-          <HeaderSection user={profile} isMe={isMe} />
+          <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}
-          <AboutSeeker user={profile} isMe={isMe} />
+          <AboutSeeker user={user} isMe={isMe} />
           {/* Experience Section */}
-          <ExperienceSection user={profile} isMe={isMe} />
+          <ExperienceSection user={user} isMe={isMe} />
           {/* Education Section */}
-          <EducationsSection user={profile} isMe={isMe} />
+          <EducationsSection user={user} isMe={isMe} />
           {/* Courses Section */}
-          <CoursesSection user={profile} isMe={isMe} />
+          <CoursesSection user={user} isMe={isMe} />
           {/* Skills Section */}
-          <SkillsSection user={profile} isMe={isMe} />
+          <SkillsSection user={user} isMe={isMe} />
           {/* Activities / Achievements Section */}
-          <ActivitiesAchievementsSection user={profile} isMe={isMe} />
+          <ActivitiesAchievementsSection user={user} isMe={isMe} />
         </div>
         {/* Right Sections */}
         <div className="hidden min-w-80 max-w-80 md:block">
-          {/* Public Profile Section */}
+          {/* Public user Section */}
           {isMe && (
             <>
               <CompleteProfile percentage={20} />
-              {/* Public Profile Section */}
+              {/* Public user Section */}
               <PublicProfile />
             </>
           )}
           {/* Resume Section */}
-          <Resume isMe={isMe} user={profile} isLocked={isLocked} />
+          <Resume isMe={isMe} user={user} isLocked={isLocked} />
           {/* Contact Info Section */}
-          <ContactInfoSection isMe={isMe} profile={profile} companyId={user?.companyId} isLocked={isLocked} />
+          <ContactInfoSection
+            isMe={isMe}
+            user={user}
+            companyId={sessionUser?.companyId}
+            isLocked={isLocked}
+          />
           {/* Socialmedia Section */}
-          <SocialMediaSection isMe={isMe} user={profile} isLocked={isLocked} />
+          <SocialMediaSection isMe={isMe} user={user} isLocked={isLocked} />
           {/* Language Section */}
-          <LanguageSection isMe={isMe} user={profile} />
+          <LanguageSection isMe={isMe} user={user} />
         </div>
       </div>
     </div>

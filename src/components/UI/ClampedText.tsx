@@ -1,5 +1,5 @@
 "use client";
-import { Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 
 interface ClampedTextProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,6 +14,8 @@ const ClampedText: React.FC<ClampedTextProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
+  const [fullHeight, setFullHeight] = useState(0);
+  const [clampedHeight, setClampedHeight] = useState(250);
   const textRef = useRef<HTMLDivElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +25,8 @@ const ClampedText: React.FC<ClampedTextProps> = ({
         parseInt(window.getComputedStyle(textRef.current).lineHeight || "0") *
         lines;
       const fullHeight = hiddenRef.current.offsetHeight;
+      setClampedHeight(clampedHeight);
+      setFullHeight(fullHeight);
       setIsClamped(fullHeight > clampedHeight);
     }
   }, [children, lines]);
@@ -37,18 +41,19 @@ const ClampedText: React.FC<ClampedTextProps> = ({
         {children}
       </div>
       {/* Clamped or expanded text */}
-      <Typography
+      <Box
         ref={textRef}
         sx={{
           overflow: "hidden",
-          display: isExpanded ? "block" : "-webkit-box",
+          display: "block",
           WebkitBoxOrient: "vertical",
-          WebkitLineClamp: isExpanded ? "none" : lines,
+          WebkitLineClamp: "none",
           transition: "all 0.3s ease-in-out",
+          maxHeight: isExpanded ? `${fullHeight}px` : `${clampedHeight}px`,
         }}
       >
         {children}
-      </Typography>
+      </Box>
       {/* Show more/less button */}
       {isClamped && (
         <div className="flex items-center justify-center">

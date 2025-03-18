@@ -413,7 +413,7 @@ const SubscriptionPlansPage: React.FC = () => {
         ))}
       </Grid>
 
-      {/* <h4 className="mb-2 text-center text-2xl font-bold text-main">
+      {/* <h4 className="mb-2 text-center text-xl font-semibold text-main">
         Try our 100% free Plan
       </h4> */}
 

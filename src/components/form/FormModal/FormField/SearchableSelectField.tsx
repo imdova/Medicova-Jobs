@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { FieldConfig } from "@/types";
 import SearchableSelect from "@/components/UI/SearchableSelect";
-import { getNestedValue } from "@/util/forms";
+import { getDependsOnLabel, getNestedValue } from "@/util/forms";
 
 interface SelectFieldProps {
   field: FieldConfig;
@@ -31,6 +31,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
     field.dependsOn && !getNestedValue(formValues, field.dependsOn)
       ? dependsOnField
       : null;
+  const dependsOnValue = getDependsOnLabel(dependsOn);
   const placeholder =
     "Select " +
     (field.textFieldProps?.label
@@ -47,13 +48,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
       )}
       <Tooltip
         title={
-          dependsOn
-            ? `Please select ${
-                dependsOn.textFieldProps?.label
-                  ? String(dependsOn.textFieldProps?.label)?.replace("*", "")
-                  : dependsOn.label?.replace("*", "")
-              } first`
-            : undefined
+          dependsOnValue ? `Please select ${dependsOnValue} first` : undefined
         }
         placement="bottom"
       >

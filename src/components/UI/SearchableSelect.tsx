@@ -26,6 +26,7 @@ const filterItems = (items: Option[], searchTerm: string) => {
 
 const SearchableSelect: React.FC<SearchableSelectProps> = ({
   options,
+  value,
   ...props
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,6 +56,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   return (
     <Select
       {...props}
+      value={searchTerm ? "" : value}
       open={isOpen}
       onOpen={handleOpen}
       onClose={handleClose}

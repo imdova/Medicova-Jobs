@@ -3,56 +3,95 @@ import { CommonLinks, RoleBasedLinks } from "@/types";
 export const roleBasedLinks: RoleBasedLinks = {
   employer: [
     {
-      title: "Dashboard",
-      url: "/employer/dashboard",
+      id:1,
+      label: "Dashboard",
+      path: "/employer/dashboard",
     },
     {
-      title: "My Jobs",
-      url: "/employer/job/manage-jobs",
+      id:1,
+      label: "My Jobs",
+      path: "/employer/job/manage-jobs",
     },
     {
-      title: "CV Search",
-      url: "/employer/search",
+      id:1,
+      label: "CV Search",
+      path: "/employer/search",
     },
     {
-      title: "Report",
-      url: "#",
+      id:1,
+      label: "Report",
+      path: "#",
     },
     {
-      title: "Billing",
-      url: "/employer/subscription-plans",
+      id:1,
+      label: "Billing",
+      path: "/employer/subscription-plans",
+    },
+  ],
+  unEmployee: [
+    {
+      id:1,
+      label: "Dashboard",
+      path: "/employer/dashboard",
+    },
+    {
+      id:1,
+      label: "My Jobs",
+      path: "/employer/job/manage-jobs",
+    },
+    {
+      id:1,
+      label: "CV Search",
+      path: "/employer/search",
+    },
+    {
+      id:1,
+      label: "Report",
+      path: "#",
+    },
+    {
+      id:1,
+      label: "Billing",
+      path: "/employer/subscription-plans",
     },
   ],
   seeker: [
     {
-      title: "Find Job",
-      url: "/search",
+      id:1,
+      label: "Find Job",
+      path: "/search",
     },
     {
-      title: "Applications",
-      url: "/job-seeker/my-applications",
+      id:1,
+      label: "Applications",
+      path: "/job-seeker/my-applications",
     },
     {
-      title: "Courses",
-      url: "#",
+      id:1,
+      label: "Courses",
+      path: "#",
     },
     {
-      title: "Settings",
-      url: "/job-seeker/setting",
+      id:1,
+      label: "Settings",
+      path: "/job-seeker/setting",
     },
   ],
   admin: [
     {
-      title: "Admin Dashboard",
-      url: "/admin/dashboard",
+      id:1,
+      label: "Admin Dashboard",
+      path: "/admin/dashboard",
     },
     {
-      title: "User Management",
-      url: "/admin/users",
+      id:1,
+      label: "User Management",
+      path: "/admin/users",
     },
     {
-      title: "Settings",
-      url: "/admin/settings",
+      id:1,
+      label: "Settings",
+      path: "/admin/settings",
     },
   ],
 };
@@ -60,20 +99,24 @@ export const roleBasedLinks: RoleBasedLinks = {
 export const commonLinks: CommonLinks = {
   home: [
     {
-      title: "Jobs",
-      url: "/search",
+      id:1,
+      label: "Jobs",
+      path: "/search",
     },
     {
-      title: "Post a Job",
-      url: "/employer/job/posted",
+      id:1,
+      label: "Post a Job",
+      path: "/employer/job/posted",
     },
     {
-      title: "Blog",
-      url: "/blog",
+      id:1,
+      label: "Blog",
+      path: "/blog",
     },
     {
-      title: "Courses",
-      url: "#",
+      id:1,
+      label: "Courses",
+      path: "#",
     },
   ],
 };

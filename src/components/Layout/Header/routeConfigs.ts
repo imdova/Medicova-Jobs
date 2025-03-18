@@ -1,5 +1,6 @@
 import { commonLinks, roleBasedLinks } from "@/constants/header";
 import { RoleState } from "@/types/next-auth";
+import { User } from "next-auth";
 
 type HeaderType = "minimal" | "full" | "centered" | "transparent" | "dark";
 type LinksType = "default" | "userType";
@@ -58,11 +59,24 @@ export const matchRoute = (pathname: string) => {
   return wildcardMatch;
 };
 
-export function getNavLinks(userType?: RoleState, pathname?: string) {
+export function getNavLinks(user?: User, pathname?: string) {
+  const userType = user?.type 
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
+
     if (type === "userType" && userType) {
-      return roleBasedLinks[userType];
+      // return roleBasedLinks[userType];
+      if (userType === "seeker") {
+        return roleBasedLinks.seeker;
+      } else if (userType === "employer") {
+        if (user?.companyName) {
+          return roleBasedLinks.employer;
+        } else {
+          return roleBasedLinks.unEmployee;
+        }
+      } else if (userType === "admin") {
+        return roleBasedLinks.admin;
+      }
     }
   }
   return commonLinks.home;

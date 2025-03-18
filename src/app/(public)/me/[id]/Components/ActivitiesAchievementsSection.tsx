@@ -12,7 +12,7 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import AddModal from "./Modals/AddModal";
+// import AddModal from "./Modals/AddModal";
 import courses from "@/components/icons/courses.png";
 import EmptyCard from "@/components/UI/emptyCard";
 import { Add, Edit, LocationOnOutlined } from "@mui/icons-material";
@@ -71,9 +71,9 @@ const ActivitiesAchievementsSection: React.FC<{
     return null;
   }
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">
+        <h3 className="mb-2 text-xl font-semibold text-main">
           Activities / Achievements
         </h3>
         {isMe && (
@@ -87,12 +87,12 @@ const ActivitiesAchievementsSection: React.FC<{
           </IconButton>
         )}
       </div>
-      <AddModal
+      {/* <AddModal
         open={openModal}
         onClose={handleCloseModal}
         modalTitle={modalTitle}
         fields={fields}
-      />
+      /> */}
       {/* Title and Description */}
       {activitiesData.length > 0 ? (
         <div className="my-2 grid grid-cols-1 gap-2">

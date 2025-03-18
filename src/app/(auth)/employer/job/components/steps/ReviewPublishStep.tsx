@@ -68,7 +68,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
             {/* Job Description */}
             {jobData.description && (
               <div className="max-w-[800px] overflow-hidden">
-                <h3 className="text-2xl font-bold text-main">
+                <h3 className="text-xl font-semibold text-main">
                   Job Description
                 </h3>
                 <div
@@ -87,7 +87,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
             {/* Job Responsibilities */}
             {jobData.requirements && (
               <>
-                <h3 className="mt-8 text-2xl font-bold text-main">
+                <h3 className="mt-8 text-xl font-semibold text-main">
                   Job Requirements
                 </h3>
                 <div
@@ -98,7 +98,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
             )}
             {jobData.salaryDetails && (
               <>
-                <h3 className="mt-8 text-2xl font-bold text-main">
+                <h3 className="mt-8 text-xl font-semibold text-main">
                   Additional Details
                 </h3>
                 <p>{jobData.salaryDetails}</p>
@@ -106,7 +106,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
             )}
 
             {/* Skills related to the jobData post */}
-            <h3 className="mt-8 text-2xl font-bold text-main">
+            <h3 className="mt-8 text-xl font-semibold text-main">
               Skills related to the job post{" "}
             </h3>
             <div className="mt-2 flex flex-wrap">
@@ -121,7 +121,7 @@ const ReviewPublishStep: React.FC<ReviewPublishStepProps> = ({
             </div>
 
             {/* Related Search */}
-            <h3 className="mt-8 text-2xl font-bold text-main">
+            <h3 className="mt-8 text-xl font-semibold text-main">
               Related Search
             </h3>
             <div className="mt-2 flex flex-wrap">

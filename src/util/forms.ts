@@ -41,3 +41,21 @@ export function getNestedValue(
   }, formValues);
   return value;
 }
+
+export function getDependsOnLabel(dependsOn: FieldConfig | null | undefined): string | undefined {
+  if (!dependsOn) {
+    return undefined;
+  }
+
+  if (dependsOn.textFieldProps?.label) {
+    return typeof dependsOn.textFieldProps.label === 'string'
+      ? dependsOn.textFieldProps.label.replace("*", "")
+      : undefined;
+  }
+
+  if (dependsOn.label) {
+    return dependsOn.label.replace("*", "");
+  }
+
+  return undefined;
+}

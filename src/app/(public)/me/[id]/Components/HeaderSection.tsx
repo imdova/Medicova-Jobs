@@ -10,6 +10,7 @@ import uploadImages from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
 import { calculateAge } from "@/util/general";
 import EditProfile from "./editProfile";
+import { formatFullName, formatName } from "@/util";
 
 const HeaderSection: React.FC<{
   user: UserProfile;
@@ -18,26 +19,28 @@ const HeaderSection: React.FC<{
   const { update: updateSession } = useSession();
   const [image, setImage] = useState<File | null>(null);
 
-  const { update } = useUpdateApi<UserProfile>(handleSuccess);
+  const { update } = useUpdateApi<UserProfile>();
 
-  const handleUpdateProfile = async (body: Partial<UserProfile>) => {
-    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
+  const handleUpdateProfile = async (formData: Partial<UserProfile>) => {
+    const newProfile = await update(
+      API_UPDATE_SEEKER,
+      { body: { id: user.id, ...formData } },
+      TAGS.profile,
+    );
+    console.log("🚀 ~ handleUpdateProfile ~ newProfile:", newProfile)
+    await updateSession({
+      photo: newProfile.avatar,
+    });
   };
 
-  async function handleSuccess(newProfile: UserProfile) {
-    await updateSession({
-      companyPhoto: newProfile.category,
-    });
-  }
-
   const updateImage = async (file: File) => {
-    const [category] = await uploadImages([file]);
-    handleUpdateProfile({ category });
-    setImage(file);
+    const [avatar] = await uploadImages([file]);
+    console.log("🚀 ~ updateImage ~ avatar:", avatar)
+    // handleUpdateProfile({ avatar });
+    // setImage(file);
   };
 
   const age = user.birth ? calculateAge(new Date(user.birth)) : "";
-  const isMarried = user?.maritalStatus === "Married";
   return (
     <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
       {isMe ? (
@@ -45,7 +48,7 @@ const HeaderSection: React.FC<{
           currentImageUrl={
             image ? URL.createObjectURL(image) : user.avatar || ""
           }
-          alt={user.firstName + " " + user.lastName + " profile image"}
+          alt={user.firstName + " " + user.lastName + " user image"}
           size="xLarge"
           onImageUpdate={updateImage}
           imageClassName="border-4 border-white shadow-md"
@@ -53,16 +56,18 @@ const HeaderSection: React.FC<{
       ) : (
         <Avatar
           src={user.avatar}
-          alt={user.firstName + " " + user.lastName + " profile image"}
+          alt={user.firstName + " " + user.lastName + " user image"}
           size={100}
           className="border-4 border-white shadow-md"
         />
       )}
-      <div className="flex">
-        <div className="mr-5">
+      <div className="flex w-full">
+        <div className="flex-1 mr-5">
           <h5 className="text-xl font-bold text-main">
-            {user.userName}{" "}
-            <Verified color="primary" className="ml-1 h-6 w-6" />
+            {formatName(user, true)}{" "}
+            {user.isVerified && (
+              <Verified color="primary" className="ml-1 h-6 w-6" />
+            )}
           </h5>
           <p className="text-sm text-secondary">{user.title}</p>
           <div>
@@ -71,7 +76,7 @@ const HeaderSection: React.FC<{
               {user.nationality ? `- ${user.nationality}` : ""}{" "}
               {user.maritalStatus ? `- ${user.maritalStatus}` : ""}{" "}
               {user.speciality ? `- ${user.speciality}` : ""}{" "}
-              {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "}
+              {/* {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "} */}
             </p>
             {(user.country?.name || user.state?.name || user.city) && (
               <div className="mr-3 flex items-center gap-1">

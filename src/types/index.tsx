@@ -50,7 +50,6 @@ export interface Result<T = any> {
   data?: T;
 }
 
-
 export interface registerData {
   firstName: string;
   lastName: string;
@@ -330,10 +329,11 @@ export interface HeaderLink {
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
-  [key in RoleState]: HeaderLink[];
+  [key in RoleState | "unEmployee"]: NavItem[];
 };
+
 export type CommonLinks = {
-  [key in CommonLinksType]: HeaderLink[];
+  [key in CommonLinksType]: NavItem[];
 };
 
 export type NavItem = {
@@ -413,11 +413,17 @@ export interface DynamicModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: any) => void;
+  onDelete?: (data: any) => void;
   fields: FieldConfig[];
   title: string;
   description?: string;
   initialValues?: Record<string, any>;
   children?: React.ReactNode;
   loading?: boolean;
+  deleteLoading?: boolean;
   error?: string;
+  /// 
+  submitButtonText?: string;
+  deleteButtonText?: string;
+  cancelButtonText?: string;
 }

@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
-import AddModal from "./Modals/AddModal";
+// import AddModal from "./Modals/AddModal";
 import { Edit, LanguageOutlined, LinkOutlined } from "@mui/icons-material";
 import Link from "next/link";
 
@@ -48,7 +48,7 @@ const SocialMediaSection: React.FC<{
   return (
     <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">Social Links</h3>
+        <h3 className="mb-2 text-xl font-semibold text-main">Social Links</h3>
         {isMe && (
           <IconButton
             className="rounded border border-solid border-gray-300 p-2"
@@ -60,12 +60,12 @@ const SocialMediaSection: React.FC<{
           </IconButton>
         )}
       </div>
-      <AddModal
+      {/* <AddModal
         open={openModal}
         onClose={handleCloseModal}
         modalTitle={modalTitle}
         fields={fields}
-      />
+      /> */}
       {!isLocked && (
         <div className="flex gap-4">
           {socialMedia.map((item, index) => {

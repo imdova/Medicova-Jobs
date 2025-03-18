@@ -28,7 +28,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
           {/* Text Section */}
           <div className="flex-1">
             <div className="text-left">
-              <h3 className="mb-2 text-2xl font-bold text-main">
+              <h3 className="mb-2 text-xl font-semibold text-main">
                 {company.name}
                 <Verified className="ml-3 text-primary" />
               </h3>

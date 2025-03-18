@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import AddModal from "./Modals/AddModal";
+// import AddModal from "./Modals/AddModal";
 import Image from "next/image";
 import courses from "@/components/icons/courses.png";
 import { Add, LocationOnOutlined } from "@mui/icons-material";
@@ -71,9 +71,9 @@ const CoursesSection: React.FC<{
     return null;
   }
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-2xl font-bold text-main">
+        <h3 className="mb-2 text-xl font-semibold text-main">
           Courses and Certificates
         </h3>
         {isMe && (
@@ -85,12 +85,12 @@ const CoursesSection: React.FC<{
           </IconButton>
         )}
       </div>
-      <AddModal
+      {/* <AddModal
         open={openModal}
         onClose={handleCloseModal}
         modalTitle={modalTitle}
         fields={fields}
-      />
+      /> */}
 
       {/* Title and Description */}
       {coursesData.length > 0 ? (

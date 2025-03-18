@@ -8,7 +8,7 @@ import { isCurrentPage } from "@/util";
 
 const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
   const isScrolled = useScrollDetection();
-  const links = getNavLinks(user?.type, pathname);
+  const links = getNavLinks(user, pathname);
   return (
     <header
       className={`fixed left-0 top-0 z-50 w-full transition-colors duration-300 ${isScrolled ? "bg-white text-black shadow-md" : "bg-transparent text-white"}`}
@@ -23,14 +23,15 @@ const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
           <nav className="ml-auto flex items-center space-x-8">
             <div className="hidden items-center space-x-8 md:flex">
               {links.map((link, i) => {
-                const isPage = isCurrentPage(pathname, link.url);
+                const path = link.pattern || link.path;
+                const isPage = isCurrentPage(pathname, path);
                 return (
                   <Link
                     key={i}
-                    href={link.url}
-                    className={`font-medium ${isPage ? (isScrolled ? "text-primary" : "text-white") : "hover:text-primary"}`}
+                    href={link.path || "#"}
+                    className={`font-medium ${isPage ? "text-primary" : "hover:text-primary"}`}
                   >
-                    {link.title}
+                    {link.label}
                   </Link>
                 );
               })}

@@ -23,7 +23,7 @@ const HeaderSelector: React.FC<{ user?: User}> = ({ user }) => {
 
     const SelectedHeader = headerComponents[headerType];
 
-    return <SelectedHeader user={user} pathname={"/"} />;
+    return <SelectedHeader user={user} pathname={pathname} />;
 };
 
 export default HeaderSelector;
