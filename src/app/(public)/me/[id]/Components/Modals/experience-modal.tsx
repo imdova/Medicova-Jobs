@@ -20,14 +20,49 @@ type PostJobModalProps = {
   seekerId?: string;
 };
 
+type OptExperienceData = ExperienceData & {
+  startYear: string;
+  endYear: string;
+  startMonth: string;
+  endMonth: string;
+};
+
+const years = Array.from(
+  { length: new Date().getFullYear() - 1980 + 1 },
+  (v, k) => k + 1980,
+).reverse();
+const months = [
+  { full: "January", short: "Jan", number: "01" },
+  { full: "February", short: "Feb", number: "02" },
+  { full: "March", short: "Mar", number: "03" },
+  { full: "April", short: "Apr", number: "04" },
+  { full: "May", short: "May", number: "05" },
+  { full: "June", short: "Jun", number: "06" },
+  { full: "July", short: "Jul", number: "07" },
+  { full: "August", short: "Aug", number: "08" },
+  { full: "September", short: "Sep", number: "09" },
+  { full: "October", short: "Oct", number: "10" },
+  { full: "November", short: "Nov", number: "11" },
+  { full: "December", short: "Dec", number: "12" },
+];
 const ExperienceModal = ({
   isOpen,
   onClose,
-  initialValues = {},
+  initialValues: values,
   seekerId,
 }: PostJobModalProps) => {
-  const { isLoading, error, update, reset } = useUpdateApi();
-  const { isLoading: isDeleting, update: onDelete } = useUpdateApi();
+  const initialValues: Partial<OptExperienceData> = values
+    ? {
+        ...values,
+        startYear: values.startDate?.split("-")[0],
+        endYear: values.isPresent ? "" : values.endDate?.split("-")[0],
+        startMonth: values.startDate?.split("-")[1],
+        endMonth: values.isPresent ? "" : values.endDate?.split("-")[1],
+      }
+    : {};
+
+  const { isLoading, error, update, reset } = useUpdateApi(handleClose);
+  const { isLoading: isDeleting, update: onDelete } = useUpdateApi(handleClose);
 
   // location selection
   const [countryCode, setCountryCode] = useState(
@@ -53,12 +88,12 @@ const ExperienceModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryCode, isOpen]);
 
-  const handleClose = () => {
+  function handleClose() {
     reset();
     onClose();
     setCountryCode("");
-  };
-  const fields: FieldConfig<ExperienceData>[] = [
+  }
+  const fields: FieldConfig<OptExperienceData>[] = [
     {
       name: "title",
       type: "text",
@@ -74,27 +109,60 @@ const ExperienceModal = ({
       textFieldProps: { placeholder: "Enter Company" },
     },
     {
-      name: "startDate",
-      type: "date",
-      label: "Start Date*",
+      name: "startYear",
+      type: "search-select",
+      label: "Start Year*",
       gridProps: { xs: 12, sm: 6 },
-      textFieldProps: { placeholder: "Start Date" },
+      textFieldProps: { placeholder: "Start Year" },
+      options: years.map((year) => ({
+        value: year.toString(),
+        label: year.toString(),
+      })),
       required: true,
     },
     {
-      name: "endDate",
-      type: "date",
-      label: "End Date*",
+      name: "startMonth",
+      label: "Start Month*",
+      type: "search-select",
       gridProps: { xs: 12, sm: 6 },
-      textFieldProps: { placeholder: "End Date" },
+      textFieldProps: { placeholder: "Start Month" },
+      options: months.map((month) => ({
+        value: month.number,
+        label: month.full,
+      })),
+      required: true,
+    },
+    {
+      // TODO: add Validations for the year and month
+      name: "endYear",
+      label: "End Year*",
+      type: "search-select",
+      gridProps: { xs: 12, sm: 6 },
+      textFieldProps: { placeholder: "End Year" },
+      options: years.map((year) => ({
+        value: year.toString(),
+        label: year.toString(),
+      })),
+      required: true,
+    },
+    {
+      name: "endMonth",
+      label: "End Month*",
+      type: "search-select",
+      gridProps: { xs: 12, sm: 6 },
+      textFieldProps: { placeholder: "End Month" },
+      options: months.map((month) => ({
+        value: month.number,
+        label: month.full,
+      })),
       required: true,
     },
     {
       name: "isPresent",
       label: "I currently work there",
       type: "checkbox",
-      resetFields: ["endDate"],
-      hideFieldNames: ["endDate"], // Multiple fields to hide
+      resetFields: ["endYear", "endMonth"],
+      hideFieldNames: ["endYear", "endMonth"], // Multiple fields to hide
     },
     {
       name: "country.code",
@@ -136,25 +204,32 @@ const ExperienceModal = ({
         placeholder: "Enter City",
       },
       gridProps: { xs: 12, md: 4 },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
     },
   ];
 
-  const onSubmit = async (formData: Partial<ExperienceData>) => {
+  const onSubmit = async (formData: Partial<OptExperienceData>) => {
     const { state: formState, country: formCountry } = formData;
     const country =
       countries.data.find((country) => country.isoCode === formCountry?.code) ||
       null;
     const state =
       states.data.find((state) => state.isoCode === formState?.code) || null;
+
+    const startDate = formData.startYear + "-" + formData.startMonth;
+    const endDate = formData.isPresent
+      ? null
+      : formData.endYear + "-" + formData.endMonth;
+
     const body = {
       ...formData,
       seekerId: seekerId,
       country: { code: country?.isoCode, name: country?.name },
       state: { code: state?.isoCode, name: state?.name },
-      endDate: formData.isPresent ? null : formData.endDate,
+      startDate,
+      endDate,
     };
     if (body.id) {
       await update(API_UPDATE_SEEKER_EXPERIENCE, { body }, TAGS.experience);
@@ -165,14 +240,16 @@ const ExperienceModal = ({
         TAGS.experience,
       );
     }
-    handleClose();
   };
 
   const deleteHandler = async (data: ExperienceData) => {
-    await onDelete(API_DELETE_SEEKER_EXPERIENCE + data.id, {
-      method: "DELETE",
-    },TAGS.experience);
-    handleClose();
+    await onDelete(
+      API_DELETE_SEEKER_EXPERIENCE + data.id,
+      {
+        method: "DELETE",
+      },
+      TAGS.experience,
+    );
   };
 
   return (

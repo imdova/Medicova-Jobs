@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Flag from "./flagitem";
 import SearchableSelect from "./SearchableSelect";
 import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js";
-import { isValidEgyptianPhoneNumber } from "@/util/forms";
 
 const formatCode = (code: string): string => {
   if (!code.startsWith("+")) {

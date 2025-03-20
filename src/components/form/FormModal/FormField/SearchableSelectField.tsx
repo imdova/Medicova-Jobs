@@ -53,6 +53,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <SearchableSelect
+          className="bg-white"
           {...controllerField}
           displayEmpty
           options={options}
@@ -66,7 +67,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
             }
           }}
           renderValue={(value) => {
-            const selected = options.find((opt) => opt.value === value)?.label;
+            const selected = options.find((opt) => opt.value == value)?.label;
             return selected ? (
               selected
             ) : (

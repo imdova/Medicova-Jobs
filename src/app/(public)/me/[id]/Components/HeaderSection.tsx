@@ -35,6 +35,7 @@ const HeaderSection: React.FC<{
 
   const updateImage = async (file: File) => {
     const [avatar] = await uploadImages([file]);
+    // TODO: update profile
     console.log("🚀 ~ updateImage ~ avatar:", avatar)
     // handleUpdateProfile({ avatar });
     // setImage(file);
@@ -42,7 +43,7 @@ const HeaderSection: React.FC<{
 
   const age = user.birth ? calculateAge(new Date(user.birth)) : "";
   return (
-    <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-100 bg-primary-100 p-5 shadow-lg lg:flex-row">
+    <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-primary-100 p-5 shadow-soft lg:flex-row">
       {isMe ? (
         <ProfileImage
           currentImageUrl={

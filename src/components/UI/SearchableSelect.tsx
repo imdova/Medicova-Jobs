@@ -53,6 +53,27 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
     props.onClose?.({} as React.SyntheticEvent);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (e.key === "Enter") {
+      const filteredOptions = filterItems(options, searchTerm);
+      if (filteredOptions.length > 0) {
+        const firstOption = filteredOptions[0];
+        const event = {
+          target: { value: firstOption.value },
+        } as React.ChangeEvent<{ value: unknown }>;
+
+        if (props.onChange) {
+          const syntheticEvent = {
+            target: { value: firstOption.value || "" },
+          } as unknown as React.ChangeEvent<HTMLInputElement>;
+          props.onChange(syntheticEvent, null);
+        }
+        handleClose();
+      }
+    }
+  };
+
   return (
     <Select
       {...props}
@@ -78,6 +99,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
           placeholder="Search..."
           fullWidth
           value={searchTerm}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
@@ -98,7 +120,6 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
             form: "off", // Additional security against form autofill
           }}
           onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
         />
       </div>
       {filterItems(options, searchTerm).map((item, i) => (

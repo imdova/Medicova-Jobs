@@ -238,7 +238,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
           </div>
           <IconButton
             onClick={handleAddOrEditQuestion}
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
           >
             <Add />
           </IconButton>
@@ -248,7 +248,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
                 setNewQuestion("");
                 setEditingIndex(null);
               }}
-              className="rounded border border-solid border-gray-300 p-2"
+              className="rounded border border-solid border-gray-200 p-2"
             >
               <Close />
             </IconButton>

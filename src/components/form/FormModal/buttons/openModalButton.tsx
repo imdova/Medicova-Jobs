@@ -38,6 +38,7 @@ function OpenModalButton<T>({
   componentProps,
   ModalComponent,
   btnVariant = "icon", // default to icon
+  title,
   ...props
 }: AddNewJobButtonProps<T>) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,9 +69,9 @@ function OpenModalButton<T>({
         onClose={onClose}
         {...componentProps}
       />
-      <Tooltip title={props.title}>
+      <Tooltip title={title}>
         {/* Wrap in span to prevent Tooltip disabled button issue */}
-        <span>{renderButton()}</span>
+        {renderButton()}
       </Tooltip>
     </>
   );

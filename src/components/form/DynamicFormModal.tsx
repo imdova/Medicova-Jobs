@@ -162,7 +162,7 @@ const DynamicFormModal: React.FC<DynamicModalProps> = ({
           required: field.required
             ? `${field.label || String(field.name)} is required`
             : false,
-          ...field.validation,
+          ...field.rules,
         }}
         render={({ field: controllerField, fieldState: { error } }) => {
           if (field.type === "checkbox") {

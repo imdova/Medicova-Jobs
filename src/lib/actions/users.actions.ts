@@ -2,8 +2,12 @@
 
 import { TAGS } from "@/api";
 import {
+  API_GET_SEEKER_ACTIVITIES,
   API_GET_SEEKER_BY_USERNAME,
+  API_GET_SEEKER_COURSES,
+  API_GET_SEEKER_EDUCATION,
   API_GET_SEEKER_EXPERIENCE,
+  API_GET_SEEKER_SKILLS,
 } from "@/api/seeker";
 import { API_GET_USERS } from "@/api/users";
 import { Result } from "@/types";
@@ -99,3 +103,85 @@ export const getExperience = async (
     };
   }
 };
+export const getEducations = async (
+  id: string,
+): Promise<Result<EducationData[]>> => {
+  try {
+    const response = await fetch(API_GET_SEEKER_EDUCATION + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+      next: { tags: [TAGS.education] },
+    });
+    if (!response.ok) return errorResult("error fetching education");
+    const data: EducationData[] = await response.json();
+    return {
+      success: true,
+      message: "Education fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getCourses = async (
+  id: string,
+): Promise<Result<CertificationData[]>> => {
+  try {
+    const response = await fetch(API_GET_SEEKER_COURSES + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+      next: { tags: [TAGS.courses] },
+    });
+    if (!response.ok) return errorResult("error fetching courses");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Courses fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getActivity = async (
+  id: string,
+): Promise<Result<ActivityData[]>> => {
+  try {
+    const response = await fetch(API_GET_SEEKER_ACTIVITIES + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+      next: { tags: [TAGS.activity] },
+    });
+    if (!response.ok) return errorResult("error fetching activity");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Activity fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+

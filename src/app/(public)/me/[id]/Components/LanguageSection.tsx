@@ -55,12 +55,12 @@ const LanguageSection: React.FC<{
   };
 
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-xl font-semibold text-main">Languages</h3>
         {isMe && (
           <IconButton
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
             onClick={() => handleOpenModal("Select Your Languages")}
           >
             <Edit />

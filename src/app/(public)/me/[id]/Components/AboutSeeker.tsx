@@ -67,7 +67,7 @@ const AboutSeeker: React.FC<{
         <h5 className="mb-2 text-xl font-semibold text-main">About</h5>
         {isMe && (
           <IconButton
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
             onClick={open}
           >
             <EditIcon />

@@ -33,7 +33,7 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
         <h3 className="text-xl font-semibold text-main">Latest jobs:</h3>
         {isEmployee && (
           <AddNewJobButton company={company}
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
             title="Create Job Now"
           >
             <Add />

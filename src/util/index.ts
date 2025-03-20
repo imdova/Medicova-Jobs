@@ -4,7 +4,10 @@ import { JobData, Role } from "@/types";
 import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const formatDate = (date: Date): string => {
+export const formatDate = (
+  date: Date | string,
+  options?: { year?: boolean; month?: boolean; day?: boolean },
+): string => {
   const months = [
     "Jan",
     "Feb",
@@ -20,7 +23,31 @@ export const formatDate = (date: Date): string => {
     "Dec",
   ];
   const d = new Date(date);
-  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+
+  const year = options?.year !== false ? d.getFullYear() : "";
+  const month = options?.month !== false ? months[d.getMonth()] : "";
+  const day = options?.day !== false ? d.getDate() : "";
+
+  const formattedDate = [month, day, year].filter(Boolean).join(", ");
+  return formattedDate.trim();
+};
+export const getDuration = ({
+  startDate,
+  endDate,
+}: Partial<ExperienceData>): string => {
+  if (!startDate) return "";
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+  const durationInMonths =
+    (end.getFullYear() - start.getFullYear()) * 12 +
+    end.getMonth() -
+    start.getMonth();
+  const years = Math.floor(durationInMonths / 12);
+  const months = durationInMonths % 12;
+  if (years === 0) {
+    return `${months} month`;
+  }
+  return `${years} y ${months} m`;
 };
 export function formatName(
   {

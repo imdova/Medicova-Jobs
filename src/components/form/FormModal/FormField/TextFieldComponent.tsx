@@ -59,24 +59,24 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
         variant="outlined"
         error={!!error}
         helperText={error?.message}
-        InputProps={
-          field.type === "password"
-            ? {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }
-            : {}
-        }
+        InputProps={{
+          className: "bg-white",
+          endAdornment:
+            field.type === "password" ? (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : (
+              ""
+            ),
+        }}
       />
     </div>
   );

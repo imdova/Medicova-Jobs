@@ -15,7 +15,7 @@ const ClampedText: React.FC<ClampedTextProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
   const [fullHeight, setFullHeight] = useState(0);
-  const [clampedHeight, setClampedHeight] = useState(250);
+  const [clampedHeight, setClampedHeight] = useState(lines * 18);
   const textRef = useRef<HTMLDivElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
 

@@ -59,6 +59,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <Select
+          className="bg-white"
           {...controllerField}
           labelId={String(field.name) + "Label"}
           id={String(field.name)}
@@ -73,11 +74,11 @@ export const SelectField: React.FC<SelectFieldProps> = ({
             }
           }}
           renderValue={(value) => {
-            const selected = options.find((opt) => opt.value === value)?.label;
+            const selected = options.find((opt) => opt.value == value)?.label;
             return selected ? (
               selected
             ) : (
-              <span className="text-neutral-500">
+              <span className="text-neutral-400">
                 {field.textFieldProps?.placeholder || placeholder || "Select"}
               </span>
             );

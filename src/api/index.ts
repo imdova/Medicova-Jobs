@@ -16,4 +16,7 @@ export const TAGS = {
   /// profile /me
   profile: "profile",
   experience: "experience",
+  education: "education",
+  courses: "courses",
+  activity: "activity",
 };

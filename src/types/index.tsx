@@ -8,7 +8,7 @@ import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, TextFieldProps } from "@mui/material";
-import { Path } from "react-hook-form";
+import { FieldValues, Path, RegisterOptions } from "react-hook-form";
 import { User } from "next-auth";
 
 export type Country = {
@@ -374,6 +374,7 @@ export type FieldType =
   | "text"
   | "number"
   | "email"
+  | "phone"
   | "password"
   | "date"
   | "textEditor"
@@ -394,7 +395,7 @@ export interface FieldConfig<T = any> {
   type: FieldType;
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
-  validation?: any;
+  rules?: Omit<RegisterOptions<FieldValues, string>, "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"> | undefined
   gridProps?: {
     xs?: number;
     sm?: number;

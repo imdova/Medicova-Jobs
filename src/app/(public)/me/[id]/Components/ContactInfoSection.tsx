@@ -1,12 +1,17 @@
 "use client";
-import React, { useEffect } from "react";
 import { IconButton, Divider, Button, Snackbar, Alert } from "@mui/material";
-import { useRouter } from "next/navigation";
 import { Edit, Email, KeyOutlined, PhoneIphone } from "@mui/icons-material";
-import Link from "next/link";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { UNLOCKED_SEEKERS } from "@/api/employer";
 import { TAGS } from "@/api";
+import { Company, FieldConfig } from "@/types";
+import { useState } from "react";
+import FormModal from "@/components/form/FormModal/FormModal";
+
+type Contact = {
+  email: string;
+  phone: string;
+};
 
 const ContactInfoSection: React.FC<{
   user: UserProfile;
@@ -14,10 +19,25 @@ const ContactInfoSection: React.FC<{
   companyId?: string | null;
   isLocked: boolean;
 }> = ({ user, isMe, companyId, isLocked }) => {
-  const { isLoading, error, reset, update } = useUpdateApi();
-  const unlock = () => {
+  const {
+    isLoading: isUnlocking,
+    error: unlockError,
+    reset: resetUnlock,
+    update: unlock,
+  } = useUpdateApi();
+  const { isLoading, error, update, reset } = useUpdateApi<Company>(() =>
+    setIsModalOpen(false),
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const onOpen = () => setIsModalOpen(true);
+  const onClose = () => {
+    setIsModalOpen(false);
+    reset();
+  };
+
+  const unlockHandler = () => {
     if (companyId) {
-      update(
+      unlock(
         UNLOCKED_SEEKERS,
         { method: "POST", body: { companyId, seekerId: user.id } },
         TAGS.applicants,
@@ -25,19 +45,53 @@ const ContactInfoSection: React.FC<{
     }
   };
 
+  const handleUpdate = (data: Contact) => {
+    // TODO: Implement update logic
+    console.log("🚀 ~ handleUpdate ~ data:", data);
+  };
+
+  const fields: FieldConfig<Contact>[] = [
+    {
+      name: "email",
+      type: "email",
+      label: "Email*",
+      textFieldProps: { placeholder: "Enter Email" },
+      required: true,
+    },
+    {
+      name: "phone",
+      type: "phone",
+      label: "Phone*",
+      textFieldProps: { placeholder: "Enter Phone Number" },
+      required: true,
+    },
+  ];
+
   return (
-    <div className="mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-lg md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
+      {isMe && (
+        <FormModal
+          open={isModalOpen}
+          error={error?.message}
+          loading={isLoading}
+          onClose={onClose}
+          onSubmit={handleUpdate}
+          fields={fields}
+          title="Update Contact"
+          description="Help Recruiters reach You well"
+          initialValues={{ email: user.email, phone: user.phone }}
+        />
+      )}
+
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-xl font-semibold text-main">Contact Info</h3>
         {isMe && (
-          <Link href="/job-seeker/setting">
-            <IconButton
-              component="span"
-              className="rounded border border-solid border-gray-300 p-2"
-            >
-              <Edit />
-            </IconButton>
-          </Link>
+          <IconButton
+            onClick={onOpen}
+            className="rounded border border-solid border-gray-200 p-2"
+          >
+            <Edit />
+          </IconButton>
         )}
       </div>
 
@@ -52,9 +106,9 @@ const ContactInfoSection: React.FC<{
               startIcon={<KeyOutlined />}
               variant="outlined"
               className="text-nowrap"
-              onClick={unlock}
+              onClick={unlockHandler}
             >
-              {isLoading ? "..loading" : "Unlock Now"}
+              {isUnlocking ? "..loading" : "Unlock Now"}
             </Button>
           </div>
         ) : (
@@ -86,14 +140,24 @@ const ContactInfoSection: React.FC<{
           )}
         </div>
       )}
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={reset}>
+      <Snackbar
+        open={!!error || !!unlockError}
+        autoHideDuration={6000}
+        onClose={() => {
+          reset();
+          resetUnlock();
+        }}
+      >
         <Alert
-          onClose={reset}
+          onClose={() => {
+            reset();
+            resetUnlock();
+          }}
           severity="error"
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {error?.message}
+          {unlockError?.message || error?.message}
         </Alert>
       </Snackbar>
     </div>

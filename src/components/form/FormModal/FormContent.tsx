@@ -65,7 +65,7 @@ export const FormContent: React.FC<FormContentProps> = ({
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] overflow-y-auto p-4">
+      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] bg-background overflow-y-auto p-4">
         <Grid container spacing={1}>
           {fields.map((field) => (
             <Grid

@@ -218,7 +218,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         placeholder: "Enter City",
       },
       gridProps: { xs: 12, md: 4 },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
     },

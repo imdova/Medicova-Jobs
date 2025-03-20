@@ -60,14 +60,14 @@ export function calculateAge(birthDate: Date): number {
 export function formatLocation(location: LocationType): string | null {
   const parts: string[] = [];
 
-  if (location.city) {
-    parts.push(location.city);
+  if (location.country?.name) {
+    parts.push(location.country.name);
   }
   if (location.state?.name) {
     parts.push(location.state.name);
   }
-  if (location.country?.name) {
-    parts.push(location.country.name);
+  if (location.city) {
+    parts.push(location.city);
   }
 
   return parts.join(", ") || null;
@@ -172,4 +172,9 @@ export const whatsAppLink = (phone: string, message?: string) => {
   const cleanedNumber = phone.replace(/\D/g, "");
   const encodedMessage = encodeURIComponent(message || "");
   return `https://api.whatsapp.com/send?phone=${cleanedNumber}&text=${encodedMessage}`;
+};
+export const getProgressColor = (progress: number): string => {
+  if (progress >= 80) return "var(--primary)";
+  if (progress >= 50) return "var(--warning)";
+  return "var(--error)";
 };

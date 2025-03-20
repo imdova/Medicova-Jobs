@@ -12,6 +12,8 @@ import { ComponentField } from "./ComponentField";
 import { TextFieldComponent } from "./TextFieldComponent";
 import { SearchableSelectField } from "./SearchableSelectField";
 import { TextEditorField } from "./TextEditorField";
+import { PhoneNumberField } from "./phoneNumberField";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 interface FormFieldProps {
   field: FieldConfig;
@@ -92,6 +94,14 @@ export const FormField: React.FC<FormFieldProps> = ({
             error={error}
           />
         );
+      case "phone":
+        return (
+          <PhoneNumberField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
       default:
         return (
           <TextFieldComponent
@@ -110,6 +120,15 @@ export const FormField: React.FC<FormFieldProps> = ({
       />
     );
   };
+  /// TODO Add phone number validation to the Contact Fields
+  const phonNumberValidations: FieldConfig["rules"] =
+    field.type === "phone"
+      ? {
+          validate: (value) =>
+            isValidPhoneNumber(value || "") ||
+            "Please enter a valid phone number",
+        }
+      : {};
 
   return (
     <Controller
@@ -119,7 +138,8 @@ export const FormField: React.FC<FormFieldProps> = ({
         required: field.required
           ? `${field.label?.replace("*", "") || String(field.name)} is required`
           : false,
-        ...field.validation,
+        ...phonNumberValidations,
+        ...field.rules,
       }}
       render={renderField}
     />

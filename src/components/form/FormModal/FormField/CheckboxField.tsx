@@ -12,7 +12,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   field,
   controllerField,
   onCheckboxChange,
-  resetValues
+  resetValues,
 }) => (
   <FormControlLabel
     control={
@@ -26,7 +26,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
             resetValues(field.resetFields);
           }
         }}
-        sx={{ "& .MuiSvgIcon-root": { fontSize: 24 } }}
+        sx={{ "& .MuiSvgIcon-root": { fontSize: 24,backgroundColor: "white" } }}
       />
     }
     label={field.label || ""}

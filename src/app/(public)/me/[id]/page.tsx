@@ -5,7 +5,6 @@ import EducationsSection from "./Components/EducationsSection";
 import CoursesSection from "./Components/CoursesSection";
 import SkillsSection from "./Components/SkillsSection";
 import ActivitiesAchievementsSection from "./Components/ActivitiesAchievementsSection";
-import CompleteProfile from "./Components/CompleteProfile";
 import PublicProfile from "./Components/PublicProfile";
 import Resume from "./Components/Resume";
 import ContactInfoSection from "./Components/ContactInfoSection";
@@ -16,6 +15,9 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { checkIsUnlocked } from "@/lib/actions/employer.actions";
+import { Suspense } from "react";
+import ExperienceSkeleton from "@/components/loading/skeleton-experince";
+import SeekerComplete from "./Components/seekerComplete";
 
 const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
   const data = await getServerSession(authOptions);
@@ -30,31 +32,39 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="w-full px-4 md:px-2">
+    <div className="w-full px-4 md:px-5">
       <div className="flex gap-5">
         {/* Left + Center Sections */}
-        <div className="flex-1 space-y-2 md:space-y-2">
+        <div className="flex-1 space-y-2">
           {/* Header Section */}
           <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}
           <AboutSeeker user={user} isMe={isMe} />
           {/* Experience Section */}
-          <ExperienceSection user={user} isMe={isMe} />
+          <Suspense fallback={<ExperienceSkeleton />}>
+            <ExperienceSection user={user} isMe={isMe} />
+          </Suspense>
           {/* Education Section */}
-          <EducationsSection user={user} isMe={isMe} />
+          <Suspense fallback={null}>
+            <EducationsSection user={user} isMe={isMe} />
+          </Suspense>
           {/* Courses Section */}
-          <CoursesSection user={user} isMe={isMe} />
+          <Suspense fallback={null}>
+            <CoursesSection user={user} isMe={isMe} />
+          </Suspense>
           {/* Skills Section */}
-          <SkillsSection user={user} isMe={isMe} />
+          <Suspense fallback={null}>
+            <SkillsSection user={user} isMe={isMe} />
+          </Suspense>
           {/* Activities / Achievements Section */}
           <ActivitiesAchievementsSection user={user} isMe={isMe} />
         </div>
         {/* Right Sections */}
-        <div className="hidden min-w-80 max-w-80 md:block">
+        <div className="hidden min-w-80 max-w-80 space-y-2 md:block">
           {/* Public user Section */}
           {isMe && (
             <>
-              <CompleteProfile percentage={20} />
+              <SeekerComplete user={user} />
               {/* Public user Section */}
               <PublicProfile />
             </>

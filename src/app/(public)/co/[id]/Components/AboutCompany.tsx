@@ -80,7 +80,7 @@ const AboutCompany: React.FC<{
         {isEmployee && (
           <IconButton
             onClick={open}
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
           >
             <Edit />
           </IconButton>

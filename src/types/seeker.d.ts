@@ -171,8 +171,33 @@ type EducationData = {
   id: string;
   inistitute: string;
   degree: string;
-  country: LocationItem;
+  // country: LocationItem;
+  countryCode: string;
   startYear: number;
   endYear: number;
   grade: string;
+};
+type CertificationData = {
+  id: string;
+  title: string;
+  provider: string;
+  speciality: string;
+  issueDate: string;
+  completionDate: string;
+  description: string;
+};
+
+type ActivityData = {
+  id: string;
+  title: string;
+  provider: string;
+  issueDate: string;
+  completionDate: string;
+  description: string;
+  isPresent: boolean;
+};
+
+type SkillData = {
+  id: string;
+  name: string;
 };

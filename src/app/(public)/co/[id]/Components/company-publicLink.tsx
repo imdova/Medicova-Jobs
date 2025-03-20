@@ -22,7 +22,7 @@ const userNameField: FieldConfig[] = [
         startAdornment: <InputAdornment position="start">co/</InputAdornment>,
       },
     },
-    validation: {
+    rules: {
       required: "Username is required",
       minLength: {
         value: 3,
@@ -87,7 +87,7 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
         </h6>
         <IconButton
           onClick={open}
-          className="rounded border border-solid border-gray-300 p-2"
+          className="rounded border border-solid border-gray-200 p-2"
         >
           <Edit />
         </IconButton>
