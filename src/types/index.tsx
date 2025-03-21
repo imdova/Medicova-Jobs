@@ -395,7 +395,12 @@ export interface FieldConfig<T = any> {
   type: FieldType;
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
-  rules?: Omit<RegisterOptions<FieldValues, string>, "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"> | undefined
+  rules?:
+    | Omit<
+        RegisterOptions<FieldValues, string>,
+        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+      >
+    | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;
@@ -423,7 +428,8 @@ export interface DynamicModalProps {
   loading?: boolean;
   deleteLoading?: boolean;
   error?: string;
-  /// 
+  removeField?: (fieldName: string) => void;
+  ///
   submitButtonText?: string;
   deleteButtonText?: string;
   cancelButtonText?: string;

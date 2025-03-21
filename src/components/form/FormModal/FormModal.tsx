@@ -26,6 +26,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   submitButtonText,
   deleteButtonText,
   cancelButtonText,
+  removeField
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -104,6 +105,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
             submitButtonText={submitButtonText}
             deleteButtonText={deleteButtonText}
             cancelButtonText={cancelButtonText}
+            removeField={removeField}
           >
             {children}
           </FormContent>

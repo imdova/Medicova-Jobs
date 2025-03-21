@@ -37,6 +37,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
       : field.label?.replace("*", ""));
+  const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
       {field.textFieldProps?.label ? (
@@ -53,7 +54,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <SearchableSelect
-          className="bg-white"
+          className={`bg-white ${className}`}
           {...controllerField}
           displayEmpty
           options={options}

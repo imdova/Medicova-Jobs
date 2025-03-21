@@ -1,81 +1,190 @@
 "use client";
-import React, { useState } from "react";
+import React, { KeyboardEvent, useState } from "react";
+import { IconButton, TextField } from "@mui/material";
 import {
-  Box,
-  IconButton,
-  Typography,
-  Grid,
-  Card,
-  InputLabel,
-  TextField,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import LanguageIcon from "@mui/icons-material/Language";
-// import AddModal from "./Modals/AddModal";
-import { Edit, LanguageOutlined, LinkOutlined } from "@mui/icons-material";
+  Add,
+  Edit,
+  Instagram,
+  Language,
+  LinkedIn,
+  LinkOutlined,
+  Twitter,
+} from "@mui/icons-material";
 import Link from "next/link";
+import { FieldConfig } from "@/types";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { TAGS } from "@/api";
+import FormModal from "@/components/form/FormModal/FormModal";
 
-const socialMedia: { url: string; name: string; icon: React.ElementType }[] = [
-  { name: "Instagram", icon: InstagramIcon, url: "https://www.instagram.com/" },
-  { name: "Twitter", icon: TwitterIcon, url: "https://www.instagram.com/" },
-  { name: "Website", icon: LanguageIcon, url: "https://www.instagram.com/" },
-];
-const SocialMediaSection: React.FC<{
+type SocialMediaSectionProps = {
   user: UserProfile;
   isMe: boolean;
   isLocked: boolean;
-}> = ({ user, isMe, isLocked }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [fields, setFields] = useState<JSX.Element[]>([]);
+};
 
-  const handleOpenModal = (title: string, getFields: () => JSX.Element[]) => {
-    setModalTitle(title);
-    setFields(getFields());
-    setOpenModal(true);
+const socialMediaIcons: { [key: string]: JSX.Element } = {
+  instagram: <Instagram sx={{ color: "rgba(241, 9, 234, 1)" }} />,
+  twitter: <Twitter sx={{ color: "rgba(91, 146, 250, 1)" }} />,
+  linkedin: <LinkedIn sx={{ color: "rgba(0, 119, 181, 1)" }} />,
+  website: <Language sx={{ color: "rgba(46, 174, 125, 1)" }} />,
+};
+
+const userFields: FieldConfig[] = [
+  {
+    name: "instagram",
+    label: "Instagram",
+    type: "text",
+  },
+  {
+    name: "twitter",
+    label: "Twitter",
+    type: "text",
+  },
+  {
+    name: "linkedin",
+    label: "LinkedIn",
+    type: "text",
+  },
+  {
+    name: "website",
+    label: "Website",
+    type: "text",
+  },
+];
+
+const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
+  user,
+  isMe,
+  isLocked,
+}) => {
+  const socialLinks = user?.socialLinks;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [fields, setFields] = useState(userFields);
+
+  const { isLoading, error, update, reset } = useUpdateApi<UserProfile>((e) => {
+    setIsModalOpen(false);
+  });
+
+  const open = () => setIsModalOpen(true);
+  const close = () => {
+    setIsModalOpen(false);
+    reset();
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleUpdate = async (formData: Partial<UserProfile>) => {
+    await update(
+      API_UPDATE_SEEKER,
+      {
+        body: { id: user?.id, socialLinks: formData } as UserProfile,
+      },
+      TAGS.profile,
+    );
   };
 
-  if ((!isMe && socialMedia.length === 0) || isLocked) {
-    return null;
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      e.preventDefault();
+      addNewField();
+    }
+  };
+
+  const addNewField = () => {
+    const newFields: FieldConfig[] = [
+      ...fields,
+      {
+        name: inputValue.trim().toLowerCase(),
+        label: inputValue.trim(),
+        type: "text",
+        required: false,
+      },
+    ];
+    const duplicate = fields.some(
+      (field) => field.name === inputValue.trim().toLowerCase(),
+    );
+    if (duplicate) {
+      shake(inputValue.trim().toLowerCase());
+    }
+    if (inputValue && !duplicate) {
+      setFields(newFields);
+      setInputValue("");
+    }
+  };
+  const removeLastField = (fieldName: string) => {
+    setFields((pv) => pv.filter((field) => field.name !== fieldName));
+  };
+  function shake(name: string) {
+    setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:"animate-shake border-red-400"} } : field));
+    setTimeout(() => {
+      setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:""} } : field));
+    }, 500);
   }
-
   return (
-    <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
+    <div className="relative mb-5 rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
-        <h3 className="mb-2 text-xl font-semibold text-main">Social Links</h3>
+        <h6 className="mb-2 text-xl font-semibold text-main">Social Links</h6>
         {isMe && (
           <IconButton
+            onClick={open}
             className="rounded border border-solid border-gray-200 p-2"
-            onClick={() =>
-              handleOpenModal("Add Social Media", getSocialMediaFields)
-            }
           >
             <Edit />
           </IconButton>
         )}
       </div>
-      {/* <AddModal
-        open={openModal}
-        onClose={handleCloseModal}
-        modalTitle={modalTitle}
+      <FormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleUpdate}
+        error={error?.message}
+        loading={isLoading}
         fields={fields}
-      /> */}
-      {!isLocked && (
+        title="Social Media Links"
+        removeField={fields.length > 1 ? removeLastField : undefined}
+        initialValues={socialLinks || {}}
+      >
+        <div className="border-t border-gray-200 p-4">
+          <label className="font-semibold">Add New Link</label>
+          <div className="flex items-end gap-2">
+            <TextField
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={"Add New Link"}
+              className="w-full"
+            />
+            <IconButton
+              onClick={addNewField}
+              className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2"
+            >
+              <Add />
+            </IconButton>
+          </div>
+        </div>
+      </FormModal>
+      {!socialLinks || Object.keys(socialLinks).length === 0 ? (
+        <p className="text-secondary">No social media links found.</p>
+      ) : isLocked ? (
+        <p className="text-secondary">This Social Media links are private.</p>
+      ) : (
         <div className="flex gap-4">
-          {socialMedia.map((item, index) => {
-            const IconComponent = item.icon;
-            return (
-              <Link key={index} href={item.url} className="text-primary">
-                {IconComponent ? <IconComponent /> : <LanguageOutlined />}
-              </Link>
-            );
-          })}
+          {Object.entries(socialLinks).map(
+            ([key, link]) =>
+              link && (
+                <Link
+                  href={link}
+                  key={key}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {socialMediaIcons[key.toLowerCase()] || (
+                    <LinkOutlined sx={{ color: "rgba(128, 128, 128, 1)" }} />
+                  )}
+                </Link>
+              ),
+          )}
         </div>
       )}
     </div>
@@ -83,131 +192,3 @@ const SocialMediaSection: React.FC<{
 };
 
 export default SocialMediaSection;
-
-const getSocialMediaFields = (): JSX.Element[] => [
-  <Box key="socialMediaInfo">
-    <Typography sx={{ fontSize: "14px", color: "#7C8493", marginBottom: 2 }}>
-      Add elsewhere links to your profile. You can add full https links.
-    </Typography>
-  </Box>,
-
-  <Box key="instagram">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Instagram
-    </InputLabel>
-    <TextField
-      placeholder="Enter Instagram Link"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="facebook">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Facebook
-    </InputLabel>
-    <TextField
-      placeholder="Enter Facebook Link"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="twitter">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      Twitter
-    </InputLabel>
-    <TextField
-      placeholder="Enter Twitter Link"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="linkedin">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      LinkedIn
-    </InputLabel>
-    <TextField
-      placeholder="Enter LinkedIn Link"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-
-  <Box key="youtube">
-    <InputLabel
-      sx={{
-        marginBottom: 0.2,
-        fontWeight: 600,
-        color: "#000",
-        fontSize: "14px",
-      }}
-    >
-      YouTube
-    </InputLabel>
-    <TextField
-      placeholder="Enter YouTube Link"
-      fullWidth
-      sx={{
-        backgroundColor: "rgba(214, 221, 235, 0.18)",
-        "& .MuiOutlinedInput-root": {
-          height: "40px",
-          fontSize: "14px",
-        },
-      }}
-    />
-  </Box>,
-];

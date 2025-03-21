@@ -23,12 +23,14 @@ interface FormContentProps {
   submitButtonText?: string;
   deleteButtonText?: string;
   cancelButtonText?: string;
+  removeField?: (fieldName: string) => void;
+
 }
 
 export const FormContent: React.FC<FormContentProps> = ({
   fields,
   onSubmit,
-  formMethods,
+  formMethods, 
   hiddenFields,
   onCheckboxChange,
   children,
@@ -40,6 +42,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   submitButtonText,
   deleteButtonText,
   cancelButtonText,
+  removeField
 }) => {
   const {
     control,
@@ -65,7 +68,7 @@ export const FormContent: React.FC<FormContentProps> = ({
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] bg-background overflow-y-auto p-4">
+      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] overflow-y-auto bg-background p-4">
         <Grid container spacing={1}>
           {fields.map((field) => (
             <Grid
@@ -81,6 +84,7 @@ export const FormContent: React.FC<FormContentProps> = ({
                 hidden={hiddenFields.includes(String(field.name))}
                 onCheckboxChange={onCheckboxChange(field)}
                 dependsOnField={fields.find((f) => f.name === field.dependsOn)}
+                removeField={removeField}
                 formValues={getValues()}
                 resetValues={resetValues}
               />
@@ -88,7 +92,7 @@ export const FormContent: React.FC<FormContentProps> = ({
           ))}
         </Grid>
       </div>
-      {children && <div className="mt-4">{children}</div>}
+      {children && children}
       <FormActions
         onDelete={onDelete && handleDelete}
         onCancel={onCancel}

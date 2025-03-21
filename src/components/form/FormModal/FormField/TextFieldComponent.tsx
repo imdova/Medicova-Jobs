@@ -35,11 +35,17 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
         ? field.label?.replace("*", "")
         : field.name);
 
+  const { className, ...labelProps } =
+    field.textFieldProps?.InputLabelProps || {};
   return (
     <div>
       {field.label && (
         <div className="mb-1">
-          <label htmlFor={String(field.name)} className="font-semibold">
+          <label
+            htmlFor={String(field.name)}
+            className={`font-semibold ${className}`}
+            {...labelProps}
+          >
             {field.label}
           </label>
         </div>

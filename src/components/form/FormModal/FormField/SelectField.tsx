@@ -37,6 +37,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
       : field.label?.replace("*", ""));
+  const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
       {field.textFieldProps?.label ? (
@@ -59,7 +60,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <Select
-          className="bg-white"
+          className={`bg-white ${className}`}
           {...controllerField}
           labelId={String(field.name) + "Label"}
           id={String(field.name)}

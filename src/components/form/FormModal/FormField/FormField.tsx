@@ -14,6 +14,8 @@ import { SearchableSelectField } from "./SearchableSelectField";
 import { TextEditorField } from "./TextEditorField";
 import { PhoneNumberField } from "./phoneNumberField";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import { IconButton } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 
 interface FormFieldProps {
   field: FieldConfig;
@@ -23,6 +25,7 @@ interface FormFieldProps {
   onCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   formValues: Record<string, any>;
   resetValues: (fieldNames: (string | number)[]) => void;
+  removeField?: (fieldName: string) => void;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -33,6 +36,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   formValues,
   resetValues,
   dependsOnField,
+  removeField,
 }) => {
   if (hidden) return null;
 
@@ -131,17 +135,29 @@ export const FormField: React.FC<FormFieldProps> = ({
       : {};
 
   return (
-    <Controller
-      name={String(field.name)}
-      control={control}
-      rules={{
-        required: field.required
-          ? `${field.label?.replace("*", "") || String(field.name)} is required`
-          : false,
-        ...phonNumberValidations,
-        ...field.rules,
-      }}
-      render={renderField}
-    />
+    <div className="flex items-end gap-2">
+      <div className="flex-1">
+        <Controller
+          name={String(field.name)}
+          control={control}
+          rules={{
+            required: field.required
+              ? `${field.label?.replace("*", "") || String(field.name)} is required`
+              : false,
+            ...phonNumberValidations,
+            ...field.rules,
+          }}
+          render={renderField}
+        />
+      </div>
+      {removeField && (
+        <IconButton
+          onClick={() => removeField(field.name)}
+          className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2 hover:bg-red-100 hover:text-red-500"
+        >
+          <Delete />
+        </IconButton>
+      )}
+    </div>
   );
 };

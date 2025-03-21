@@ -29,7 +29,7 @@ type UserProfile = {
   active: boolean;
   about: string | null;
   title: string | null;
-  languages: string[] | null;
+  languages: LanguageProficiency[] | null;
   resume: string | null;
   socialLinks: Record<string, string> | null;
   whatsapp: string | null;
@@ -53,6 +53,11 @@ type UserProfile = {
 
   /// TODO: need to add
   isVerified: boolean;
+};
+
+type LanguageProficiency = {
+  name: string;
+  proficiency: string;
 };
 
 type JobApplicationData = {

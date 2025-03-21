@@ -75,9 +75,9 @@ const AboutSeeker: React.FC<{
         )}
       </div>
       {user.about ? (
-        <ClampedText className="px-2 text-secondary text-sm " lines={3}>
+        <ClampedText className="px-2 text-secondary  " lines={3} lineHeight={20}>
           <div
-            className="prose  text-wrap"
+            className="prose text-wrap"
             dangerouslySetInnerHTML={{ __html: user.about }}
           />
         </ClampedText>

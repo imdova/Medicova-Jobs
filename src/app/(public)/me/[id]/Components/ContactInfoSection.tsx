@@ -4,9 +4,10 @@ import { Edit, Email, KeyOutlined, PhoneIphone } from "@mui/icons-material";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { UNLOCKED_SEEKERS } from "@/api/employer";
 import { TAGS } from "@/api";
-import { Company, FieldConfig } from "@/types";
+import { FieldConfig } from "@/types";
 import { useState } from "react";
 import FormModal from "@/components/form/FormModal/FormModal";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
 
 type Contact = {
   email: string;
@@ -25,15 +26,14 @@ const ContactInfoSection: React.FC<{
     reset: resetUnlock,
     update: unlock,
   } = useUpdateApi();
-  const { isLoading, error, update, reset } = useUpdateApi<Company>(() =>
-    setIsModalOpen(false),
-  );
+  const { isLoading, error, update, reset } =
+    useUpdateApi<UserProfile>(onClose);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const onOpen = () => setIsModalOpen(true);
-  const onClose = () => {
+  function onClose() {
     setIsModalOpen(false);
     reset();
-  };
+  }
 
   const unlockHandler = () => {
     if (companyId) {
@@ -46,8 +46,8 @@ const ContactInfoSection: React.FC<{
   };
 
   const handleUpdate = (data: Contact) => {
-    // TODO: Implement update logic
-    console.log("🚀 ~ handleUpdate ~ data:", data);
+    const id = user.id;
+    update(API_UPDATE_SEEKER, { body: { id, ...data } }, TAGS.profile);
   };
 
   const fields: FieldConfig<Contact>[] = [
@@ -113,7 +113,7 @@ const ContactInfoSection: React.FC<{
           </div>
         ) : (
           <div>
-            <p className="my-2 text-secondary">
+            <p className="text-secondary">
               The Data Of this user Is Privater
             </p>
           </div>

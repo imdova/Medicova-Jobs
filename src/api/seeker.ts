@@ -7,7 +7,7 @@ export const PROFILES = BASE + "/profile";
 export const API_GET_SEEKER_BY_USERNAME = PROFILES + "/username/"; // GET + [username]
 export const API_GET_SEEKER_BY_ID = PROFILES + "/"; // GET + [id]
 export const API_GET_SEEKERS = PROFILES; // GET
-export const API_UPDATE_SEEKER = PROFILES + "/"; // PATCH + [id]
+export const API_UPDATE_SEEKER = PROFILES; // PATCH + [id]
 export const API_DELETE_SEEKER = PROFILES + "/"; // DELETE + [id]
 export const API_RECALCULATE_COMPLETENESS = PROFILES + "/"; // GET + [id]
 
@@ -39,7 +39,7 @@ export const API_DELETE_SEEKER_EDUCATION = EDUCATION + "/"; // DELETE + [id]
 // User Courses
 export const COURSES = BASE + "/courses";
 export const API_CREATE_SEEKER_COURSE = COURSES; // POST
-export const API_UPDATE_SEEKER_COURSE = COURSES ; // PATCH + [id]
+export const API_UPDATE_SEEKER_COURSE = COURSES; // PATCH + [id]
 export const API_GET_SEEKER_COURSES = COURSES + "/seeker/"; // GET + [seekerId]
 export const API_GET_SEEKER_COURSE_BY_ID = COURSES + "/"; // GET + [id]
 export const API_DELETE_SEEKER_COURSE = COURSES + "/"; // DELETE + [id]
@@ -55,7 +55,7 @@ export const API_DELETE_CAREER_PREFERENCE = PREFERENCES + "/"; // DELETE + [id]
 // User Activities
 export const ACTIVITIES = BASE + "/activities";
 export const API_CREATE_SEEKER_ACTIVITY = ACTIVITIES; // POST
-export const API_UPDATE_SEEKER_ACTIVITY = ACTIVITIES ; // PATCH + [id]
+export const API_UPDATE_SEEKER_ACTIVITY = ACTIVITIES; // PATCH + [id]
 export const API_GET_SEEKER_ACTIVITIES = ACTIVITIES + "/seeker/"; // GET + [seekerId]
 export const API_GET_SEEKER_ACTIVITY_BY_ID = ACTIVITIES + "/"; // GET + [id]
 export const API_DELETE_SEEKER_ACTIVITY = ACTIVITIES + "/"; // DELETE + [id]

@@ -1,80 +1,179 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Box,
-  IconButton,
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  Divider,
-} from "@mui/material";
-// import AddModal from "./Modals/AddModal";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import { Edit, LanguageOutlined } from "@mui/icons-material";
+import { IconButton, Divider, TextField } from "@mui/material";
+import { Add, Edit, LanguageOutlined } from "@mui/icons-material";
+import { KeyboardEvent, useState } from "react";
+import { FieldConfig, Option } from "@/types";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import FormModal from "@/components/form/FormModal/FormModal";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { TAGS } from "@/api";
 
-// Data array for languages and proficiency levels
-const languageData = [
-  { language: "Arabic", proficiency: "Native" },
-  { language: "English", proficiency: "Fluent" },
+// TODO Enum of languages
+const languageOptions: Option[] = [
+  { value: "FLUENT", label: "Fluent" },
+  { value: "NATIVE", label: "Native" },
+  { value: "INTERMEDIATE", label: "Intermediate" },
+  { value: "BEGINNER", label: "Beginner" },
+];
+
+const baseFields: FieldConfig[] = [
+  {
+    name: "arabic",
+    label: "Arabic",
+    type: "select",
+    options: languageOptions,
+  },
+  {
+    name: "english",
+    label: "English",
+    type: "select",
+    options: languageOptions,
+  },
 ];
 
 const LanguageSection: React.FC<{
   user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
+  const languageData = user.languages || [];
+  const languagesValues = languageData.reduce(
+    (acc: { [key: string]: string }, lang) => {
+      acc[lang.name] = lang.proficiency;
+      return acc;
+    },
+    {},
+  );
+  const languageFields: FieldConfig[] = languageData.map((lang) => ({
+    name: lang.name,
+    label: lang.name,
+    type: "text",
+  }));
 
-  const [languageFields, setLanguageFields] = useState<JSX.Element[]>([
-    <LanguageModal key={0} onClick={() => handleDeleteField(0)} />,
-  ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [fields, setFields] = useState([...baseFields, ...languageFields]);
 
-  const handleOpenModal = (title: string) => {
-    setModalTitle(title);
-    setOpenModal(true);
+  const { isLoading, error, update, reset } = useUpdateApi<UserProfile>((e) => {
+    setIsModalOpen(false);
+  });
+
+  const open = () => setIsModalOpen(true);
+  const close = () => {
+    setIsModalOpen(false);
+    reset();
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleUpdate = async (formData: { [key: string]: string }) => {
+    const languages: LanguageProficiency[] = Object.keys(formData)
+      .map((key) => ({
+        name: key,
+        proficiency: formData[key],
+      }))
+      .filter((lang) => lang.proficiency !== "");
+
+    await update(
+      API_UPDATE_SEEKER,
+      {
+        body: { id: user?.id, languages } as UserProfile,
+      },
+      TAGS.profile,
+    );
   };
 
-  const handleAddNewField = () => {
-    setLanguageFields((prevFields) => [
-      ...prevFields,
-      <Language
-        key={prevFields.length}
-        onClick={() => handleDeleteField(prevFields.length)}
-      />,
-    ]);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      e.preventDefault();
+      addNewField();
+    }
   };
 
-  const handleDeleteField = (index: number) => {
-    setLanguageFields((prevFields) => prevFields.filter((_, i) => i !== index));
+  const addNewField = () => {
+    const newFields: FieldConfig[] = [
+      ...fields,
+      {
+        name: inputValue.trim().toLowerCase(),
+        label: inputValue.trim(),
+        type: "select",
+        options: languageOptions,
+      },
+    ];
+    const duplicate = fields.some(
+      (field) => field.name === inputValue.trim().toLowerCase(),
+    );
+    if (duplicate) {
+      shake(inputValue.trim().toLowerCase());
+    }
+    if (inputValue && !duplicate) {
+      setFields(newFields);
+      setInputValue("");
+    }
+  };
+  const removeLastField = (fieldName: string) => {
+    setFields((pv) => pv.filter((field) => field.name !== fieldName));
   };
 
+  function shake(name: string) {
+    setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:"animate-shake border-red-400"} } : field));
+    setTimeout(() => {
+      setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:""} } : field));
+    }, 500);
+  }
   return (
     <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
         <h3 className="mb-2 text-xl font-semibold text-main">Languages</h3>
         {isMe && (
           <IconButton
+            onClick={open}
             className="rounded border border-solid border-gray-200 p-2"
-            onClick={() => handleOpenModal("Select Your Languages")}
           >
             <Edit />
           </IconButton>
         )}
       </div>
+      <FormModal
+        open={isModalOpen}
+        onClose={close}
+        onSubmit={handleUpdate}
+        error={error?.message}
+        loading={isLoading}
+        fields={fields}
+        title="Edit Your Languages"
+        removeField={fields.length > 1 ? removeLastField : undefined}
+        initialValues={languagesValues}
+      >
+        <div className="border-t border-gray-200 p-4">
+          <label className="font-semibold">Add Language</label>
+          <div className="flex items-end gap-2">
+            <TextField
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={"Add New Link"}
+              className="w-full"
+            />
+            <IconButton
+              onClick={addNewField}
+              className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2"
+            >
+              <Add />
+            </IconButton>
+          </div>
+        </div>
+      </FormModal>
 
       <div>
+        {!languageData.length && (
+          <p className="text-secondary">No Language data found.</p>
+        )}
+
         {languageData.map((language, index) => (
           <div key={index}>
             <p className="my-2 text-secondary">
               <LanguageOutlined className="mr-2 inline-block" color="primary" />
               <span className="font-semibold text-main">
-                {language.language} :
+                {language.name} :
               </span>{" "}
               {language.proficiency}
             </p>
@@ -82,221 +181,8 @@ const LanguageSection: React.FC<{
           </div>
         ))}
       </div>
-      {/* <AddModal
-        open={openModal}
-        onClose={handleCloseModal}
-        modalTitle={modalTitle}
-        fields={[
-          ...languageFields,
-          <Box
-            key="addNewLanguage"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              marginTop: 2,
-            }}
-          >
-            <Button
-              endIcon={<AddIcon />}
-              sx={{
-                backgroundColor: "#ECF7F3",
-                color: "#2EAE7D",
-                textTransform: "none",
-                fontWeight: "bold",
-                fontSize: "14px",
-                width: "100%",
-                gap: 1.5,
-                paddingRight: "16px",
-                ":hover": { backgroundColor: "#CFEDE8" },
-              }}
-              onClick={handleAddNewField}
-            >
-              Add New Language
-            </Button>
-          </Box>,
-        ]}
-      /> */}
     </div>
   );
 };
 
 export default LanguageSection;
-
-export const Language: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-  return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr auto",
-        gap: 2,
-        alignItems: "end",
-      }}
-    >
-      <Box>
-        <InputLabel
-          sx={{
-            marginBottom: 0.5,
-            fontWeight: 600,
-            color: "#000",
-            fontSize: "14px",
-          }}
-        >
-          Language
-        </InputLabel>
-        <Select
-          fullWidth
-          displayEmpty
-          defaultValue=""
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            height: "40px",
-            fontSize: "14px",
-            "& .MuiSelect-select": {
-              padding: "10px",
-            },
-          }}
-        >
-          <MenuItem value="" disabled>
-            Select Language
-          </MenuItem>
-          <MenuItem value="English">English</MenuItem>
-          <MenuItem value="Arabic">Arabic</MenuItem>
-          <MenuItem value="French">French</MenuItem>
-        </Select>
-      </Box>
-
-      <Box>
-        <InputLabel
-          sx={{
-            marginBottom: 0.5,
-            fontWeight: 600,
-            color: "#000",
-            fontSize: "14px",
-          }}
-        >
-          Proficiency
-        </InputLabel>
-        <Select
-          fullWidth
-          displayEmpty
-          defaultValue=""
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            height: "40px",
-            fontSize: "14px",
-            "& .MuiSelect-select": {
-              padding: "10px",
-            },
-          }}
-        >
-          <MenuItem value="" disabled>
-            Select Proficiency
-          </MenuItem>
-          <MenuItem value="Native">Native</MenuItem>
-          <MenuItem value="Fluent">Fluent</MenuItem>
-          <MenuItem value="Intermediate">Intermediate</MenuItem>
-          <MenuItem value="Beginner">Beginner</MenuItem>
-        </Select>
-      </Box>
-
-      <IconButton sx={{ justifySelf: "center" }} onClick={onClick}>
-        <DeleteIcon sx={{ color: "#FF3B30" }} />
-      </IconButton>
-    </Box>
-  );
-};
-
-export const LanguageModal: React.FC<{ onClick: () => void }> = ({
-  onClick,
-}) => {
-  return (
-    <Box
-      key={0}
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr auto",
-        gap: 2,
-        alignItems: "end",
-      }}
-    >
-      {/* Language Label and Select */}
-      <Box>
-        <InputLabel
-          sx={{
-            marginBottom: 0.5,
-            fontWeight: 600,
-            color: "#000",
-            fontSize: "14px",
-          }}
-        >
-          Language
-        </InputLabel>
-        <Select
-          fullWidth
-          displayEmpty
-          defaultValue=""
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            height: "40px",
-            fontSize: "14px",
-            "& .MuiSelect-select": {
-              padding: "10px",
-            },
-          }}
-        >
-          <MenuItem value="" disabled>
-            Select Language
-          </MenuItem>
-          <MenuItem value="English">English</MenuItem>
-          <MenuItem value="Arabic">Arabic</MenuItem>
-          <MenuItem value="French">French</MenuItem>
-        </Select>
-      </Box>
-
-      {/* Proficiency Label and Select */}
-      <Box>
-        <InputLabel
-          sx={{
-            marginBottom: 0.5,
-            fontWeight: 600,
-            color: "#000",
-            fontSize: "14px",
-          }}
-        >
-          Proficiency
-        </InputLabel>
-        <Select
-          fullWidth
-          displayEmpty
-          defaultValue=""
-          sx={{
-            backgroundColor: "rgba(214, 221, 235, 0.18)",
-            height: "40px",
-            fontSize: "14px",
-            "& .MuiSelect-select": {
-              padding: "10px",
-            },
-          }}
-        >
-          <MenuItem value="" disabled>
-            Select Proficiency
-          </MenuItem>
-          <MenuItem value="Native">Native</MenuItem>
-          <MenuItem value="Fluent">Fluent</MenuItem>
-          <MenuItem value="Intermediate">Intermediate</MenuItem>
-          <MenuItem value="Beginner">Beginner</MenuItem>
-        </Select>
-      </Box>
-
-      {/* Delete Icon */}
-      <IconButton
-        sx={{ justifySelf: "center" }}
-        onClick={onClick}
-        // onClick={() => handleDeleteField(0)}
-      >
-        <DeleteIcon sx={{ color: "#FF3B30" }} />
-      </IconButton>
-    </Box>
-  );
-};
