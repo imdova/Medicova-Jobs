@@ -1,17 +1,22 @@
 "use client";
-import React, { KeyboardEvent, useState } from "react";
-import { IconButton, TextField } from "@mui/material";
+import React, { useState } from "react";
+import { IconButton, MenuItem, Select, Tooltip } from "@mui/material";
 import {
-  Add,
   Edit,
+  Facebook,
   Instagram,
   Language,
   LinkedIn,
   LinkOutlined,
+  Pinterest,
+  Reddit,
+  Telegram,
   Twitter,
+  WhatsApp,
+  YouTube,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { FieldConfig } from "@/types";
+import { FieldConfig, Option } from "@/types";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
@@ -23,33 +28,133 @@ type SocialMediaSectionProps = {
   isLocked: boolean;
 };
 
-const socialMediaIcons: { [key: string]: JSX.Element } = {
+interface SocialMediaLinks {
+  website?: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  linkedin?: string;
+  youtube?: string;
+  tiktok?: string;
+  snapchat?: string;
+  pinterest?: string;
+  reddit?: string;
+  discord?: string;
+  telegram?: string;
+  whatsapp?: string;
+}
+
+const socialMediaOptions: Option<SocialMediaLinks>[] = [
+  {
+    value: "instagram",
+    label: "Instagram",
+  },
+  {
+    value: "twitter",
+    label: "Twitter",
+  },
+  {
+    value: "linkedin",
+    label: "LinkedIn",
+  },
+  {
+    value: "website",
+    label: "Website",
+  },
+  {
+    value: "facebook",
+    label: "Facebook",
+  },
+  {
+    value: "youtube",
+    label: "YouTube",
+  },
+  {
+    value: "tiktok",
+    label: "TikTok",
+  },
+  {
+    value: "snapchat",
+    label: "Snapchat",
+  },
+  {
+    value: "pinterest",
+    label: "Pinterest",
+  },
+  {
+    value: "reddit",
+    label: "Reddit",
+  },
+  {
+    value: "discord",
+    label: "Discord",
+  },
+  {
+    value: "telegram",
+    label: "Telegram",
+  },
+  {
+    value: "whatsapp",
+    label: "WhatsApp",
+  },
+];
+
+const socialMediaIcons: { [K in keyof SocialMediaLinks]: JSX.Element } = {
   instagram: <Instagram sx={{ color: "rgba(241, 9, 234, 1)" }} />,
   twitter: <Twitter sx={{ color: "rgba(91, 146, 250, 1)" }} />,
   linkedin: <LinkedIn sx={{ color: "rgba(0, 119, 181, 1)" }} />,
   website: <Language sx={{ color: "rgba(46, 174, 125, 1)" }} />,
+  facebook: <Facebook sx={{ color: "rgba(59, 89, 152, 1)" }} />,
+  youtube: <YouTube sx={{ color: "rgba(255, 0, 0, 1)" }} />,
+  // tiktok: <TikTok sx={{ color: "rgba(0, 0, 0, 1)" }} />,
+  // snapchat: <Snapchat sx={{ color: "rgba(255, 252, 0, 1)" }} />,
+  pinterest: <Pinterest sx={{ color: "rgba(189, 8, 28, 1)" }} />,
+  reddit: <Reddit sx={{ color: "rgba(255, 69, 0, 1)" }} />,
+  // discord: <Discord sx={{ color: "rgba(114, 137, 218, 1)" }} />,
+  telegram: <Telegram sx={{ color: "rgba(0, 136, 204, 1)" }} />,
+  whatsapp: <WhatsApp sx={{ color: "rgba(37, 211, 102, 1)" }} />,
 };
 
-const userFields: FieldConfig[] = [
+const defaultFields: FieldConfig[] = [
   {
     name: "instagram",
     label: "Instagram",
     type: "text",
+    textFieldProps: {
+      InputProps: {
+        startAdornment: socialMediaIcons.instagram,
+      },
+    },
   },
   {
     name: "twitter",
     label: "Twitter",
     type: "text",
+    textFieldProps: {
+      InputProps: {
+        startAdornment: socialMediaIcons.twitter,
+      },
+    },
   },
   {
     name: "linkedin",
     label: "LinkedIn",
     type: "text",
+    textFieldProps: {
+      InputProps: {
+        startAdornment: socialMediaIcons.linkedin,
+      },
+    },
   },
   {
     name: "website",
     label: "Website",
     type: "text",
+    textFieldProps: {
+      InputProps: {
+        startAdornment: socialMediaIcons.website,
+      },
+    },
   },
 ];
 
@@ -58,16 +163,35 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
   isMe,
   isLocked,
 }) => {
-  const socialLinks = user?.socialLinks;
+  const socialLinks = user?.socialLinks as SocialMediaLinks;
+  const initialFields: FieldConfig[] = Object.entries(socialLinks || {})
+    .filter(([_, value]) => value)
+    .map(([key, value]) => ({
+      name: key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      type: "text",
+      textFieldProps: {
+        InputProps: {
+          startAdornment: socialMediaIcons[key as keyof SocialMediaLinks] || (
+            <LinkOutlined />
+          ),
+        },
+      },
+    }));
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [fields, setFields] = useState(userFields);
+  const [fields, setFields] = useState<FieldConfig[]>(
+    initialFields.length > 0 ? initialFields : defaultFields,
+  );
 
   const { isLoading, error, update, reset } = useUpdateApi<UserProfile>((e) => {
     setIsModalOpen(false);
   });
 
-  const open = () => setIsModalOpen(true);
+  const open = () => {
+    setIsModalOpen(true);
+    setFields(initialFields.length > 0 ? initialFields : defaultFields);
+  };
   const close = () => {
     setIsModalOpen(false);
     reset();
@@ -76,50 +200,37 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
   const handleUpdate = async (formData: Partial<UserProfile>) => {
     await update(
       API_UPDATE_SEEKER,
-      {
-        body: { id: user?.id, socialLinks: formData } as UserProfile,
-      },
+      { body: { id: user?.id, socialLinks: formData } },
       TAGS.profile,
     );
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim()) {
-      e.preventDefault();
-      addNewField();
-    }
-  };
-
-  const addNewField = () => {
+  const addNewField = (inputValue: keyof SocialMediaLinks) => {
     const newFields: FieldConfig[] = [
       ...fields,
       {
-        name: inputValue.trim().toLowerCase(),
-        label: inputValue.trim(),
+        name: inputValue,
+        label: inputValue.charAt(0).toUpperCase() + inputValue.slice(1),
         type: "text",
-        required: false,
+        textFieldProps: {
+          InputProps: {
+            startAdornment: socialMediaIcons[inputValue] || <LinkOutlined />,
+          },
+        },
       },
     ];
-    const duplicate = fields.some(
-      (field) => field.name === inputValue.trim().toLowerCase(),
-    );
-    if (duplicate) {
-      shake(inputValue.trim().toLowerCase());
-    }
-    if (inputValue && !duplicate) {
+    if (inputValue) {
       setFields(newFields);
-      setInputValue("");
     }
   };
-  const removeLastField = (fieldName: string) => {
+  const removeField = (fieldName: string) => {
     setFields((pv) => pv.filter((field) => field.name !== fieldName));
   };
-  function shake(name: string) {
-    setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:"animate-shake border-red-400"} } : field));
-    setTimeout(() => {
-      setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:""} } : field));
-    }, 500);
-  }
+
+  const filteredSocialMediaOptions = socialMediaOptions.filter(
+    (option) => !fields.some((field) => field.name === option.value),
+  );
+
   return (
     <div className="relative mb-5 rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
@@ -141,27 +252,40 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
         loading={isLoading}
         fields={fields}
         title="Social Media Links"
-        removeField={fields.length > 1 ? removeLastField : undefined}
+        removeField={fields.length > 1 ? removeField : undefined}
         initialValues={socialLinks || {}}
       >
         <div className="border-t border-gray-200 p-4">
-          <label className="font-semibold">Add New Link</label>
-          <div className="flex items-end gap-2">
-            <TextField
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={"Add New Link"}
-              className="w-full"
-            />
-            <IconButton
-              onClick={addNewField}
-              className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2"
-            >
-              <Add />
-            </IconButton>
-          </div>
+          <Select
+            className={`w-full bg-white`}
+            labelId={"linkLabel"}
+            id={"link"}
+            displayEmpty
+            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+            onChange={(e) =>
+              addNewField(e.target.value as keyof SocialMediaLinks)
+            }
+            renderValue={(value) => {
+              const selected = filteredSocialMediaOptions.find(
+                (opt) => opt.value == value,
+              )?.label;
+              return selected ? (
+                selected
+              ) : (
+                <span className="text-neutral-400">Select Link</span>
+              );
+            }}
+          >
+            <MenuItem value="" disabled>
+              <em>Select Link</em>
+            </MenuItem>
+            {filteredSocialMediaOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {socialMediaIcons[option.value] || <LinkOutlined />}{" "}
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
         </div>
       </FormModal>
       {!socialLinks || Object.keys(socialLinks).length === 0 ? (
@@ -169,20 +293,17 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
       ) : isLocked ? (
         <p className="text-secondary">This Social Media links are private.</p>
       ) : (
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           {Object.entries(socialLinks).map(
             ([key, link]) =>
               link && (
-                <Link
-                  href={link}
-                  key={key}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {socialMediaIcons[key.toLowerCase()] || (
-                    <LinkOutlined sx={{ color: "rgba(128, 128, 128, 1)" }} />
-                  )}
-                </Link>
+                <Tooltip key={key} title={key} placement="bottom">
+                  <Link href={link} target="_blank" rel="noopener noreferrer">
+                    {socialMediaIcons[key as keyof SocialMediaLinks] || (
+                      <LinkOutlined />
+                    )}
+                  </Link>
+                </Tooltip>
               ),
           )}
         </div>

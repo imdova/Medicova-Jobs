@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect } from "react";
 import { Dialog, DialogContent } from "@mui/material";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import { ModalHeader } from "./ModalHeader";
@@ -26,7 +25,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   submitButtonText,
   deleteButtonText,
   cancelButtonText,
-  removeField
+  removeField,
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -49,7 +48,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
       const field = fields.find((f) => f.name === name);
       if (field) {
         const defaultValue = field.type === "checkbox" ? false : "";
-        setValue(String(name), defaultValue);
+        setValue(String(name), defaultValue, { shouldDirty: true });
       }
     });
   };

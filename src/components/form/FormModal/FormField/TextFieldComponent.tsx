@@ -82,6 +82,7 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
             ) : (
               ""
             ),
+          ...field.textFieldProps?.InputProps,
         }}
       />
     </div>

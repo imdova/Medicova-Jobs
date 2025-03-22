@@ -7,7 +7,7 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
-import { AlertColor, TextFieldProps } from "@mui/material";
+import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
 import { FieldValues, Path, RegisterOptions } from "react-hook-form";
 import { User } from "next-auth";
 
@@ -383,8 +383,8 @@ export type FieldType =
   | "checkbox"
   | "component";
 
-export interface Option {
-  value: string | number;
+export interface Option<T = Record<string, any>> {
+  value: keyof T;
   label: string;
 }
 
@@ -408,6 +408,7 @@ export interface FieldConfig<T = any> {
   };
   resetFields?: Path<T>[]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
+  selectProps?: Partial<SelectProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
   // options?: { label: string; value: string | number }[];

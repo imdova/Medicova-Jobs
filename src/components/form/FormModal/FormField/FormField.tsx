@@ -152,7 +152,10 @@ export const FormField: React.FC<FormFieldProps> = ({
       </div>
       {removeField && (
         <IconButton
-          onClick={() => removeField(field.name)}
+          onClick={() => {
+            resetValues([field.name]);
+            removeField(field.name);
+          }}
           className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2 hover:bg-red-100 hover:text-red-500"
         >
           <Delete />

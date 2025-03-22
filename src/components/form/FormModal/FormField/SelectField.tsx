@@ -9,13 +9,14 @@ import {
 } from "@mui/material";
 import { FieldConfig } from "@/types";
 import { getNestedValue } from "@/util/forms";
+import { ControllerRenderProps, FieldError, FieldValues } from "react-hook-form";
 
 interface SelectFieldProps {
   field: FieldConfig;
-  controllerField: any;
-  error: any;
-  resetValues: (fieldNames: (string | number)[]) => void;
-  formValues: Record<string, any>;
+  controllerField?: ControllerRenderProps<FieldValues, string>;
+  error?: FieldError;
+  resetValues?: (fieldNames: (string | number)[]) => void;
+  formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;
 }
 
@@ -29,7 +30,9 @@ export const SelectField: React.FC<SelectFieldProps> = ({
 }) => {
   const options = field.options || [];
   const dependsOn =
-    field.dependsOn && !getNestedValue(formValues, field.dependsOn)
+    field.dependsOn &&
+    formValues &&
+    !getNestedValue(formValues, field.dependsOn)
       ? dependsOnField
       : null;
   const placeholder =
@@ -65,13 +68,13 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           labelId={String(field.name) + "Label"}
           id={String(field.name)}
           displayEmpty
-          disabled={dependsOn}
+          disabled={!!dependsOn}
           MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
           onChange={(e) => {
-            controllerField.onChange(e);
+            controllerField?.onChange(e);
             field.onChange?.(e.target.value);
             if (field.resetFields) {
-              resetValues(field.resetFields);
+              resetValues?.(field.resetFields);
             }
           }}
           renderValue={(value) => {
@@ -84,6 +87,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
               </span>
             );
           }}
+          {...field.selectProps}
         >
           <MenuItem value="" disabled>
             <em>
