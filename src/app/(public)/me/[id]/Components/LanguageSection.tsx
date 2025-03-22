@@ -1,19 +1,83 @@
 "use client";
-import { IconButton, Divider, TextField } from "@mui/material";
-import { Add, Edit, LanguageOutlined } from "@mui/icons-material";
-import { KeyboardEvent, useState } from "react";
+import { IconButton } from "@mui/material";
+import { Edit, LanguageOutlined } from "@mui/icons-material";
+import { useState } from "react";
 import { FieldConfig, Option } from "@/types";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import FormModal from "@/components/form/FormModal/FormModal";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
+import SearchableSelect from "@/components/UI/SearchableSelect";
+
+type LanguageSectionProps = {
+  user: UserProfile;
+  isMe: boolean;
+};
 
 // TODO Enum of languages
 const languageOptions: Option[] = [
-  { value: "FLUENT", label: "Fluent" },
-  { value: "NATIVE", label: "Native" },
-  { value: "INTERMEDIATE", label: "Intermediate" },
-  { value: "BEGINNER", label: "Beginner" },
+  { value: "Fluent", label: "Fluent" },
+  { value: "Native", label: "Native" },
+  { value: "Intermediate", label: "Intermediate" },
+  { value: "Beginner", label: "Beginner" },
+];
+
+const languages = [
+  "Afrikaans",
+  "Albanian",
+  "Amharic",
+  "Arabic",
+  "Armenian",
+  "Basque",
+  "Bengali",
+  "Bulgarian",
+  "Catalan",
+  "Chinese",
+  "Croatian",
+  "Czech",
+  "Danish",
+  "Dutch",
+  "English",
+  "Estonian",
+  "Finnish",
+  "French",
+  "Georgian",
+  "German",
+  "Greek",
+  "Hebrew",
+  "Hindi",
+  "Hungarian",
+  "Icelandic",
+  "Indonesian",
+  "Italian",
+  "Japanese",
+  "Korean",
+  "Latvian",
+  "Lithuanian",
+  "Macedonian",
+  "Malay",
+  "Maltese",
+  "Norwegian",
+  "Persian",
+  "Polish",
+  "Portuguese",
+  "Romanian",
+  "Russian",
+  "Serbian",
+  "Slovak",
+  "Slovenian",
+  "Spanish",
+  "Swahili",
+  "Swedish",
+  "Tagalog",
+  "Tamil",
+  "Thai",
+  "Turkish",
+  "Ukrainian",
+  "Urdu",
+  "Vietnamese",
+  "Welsh",
+  "Yiddish",
 ];
 
 const baseFields: FieldConfig[] = [
@@ -31,10 +95,7 @@ const baseFields: FieldConfig[] = [
   },
 ];
 
-const LanguageSection: React.FC<{
-  user: UserProfile;
-  isMe: boolean;
-}> = ({ user, isMe }) => {
+const LanguageSection: React.FC<LanguageSectionProps> = ({ user, isMe }) => {
   const languageData = user.languages || [];
   const languagesValues = languageData.reduce(
     (acc: { [key: string]: string }, lang) => {
@@ -43,21 +104,28 @@ const LanguageSection: React.FC<{
     },
     {},
   );
-  const languageFields: FieldConfig[] = languageData.map((lang) => ({
+  const initialFields: FieldConfig[] = languageData.map((lang) => ({
     name: lang.name,
-    label: lang.name,
-    type: "text",
+    label: lang.name.charAt(0).toUpperCase() + lang.name.slice(1),
+    type: "select",
+    textFieldProps: {
+      placeholder: "Select proficiency",
+    },
+    options: languageOptions,
   }));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [fields, setFields] = useState([...baseFields, ...languageFields]);
-
+  const [fields, setFields] = useState<FieldConfig[]>(
+    initialFields.length > 0 ? initialFields : baseFields,
+  );
   const { isLoading, error, update, reset } = useUpdateApi<UserProfile>((e) => {
     setIsModalOpen(false);
   });
 
-  const open = () => setIsModalOpen(true);
+  const open = () => {
+    setIsModalOpen(true);
+    setFields(initialFields.length > 0 ? initialFields : baseFields);
+  };
   const close = () => {
     setIsModalOpen(false);
     reset();
@@ -70,54 +138,36 @@ const LanguageSection: React.FC<{
         proficiency: formData[key],
       }))
       .filter((lang) => lang.proficiency !== "");
-
-    await update(
-      API_UPDATE_SEEKER,
-      {
-        body: { id: user?.id, languages } as UserProfile,
-      },
-      TAGS.profile,
-    );
+    const body = { id: user?.id, languages };
+    // console.log("🚀 ~ handleUpdate ~ body:", JSON.stringify(body));
+    // throw new Error("Function not implemented.");
+    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim()) {
-      e.preventDefault();
-      addNewField();
-    }
-  };
-
-  const addNewField = () => {
+  const addNewField = (inputValue: string) => {
     const newFields: FieldConfig[] = [
       ...fields,
       {
-        name: inputValue.trim().toLowerCase(),
-        label: inputValue.trim(),
+        name: inputValue,
+        label: inputValue.charAt(0).toUpperCase() + inputValue.slice(1),
         type: "select",
+        textFieldProps: {
+          placeholder: "Select proficiency",
+        },
         options: languageOptions,
       },
     ];
-    const duplicate = fields.some(
-      (field) => field.name === inputValue.trim().toLowerCase(),
-    );
-    if (duplicate) {
-      shake(inputValue.trim().toLowerCase());
-    }
-    if (inputValue && !duplicate) {
+    if (inputValue) {
       setFields(newFields);
-      setInputValue("");
     }
   };
   const removeLastField = (fieldName: string) => {
     setFields((pv) => pv.filter((field) => field.name !== fieldName));
   };
+  const filterLanguages = languages.filter(
+    (lang) => !fields.some((field) => field.name === lang),
+  );
 
-  function shake(name: string) {
-    setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:"animate-shake border-red-400"} } : field));
-    setTimeout(() => {
-      setFields(fields.map(field => field.name === name ? { ...field, textFieldProps:{className:""} } : field));
-    }, 500);
-  }
   return (
     <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
@@ -144,22 +194,25 @@ const LanguageSection: React.FC<{
       >
         <div className="border-t border-gray-200 p-4">
           <label className="font-semibold">Add Language</label>
-          <div className="flex items-end gap-2">
-            <TextField
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={"Add New Link"}
-              className="w-full"
-            />
-            <IconButton
-              onClick={addNewField}
-              className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2"
-            >
-              <Add />
-            </IconButton>
-          </div>
+          <SearchableSelect
+            className={`w-full bg-white`}
+            id={"language"}
+            defaultValue=""
+            options={filterLanguages.map((lang) => ({
+              value: lang,
+              label: lang,
+            }))}
+            displayEmpty
+            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+            onChange={(e) => addNewField(e.target.value as string)}
+            renderValue={(selected) => {
+              return (
+                <span className="text-neutral-400">
+                  {(selected as string) || "Select Language"}
+                </span>
+              );
+            }}
+          />
         </div>
       </FormModal>
 
@@ -177,7 +230,6 @@ const LanguageSection: React.FC<{
               </span>{" "}
               {language.proficiency}
             </p>
-            {index % 2 === 0 ? <Divider sx={{ marginY: 1 }} /> : null}
           </div>
         ))}
       </div>

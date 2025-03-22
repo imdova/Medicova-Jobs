@@ -52,12 +52,16 @@ export const FormContent: React.FC<FormContentProps> = ({
     reset,
   } = formMethods;
 
-  const submitHandler = (data: any) => {
-    if (isDirty) {
-      onSubmit(data);
-      reset(data);
-    } else {
-      onCancel();
+  const submitHandler = async (data: any) => {
+    try {
+      if (isDirty) {
+        await onSubmit(data);
+        reset(data);
+      } else {
+        onCancel();
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
 

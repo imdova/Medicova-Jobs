@@ -30,6 +30,9 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
     const { data } = await checkIsUnlocked(user.id, sessionUser?.companyId);
     isLocked = !data?.isUnlocked;
   }
+  if (!isMe && !user.isPublic) {
+    return notFound();
+  }
 
   return (
     <div className="w-full px-4 md:px-5">
@@ -66,7 +69,7 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
             <>
               <SeekerComplete user={user} />
               {/* Public user Section */}
-              <PublicProfile />
+              <PublicProfile user={user} />
             </>
           )}
           {/* Resume Section */}

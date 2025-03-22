@@ -117,7 +117,7 @@ const SkillsSection: React.FC<{
         {skills.map((item) => (
           <div
             key={item.id + item.name}
-            className={`${isShake === item.name ? "animate-shake border-red-400" : "border-gray-200"} mb-2 mr-2 rounded-full border bg-primary-100 px-2 py-2 pl-4 text-main`}
+            className={`${isMe?"":"pr-4"} ${isShake === item.name ? "animate-shake border-red-400" : "border-gray-200"} mb-2 mr-2 rounded-full border bg-primary-100 px-2 py-2 pl-4 text-main`}
           >
             <span>{item.name}</span>
             {isMe && (

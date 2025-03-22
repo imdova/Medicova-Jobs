@@ -15,8 +15,9 @@ interface UploadError {
 
 type UploadResult = UploadResponse | UploadError;
 
+// TODO : make it for files and images
 // Function to upload multiple images and return their URLs
-async function uploadImages(images: File[]): Promise<string[]> {
+async function uploadFiles(images: File[]): Promise<string[]> {
   const uploadResults: UploadResult[] = [];
 
   // Upload each image sequentially
@@ -54,7 +55,7 @@ async function uploadImages(images: File[]): Promise<string[]> {
   return successfulUploads.map((result) => result.fileUrl);
 }
 
-export default uploadImages;
+export default uploadFiles;
 
 //   // Example usage in a React component
 //   const ImageUploadExample: React.FC = () => {
@@ -66,7 +67,7 @@ export default uploadImages;
 
 //       setIsLoading(true);
 //       const fileArray = Array.from(files);
-//       const urls = await uploadImages(fileArray);
+//       const urls = await uploadFiles(fileArray);
 //       setImageLinks(urls);
 //       setIsLoading(false);
 //     };

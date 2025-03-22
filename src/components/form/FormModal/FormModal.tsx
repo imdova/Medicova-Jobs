@@ -26,6 +26,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   deleteButtonText,
   cancelButtonText,
   removeField,
+  mode
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -36,7 +37,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     preventDefault: open,
   });
 
-  const formMethods = useFormState(open, fields, initialValues);
+  const formMethods = useFormState(open, fields, initialValues,mode);
   const {
     reset,
     setValue,

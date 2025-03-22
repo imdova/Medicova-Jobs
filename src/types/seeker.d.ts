@@ -39,7 +39,7 @@ type UserProfile = {
   country: LocationItem | null;
   state: LocationItem | null;
   city: string | null;
-  isPublic: boolean | null;
+  isPublic: boolean;
   categoryId: string | null;
   category: string | null;
   specialityId: string | null;
@@ -53,6 +53,9 @@ type UserProfile = {
 
   /// TODO: need to add
   isVerified: boolean;
+  isEmailVerified: boolean;
+  isVisible: boolean;
+  isImmediate: boolean;
 };
 
 type LanguageProficiency = {

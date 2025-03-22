@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Modal,
@@ -13,12 +13,13 @@ import { CloudUpload } from "@mui/icons-material";
 import Image from "next/image";
 import clsx from "clsx";
 import { ACCEPTED_IMAGE_TYPES } from "@/constants";
+import { PDF_ICON } from "../icons/icons";
 
 // Types for the modal
 interface FileWithPreview extends File {
   preview?: string;
 }
-
+// TODO : better preview for pdf list
 interface FileUploadModalProps {
   open: boolean;
   onClose: () => void;
@@ -35,7 +36,7 @@ interface FileUploadModalProps {
   cancelButtonText?: string;
   // Preview options
   showPreview?: boolean;
-  previewType?: "image" | "list" | "grid";
+  previewType?: "image" | "list" | "grid" | "pdf";
   // Styling
   className?: string;
   modalStyle?: React.CSSProperties;
@@ -95,6 +96,18 @@ const GridPreview: React.FC<{ files: FileWithPreview[] }> = ({ files }) => (
   </div>
 );
 
+const PDFPreview: React.FC<{ file: FileWithPreview }> = ({ file }) => {
+  return (
+    <div className="mx-auto flex h-32 w-32 flex-col items-center justify-center rounded-lg border border-gray-300 bg-gray-100 p-2">
+      <PDF_ICON width={40} height={40} className="text-[#EF5350]" />
+      <div className="break-all text-xs text-gray-600">{file.name}</div>
+      <div className="text-xs text-gray-400">
+        ({Math.round(file.size / 1024)}KB)
+      </div>
+    </div>
+  );
+};
+
 export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   open,
   onClose,
@@ -117,44 +130,52 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-      onDrop: (acceptedFiles) => {
-        setError(null);
-  
-        const oversizedFiles = acceptedFiles.filter(
-          (file) => file.size > maxFileSizeMB * 1024 * 1024,
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setError(null);
+
+      const oversizedFiles = acceptedFiles.filter(
+        (file) => file.size > maxFileSizeMB * 1024 * 1024,
+      );
+      if (oversizedFiles.length > 0) {
+        setError(`Some files exceed the ${maxFileSizeMB}MB limit`);
+        return;
+      }
+
+      // Check number of files
+      if (acceptedFiles.length > maxFiles) {
+        setError(`Maximum ${maxFiles} files allowed`);
+        return;
+      }
+
+      if (acceptedFiles.length === 0) {
+        setError(
+          `Unsupported file type. Only ${acceptedFileTypes.join(", ")} allowed.`,
         );
-        if (oversizedFiles.length > 0) {
-          setError(`Some files exceed the ${maxFileSizeMB}MB limit`);
-          return;
-        }
-  
-        // Check number of files
-        if (acceptedFiles.length > maxFiles) {
-          setError(`Maximum ${maxFiles} files allowed`);
-          return;
-        }
-        
-        if (acceptedFiles.length === 0) {
-          setError(`Unsupported file type. Only ${acceptedFileTypes.join(", ")} allowed.`);
-          return;
-        }
-  
-        if (selectedFiles.length + acceptedFiles.length > 3) {
-          setError("You can only upload up to 3 files.");
-          return;
-        }
-  
-        const filesWithPreview = acceptedFiles.map((file) =>
-          Object.assign(file, { preview: URL.createObjectURL(file), uploaded: false })
-        );
-  
-        setSelectedFiles((prev) => [...prev, ...filesWithPreview]);
-      },
-      accept: acceptedFileTypes.reduce((acc, curr) => ({ ...acc, [curr]: [] }), {}),
-      multiple: multiple,
-      maxFiles: maxFiles,
-    });
+        return;
+      }
+
+      if (selectedFiles.length + acceptedFiles.length > 3) {
+        setError("You can only upload up to 3 files.");
+        return;
+      }
+
+      const filesWithPreview = acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+          uploaded: false,
+        }),
+      );
+
+      setSelectedFiles((prev) => [...prev, ...filesWithPreview]);
+    },
+    accept: acceptedFileTypes.reduce(
+      (acc, curr) => ({ ...acc, [curr]: [] }),
+      {},
+    ),
+    multiple: multiple,
+    maxFiles: maxFiles,
+  });
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
@@ -215,6 +236,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
                 )}
               {previewType === "list" && <ListPreview files={selectedFiles} />}
               {previewType === "grid" && <GridPreview files={selectedFiles} />}
+              {previewType === "pdf" && <PDFPreview file={selectedFiles[0]} />}
             </div>
           ) : (
             <div className="py-8">

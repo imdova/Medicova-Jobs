@@ -33,7 +33,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
     </DialogTitle>
     {error && (
       <Alert severity="error" className="my-1">
-        <p className="text-xs">{error}</p>
+        <p className="text-sm">{error}</p>
       </Alert>
     )}
   </>

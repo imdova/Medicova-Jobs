@@ -430,6 +430,7 @@ export interface DynamicModalProps {
   deleteLoading?: boolean;
   error?: string;
   removeField?: (fieldName: string) => void;
+  mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined,
   ///
   submitButtonText?: string;
   deleteButtonText?: string;

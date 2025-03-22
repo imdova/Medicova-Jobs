@@ -4,7 +4,7 @@ import { Company } from "@/types";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
-import uploadImages from "@/lib/files/imageUploader";
+import uploadFiles from "@/lib/files/imageUploader";
 import { ProfileCoverImage } from "@/components/pages/co/ProfileCoverImage";
 import { useSession } from "next-auth/react";
 import Avatar from "@/components/UI/Avatar";
@@ -40,12 +40,12 @@ const ProfileCoverSection: React.FC<EmployerHeaderSectionProps> = ({
   }
 
   const updateImage = async (file: File) => {
-    const [avatar] = await uploadImages([file]);
+    const [avatar] = await uploadFiles([file]);
     handleUpdateCompany({ avatar });
     setImage(file);
   };
   const updateCoverImage = async (file: File) => {
-    const [cover] = await uploadImages([file]);
+    const [cover] = await uploadFiles([file]);
     handleUpdateCompany({ cover });
     setCover(file);
   };

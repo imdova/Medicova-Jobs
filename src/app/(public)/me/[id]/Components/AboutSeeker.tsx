@@ -14,7 +14,7 @@ const fields: FieldConfig[] = [
   {
     name: "about",
     type: "textEditor",
-  }, 
+  },
 ];
 
 const AboutSeeker: React.FC<{
@@ -33,13 +33,8 @@ const AboutSeeker: React.FC<{
     return null;
   }
   const handleUpdate = async (formData: Partial<UserProfile>) => {
-    await update(
-      API_UPDATE_SEEKER,
-      {
-        body: { id: user.id, ...formData },
-      },
-      TAGS.profile,
-    );
+    const body = { id: user.id, ...formData };
+    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
     setIsModalOpen(false);
   };
   return (
@@ -75,7 +70,7 @@ const AboutSeeker: React.FC<{
         )}
       </div>
       {user.about ? (
-        <ClampedText className="px-2 text-secondary  " lines={3} lineHeight={20}>
+        <ClampedText className="px-2 text-secondary" lines={3} lineHeight={20}>
           <div
             className="prose text-wrap"
             dangerouslySetInnerHTML={{ __html: user.about }}

@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
-import uploadImages from "@/lib/files/imageUploader";
+import uploadFiles from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
 import { calculateAge } from "@/util/general";
 import EditProfile from "./editProfile";
@@ -34,7 +34,7 @@ const HeaderSection: React.FC<{
   };
 
   const updateImage = async (file: File) => {
-    const [avatar] = await uploadImages([file]);
+    const [avatar] = await uploadFiles([file]);
     // TODO: update profile
     console.log("🚀 ~ updateImage ~ avatar:", avatar)
     // handleUpdateProfile({ avatar });
