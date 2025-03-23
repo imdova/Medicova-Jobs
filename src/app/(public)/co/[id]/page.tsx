@@ -18,10 +18,10 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const user = data?.user;
   const isEmployee = company.id === user?.companyId;
   return (
-    <div className="relative w-full px-4 md:p-0">
+    <div className="w-full px-4 md:px-5">
       <div className="flex gap-5">
         {/* Left + Center Sections */}
-        <div className="flex-1 space-y-2 md:space-y-5">
+        <div className="flex-1 space-y-2">
           {/* Header Section */}
           <EmployerHeaderSection isEmployee={isEmployee} company={company} />
           {/* Left Section */}
@@ -32,7 +32,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
           </Suspense>
         </div>
         {/* Right Sections */}
-        <div className="hidden min-w-80 max-w-80 md:block">
+        <div className="hidden min-w-80 max-w-80 space-y-2 md:block">
           {/* Public Profile Section */}
           {isEmployee && (
             <EmployerComplete percentage={company?.completencePercent} />

@@ -60,7 +60,7 @@ const AboutCompany: React.FC<{
   };
 
   return (
-    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       {/* Title */}
       {isEmployee && (
         <FormModal
@@ -87,7 +87,7 @@ const AboutCompany: React.FC<{
         )}
       </div>
       {company?.about ? (
-        <ClampedText className="px-2 text-secondary" lines={3}>
+        <ClampedText className="px-2 text-secondary" lines={3} lineHeight={20} >
           <PendingActions className="-ml-1 mr-2 inline text-primary" />
           {company?.about}
         </ClampedText>

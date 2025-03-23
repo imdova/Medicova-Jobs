@@ -38,7 +38,7 @@ const FilterSideBar: React.FC<FilterProps> = ({ searchKeys, sections }) => {
 
   return (
     <>
-      <div className="hidden w-1/5 rounded-[10px] border border-gray-100 bg-white p-[20px] shadow-xl lg:block">
+      <div className="hidden w-1/5 rounded-[10px] border border-gray-200 bg-white p-[20px] shadow-xl lg:block">
         <div className="space-y-6">
           {sections.map((section, index) => (
             <FilterItem

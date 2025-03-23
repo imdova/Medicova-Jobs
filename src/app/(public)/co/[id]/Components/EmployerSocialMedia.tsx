@@ -105,7 +105,7 @@ const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   };
 
   return (
-    <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
+    <div className="relative rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       <div className="flex items-center justify-between">
         <h6 className="mb-2 text-2xl font-semibold text-main">Social Links</h6>
         {isEmployee && (

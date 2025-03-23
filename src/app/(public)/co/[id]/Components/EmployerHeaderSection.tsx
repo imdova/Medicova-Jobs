@@ -19,7 +19,7 @@ const EmployerHeaderSection: React.FC<EmployerHeaderSectionProps> = ({
 }) => {
   const size = companySizeList.find((item) => item.value === company.size);
   return (
-    <div className="overflow-hidden rounded-base border border-gray-100 bg-white shadow-soft">
+    <div className="overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
       {/* Background Cover Image */}
       <ProfileCoverSection company={company} isEmployee={isEmployee} />
       {/* Profile Section */}

@@ -68,7 +68,7 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
   };
 
   return (
-    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
       <FormModal
         open={isModalOpen}

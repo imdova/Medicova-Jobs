@@ -8,6 +8,7 @@ import { FieldConfig } from "@/types";
 import { useState } from "react";
 import FormModal from "@/components/form/FormModal/FormModal";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { isValidPhoneNumber } from "@/util/forms";
 
 type Contact = {
   email: string;
@@ -62,6 +63,11 @@ const ContactInfoSection: React.FC<{
       name: "phone",
       type: "phone",
       label: "Phone*",
+      rules: {
+        validate: (value) =>
+          isValidPhoneNumber(value || "") ||
+          "Please enter a valid phone number",
+      },
       textFieldProps: { placeholder: "Enter Phone Number" },
       required: true,
     },
@@ -113,9 +119,7 @@ const ContactInfoSection: React.FC<{
           </div>
         ) : (
           <div>
-            <p className="text-secondary">
-              The Data Of this user Is Privater
-            </p>
+            <p className="text-secondary">The Data Of this user Is Privater</p>
           </div>
         )
       ) : (

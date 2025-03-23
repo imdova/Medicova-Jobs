@@ -29,7 +29,7 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
   return (
     <React.Fragment >
       {/* Title */}
-      <div className="flex items-center justify-between rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
+      <div className="flex items-center justify-between rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
         <h3 className="text-xl font-semibold text-main">Latest jobs:</h3>
         {isEmployee && (
           <AddNewJobButton company={company}
@@ -51,7 +51,7 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
           ))}
         </div>
       ) : isEmployee ? (
-        <div className="mt-5 flex flex-col items-center justify-center gap-4 rounded-base border border-gray-100 bg-white p-5 shadow-lg">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-base border border-gray-200 bg-white p-5 shadow-lg">
           <h6 className="text-2xl font-semibold text-secondary">
             You haven&apos;t posted any jobs yet.
           </h6>
@@ -64,7 +64,7 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
         </div>
       ) : null}
       {showMore && (
-        <div className="flex items-center justify-center rounded-base border border-gray-100 bg-white p-3 shadow-soft">
+        <div className="flex items-center justify-center rounded-base border border-gray-200 bg-white p-3 shadow-soft">
           <Button LinkComponent={Link} href="/employer/job/manage-jobs" className="mt-2 p-0" variant="text">
             Show {remainingJobs} more Jobs
           </Button>

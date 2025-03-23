@@ -124,19 +124,10 @@ export const FormField: React.FC<FormFieldProps> = ({
       />
     );
   };
-  /// TODO Add phone number validation to the Contact Fields
-  const phonNumberValidations: FieldConfig["rules"] =
-    field.type === "phone"
-      ? {
-          validate: (value) =>
-            isValidPhoneNumber(value || "") ||
-            "Please enter a valid phone number",
-        }
-      : {};
 
   return (
     <div className="flex items-end gap-2">
-      <div className="flex-1">
+      <div className="max-w-full flex-1">
         <Controller
           name={String(field.name)}
           control={control}
@@ -144,7 +135,6 @@ export const FormField: React.FC<FormFieldProps> = ({
             required: field.required
               ? `${field.label?.replace("*", "") || String(field.name)} is required`
               : false,
-            ...phonNumberValidations,
             ...field.rules,
           }}
           render={renderField}

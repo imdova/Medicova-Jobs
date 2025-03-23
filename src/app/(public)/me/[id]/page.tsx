@@ -43,7 +43,7 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
           <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}
           <AboutSeeker user={user} isMe={isMe} />
-          {/* Experience Section */}
+          {/* Experience Section */} 
           <Suspense fallback={<ExperienceSkeleton />}>
             <ExperienceSection user={user} isMe={isMe} />
           </Suspense>

@@ -4,6 +4,7 @@ interface FetchOptions extends RequestInit {
   skip?: boolean;
   fetchOnUrlChange?: boolean;
   fetchOnce?: boolean;
+  defaultLoading?: boolean;
 }
 
 interface FetchResult<T> {
@@ -30,7 +31,9 @@ export default function useFetch<T>(
   onSuccess?: (data: T) => void,
 ): FetchResult<T> {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(
+    options.defaultLoading ?? false,
+  );
   const [error, setError] = useState<Error | null>(null);
   const hasFetched = useRef<boolean>(false);
   const prevUrl = useRef<string | undefined | null>(url);
