@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useMemo } from "react";
 import {
   Table,
@@ -13,10 +14,17 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import CustomPagination from "@/components/UI/CustomPagination";
+import CellOptions from "./CellOptions";
 
 interface SortConfig<T> {
   key: keyof T;
   direction: "asc" | "desc";
+}
+
+interface ActionOption<T> {
+  label: string;
+  action: (item: T) => void;
+  icon?: React.ReactNode;
 }
 
 // Column definition interface
@@ -40,6 +48,7 @@ interface DataTableProps<T> {
   size?: "small" | "medium";
   fixedNumberPerPage?: number;
   searchQuery?: string;
+  options?: ActionOption<T>[]; // Action options for each row
 }
 
 const DataTable = <T extends { id: number | string }>({
@@ -53,6 +62,7 @@ const DataTable = <T extends { id: number | string }>({
   fixedNumberPerPage,
   searchQuery,
   total,
+  options,
 }: DataTableProps<T>) => {
   const isSmall = size === "small";
   const [selected, setSelected] = useState<(number | string)[]>([]);
@@ -121,7 +131,7 @@ const DataTable = <T extends { id: number | string }>({
 
   return (
     <div className="w-full">
-      <TableContainer component={Paper} className="border-0 scroll-bar-minimal">
+      <TableContainer component={Paper} className="scroll-bar-minimal border-0">
         <Table className="min-w-full">
           <TableHead className={`bg-gray-50`}>
             <TableRow>
@@ -139,7 +149,7 @@ const DataTable = <T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`p-2 font-semibold w-full ${isSmall ? "text-xs" : ""}`}
+                  className={`font-semibold ${isSmall ? "p-2 text-xs" : "p-2 px-5"}`}
                   style={{ width: col.width }}
                 >
                   {col.sortable ? (
@@ -152,15 +162,18 @@ const DataTable = <T extends { id: number | string }>({
                       }
                       onClick={() => handleSort(col.key)}
                     >
-                      <span className="text-nowrap line-clamp-1">{col.header}</span>
+                      <span className="line-clamp-1 text-nowrap">
+                        {col.header}
+                      </span>
                     </TableSortLabel>
                   ) : (
-                    <span className="text-nowrap line-clamp-1">{col.header}</span>
-
+                    <span className="line-clamp-1 text-nowrap">
+                      {col.header}
+                    </span>
                   )}
                 </TableCell>
               ))}
-              {onEdit || onDelete ? (
+              {onEdit || onDelete || (options && options.length > 0) ? (
                 <TableCell
                   className={`p-2 font-semibold ${isSmall ? "text-xs" : ""}`}
                 >
@@ -223,18 +236,21 @@ const DataTable = <T extends { id: number | string }>({
                       </div>
                     </TableCell>
                   )}
+                  {options && options.length > 0 && (
+                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
+                      <CellOptions options={options} item={item} />
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       </TableContainer>
-      {total > data.length && (
-        <CustomPagination
-          fixedNumberPerPage={fixedNumberPerPage}
-          totalItems={total}
-        />
-      )}
+      <CustomPagination
+        fixedNumberPerPage={fixedNumberPerPage}
+        totalItems={total}
+      />
     </div>
   );
 };

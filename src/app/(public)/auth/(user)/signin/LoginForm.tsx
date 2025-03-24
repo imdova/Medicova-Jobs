@@ -104,9 +104,9 @@ const LoginForm: React.FC = () => {
         <Divider sx={{ flex: 1 }} />
       </Box>
 
-      <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="w-full space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Email Field */}
-        <div className="mb-2">
+        <div>
           <Controller
             name="email"
             control={control}
@@ -132,7 +132,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         {/* Password Field */}
-        <div className="mb-2">
+        <div>
           <Controller
             name="password"
             control={control}
@@ -164,15 +164,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         {/* Remember Me Checkbox */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            mb: 1,
-          }}
-        >
+        <div className="flex w-full items-center justify-between">
           <Controller
             name="rememberMe"
             control={control}
@@ -199,7 +191,7 @@ const LoginForm: React.FC = () => {
           >
             Forgot Password?
           </Link>
-        </Box>
+        </div>
         {error && <p className="my-1 text-red-500">{error}</p>}
 
         {/* Submit Button */}

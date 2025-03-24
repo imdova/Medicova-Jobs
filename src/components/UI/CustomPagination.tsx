@@ -62,6 +62,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
       router.push(`?${createQueryString("page", totalPages.toString())}`, { scroll: false });
     }
   }, [totalItems, currentPage, totalPages, router, createQueryString]);
+  if (totalPages < 2) return null;
 
   return (
     <div
