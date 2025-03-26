@@ -178,3 +178,27 @@ export const getProgressColor = (progress: number): string => {
   if (progress >= 50) return "var(--warning)";
   return "var(--error)";
 };
+
+export function updateSearchParams(
+  searchKey: string,
+  value: string,
+  searchParams?: { [key: string]: string | string[] | undefined },
+): string {
+  const params = new URLSearchParams();
+
+  // Add existing params
+  if (searchParams) {
+    Object.entries(searchParams).forEach(([paramKey, paramValue]) => {
+      if (Array.isArray(paramValue)) {
+        paramValue.forEach((val) => params.append(paramKey, val));
+      } else if (paramValue !== undefined) {
+        params.set(paramKey, paramValue);
+      }
+    });
+  }
+
+  // Update or add the new key-value pair
+  params.set(searchKey, value);
+
+  return `?${params.toString()}`;
+}

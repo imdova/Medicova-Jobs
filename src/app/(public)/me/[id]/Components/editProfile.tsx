@@ -27,6 +27,8 @@ interface EditProfileProps {
 const initialValues = (user: Partial<UserProfile>): Partial<UserProfile> => ({
   firstName: user?.firstName,
   lastName: user?.lastName,
+  birth: user?.birth,
+  nationality: user?.nationality,
   title: user?.title,
   state: user?.state || null,
   country: user?.country || null,
@@ -94,15 +96,18 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
 
   // fields
   const handleUpdate = async (formData: Partial<UserProfile>) => {
-    // const { state: formState, country: formCountry } = formData;
-    // const country =
-    //   countries.data.find((country) => country.isoCode === formCountry?.code) ||
-    //   null;
-    // const state =
-    //   states.data.find((state) => state.isoCode === formState?.code) || null;
+    const { state: formState, country: formCountry } = formData;
+    const country =
+      countries.data.find((country) => country.isoCode === formCountry?.code) ||
+      null;
+    const state =
+      states.data.find((state) => state.isoCode === formState?.code) || null;
+
     const body: Partial<UserProfile> = {
       id: user?.id,
       ...formData,
+      country: country ? { code: country.isoCode, name: country.name } : null,
+      state: state ? { code: state.isoCode, name: state.name } : null,
     };
     console.log("🚀 ~ handleUpdate ~ body:", body);
     await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
@@ -148,7 +153,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     {
       name: "categoryId",
       type: "select",
-      required: true,
       label: "Category*",
       resetFields: ["specialityId", "careerLevelId"],
       onChange: (value) => setCategoryId(value),
@@ -161,7 +165,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "specialityId",
       type: "select",
       dependsOn: "categoryId",
-      required: true,
       label: "Specialty*",
       options: specialities.map((speciality) => ({
         value: speciality.id,
@@ -173,7 +176,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "careerLevelId",
       type: "select",
       dependsOn: "categoryId",
-      required: true,
       label: "Career Level*",
       options: careerLevels.map((careerLevel) => ({
         value: careerLevel.id,

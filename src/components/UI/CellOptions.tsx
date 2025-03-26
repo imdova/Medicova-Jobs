@@ -1,6 +1,6 @@
 "use client";
 import { FilterList, MoreVert } from "@mui/icons-material";
-import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { Button, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { MouseEvent, useState } from "react";
 
 interface ActionOption<T> {
@@ -29,13 +29,13 @@ export default function CellOptions<T>({ item, options }: CellOptionsProps<T>) {
         {options.map((option, index) => (
           <MenuItem
             key={index}
-            className="min-w-40 space-x-2 group"
+            className="group min-w-40"
             onClick={() => {
               option.action(item);
               onClose();
             }}
           >
-            <span>{option.icon}</span>
+            <ListItemIcon>{option.icon}</ListItemIcon>
             <span>{option.label}</span>
           </MenuItem>
         ))}

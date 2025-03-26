@@ -436,3 +436,16 @@ export interface DynamicModalProps {
   deleteButtonText?: string;
   cancelButtonText?: string;
 }
+
+export interface ColumnConfig<T> {
+  key: Path<T>; // Field to display
+  header: string; // Column header text
+  sortable?: boolean; // Enable sorting
+  render?: (item: T) => React.ReactNode; // Custom render function
+  width?: string | number; // Optional column width
+}
+
+export interface SortConfig<T> {
+  key: Path<T>;
+  direction: "asc" | "desc"; 
+}

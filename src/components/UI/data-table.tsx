@@ -7,34 +7,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Checkbox,
   IconButton,
   TableSortLabel,
+  Button,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import CustomPagination from "@/components/UI/CustomPagination";
 import CellOptions from "./CellOptions";
-
-interface SortConfig<T> {
-  key: keyof T;
-  direction: "asc" | "desc";
-}
-
-interface ActionOption<T> {
-  label: string;
-  action: (item: T) => void;
-  icon?: React.ReactNode;
-}
-
-// Column definition interface
-interface ColumnConfig<T> {
-  key: keyof T; // Field to display
-  header: string; // Column header text
-  sortable?: boolean; // Enable sorting
-  render?: (item: T) => React.ReactNode; // Custom render function
-  width?: string | number; // Optional column width
-}
+import Link from "next/link";
+import { ColumnConfig, SortConfig } from "@/types";
+import { getNestedValue } from "@/util/forms";
+import { Path } from "react-hook-form";
 
 interface DataTableProps<T> {
   data: T[];
@@ -49,10 +33,12 @@ interface DataTableProps<T> {
   fixedNumberPerPage?: number;
   searchQuery?: string;
   options?: ActionOption<T>[]; // Action options for each row
+  noDataMessage?: NoDataMessage;
 }
 
 const DataTable = <T extends { id: number | string }>({
   data,
+  noDataMessage,
   columns,
   isSelectable = false,
   onClick,
@@ -68,7 +54,7 @@ const DataTable = <T extends { id: number | string }>({
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
-  const handleSort = (key: keyof T) => {
+  const handleSort = (key: Path<T>) => {
     setSortConfig({
       key,
       direction:
@@ -94,8 +80,8 @@ const DataTable = <T extends { id: number | string }>({
   const sortedData = useMemo(() => {
     if (!sortConfig?.key) return filteredData;
     return [...filteredData].sort((a, b) => {
-      const valueA = a[sortConfig.key] ?? ""; // Ensure no undefined/null issues
-      const valueB = b[sortConfig.key] ?? "";
+      const valueA = getNestedValue(a, sortConfig.key) ?? ""; // Ensure no undefined/null issues
+      const valueB = getNestedValue(b, sortConfig.key) ?? "";
       if (typeof valueA === "number" && typeof valueB === "number") {
         return sortConfig.direction === "asc"
           ? valueA - valueB
@@ -131,7 +117,7 @@ const DataTable = <T extends { id: number | string }>({
 
   return (
     <div className="w-full">
-      <TableContainer component={Paper} className="scroll-bar-minimal border-0">
+      <TableContainer className="scroll-bar-minimal rounded-base border border-gray-200 bg-white shadow-soft">
         <Table className="min-w-full">
           <TableHead className={`bg-gray-50`}>
             <TableRow>
@@ -149,7 +135,7 @@ const DataTable = <T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`font-semibold ${isSmall ? "p-2 text-xs" : "p-2 px-5"}`}
+                  className={`font-semibold ${isSmall ? "p-2 text-xs" : "p-5"}`}
                   style={{ width: col.width }}
                 >
                   {col.sortable ? (
@@ -207,7 +193,9 @@ const DataTable = <T extends { id: number | string }>({
                       key={String(col.key)}
                       className={`${isSmall ? "p-2 text-xs" : "p-5"}`}
                     >
-                      {col.render ? col.render(item) : String(item[col.key])}
+                      {col.render
+                        ? col.render(item)
+                        : getNestedValue(item, col.key)}
                     </TableCell>
                   ))}
                   {(onEdit || onDelete) && (
@@ -246,6 +234,23 @@ const DataTable = <T extends { id: number | string }>({
             })}
           </TableBody>
         </Table>
+        {data.length === 0 && noDataMessage && (
+          <div className="flex min-h-64 w-full flex-col items-center justify-center gap-2 p-5">
+            <h3 className="text-center text-xl font-semibold text-secondary">
+              {noDataMessage.title}
+            </h3>
+            <p className="text-center text-sm text-secondary">
+              {noDataMessage.description}
+            </p>
+            <Button
+              LinkComponent={Link}
+              href={noDataMessage.action.href}
+              variant="contained"
+            >
+              {noDataMessage.action.label}
+            </Button>
+          </div>
+        )}
       </TableContainer>
       <CustomPagination
         fixedNumberPerPage={fixedNumberPerPage}

@@ -1,10 +1,11 @@
 interface ApplicationsFilter {
   page?: number;
   limit?: number;
-  jobId?: string;
-  seekerId?: string;
-  companyId?: string;
-  startDate?: string;
+  jobId?: string | null;
+  seekerId?: string | null;
+  companyId?: string | null;
+  startDate?: string | null;
+  status?: ApplicationStatus;
 }
 enum MaritalStatus {
   Single = "Single",
@@ -78,48 +79,56 @@ type TapType = "all" | "locked" | "unlocked" | "shortListed";
 
 // Represents the data structure for job applicants. This type is used to store and display
 // information about individuals who have applied for a specific job posting.
-type ApplicationsType = {
-  id: string; // id of the application
-  seekerId: string; // id for the job seeker who applied
-  status: ApplicationStatus; // status of the application
-  answers: Record<string, string> | null; // stores the applicant's responses to job-specific questions, if any
+interface ApplicationsType  {
+  id: string;
+  seekerId: string;
+  status: ApplicationStatus;
+  answers: Record<string, string> | null;
   job: {
-    id: string; // id of the job
+    id: string;
+    title: string;
+    // jobSpeciality?: string | null; // add this please
+    // jobCategory?: string | null; // add this please
+    // jobCareerLevel?: string | null; // add this please
+    // jobEmploymentType?: string | null; // add this please
     company: {
-      id: string; // id of the company offering the job
+      id: string;
+      // name: string; // add this please
+      // username: string; // add this please
+      // avatar: string; // add this please
     };
   };
   applicant: {
-    id: string; // id for the job seeker
-    avatar: string; // URL to the applicant's avatar image
-    userName: string; // username of the applicant
-    firstName: string; // first name of the applicant
-    lastName: string; // last name of the applicant
-    title: string | null; // title of the applicant
-    whatsApp: string | null; // WhatsApp contact of the applicant
-    phone: string; // phone number of the applicant
-    email: string; // email address of the applicant
-    country: LocationItem | null; // country of the applicant
-    state: LocationItem | null; // state of the applicant
-    city: string | null; // city of the applicant
-    category: string | null; // category of the applicant
-    specialty: string | null; // specialty of the applicant
-    careerLevel: string | null; // career level of the applicant
-    isLocked: boolean; // whether the applicant is locked
+    id: string;
+    avatar: string;
+    userName: string;
+    firstName: string;
+    lastName: string;
+    title: string | null;
+    whatsApp: string | null;
+    phone: string;
+    email: string;
+    country: LocationItem | null;
+    state: LocationItem | null;
+    city: string | null;
+    category: string | null;
+    specialty: string | null;
+    careerLevel: string | null;
+    isLocked: boolean;
     yearsOfExperience: {
-      totalYears: string; // total years of experience of the applicant
+      totalYears: string;
     };
-    lastEducation: EducationData | null; // last education of the applicant
-    lastExperience: ExperienceData | null; // last experience of the applicant
+    lastEducation: EducationData | null;
+    lastExperience: ExperienceData | null;
     folders: {
-      folderId: string; // id of the folder
-      folderName: string; // name of the folder
-      isFavorite: boolean; // whether the folder is marked as favorite
+      folderId: string;
+      folderName: string;
+      isFavorite: boolean;
     }[];
   };
-  created_at: string; // creation date of the application
-  updated_at: string; // last update date of the application
-  _version: number; // version of the application record
+  created_at: string;
+  updated_at: string;
+  _version: number;
 };
 
 // Represents the data structure for potential candidates who can be invited to apply for a job.

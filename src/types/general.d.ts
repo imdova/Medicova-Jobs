@@ -13,4 +13,19 @@ interface LocationType {
   country?: { code?: string; name?: string } | null;
   state?: { code?: string; name?: string } | null;
   city?: string | null;
-};
+}
+
+interface ActionOption<T> {
+  label: string;
+  action: (item: T) => void;
+  icon?: React.ReactNode;
+}
+
+interface NoDataMessage {
+  title: string;
+  description: string;
+  action: {
+    label: string;
+    href: string;
+  };
+}

@@ -50,6 +50,7 @@ export const getApplications = async ({
   seekerId,
   companyId,
   startDate,
+  status,
 }: ApplicationsFilter = {}): Promise<
   Result<PaginatedResponse<ApplicationsType>>
 > => {
@@ -60,7 +61,8 @@ export const getApplications = async ({
     if (jobId) queryParams.append("jobId", jobId);
     if (seekerId) queryParams.append("seekerId", seekerId);
     if (companyId) queryParams.append("companyId", companyId);
-    if (startDate) queryParams.append("startDate", startDate);
+    if (startDate) queryParams.append("from", startDate);
+    if (status) queryParams.append("status", status);
     const response = await fetch(
       `${API_CREATE_JOB_APPLICATION}?${queryParams.toString()}`,
       {
