@@ -12,11 +12,13 @@ import { createUrl } from "@/util";
 
 interface PaginationProps {
   fixedNumberPerPage?: number;
+  initialNumberPerPage?: number;
   totalItems: number;
 }
 
 const CustomPagination: React.FC<PaginationProps> = ({
   fixedNumberPerPage,
+  initialNumberPerPage = 10,
   totalItems,
 }) => {
   const router = useRouter();
@@ -26,7 +28,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
   // Get current values from search params
   const currentPage = Number(searchParams.get("page")) || 1;
   const itemsPerPage =
-    fixedNumberPerPage || Number(searchParams.get("limit")) || 10;
+    fixedNumberPerPage ||
+    Number(searchParams.get("limit")) ||
+    initialNumberPerPage 
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -59,10 +63,13 @@ const CustomPagination: React.FC<PaginationProps> = ({
   // Validate current page on total items change
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      router.push(`?${createQueryString("page", totalPages.toString())}`, { scroll: false });
+      router.push(`?${createQueryString("page", totalPages.toString())}`, {
+        scroll: false,
+      });
     }
   }, [totalItems, currentPage, totalPages, router, createQueryString]);
-  if (totalPages < 2) return null;
+
+  if (totalPages < 2 &&  itemsPerPage === initialNumberPerPage) return null;
 
   return (
     <div

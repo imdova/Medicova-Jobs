@@ -13,7 +13,7 @@ import { ControllerRenderProps, FieldError, FieldValues } from "react-hook-form"
 
 interface SelectFieldProps {
   field: FieldConfig;
-  controllerField?: ControllerRenderProps<FieldValues, string>;
+  controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
   error?: FieldError;
   resetValues?: (fieldNames: (string | number)[]) => void;
   formValues?: Record<string, any>;
@@ -71,7 +71,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           disabled={!!dependsOn}
           MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
           onChange={(e) => {
-            controllerField?.onChange(e);
+            controllerField?.onChange?.(e);
             field.onChange?.(e.target.value);
             if (field.resetFields) {
               resetValues?.(field.resetFields);
