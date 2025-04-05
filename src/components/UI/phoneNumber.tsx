@@ -93,7 +93,11 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
           "& fieldset": { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
           ...props.sx,
         }}
-        defaultValue={phoneNumber || getOnlyPhoneNumber(props.value as string)}
+        defaultValue={
+          phoneNumber || props.value
+            ? getOnlyPhoneNumber(props.value as string)
+            : ""
+        }
         value={phoneNumber ? phoneNumber : undefined}
         onChange={handlePhoneChange}
       />

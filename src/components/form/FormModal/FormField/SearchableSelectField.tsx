@@ -13,8 +13,8 @@ interface SelectFieldProps {
   field: FieldConfig;
   controllerField: any;
   error: any;
-  resetValues: (fieldNames: (string | number)[]) => void;
-  formValues: Record<string, any>;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
+  formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;
 }
 
@@ -28,7 +28,9 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
 }) => {
   const options = field.options || [];
   const dependsOn =
-    field.dependsOn && !getNestedValue(formValues, field.dependsOn)
+    field.dependsOn &&
+    formValues &&
+    !getNestedValue(formValues, field.dependsOn)
       ? dependsOnField
       : null;
   const dependsOnValue = getDependsOnLabel(dependsOn);
@@ -63,7 +65,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
           onChange={(e) => {
             controllerField.onChange(e);
             field.onChange?.(e.target.value);
-            if (field.resetFields) {
+            if (field.resetFields && resetValues) {
               resetValues(field.resetFields);
             }
           }}

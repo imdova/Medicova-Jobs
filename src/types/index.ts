@@ -10,6 +10,8 @@ import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
 import { FieldValues, Path, RegisterOptions } from "react-hook-form";
 import { User } from "next-auth";
+import { DatePickerProps } from "@mui/x-date-pickers";
+import { Dayjs } from "dayjs";
 
 export type Country = {
   name: string;
@@ -381,11 +383,14 @@ export type FieldType =
   | "select"
   | "search-select"
   | "checkbox"
-  | "component";
+  | "component"
+  | "radio"
+  | "file";
 
 export interface Option<T = Record<string, any>> {
   value: keyof T;
   label: string;
+  icon?: React.ReactNode;
 }
 
 // Updated FieldConfig to support multiple hidden fields
@@ -406,14 +411,15 @@ export interface FieldConfig<T = any> {
     sm?: number;
     md?: number;
   };
-  resetFields?: Path<T>[]; // New property for fields to reset
+  resetFields?: FieldConfig<T>["name"][]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
+  dateFieldProps?: Partial<DatePickerProps<Dayjs, boolean>>;
   selectProps?: Partial<SelectProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
   // options?: { label: string; value: string | number }[];
   options?: Option[]; // Updated to support dynamic options
-  hideFieldNames?: Path<T>[];
+  hideFieldNames?: FieldConfig<T>["name"][];
   onChange?: (value: any) => void; // Updated to include formMethods
 }
 export interface DynamicModalProps {
@@ -430,7 +436,7 @@ export interface DynamicModalProps {
   deleteLoading?: boolean;
   error?: string;
   removeField?: (fieldName: string) => void;
-  mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined,
+  mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined;
   ///
   submitButtonText?: string;
   deleteButtonText?: string;
@@ -447,5 +453,5 @@ export interface ColumnConfig<T> {
 
 export interface SortConfig<T> {
   key: Path<T>;
-  direction: "asc" | "desc"; 
+  direction: "asc" | "desc";
 }

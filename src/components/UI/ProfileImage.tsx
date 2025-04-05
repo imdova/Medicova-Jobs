@@ -11,7 +11,7 @@ interface ProfileImageProps {
   onImageUpdate: (file: File) => Promise<void>;
   onImageRemove?: () => Promise<void>;
   maxFileSizeMB?: number;
-  alt: string
+  alt: string;
   // Style props
   className?: string;
   imageClassName?: string;
@@ -28,13 +28,12 @@ interface ProfileImageProps {
 const SIZE_MAP = {
   small: { width: 32, height: 32 },
   medium: { width: 48, height: 48 },
-  large: { width: 64, height: 64 },
+  large: { width: 78, height: 78 },
   xLarge: { width: 96, height: 96 },
 } as const;
 
 const DEFAULT_IMAGE = "/images/placeholder-avatar.svg";
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
-
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({
   currentImageUrl,
@@ -104,6 +103,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
 
         {/* Overlay with camera icon */}
         <button
+          type="button"
           onClick={handleMenuOpen}
           className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
           aria-label="Update profile picture"

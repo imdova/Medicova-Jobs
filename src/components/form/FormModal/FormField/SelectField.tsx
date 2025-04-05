@@ -9,13 +9,17 @@ import {
 } from "@mui/material";
 import { FieldConfig } from "@/types";
 import { getNestedValue } from "@/util/forms";
-import { ControllerRenderProps, FieldError, FieldValues } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  FieldError,
+  FieldValues,
+} from "react-hook-form";
 
 interface SelectFieldProps {
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
   error?: FieldError;
-  resetValues?: (fieldNames: (string | number)[]) => void;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
   formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;
 }

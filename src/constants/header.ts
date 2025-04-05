@@ -5,7 +5,7 @@ export const roleBasedLinks: RoleBasedLinks = {
     {
       id:1,
       label: "Dashboard",
-      path: "/employer/dashboard",
+      path: "/employer/dashboard", 
     },
     {
       id:1,
@@ -75,6 +75,7 @@ export const roleBasedLinks: RoleBasedLinks = {
       id:1,
       label: "Settings",
       path: "/job-seeker/setting",
+      pattern: "/job-seeker/setting/*",
     },
   ],
   admin: [

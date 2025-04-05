@@ -10,7 +10,7 @@ import uploadFiles from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
 import { calculateAge } from "@/util/general";
 import EditProfile from "./editProfile";
-import { formatFullName, formatName } from "@/util";
+import { formatName } from "@/util";
 
 const HeaderSection: React.FC<{
   user: UserProfile;
@@ -27,7 +27,7 @@ const HeaderSection: React.FC<{
       { body: { id: user.id, ...formData } },
       TAGS.profile,
     );
-    console.log("🚀 ~ handleUpdateProfile ~ newProfile:", newProfile)
+    console.log("🚀 ~ handleUpdateProfile ~ newProfile:", newProfile);
     await updateSession({
       photo: newProfile.avatar,
     });
@@ -36,9 +36,9 @@ const HeaderSection: React.FC<{
   const updateImage = async (file: File) => {
     const [avatar] = await uploadFiles([file]);
     // TODO: update profile
-    console.log("🚀 ~ updateImage ~ avatar:", avatar)
-    // handleUpdateProfile({ avatar });
-    // setImage(file);
+    console.log("🚀 ~ updateImage ~ avatar:", avatar);
+    handleUpdateProfile({ avatar });
+    setImage(file);
   };
 
   const age = user.birth ? calculateAge(new Date(user.birth)) : "";
@@ -63,7 +63,7 @@ const HeaderSection: React.FC<{
         />
       )}
       <div className="flex w-full">
-        <div className="flex-1 mr-5">
+        <div className="mr-5 flex-1">
           <h5 className="text-xl font-bold text-main">
             {formatName(user, true)}{" "}
             {user.isVerified && (

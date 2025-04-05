@@ -1,13 +1,16 @@
 import { FieldConfig } from "@/types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { formatDate } from "@/util";
-import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import {
+  ControllerRenderProps,
+  FieldError,
+  FieldValues,
+} from "react-hook-form";
 
 interface DatePickerFieldProps {
   field: FieldConfig;
-  controllerField: any;
-  error: any;
+  controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
+  error?: FieldError;
 }
 
 const DatePickerField: React.FC<DatePickerFieldProps> = ({
@@ -24,37 +27,38 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
         : field.name);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div>
-        {field.label && (
-          <label htmlFor={String(field.name)} className="mb-1 font-semibold">
-            {field.label}
-          </label>
-        )}
+    <div className="flex flex-col">
+      {field.label && (
+        <label htmlFor={String(field.name)} className="mb-1 font-semibold">
+          {field.label}
+        </label>
+      )}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          label="Start Date"
-          value={controllerField.value}
-          onChange={(date) => controllerField.onChange(date)}
-          maxDate={dayjs()} // Set max date to today
-          format="MM/DD/YYYY"
-          slotProps={{
-            textField: {
-              ...field.textFieldProps,
-              size: "medium",
-              variant: "outlined",
-              placeholder:
-                field.textFieldProps?.placeholder || placeholder || "",
-              error: !!error,
-              helperText: error?.message,
-              InputProps: {
-                value: formatDate(controllerField.value),
-                placeholder: placeholder,
-              },
-            },
-          }}
+          {...field.dateFieldProps}
+          value={controllerField?.value}
+          onChange={(date) => controllerField?.onChange?.(date)}
+
+          // maxDate={dayjs()} // Set max date to today
+          // format="MM/DD/YYYY"
+          // slotProps={{
+          //   textField: {
+          //     ...field.textFieldProps,
+          //     size: "medium",
+          //     variant: "outlined",
+          //     placeholder:
+          //       field.textFieldProps?.placeholder || placeholder || "",
+          //     error: !!error,
+          //     helperText: error?.message,
+          //     InputProps: {
+          //       value: formatDate(controllerField.value),
+          //       placeholder: placeholder,
+          //     },
+          //   },
+          // }}
         />
-      </div>
-    </LocalizationProvider>
+      </LocalizationProvider>
+    </div>
   );
 };
 

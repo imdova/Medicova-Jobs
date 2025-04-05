@@ -3,7 +3,6 @@ import { TAGS } from "@/api";
 import {
   API_GET_CAREER_LEVELS_BY_CATEGORY,
   API_GET_CATEGORIES,
-  API_GET_INDUSTRIES,
   API_GET_SPECIALITIES_BY_CATEGORY,
 } from "@/api/admin";
 import { API_UPDATE_SEEKER } from "@/api/seeker";

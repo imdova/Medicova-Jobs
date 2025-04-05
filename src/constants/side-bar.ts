@@ -191,6 +191,8 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: SettingsOutlined,
       label: "Settings",
       path: "/job-seeker/setting",
+      pattern: "/job-seeker/setting/*",
+
     },
     {
       id: 28,

@@ -57,6 +57,9 @@ type UserProfile = {
   isEmailVerified: boolean;
   isVisible: boolean;
   isImmediate: boolean;
+
+  gender: string // male | female
+  willingToTravel: boolean
 };
 
 type LanguageProficiency = {

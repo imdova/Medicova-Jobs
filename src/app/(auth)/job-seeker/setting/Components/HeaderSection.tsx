@@ -1,94 +1,79 @@
 "use client";
-import React, { useState } from "react";
-import { Box, Avatar, IconButton, Typography, Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BackupIcon from "@mui/icons-material/Backup";
+import { FieldConfig } from "@/types";
+import { Grid } from "@mui/material";
+import { FormField } from "@/components/form/FormModal/FormField/FormField";
 
-const HeaderSection: React.FC = () => {
-  // State to hold the avatar image (either URL or undefined)
-  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
+import uploadFiles from "@/lib/files/imageUploader";
+import { UseFormReturn } from "react-hook-form";
+import ProfileImage from "@/components/UI/ProfileImage";
 
-  // Handle deleting the avatar image
-  const handleDeleteImage = () => {
-    setAvatarImage(undefined); // Remove the image by setting the state to undefined
-  };
+const fields: FieldConfig<UserProfile>[] = [
+  {
+    label: "First Name*",
+    name: "firstName",
+    type: "text",
+    required: true,
+    rules: {
+      minLength: { value: 2, message: "First Name must be larger than 2 word" },
+    },
+    gridProps: { xs: 6 },
+  },
+  {
+    label: "Last Name*",
+    name: "lastName",
+    type: "text",
+    required: true,
+    rules: {
+      minLength: { value: 2, message: "Last Name must be larger than 2 word" },
+    },
+    gridProps: { xs: 6 },
+  },
+];
 
-  // Handle selecting a new image
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file); // Create a URL for the uploaded image
-      setAvatarImage(imageUrl); // Update the avatar image state
-    }
+interface HeaderSectionProps {
+  formMethods: UseFormReturn<UserProfile>;
+}
+
+const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
+  const { control, getValues, setValue, watch } = formMethods;
+  const avatar = watch("avatar");
+
+  const updateImage = async (file: File) => {
+    const [avatar] = await uploadFiles([file]);
+    setValue("avatar", avatar, { shouldDirty: true });
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        justifyContent: { xs: "center", md: "space-between" },
-        gap: 2,
-        backgroundColor: "#fff",
-        padding: "30px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        marginBottom: "16px",
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Avatar */}
-        <Avatar
-          src={avatarImage || undefined}
-          sx={{
-            width: 110,
-            height: 110,
-            borderRadius: "50%",
-            boxShadow: "7px 4px 7px 4px rgba(0, 0, 0, 0.2)",
-            border: "4px solid white",
-          }}
+    <div className="flex w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-white p-5 shadow-soft lg:flex-row lg:items-start">
+      <div>
+        <ProfileImage
+          currentImageUrl={avatar || ""}
+          alt={" user image"}
+          size="large"
+          onImageUpdate={updateImage}
+          imageClassName="border-4 border-white shadow-md"
         />
-        {/* Typography and IconButton */}
-        <Box sx={{ marginLeft: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            John Doe
-          </Typography>
-          <Typography variant="body2" sx={{ color: "gray" }}>
-            You can upload a .jpg, .png, or .gif photo with max size of 5MB.
-          </Typography>
-
-          {/* IconButton for deleting image below typography */}
-          <IconButton
-            size="medium"
-            sx={{
-              marginTop: 1,
-              color: "#E34817",
-            }}
-            onClick={handleDeleteImage}
-          >
-            <DeleteIcon sx={{ fontSize: "25px" }} />
-          </IconButton>
-
-          {/* File input to upload a new avatar */}
-          <Button
-            variant="contained"
-            color="primary"
-            component="label"
-            startIcon={<BackupIcon />}
-            className="m-3"
-          >
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+      </div>
+      <div className="w-full">
+        <Grid container spacing={1}>
+          {fields.map((field) => (
+            <Grid
+              item
+              xs={field.gridProps?.xs ?? 12}
+              sm={field.gridProps?.sm}
+              md={field.gridProps?.md}
+              key={String(field.name)}
+            >
+              <FormField
+                field={field}
+                control={control}
+                formValues={getValues()}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </div>
   );
 };
 

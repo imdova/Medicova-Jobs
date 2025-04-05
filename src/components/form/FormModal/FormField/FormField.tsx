@@ -11,20 +11,21 @@ import { SelectField } from "./SelectField";
 import { ComponentField } from "./ComponentField";
 import { TextFieldComponent } from "./TextFieldComponent";
 import { SearchableSelectField } from "./SearchableSelectField";
-import { TextEditorField } from "./TextEditorField";
 import { PhoneNumberField } from "./phoneNumberField";
-import { isValidPhoneNumber } from "libphonenumber-js";
 import { IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { FileField } from "./FileField";
+import DatePickerField from "./DatePickerField";
+import { RadioFieldComponent } from "./RadioField";
 
 interface FormFieldProps {
   field: FieldConfig;
   control: any;
-  hidden: boolean;
+  hidden?: boolean;
   dependsOnField?: FieldConfig;
-  onCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  formValues: Record<string, any>;
-  resetValues: (fieldNames: (string | number)[]) => void;
+  onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  formValues?: Record<string, any>;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
   removeField?: (fieldName: string) => void;
 }
 
@@ -90,9 +91,17 @@ export const FormField: React.FC<FormFieldProps> = ({
           );
         }
         break;
+      case "file":
+        return (
+          <ComponentField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
       case "textEditor":
         return (
-          <TextEditorField
+          <FileField
             field={field}
             controllerField={controllerField}
             error={error}
@@ -101,6 +110,22 @@ export const FormField: React.FC<FormFieldProps> = ({
       case "phone":
         return (
           <PhoneNumberField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
+      case "date":
+        return (
+          <DatePickerField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
+      case "radio":
+        return (
+          <RadioFieldComponent
             field={field}
             controllerField={controllerField}
             error={error}
@@ -143,7 +168,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {removeField && (
         <IconButton
           onClick={() => {
-            resetValues([field.name]);
+            resetValues?.([field.name]);
             removeField(field.name);
           }}
           className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2 hover:bg-red-100 hover:text-red-500"

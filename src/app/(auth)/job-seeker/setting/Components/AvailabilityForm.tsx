@@ -1,25 +1,32 @@
+"use client";
 import React from "react";
-import {  Grid, Card, Switch, Box } from "@mui/material";
+import { UseFormReturn } from "react-hook-form";
+import { FormField } from "@/components/form/FormModal/FormField/FormField";
 
-const AvailabilityForm: React.FC = () => {
+interface AvailabilityFormProps {
+  formMethods: UseFormReturn<UserProfile>;
+}
+
+const AvailabilityForm: React.FC<AvailabilityFormProps> = ({ formMethods }) => {
+  const { control } = formMethods;
   return (
-    <Grid item xs={12}>
-      <Card className="flex items-center justify-between bg-primary-100 p-[16px] text-start">
-        {/* Title and Description */}
-        <Box>
-          <h6 className="mb-2 text-left text-lg font-bold text-main">
-            Are you available for immediate hiring?
-          </h6>
-          <p className="text-secondary">
-            Let companies know you can start immediately by adding the Immediate
-            start badge to your profile
-          </p>
-        </Box>
-
-        {/* Switch */}
-        <Switch color="primary" />
-      </Card>
-    </Grid>
+    <div className="flex items-center justify-between bg-primary-100 p-[16px] text-start">
+      {/* Title and Description */}
+      <div>
+        <FormField
+          field={{
+            name: "isImmediate",
+            label: "Available for immediate hiring",
+            type: "checkbox",
+          }}
+          control={control}
+        />
+        <p className="text-secondary">
+          Let companies know you can start immediately by adding the Immediate
+          start badge to your profile
+        </p>
+      </div>
+    </div>
   );
 };
 

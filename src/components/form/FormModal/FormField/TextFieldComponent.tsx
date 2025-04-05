@@ -3,11 +3,16 @@ import { TextField, InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { FieldConfig } from "@/types";
+import {
+  ControllerRenderProps,
+  FieldError,
+  FieldValues,
+} from "react-hook-form";
 
 interface TextFieldProps {
   field: FieldConfig;
-  controllerField: any;
-  error: any;
+  controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
+  error?: FieldError;
 }
 
 export const TextFieldComponent: React.FC<TextFieldProps> = ({
