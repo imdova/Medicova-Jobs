@@ -18,6 +18,7 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { jobWorkPlaceOptions } from "@/constants/job";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
+import { notFound } from "next/navigation";
 
 interface CareerPreferenceFormProps {
   defaultValues: Partial<CareerPreference>;
@@ -314,6 +315,8 @@ const CareerPreferencePage = () => {
         <h6 className="ml-4">Loading...</h6>
       </div>
     );
+  if (status === "unauthenticated") return notFound();
+
   const careerPreference = data?.[0];
 
   const defaultValues: Partial<CareerPreference> = {

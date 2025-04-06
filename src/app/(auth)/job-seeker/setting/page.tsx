@@ -147,9 +147,9 @@ const ProfileInfoPage = () => {
         <h6 className="ml-4">Loading...</h6>
       </div>
     );
-  if (!user) return notFound();
+  if (status === "unauthenticated") return notFound();
 
-  return <ProfileInfoForm user={user} />;
+  return <ProfileInfoForm user={user as UserProfile} />;
 };
 
 export default ProfileInfoPage;

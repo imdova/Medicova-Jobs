@@ -45,7 +45,7 @@ const UpdateEmail: React.FC<{ user: User }> = ({ user }) => {
   return (
     <form
       onSubmit={handleSubmit(handleUpdate)}
-      className="mb-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft"
+      className="mb-2 rounded-base border border-gray-200 bg-white p-4 shadow-soft"
     >
       <div className="p-4">
         <h6 className="mb-1 text-xl font-bold text-main">Basic Information</h6>
