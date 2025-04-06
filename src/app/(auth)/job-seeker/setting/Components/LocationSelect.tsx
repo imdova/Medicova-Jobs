@@ -3,17 +3,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
 import { FieldConfig } from "@/types";
 import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface LocationSectionProps {
-  formMethods: UseFormReturn<UserProfile>;
+  formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
   const { control, getValues, setValue, watch } = formMethods;
   const country = watch("country");
-  // Location selection
-  const [countryCode, setCountryCode] = useState(country?.code || "");
 
   const { countries, states } = useAppSelector((state) => state.location);
   const dispatch = useAppDispatch();
@@ -24,11 +22,11 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   useEffect(() => {
-    if (countryCode) {
-      dispatch(fetchStates(countryCode));
+    if (country?.code) {
+      dispatch(fetchStates(country?.code));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countryCode]);
+  }, [country?.code]);
 
   const locationFields: FieldConfig<UserProfile>[] = [
     {
@@ -43,7 +41,12 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
         value: country.isoCode,
         label: country.name,
       })),
-      onChange: (value) => setCountryCode(value),
+      onChange: (value) =>
+        setValue(
+          "country.name",
+          countries.data.find((country) => country.isoCode === value)?.name ||
+            "",
+        ),
       gridProps: { xs: 6, md: 4 },
     },
     {
@@ -54,6 +57,11 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       textFieldProps: {
         placeholder: "Select state",
       },
+      onChange: (value) =>
+        setValue(
+          "state.name",
+          states.data.find((state) => state.isoCode === value)?.name || "",
+        ),
       options: states.data.map((state) => ({
         value: state.isoCode,
         label: state.name,
@@ -113,4 +121,4 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
   );
 };
 
-export default LocationSelect
+export default LocationSelect;

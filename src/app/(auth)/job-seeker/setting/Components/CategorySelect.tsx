@@ -9,7 +9,7 @@ import { FieldConfig, Industry } from "@/types";
 import { UseFormReturn } from "react-hook-form";
 
 interface LocationSectionProps {
-  formMethods: UseFormReturn<UserProfile>;
+  formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 const CategorySelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
   const { control, getValues, setValue, watch } = formMethods;

@@ -3,9 +3,9 @@ import { useSession } from "next-auth/react";
 import HeaderSection from "./Components/HeaderSection";
 import ProfileForm from "./Components/ProfileForm";
 import useFetch from "@/hooks/useFetch";
-import { API_GET_SEEKER_BY_ID } from "@/api/seeker";
+import { API_GET_SEEKER_BY_ID, API_UPDATE_SEEKER } from "@/api/seeker";
 import { notFound } from "next/navigation";
-import { Button, CircularProgress } from "@mui/material";
+import { Alert, Button, CircularProgress, Snackbar } from "@mui/material";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import { useForm } from "react-hook-form";
@@ -19,13 +19,43 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
     update,
     reset: resetApi,
   } = useUpdateApi<UserProfile>();
-  const formMethods = useForm({ mode: "onChange", defaultValues: user });
+  const { update: updateSession } = useSession();
+
+  const defaultValues = {
+    ...user,
+    avatar: user?.avatar || "",
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    phone: user?.phone,
+    whatsapp: user?.whatsapp,
+    gender: user?.gender || "",
+    nationality: user?.nationality || "",
+    maritalStatus: user?.maritalStatus || "",
+    hasDrivingLicence: user?.hasDrivingLicence || false,
+    willingToTravel: user?.willingToTravel || false,
+    country: user?.country || {
+      code: "",
+      name: "",
+    },
+    state: user?.state || {
+      code: "",
+      name: "",
+    },
+    city: user.city || "",
+    categoryId: user?.categoryId || "",
+    specialityId: user?.specialityId || "",
+    careerLevelId: user?.careerLevelId || "",
+  } as Partial<UserProfile>;
+
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: defaultValues,
+  });
   const {
     handleSubmit,
     formState: { isDirty, isValid },
-    reset
+    reset,
   } = formMethods;
-  console.log("🚀 ~ isDirty:", isDirty);
 
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
     preventDefault: isDirty,
@@ -36,11 +66,13 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
       id: user?.id,
       ...formData,
     };
-    console.log("🚀 ~ handleUpdate ~ body:", body);
-    // const newProfile = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
-    // await updateSession({
-    //   photo: newProfile.avatar,
-    // });
+    const newProfile = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
+    await updateSession({
+      photo: newProfile.avatar,
+      firstName: newProfile.firstName,
+      lastName: newProfile.lastName,
+      phone: newProfile.phone,
+    });
   };
 
   return (
@@ -81,6 +113,20 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
           </div>
         )}
       </form>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => resetApi()}
+      >
+        <Alert
+          onClose={() => resetApi()}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error?.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

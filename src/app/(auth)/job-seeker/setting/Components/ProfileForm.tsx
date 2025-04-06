@@ -10,7 +10,7 @@ import LocationSelect from "./LocationSelect";
 import CategorySelect from "./CategorySelect";
 
 interface ProfileFormProps {
-  formMethods: UseFormReturn<UserProfile>;
+  formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {

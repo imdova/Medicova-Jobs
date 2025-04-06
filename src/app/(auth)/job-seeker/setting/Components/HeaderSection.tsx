@@ -31,7 +31,7 @@ const fields: FieldConfig<UserProfile>[] = [
 ];
 
 interface HeaderSectionProps {
-  formMethods: UseFormReturn<UserProfile>;
+  formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 
 const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
