@@ -32,8 +32,8 @@ const NotificationsPage = () => {
     setValue(newValue);
   };
   return (
-    <div>
-      <div className="flex items-center justify-between rounded-[10px] border border-gray-100 bg-white p-4 px-6 shadow-lg">
+    <div className="w-full px-4 md:px-5">
+      <div className="flex items-center  justify-between rounded-[10px] border border-gray-200 bg-white p-4 px-6 shadow-soft">
         <h1 className="text-xl font-semibold">Notifications</h1>
         <Button
           variant="text"
@@ -43,8 +43,8 @@ const NotificationsPage = () => {
         </Button>
       </div>
 
-      <div className="mt-4 grid grid-flow-row rounded-[10px] border border-gray-100 bg-white shadow-lg">
-        <div className="flex items-center justify-between gap-3 overflow-hidden border-b border-gray-100 p-3 px-5">
+      <div className="mt-4 grid grid-flow-row rounded-[10px] border border-gray-200 bg-white shadow-soft">
+        <div className="flex items-center justify-between gap-3 overflow-hidden border-b border-gray-200 p-3 px-5">
           <Tabs
             value={value}
             onChange={handleChange}

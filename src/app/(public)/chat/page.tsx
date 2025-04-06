@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  Avatar,
   ListItemText,
   Typography,
   TextField,
@@ -19,6 +18,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StarIcon from "@mui/icons-material/Star";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import Avatar from "@/components/UI/Avatar";
 
 const ChatPage: React.FC = () => {
   const [isStarred, setIsStarred] = useState(false);
@@ -27,46 +27,25 @@ const ChatPage: React.FC = () => {
     setIsStarred((prev) => !prev); // Toggle state
   };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        height: "100vh",
-      }}
-    >
+    <div className="flex h-screen w-full flex-col gap-2 px-2 lg:flex-row">
       {/* Sidebar */}
-      <Box
-        sx={{
-          width: { xs: "100%", md: "30%" },
-          borderRight: { md: "1px solid #ddd" },
-          overflowY: "auto",
-        }}
-      >
+      <div className="scroll-bar-hidden w-full max-w-80 overflow-y-auto rounded-base border border-gray-200 shadow-soft lg:w-1/3">
         {/* Search Field */}
         <TextField
           variant="outlined"
           placeholder="Search messages"
-          fullWidth
-          sx={{ mb: 2, p: 1 }}
+          className="w-full p-2"
         />
 
         {/* List with Dividers */}
         <List>
           {Array.from({ length: 10 }).map((_, index) => (
             <React.Fragment key={index}>
-              <ListItem
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: "#f0f0f0" },
-                  alignItems: "flex-start",
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    alt={`User ${index}`}
-                    src={`https://via.placeholder.com/40`}
-                  />
-                </ListItemAvatar>
+              <div className="flex items-start justify-between gap-1 p-2">
+                <Avatar
+                  alt={`User ${index}`}
+                  src={`https://via.placeholder.com/40`}
+                />
                 <ListItemText
                   primary={
                     <Typography variant="body1" fontWeight="bold">
@@ -75,16 +54,15 @@ const ChatPage: React.FC = () => {
                   }
                   secondary="Hey, thanks for your interview..."
                 />
-                <Typography variant="body2" sx={{ color: "#888", ml: 2 }}>
-                  12 mins ago
-                </Typography>
-              </ListItem>
+              
+                <p className="text-secondary text-xs">12min</p>
+              </div>
               {/* Add Divider except after the last item */}
               {index < 9 && <Divider />}
             </React.Fragment>
           ))}
         </List>
-      </Box>
+      </div>
 
       {/* Main Chat Area */}
       <Box
@@ -108,7 +86,7 @@ const ChatPage: React.FC = () => {
           {/* User Info */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Avatar
-              sx={{ width: 60, height: 60 }}
+              size={60}
               alt="Jan Mayer"
               src="https://via.placeholder.com/50"
             />
@@ -229,11 +207,10 @@ const ChatPage: React.FC = () => {
                 </Box>
               ),
               endAdornment: (
-                <Box sx={{ display: "flex", alignItems: "center", mr: 1, gap: 1 }}>
-                  <IconButton
-                    color="primary"
-                    sx={{ color: "#25324B" }}
-                  >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", mr: 1, gap: 1 }}
+                >
+                  <IconButton color="primary" sx={{ color: "#25324B" }}>
                     <EmojiEmotionsIcon />
                   </IconButton>
                   <IconButton
@@ -259,7 +236,7 @@ const ChatPage: React.FC = () => {
           />
         </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
