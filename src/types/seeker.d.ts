@@ -17,6 +17,11 @@ type LocationItem = {
   name: string;
   code: string;
 };
+type NotificationSettings = {
+  reciveApplications: boolean;
+  reciveJobs: boolean;
+  reciveRecommendations: boolean;
+};
 type UserProfile = {
   id: string;
   userName: string;

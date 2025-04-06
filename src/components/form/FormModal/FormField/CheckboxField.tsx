@@ -1,5 +1,5 @@
 import React from "react";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Switch, FormControlLabel } from "@mui/material";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { FieldConfig } from "@/types";
 
@@ -7,7 +7,7 @@ interface CheckboxFieldProps {
   field: any;
   controllerField: Partial<ControllerRenderProps<FieldValues, string>>;
   onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  resetValues?: (fieldNames: FieldConfig<UserProfile>["name"][]) => void;
+  resetValues?: (fieldNames: FieldConfig<any>["name"][]) => void;
 }
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = ({
@@ -18,7 +18,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
 }) => (
   <FormControlLabel
     control={
-      <Checkbox
+      <Switch
         {...controllerField}
         checked={!!controllerField.value}
         onChange={(e) => {
@@ -29,7 +29,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
           }
         }}
         sx={{
-          "& .MuiSvgIcon-root": { fontSize: 24 },
+          "& .MuiSwitch-thumb": { width: 20, height: 20 }, // optional customization
         }}
       />
     }
