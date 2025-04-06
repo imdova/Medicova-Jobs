@@ -58,8 +58,7 @@ type UserProfile = {
   isVisible: boolean;
   isImmediate: boolean;
 
-  gender: string // male | female
-  willingToTravel: boolean
+  gender: string; // male | female
 };
 
 type LanguageProficiency = {
@@ -82,7 +81,7 @@ type TapType = "all" | "locked" | "unlocked" | "shortListed";
 
 // Represents the data structure for job applicants. This type is used to store and display
 // information about individuals who have applied for a specific job posting.
-interface ApplicationsType  {
+interface ApplicationsType {
   id: string;
   seekerId: string;
   status: ApplicationStatus;
@@ -132,7 +131,7 @@ interface ApplicationsType  {
   created_at: string;
   updated_at: string;
   _version: number;
-};
+}
 
 // Represents the data structure for potential candidates who can be invited to apply for a job.
 // This type is used to store and display information about individuals who match the job criteria

@@ -48,7 +48,7 @@ export const API_DELETE_SEEKER_COURSE = COURSES + "/"; // DELETE + [id]
 export const PREFERENCES = BASE + "/career-preference";
 export const API_CREATE_CAREER_PREFERENCE = PREFERENCES; // POST
 export const API_UPDATE_CAREER_PREFERENCE = PREFERENCES + "/"; // PATCH + [id]
-export const API_GET_CAREER_PREFERENCES = PREFERENCES + "/seeker/"; // GET + [seekerId]
+export const API_GET_CAREER_PREFERENCES_BY_SEEKER_ID = PREFERENCES + "/seeker/"; // GET + [seekerId]
 export const API_GET_CAREER_PREFERENCE_BY_ID = PREFERENCES + "/"; // GET + [id]
 export const API_DELETE_CAREER_PREFERENCE = PREFERENCES + "/"; // DELETE + [id]
 

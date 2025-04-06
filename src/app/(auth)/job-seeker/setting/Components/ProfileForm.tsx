@@ -24,7 +24,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
   };
   return (
     <div className="w-full space-y-3 rounded-base border border-gray-200 bg-white p-5 shadow-soft">
-      <h5 className="text-2xl font-semibold text-main md:mt-4">
+      <h5 className="text-xl font-semibold text-main md:mt-4">
         Your Personal Info
       </h5>
       <div className="flex w-full gap-4">
@@ -162,17 +162,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
       <LocationSelect formMethods={formMethods} />
       <CategorySelect formMethods={formMethods} />
 
-      <FormField
-        field={
-          {
-            name: "willingToTravel",
-            label:
-              "willing to relocate to another city or country if I find the right opportunity?",
-            type: "checkbox",
-          } as FieldConfig<UserProfile>
-        }
-        control={control}
-      />
+     
     </div>
   );
 };

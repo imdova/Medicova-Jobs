@@ -259,6 +259,23 @@ export interface JobData {
   updated_at: string; // ISO date string
 }
 
+export type CareerPreference = {
+  id?: string;
+  seekerId: string | null;
+  jobEmploymentTypesIds: string[];
+  industriesIds: string[];
+  availableForHiringDate: string | null;
+  relocation: boolean;
+  jobWorkPlace: JobWorkPlace | null;
+  country: LocationItem | null;
+  state: LocationItem | null;
+
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  _version: number;
+};
+
 export type JobStringData = Omit<
   JobData,
   "country" | "keywords" | "skills" | "questions"
@@ -411,6 +428,7 @@ export interface FieldConfig<T = any> {
     sm?: number;
     md?: number;
   };
+  multiple?: boolean;
   resetFields?: FieldConfig<T>["name"][]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
   dateFieldProps?: Partial<DatePickerProps<Dayjs, boolean>>;

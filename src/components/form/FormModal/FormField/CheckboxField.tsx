@@ -29,7 +29,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
           }
         }}
         sx={{
-          "& .MuiSvgIcon-root": { fontSize: 24, backgroundColor: "white" },
+          "& .MuiSvgIcon-root": { fontSize: 24 },
         }}
       />
     }

@@ -32,7 +32,6 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
     nationality: user?.nationality || "",
     maritalStatus: user?.maritalStatus || "",
     hasDrivingLicence: user?.hasDrivingLicence || false,
-    willingToTravel: user?.willingToTravel || false,
     country: user?.country || {
       code: "",
       name: "",
