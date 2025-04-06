@@ -13,6 +13,7 @@ enum MaritalStatus {
   Divorced = "Divorced",
   Widowed = "Widowed",
 }
+
 type LocationItem = {
   name: string;
   code: string;

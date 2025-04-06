@@ -1055,3 +1055,16 @@ export const companySizeList: { name: string; value: CompanySize }[] = [
   { name: "251 to 1000 employees", value: CompanySize.LARGE },
   { name: "1001+ employees", value: CompanySize.ENTERPRISE },
 ];
+
+enum MaritalStatus {
+  Single = "Single",
+  Married = "Married",
+  Divorced = "Divorced",
+  Widowed = "Widowed",
+}
+export const maritalStatusOptions: { label: string; value: MaritalStatus }[] = [
+  { label: "Single", value: MaritalStatus.Single },
+  { label: "Married", value: MaritalStatus.Married },
+  { label: "Divorced", value: MaritalStatus.Divorced },
+  { label: "Widowed", value: MaritalStatus.Widowed },
+];

@@ -1,6 +1,7 @@
 import { FieldConfig } from "@/types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   ControllerRenderProps,
   FieldError,
@@ -26,6 +27,16 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
         ? field.label?.replace("*", "")
         : field.name);
 
+  const value = controllerField?.value
+    ? dayjs(controllerField.value)
+    : null;
+
+  const handleChange = (date: Dayjs | null) => {
+    if (controllerField?.onChange) {
+      controllerField.onChange(date ? date.toISOString() : null);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {field.label && (
@@ -36,26 +47,18 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           {...field.dateFieldProps}
-          value={controllerField?.value}
-          onChange={(date) => controllerField?.onChange?.(date)}
-
-          // maxDate={dayjs()} // Set max date to today
-          // format="MM/DD/YYYY"
-          // slotProps={{
-          //   textField: {
-          //     ...field.textFieldProps,
-          //     size: "medium",
-          //     variant: "outlined",
-          //     placeholder:
-          //       field.textFieldProps?.placeholder || placeholder || "",
-          //     error: !!error,
-          //     helperText: error?.message,
-          //     InputProps: {
-          //       value: formatDate(controllerField.value),
-          //       placeholder: placeholder,
-          //     },
-          //   },
-          // }}
+          value={value}
+          onChange={handleChange}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              placeholder,
+              error: !!error,
+              helperText: error?.message || "",
+              id: String(field.name),
+              ...field.textFieldProps,
+            },
+          }}
         />
       </LocalizationProvider>
     </div>

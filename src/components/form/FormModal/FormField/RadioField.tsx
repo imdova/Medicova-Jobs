@@ -25,7 +25,7 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
     field.textFieldProps?.InputLabelProps || {};
 
   // Handle selection for multiple mode
-  const handleSelectionChange = (optionValue: string) => {
+  const handleSelectionChange = (optionValue: any) => {
     if (!controllerField?.onChange) return;
 
     if (isMultiple) {
@@ -51,8 +51,8 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
   };
 
   // Check if an option is selected
-  const isSelected = (optionValue: string) => {
-    if (!controllerField?.value) return false;
+  const isSelected = (optionValue: any) => {
+    if (controllerField?.value === undefined || controllerField?.value === null) return false;
 
     if (isMultiple) {
       // For multiple mode, check if value is in the array
@@ -63,6 +63,10 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
     }
 
     // For single mode, compare directly
+    // Handle boolean comparison properly
+    if (typeof optionValue === 'boolean') {
+      return optionValue === controllerField.value;
+    }
     return optionValue === controllerField.value;
   };
 
@@ -81,7 +85,7 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
       <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
         {options?.map((option) => (
           <div
-            key={option.value}
+            key={String(option.value)}
             onClick={() => handleSelectionChange(option.value)}
             aria-selected={isSelected(option.value)}
             className={`flex-center group flex h-[42px] min-w-24 items-center gap-2 rounded-base border px-4 font-normal hover:cursor-pointer focus:outline-offset-2 focus:outline-light-primary ${error ? "border-red-500 !text-red-500" : "border-neutral-300"} text-neutral-500 hover:border-black hover:text-secondary ${isSelected(option.value) ? "bg-primary text-white" : ""}`}

@@ -17,6 +17,7 @@ import { Delete } from "@mui/icons-material";
 import { FileField } from "./FileField";
 import DatePickerField from "./DatePickerField";
 import { RadioFieldComponent } from "./RadioField";
+import { TextEditorField } from "./TextEditorField";
 
 interface FormFieldProps {
   field: FieldConfig;
@@ -93,7 +94,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         break;
       case "file":
         return (
-          <ComponentField
+          <FileField
             field={field}
             controllerField={controllerField}
             error={error}
@@ -101,7 +102,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         );
       case "textEditor":
         return (
-          <FileField
+          <TextEditorField
             field={field}
             controllerField={controllerField}
             error={error}

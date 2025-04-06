@@ -8,6 +8,7 @@ import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxFie
 import { Female, Male } from "@mui/icons-material";
 import LocationSelect from "./LocationSelect";
 import CategorySelect from "./CategorySelect";
+import { maritalStatusOptions } from "@/constants";
 
 interface ProfileFormProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;
@@ -131,12 +132,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
               name: "maritalStatus",
               type: "radio",
               label: "Marital Status",
-              options: [
-                { label: "Single", value: "single" },
-                { label: "Married", value: "married" },
-                { label: "Widow", value: "widow" },
-                { label: "Divorced", value: "divorced" },
-              ],
+              options: maritalStatusOptions,
             } as FieldConfig<UserProfile>
           }
           control={control}

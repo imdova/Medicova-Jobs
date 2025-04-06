@@ -12,15 +12,7 @@ import { useForm } from "react-hook-form";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import { TAGS } from "@/api";
 
-const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
-  const {
-    isLoading,
-    error,
-    update,
-    reset: resetApi,
-  } = useUpdateApi<UserProfile>();
-  const { update: updateSession } = useSession();
-
+const getDefaultUserData = (user: UserProfile) => {
   const defaultValues = {
     ...user,
     avatar: user?.avatar || "",
@@ -30,7 +22,7 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
     whatsapp: user?.whatsapp,
     gender: user?.gender || "",
     nationality: user?.nationality || "",
-    maritalStatus: user?.maritalStatus || "",
+    maritalStatus: user?.maritalStatus,
     hasDrivingLicence: user?.hasDrivingLicence || false,
     country: user?.country || {
       code: "",
@@ -40,15 +32,26 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
       code: "",
       name: "",
     },
-    city: user.city || "",
-    categoryId: user?.categoryId || "",
-    specialityId: user?.specialityId || "",
-    careerLevelId: user?.careerLevelId || "",
+    city: user.city,
+    categoryId: user?.categoryId,
+    specialityId: user?.specialityId,
+    careerLevelId: user?.careerLevelId,
   } as Partial<UserProfile>;
+  return defaultValues;
+};
+
+const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
+  const {
+    isLoading,
+    error,
+    update,
+    reset: resetApi,
+  } = useUpdateApi<UserProfile>();
+  const { update: updateSession } = useSession();
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: defaultValues,
+    defaultValues: getDefaultUserData(user),
   });
   const {
     handleSubmit,
@@ -64,9 +67,12 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
     const body: Partial<UserProfile> = {
       id: user?.id,
       ...formData,
+      country: formData.country?.code ? formData.country : null,
+      state: formData.state?.code ? formData.state : null,
     };
     const newProfile = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
-    await updateSession({
+    reset(getDefaultUserData(newProfile));
+    updateSession({
       photo: newProfile.avatar,
       firstName: newProfile.firstName,
       lastName: newProfile.lastName,
