@@ -4,6 +4,14 @@ import { JobData, Role } from "@/types";
 import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: Parameters<typeof clsx>) {
+  return twMerge(clsx(...inputs));
+}
+
+
 export const formatDate = (
   date: Date | string,
   options?: { year?: boolean; month?: boolean; day?: boolean },

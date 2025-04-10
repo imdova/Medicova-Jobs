@@ -94,11 +94,8 @@ export const roleBasedLinks: RoleBasedLinks = {
       label: "Settings",
       path: "/admin/settings",
     },
-  ],
-};
-
-export const commonLinks: CommonLinks = {
-  home: [
+  ], 
+  default: [
     {
       id:1,
       label: "Jobs",

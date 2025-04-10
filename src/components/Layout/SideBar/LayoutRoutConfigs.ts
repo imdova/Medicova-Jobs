@@ -33,7 +33,7 @@ export const routeConfigs: RouteConfig[] = [
     linksType: "userType",
   },
   {
-    pattern: "/employer/job/manage-jobs/[id]", 
+    pattern: "/employer/job/manage-jobs/[id]",
     sideBarType: "minimal",
     linksType: "userType",
   },
@@ -45,6 +45,8 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/employer/*", sideBarType: "full", linksType: "userType" },
   //job-seeker
   { pattern: "/job-seeker/*", sideBarType: "full", linksType: "userType" },
+  //admin
+  { pattern: "/admin/*", sideBarType: "full", linksType: "userType" },
 ];
 
 export const matchRoute = (pathname: string): RouteConfig | undefined => {
@@ -92,5 +94,5 @@ export function getSideBarLinks(user?: User, pathname?: string) {
       }
     }
   }
-  return [];
+  return roleBasedSideBarLinks.default;
 }

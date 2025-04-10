@@ -29,3 +29,15 @@ interface NoDataMessage {
     href: string;
   };
 }
+
+interface StatusCardType {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  className?: string;
+  trend?: {
+    value?: string;
+    description?: string;
+    trendDirection?: "up" | "down";
+  };
+}

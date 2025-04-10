@@ -143,6 +143,12 @@ export interface Company {
   banner1?: string | null;
   banner2?: string | null;
   banner3?: string | null;
+
+  // TODO: add open jobs
+  openJobs?: number | null;
+
+  // only for admins
+  revenue?: number | null;
 }
 export interface MiniCompany {
   name: string;
@@ -348,7 +354,7 @@ export interface HeaderLink {
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
-  [key in RoleState | "unEmployee"]: NavItem[];
+  [key in RoleState | "unEmployee" | "default"]: NavItem[];
 };
 
 export type CommonLinks = {
@@ -462,7 +468,7 @@ export interface DynamicModalProps {
 }
 
 export interface ColumnConfig<T> {
-  key: Path<T>; // Field to display
+  key?: Path<T>; // Field to display
   header: string; // Column header text
   sortable?: boolean; // Enable sorting
   render?: (item: T) => React.ReactNode; // Custom render function

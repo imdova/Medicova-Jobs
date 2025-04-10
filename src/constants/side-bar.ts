@@ -1,5 +1,4 @@
-import { NavItem, RoleBasedLinks } from "@/types";
-import { RoleState } from "@/types/next-auth";
+import { RoleBasedLinks } from "@/types";
 import {
   BusinessOutlined,
   DescriptionOutlined,
@@ -17,10 +16,216 @@ import {
   WorkOutline,
 } from "@mui/icons-material";
 
-
-
 export const roleBasedSideBarLinks: RoleBasedLinks = {
-  admin: [],
+  admin: [
+    {
+      id: 0,
+      type: "profile",
+      pattern: "/co/[id]",
+    },
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: HomeOutlined,
+      path: "/employer/dashboard",
+    },
+    {
+      id: 2,
+      label: "Company Info",
+      icon: BusinessOutlined,
+      path: "/employer/company-info",
+    },
+    {
+      id: 3,
+      label: "Jobs",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 4,
+          label: "Manage Jobs",
+          icon: WorkOutline,
+          path: "/employer/job/manage-jobs",
+          pattern: "/employer/job/manage-jobs/*",
+          type: "supLink",
+        },
+        {
+          id: 5,
+          label: "Post New Job",
+          icon: PostAddOutlined,
+          path: "/employer/job/posted",
+          pattern: "/employer/job/posted/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 7,
+      label: "Search",
+      icon: Search,
+      type: "collapse",
+      links: [
+        {
+          id: 8,
+          label: "Search",
+          icon: Search,
+          path: "/employer/search",
+          type: "supLink",
+        },
+        {
+          id: 10,
+          label: "My Folders",
+          icon: FolderOutlined,
+          path: "/employer/search/saved-search",
+          pattern: "/employer/search/saved-search/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 11,
+      label: "Billing & Subscription",
+      icon: PaidOutlined,
+      path: "/employer/subscription-plans",
+    },
+    {
+      id: 12,
+      label: "Report",
+      icon: DescriptionOutlined,
+    },
+    {
+      id: 13,
+      label: "Chat",
+      icon: MessageOutlined,
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 40,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/employer/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
+  default: [
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: HomeOutlined,
+      path: "/employer/dashboard",
+    },
+    {
+      id: 2,
+      label: "Company Info",
+      icon: BusinessOutlined,
+      path: "/employer/company-info",
+    },
+    {
+      id: 3,
+      label: "Jobs",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 4,
+          label: "Manage Jobs",
+          icon: WorkOutline,
+          path: "/employer/job/manage-jobs",
+          pattern: "/employer/job/manage-jobs/*",
+          type: "supLink",
+        },
+        {
+          id: 5,
+          label: "Post New Job",
+          icon: PostAddOutlined,
+          path: "/employer/job/posted",
+          pattern: "/employer/job/posted/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 7,
+      label: "Search",
+      icon: Search,
+      type: "collapse",
+      links: [
+        {
+          id: 8,
+          label: "Search",
+          icon: Search,
+          path: "/employer/search",
+          type: "supLink",
+        },
+        {
+          id: 10,
+          label: "My Folders",
+          icon: FolderOutlined,
+          path: "/employer/search/saved-search",
+          pattern: "/employer/search/saved-search/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 11,
+      label: "Billing & Subscription",
+      icon: PaidOutlined,
+      path: "/employer/subscription-plans",
+    },
+    {
+      id: 12,
+      label: "Report",
+      icon: DescriptionOutlined,
+    },
+    {
+      id: 13,
+      label: "Chat",
+      icon: MessageOutlined,
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 40,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/employer/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
   employer: [
     {
       id: 0,
@@ -192,7 +397,6 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       label: "Settings",
       path: "/job-seeker/setting",
       pattern: "/job-seeker/setting/*",
-
     },
     {
       id: 28,

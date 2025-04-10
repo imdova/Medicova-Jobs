@@ -202,3 +202,20 @@ export function updateSearchParams(
 
   return `?${params.toString()}`;
 }
+
+export function formatPrice(value?: number): string | null {
+  if (!value) return null;
+  const suffixes = [
+    { threshold: 1_000_000_000, suffix: "b" },
+    { threshold: 1_000_000, suffix: "m" },
+    { threshold: 1_000, suffix: "k" },
+  ];
+
+  for (const { threshold, suffix } of suffixes) {
+    if (value >= threshold) {
+      return `${(value / threshold).toFixed(1).replace(/\.0$/, "")}${suffix}`;
+    }
+  }
+
+  return value.toString();
+}

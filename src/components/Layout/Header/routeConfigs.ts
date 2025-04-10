@@ -1,5 +1,4 @@
-import { commonLinks, roleBasedLinks } from "@/constants/header";
-import { RoleState } from "@/types/next-auth";
+import { roleBasedLinks } from "@/constants/header";
 import { User } from "next-auth";
 
 type HeaderType = "minimal" | "full" | "centered" | "transparent" | "dark";
@@ -29,6 +28,8 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/employer/*", headerType: "full", linksType: "userType" },
   //job-seeker
   { pattern: "/job-seeker/*", headerType: "full", linksType: "userType" },
+  //admin
+  { pattern: "/admin/*", headerType: "full", linksType: "userType" },
 ];
 
 // DynamicHeader.tsx
@@ -60,7 +61,7 @@ export const matchRoute = (pathname: string) => {
 };
 
 export function getNavLinks(user?: User, pathname?: string) {
-  const userType = user?.type 
+  const userType = user?.type;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
 
@@ -79,5 +80,5 @@ export function getNavLinks(user?: User, pathname?: string) {
       }
     }
   }
-  return commonLinks.home;
+  return roleBasedLinks.default;
 }

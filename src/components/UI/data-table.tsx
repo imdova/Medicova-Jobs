@@ -19,10 +19,13 @@ import Link from "next/link";
 import { ColumnConfig, SortConfig } from "@/types";
 import { getNestedValue } from "@/util/forms";
 import { Path } from "react-hook-form";
+import SortableHeader from "./SortableHeader";
+import { cn } from "@/util";
 
 interface DataTableProps<T> {
   data: T[];
   total: number;
+  className?: string;
   columns: ColumnConfig<T>[]; // Column definitions
   isSelectable?: boolean; // Enable row selection
   onRowClick?: (item: T) => void; // Click handler for rows
@@ -36,7 +39,7 @@ interface DataTableProps<T> {
   noDataMessage?: NoDataMessage;
 }
 
-const DataTable = <T extends { id: number | string }>({
+function DataTable<T extends { id: number | string }>({
   data,
   noDataMessage,
   columns,
@@ -49,7 +52,8 @@ const DataTable = <T extends { id: number | string }>({
   searchQuery,
   total,
   options,
-}: DataTableProps<T>) => {
+  className,
+}: DataTableProps<T>) {
   const isSmall = size === "small";
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
@@ -65,11 +69,13 @@ const DataTable = <T extends { id: number | string }>({
   };
 
   const filteredData = useMemo(() => {
-    const searchFields = columns.map((column) => column.key);
+    const searchFields = columns
+      .map((column) => column.key)
+      .filter((x) => Boolean(x)) as Path<T>[];
     if (!searchQuery || !searchFields?.length) return data;
     return data.filter((item) =>
       searchFields.some((field) =>
-        String(item[field] || "") // Ensure no undefined errors
+        String(getNestedValue(item, field)) // Ensure no undefined errors
           .toLowerCase()
           .includes(searchQuery.toLowerCase()),
       ),
@@ -117,7 +123,12 @@ const DataTable = <T extends { id: number | string }>({
 
   return (
     <div className="w-full">
-      <TableContainer className="scroll-bar-minimal rounded-base border border-gray-200 bg-white shadow-soft">
+      <TableContainer
+        className={cn(
+          "scroll-bar-minimal rounded-base border border-gray-200 bg-white shadow-soft",
+          className,
+        )}
+      >
         <Table className="min-w-full">
           <TableHead className={`bg-gray-50`}>
             <TableRow>
@@ -135,25 +146,30 @@ const DataTable = <T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`font-semibold ${isSmall ? "p-2 text-xs" : "p-5"}`}
+                  className={`font-semibold relative ${isSmall ? "p-2" : "p-5"}`}
                   style={{ width: col.width }}
                 >
-                  {col.sortable ? (
-                    <TableSortLabel
+                  {col.sortable && col.key ? (
+                    <SortableHeader
                       active={sortConfig?.key === col.key}
                       direction={
                         sortConfig?.key === col.key
                           ? sortConfig.direction
                           : "asc"
                       }
-                      onClick={() => handleSort(col.key)}
+                      onClick={() => col.key && handleSort(col.key)}
+                      isSmall={isSmall}
                     >
-                      <span className="line-clamp-1 text-nowrap">
+                      <span
+                        className={`line-clamp-1 text-nowrap ${isSmall ? "text-xs" : ""}`}
+                      >
                         {col.header}
                       </span>
-                    </TableSortLabel>
+                    </SortableHeader>
                   ) : (
-                    <span className="line-clamp-1 text-nowrap">
+                    <span
+                      className={`line-clamp-1 text-nowrap ${isSmall ? "text-xs" : ""}`}
+                    >
                       {col.header}
                     </span>
                   )}
@@ -195,7 +211,7 @@ const DataTable = <T extends { id: number | string }>({
                     >
                       {col.render
                         ? col.render(item)
-                        : getNestedValue(item, col.key)}
+                        : col.key && getNestedValue(item, col.key)}
                     </TableCell>
                   ))}
                   {(onEdit || onDelete) && (
@@ -258,6 +274,6 @@ const DataTable = <T extends { id: number | string }>({
       />
     </div>
   );
-};
+}
 
 export default DataTable;

@@ -39,7 +39,7 @@ const Flag: React.FC<FlagProps> = ({
   // }, [code, name]);
   return (
     <Image
-      src={`https://flagcdn.com/${code}.svg`}
+      src={`https://flagcdn.com/${code.toLocaleLowerCase()}.svg`}
       alt={name || "flag"}
       width={width}
       height={height}
