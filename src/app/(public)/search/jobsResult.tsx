@@ -5,14 +5,19 @@ import { useState } from "react";
 import { JobData } from "@/types";
 import JobCard from "@/components/UI/job-card";
 import MinJobCard from "@/components/UI/job-card-min";
-const JobsResult: React.FC<{ jobs: JobData[],total: number }> = ({ jobs,total }) => {
+const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
+  jobs,
+  total,
+}) => {
   const [view, setView] = useState("list");
   return (
     <div className="min-h-dvh">
-      <div className="mb-9 flex  flex-wrap-reverse items-center justify-between md:flex-nowrap">
+      <div className="mb-9 flex flex-wrap-reverse items-center justify-between md:flex-nowrap">
         <div>
           <h3 className="text-[24px] font-bold text-main">Search Results</h3>
-          <p className="text-sm text-secondary">{total === 0 ? "No results" : `Showing ${total} Results`} </p>
+          <p className="text-sm text-secondary">
+            {total === 0 ? "No results" : `Showing ${total} Results`}{" "}
+          </p>
         </div>
         <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-normal">
           <div className="flex items-baseline gap-1">
@@ -45,6 +50,16 @@ const JobsResult: React.FC<{ jobs: JobData[],total: number }> = ({ jobs,total })
           </div>
         </div>
       </div>
+      {total === 0 && (
+        <div>
+          <div className="p-4 text-center">
+            <h1 className="mb-4 text-3xl font-semibold">No jobs found</h1>
+            <p className="text-gray-600">
+              Please refine your search by changing the keywords or the country
+            </p>
+          </div>
+        </div>
+      )}
       {view === "list" ? (
         <div className="mb-8 flex flex-col gap-4">
           {jobs.map((job) => (

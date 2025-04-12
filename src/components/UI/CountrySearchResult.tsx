@@ -1,15 +1,55 @@
 "use client";
-import { countries } from "@/constants";
-import React from "react";
+import React, { useEffect } from "react";
 import Flag from "./flagitem";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCountries } from "@/store/slices/locationSlice";
+import useGeoInfo from "@/hooks/useGeoInfo";
+import { getClosestCountries } from "@/util/location";
+import { createUrl } from "@/util";
 
 const CountrySearchResult: React.FC = () => {
+  const { data: geoDat } = useGeoInfo();
+  const initialCountry = geoDat.country_code2;
+
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      dispatch(fetchCountries());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  const userLocation = countries.data?.find(
+    (x) => x.isoCode === initialCountry,
+  );
+
   const searchParams = useSearchParams();
-  const country = searchParams.get("country");
-  // If no country is provided in search params, default to first country in list
-  const displayCountry = country || countries[0].name;
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const countryParam = searchParams.get("country");
+  const countryCode = countryParam || initialCountry;
+  const country = countries.data.find((x) => x.isoCode === countryCode);
+  const displayCountry = country?.name || countryCode;
+
+  const closestCountries = getClosestCountries(
+    Number(userLocation?.latitude),
+    Number(userLocation?.longitude),
+    countries.data.filter((x) => x.isoCode !== countryParam),
+    20,
+  );
+
+  function countryChange(countryCode: string) {
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (countryCode) {
+      newParams.set("country", countryCode);
+    } else {
+      newParams.delete("country");
+    }
+    router.push(createUrl(pathname, newParams));
+  }
 
   return (
     <div className="container mx-auto p-2 py-12 lg:max-w-[900px]">
@@ -34,20 +74,18 @@ const CountrySearchResult: React.FC = () => {
       </p>
 
       <div className="mx-auto mt-3 flex max-w-[700px] flex-wrap justify-center gap-2">
-        {countries.map((countryItem, index) => (
-          <Link
-            href={{
-              query: { country: countryItem.name, cCd: countryItem.code },
-            }}
+        {closestCountries.map((country, index) => (
+          <button
+            onClick={() => countryChange(country.isoCode)}
             key={index}
             className="flex gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary duration-300 hover:bg-primary hover:text-primary-foreground"
           >
             <Flag
-              code={countryItem.code.toLocaleLowerCase()}
-              name={countryItem.name}
+              code={country.isoCode.toLocaleLowerCase()}
+              name={country.name}
             />{" "}
-            {countryItem.name}
-          </Link>
+            {country.name}
+          </button>
         ))}
       </div>
     </div>
@@ -57,10 +95,18 @@ const CountrySearchResult: React.FC = () => {
 export default CountrySearchResult;
 
 export const CountryHeading: React.FC = () => {
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      dispatch(fetchCountries());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
   const searchParams = useSearchParams();
-  const country = searchParams.get("country");
-  const cCd = searchParams.get("cCd");
+  const countryCode = searchParams.get("country");
 
+  const country = countries.data.find((x) => x.isoCode === countryCode);
   return (
     <>
       {country && (
@@ -68,16 +114,14 @@ export const CountryHeading: React.FC = () => {
           {" "}
           in
           <span
-            className={`${cCd ? `text-transparent` : "text-primary-foreground"} bg-contain bg-clip-text bg-center text-[45px] font-black md:text-[60px]`}
+            className={`${country ? `text-transparent` : "text-primary-foreground"} bg-contain bg-clip-text bg-center text-[45px] font-black md:text-[60px]`}
             style={{
-              backgroundImage: cCd
-                ? `url('https://flagcdn.com/${cCd.toLowerCase()}.svg')`
-                : undefined,
+              backgroundImage: `url('https://flagcdn.com/${country.isoCode.toLowerCase()}.svg')`,
               backgroundSize: "contain",
               backgroundPosition: "center",
             }}
           >
-            {" " + country}
+            {" " + country.name}
           </span>
         </span>
       )}

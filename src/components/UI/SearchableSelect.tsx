@@ -11,6 +11,7 @@ import { Search } from "@mui/icons-material";
 type Option = {
   value: string;
   label: string;
+  icon?: React.ReactNode;
 };
 
 interface SearchableSelectProps
@@ -124,7 +125,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
       </div>
       {filterItems(options, searchTerm).map((item, i) => (
         <MenuItem key={item.value + i} value={item.value}>
-          {item.label}
+          {item.icon}{item.label}
         </MenuItem>
       ))}
     </Select>

@@ -15,6 +15,7 @@ export const API_UPDATE_COMPANY = COMPANIES + "/"; // PATCH + [companyID]
 export const JOBS = API_EMPLOYER_BASE + "/jobs";
 export const API_CREATE_JOB = JOBS; // POST
 export const API_GET_JOBS = JOBS; // GET
+export const API_SEARCH_JOBS = JOBS + "/search"; // GET ?q=ahmed&categoryId=9669773b-f883-4946-95ed-9da81caf6e0b&countryCode=EG
 export const API_GET_JOB_BY_ID = JOBS + "/"; // GET + [jobID]
 export const API_GET_JOBS_BY_COMPANY_ID = JOBS + "/company/"; // GET + [companyID]
 export const API_UPDATE_JOB = JOBS + "/"; // PATCH + [jobID]
@@ -29,7 +30,7 @@ export const API_GET_JOB_APPLICATION_BY_ID = JOB_APPLICATIONS + "/"; // GET + [j
 export const API_GET_JOB_APPLICATION_STATUS_COUNT_FOR_SEEKER =
   JOB_APPLICATIONS + "/seeker/"; // GET + [seekerID] + "/status-count"
 
-  // unlocked lists
+// unlocked lists
 export const UNLOCKED_SEEKERS = API_EMPLOYER_BASE + "/unlocked-seekers";
 export const API_UNLOCK_SEEKER = UNLOCKED_SEEKERS; // POST "{companyId , seekerId}"
 export const API_GET_UNLOCKED_SEEKERS = UNLOCKED_SEEKERS; // GET ?id={id}

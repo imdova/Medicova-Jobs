@@ -6,12 +6,18 @@ import {
   LocationOnOutlined,
   Search,
 } from "@mui/icons-material";
-import { FormControl, MenuItem, Select } from "@mui/material";
+import { Button, FormControl, MenuItem, Select } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Flag from "./flagitem";
 import { countries } from "@/constants";
 import { createUrl } from "@/util";
+import { fetchCountries } from "@/store/slices/locationSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import SearchableSelect from "./SearchableSelect";
+import useFetch from "@/hooks/useFetch";
+import { Industry } from "@/types";
+import { API_GET_CATEGORIES } from "@/api/admin";
 
 let timer: NodeJS.Timeout;
 function debounce<T extends (...args: string[]) => void>(
@@ -23,20 +29,6 @@ function debounce<T extends (...args: string[]) => void>(
     timer = setTimeout(() => func(...args), delay);
   };
 }
-
-const searchData = {
-  countries: countries,
-  categories: [
-    "nursing",
-    "physician",
-    "pharmacist",
-    "dentist",
-    "therapist",
-    "technician",
-    "administration",
-    "public health",
-  ],
-};
 
 type SearchFormFields = "Search" | "Category" | "Country";
 
@@ -57,6 +49,18 @@ const SearchForm: React.FC<{
   fields = initialSearchFields,
   button = "Search my job",
 }) => {
+  const { countries } = useAppSelector((state) => state.location);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (countries.data.length === 0) {
+      dispatch(fetchCountries());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  const { data: categoriesData } =
+    useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -64,9 +68,10 @@ const SearchForm: React.FC<{
   const newPathname = initialPathname || pathname;
 
   const initialSearchText = searchParams.get("q") || "";
-  const initialCountry = searchParams.get("country") || "";
+  const country = searchParams.get("country") || "";
+  const initialCategory = searchParams.get("ctg") || "";
   const [query, setQuery] = useState(initialSearchText);
-  const [country, setCountry] = useState(initialCountry);
+  const [category, setCategory] = useState(initialCategory);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -78,17 +83,34 @@ const SearchForm: React.FC<{
     } else {
       newParams.delete("q");
     }
-    if (country) {
-      const code = searchData.countries.find((x) => x.name === country)?.code;
-      newParams.set("country", country);
-      newParams.set("cCd", code || "");
+    if (category) {
+      newParams.set("ctg", category);
     } else {
-      newParams.delete("country");
-      newParams.delete("cCd");
+      newParams.delete("ctg");
     }
     onClick?.();
     router.push(createUrl(newPathname, newParams));
   }
+  function countryChange(countryCode: string) {
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (countryCode) {
+      newParams.set("country", countryCode);
+    } else {
+      newParams.delete("country");
+    }
+    router.push(createUrl(newPathname, newParams));
+  }
+
+  const onReset = () => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.delete("page");
+    newParams.delete("q");
+    newParams.delete("country");
+    newParams.delete("ctg");
+    setQuery("");
+    setCategory("");
+    router.push(createUrl(newPathname, newParams));
+  };
 
   const updateSearchParams = debounce((value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -134,49 +156,44 @@ const SearchForm: React.FC<{
                 variant="standard"
                 className="h-full w-full justify-center border-b border-solid border-gray-300"
               >
-                <Select
+                <SearchableSelect
+                  options={countries.data.map((x) => ({
+                    icon: (
+                      <Flag
+                        code={x.isoCode.toLocaleLowerCase()}
+                        name={x.name}
+                        className="mr-2 inline"
+                      />
+                    ),
+                    label: x.name,
+                    value: x.isoCode,
+                  }))}
                   displayEmpty
                   value={country || ""}
-                  onChange={(e) => setCountry(e.target.value)}
+                  onChange={(e) => countryChange(e.target.value)}
                   className="border-none bg-transparent text-main focus:outline-none"
                   disableUnderline
                   renderValue={(selected: string) => {
                     if (!selected) {
                       return <em className="text-gray-400">Select Country</em>;
                     }
-                    const item = searchData.countries.find(
-                      (x) => x.name == selected,
+                    const item = countries.data.find(
+                      (x) => x.isoCode == selected,
                     );
                     return (
-                      <span>
-                        {item && (
+                      item && (
+                        <span>
                           <Flag
-                            code={item.code.toLocaleLowerCase()}
+                            code={item.isoCode.toLocaleLowerCase()}
                             name={item.name}
                             className="mr-2 inline"
                           />
-                        )}
-                        {selected}
-                      </span>
+                          {item.name}
+                        </span>
+                      )
                     );
                   }}
-                  // defaultValue="Select-Category"
-                >
-                  <MenuItem disabled value="">
-                    <em>Select Category</em>
-                  </MenuItem>
-                  {searchData.countries.map((item, i) => (
-                    <MenuItem key={i} value={item.name}>
-                      {" "}
-                      <Flag
-                        code={item.code.toLocaleLowerCase()}
-                        name={item.name}
-                        className="mr-2"
-                      />{" "}
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                />
               </FormControl>
             </div>
           )}
@@ -191,36 +208,37 @@ const SearchForm: React.FC<{
                   displayEmpty
                   className="border-none bg-transparent text-main focus:outline-none"
                   disableUnderline
+                  value={category || ""}
+                  onChange={(e) => setCategory(e.target.value)}
                   renderValue={(selected) => {
+                    const item = categoriesData?.data.find(
+                      (category) => category.id === selected,
+                    );
                     if (!selected) {
                       return <em className="text-gray-400">Select Category</em>;
                     }
-                    return <span>{selected ? selected.toString() : ""}</span>;
+                    return (
+                      <span>{item ? item.name : selected.toString()}</span>
+                    );
                   }}
                   // defaultValue="Select-Category"
                 >
-                  <MenuItem disabled value="">
-                    <em>Select Category</em>
-                  </MenuItem>
-                  <MenuItem value="Nurse">Nurse</MenuItem>
-                  <MenuItem value="Doctor">Doctor</MenuItem>
-                  <MenuItem value="Physician Assistant">
-                    Physician Assistant
-                  </MenuItem>
-                  <MenuItem value="Dentist">Dentist</MenuItem>
-                  <MenuItem value="Pharmacist">Pharmacist</MenuItem>
-                  <MenuItem value="Occupational Therapist">
-                    Occupational Therapist
-                  </MenuItem>
-                  <MenuItem value="Physical Therapist">
-                    Physical Therapist
-                  </MenuItem>
-                  <MenuItem value="Speech Therapist">Speech Therapist</MenuItem>
+                  {categoriesData?.data.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
           )}
         </div>
+      )}
+      {(query || country || category) && (
+        <Button variant="outlined" onClick={onReset}>
+          {" "}
+          reset
+        </Button>
       )}
       <button className="h-[50px] text-nowrap rounded-[10px] bg-primary px-4 py-4 font-semibold text-white transition-all duration-300 hover:scale-102 hover:bg-primary-900 hover:shadow-2xl focus:ring-2 focus:ring-white md:h-full">
         {button}
