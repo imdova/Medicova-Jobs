@@ -1,9 +1,7 @@
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
+import { useLocationData } from "@/hooks/useLocationData";
 import { FieldConfig } from "@/types";
 import { Grid } from "@mui/material";
-import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface LocationSectionProps {
@@ -12,21 +10,7 @@ interface LocationSectionProps {
 const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
   const { control, getValues, setValue, watch } = formMethods;
   const country = watch("country");
-
-  const { countries, states } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      dispatch(fetchCountries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-  useEffect(() => {
-    if (country?.code) {
-      dispatch(fetchStates(country?.code));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [country?.code]);
+  const { countries, states } = useLocationData(country?.code);
 
   const locationFields: FieldConfig<UserProfile>[] = [
     {
@@ -37,15 +21,14 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       textFieldProps: {
         placeholder: "Select country",
       },
-      options: countries.data.map((country) => ({
+      options: countries.map((country) => ({
         value: country.isoCode,
         label: country.name,
       })),
       onChange: (value) =>
         setValue(
           "country.name",
-          countries.data.find((country) => country.isoCode === value)?.name ||
-            "",
+          countries.find((country) => country.isoCode === value)?.name || "",
         ),
       gridProps: { xs: 6, md: 4 },
     },
@@ -60,9 +43,9 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       onChange: (value) =>
         setValue(
           "state.name",
-          states.data.find((state) => state.isoCode === value)?.name || "",
+          states.find((state) => state.isoCode === value)?.name || "",
         ),
-      options: states.data.map((state) => ({
+      options: states.map((state) => ({
         value: state.isoCode,
         label: state.name,
       })),

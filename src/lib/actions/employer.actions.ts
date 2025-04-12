@@ -8,12 +8,12 @@ import {
   API_GET_INDUSTRIES,
 } from "@/api/admin";
 import {
-  API_CHECK_UNLOCKED_SEEKER,
   API_GET_COMPANIES,
   API_GET_COMPANY_BY_ID,
   API_GET_COMPANY_BY_USER_NAME,
   API_GET_JOBS,
   API_GET_UNLOCKED_SEEKERS,
+  API_SEARCH_COMPANIES,
 } from "@/api/employer";
 import {
   API_GET_FOLDER_BY_ID,
@@ -30,7 +30,7 @@ import {
   Result,
   Sector,
 } from "@/types";
-import { errorResult } from "@/util/general";
+import { errorResult, toQueryString } from "@/util/general";
 import { User } from "next-auth";
 
 export const getCompanyByUserName = async (
@@ -87,7 +87,39 @@ export const getCompanies = async ({
       },
       next: { tags: [TAGS.companies] },
     });
-    console.log("🚀 ~ response ~ response:", response)
+    if (!response.ok) return errorResult("fetching companies data");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Companies fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const searchCompanies = async (
+  filters: {
+    page?: number;
+    limit?: number;
+    q?: string;
+    countryCode?: string;
+    companyTypeId?: string;
+  } = {},
+): Promise<Result<PaginatedResponse<Company>>> => {
+  try {
+    const queryParams = toQueryString(filters);
+    const response = await fetch(API_SEARCH_COMPANIES + queryParams, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.companies] },
+    });
     if (!response.ok) return errorResult("fetching companies data");
     const data = await response.json();
     return {

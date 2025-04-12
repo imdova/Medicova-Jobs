@@ -1,4 +1,10 @@
 "use client";
+import { API_GET_COMPANY_TYPES } from "@/api/admin";
+import Flag from "@/components/UI/flagitem";
+import SearchableSelect from "@/components/UI/SearchableSelect";
+import useFetch from "@/hooks/useFetch";
+import { useLocationData } from "@/hooks/useLocationData";
+import { Industry } from "@/types";
 import { createUrl } from "@/util";
 import { LocationOn, MedicalServices, Search } from "@mui/icons-material";
 import {
@@ -12,14 +18,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 const SearchInputForm: React.FC = () => {
+  const { countries } = useLocationData();
+  const { data: companyTypes } = useFetch<PaginatedResponse<Industry>>(
+    API_GET_COMPANY_TYPES,
+  );
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const newPathname = pathname;
 
   const initialSearchText = searchParams.get("q") || "";
-  const initialCompanyType = searchParams.get("cType") || "";
-  const initialCountry = searchParams.get("country") || "";
+  const initialCompanyType = searchParams.get("ctp") || "";
+  const initialCountry = searchParams.get("country") || "EG";
 
   const [query, setQuery] = useState(initialSearchText);
   const [companyType, setCompanyType] = useState(initialCompanyType);
@@ -28,13 +39,24 @@ const SearchInputForm: React.FC = () => {
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const newParams = new URLSearchParams(searchParams.toString());
-    newParams.set("q", query);
-    newParams.set("cType", companyType);
+    newParams.set("q", query || " ");
     newParams.set("country", country);
+    newParams.set("ctp", companyType);
     newParams.delete("page");
     router.push(createUrl(newPathname, newParams));
   }
 
+  const onReset = () => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.delete("q");
+    newParams.delete("page");
+    newParams.delete("country");
+    newParams.delete("ctp");
+    setQuery("");
+    setCompanyType("");
+    steCountry("");
+    router.push(createUrl(newPathname, newParams));
+  };
   return (
     <form
       className="flex flex-col gap-2 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-row md:p-5"
@@ -60,7 +82,6 @@ const SearchInputForm: React.FC = () => {
         }}
       />
 
-      
       <Select
         fullWidth
         value={companyType}
@@ -73,11 +94,11 @@ const SearchInputForm: React.FC = () => {
           </InputAdornment>
         }
         renderValue={(selected: string) => {
-          return selected ? (
-            selected
-          ) : (
-            <span className="text-neutral-400">select company</span>
-          );
+          if (!selected) {
+            return <em className="text-gray-400">Select Company Type</em>;
+          }
+          const item = companyTypes?.data.find((x) => x.id == selected);
+          return item && <span>{item.name}</span>;
         }}
         sx={{
           backgroundColor: "white",
@@ -87,25 +108,51 @@ const SearchInputForm: React.FC = () => {
         <MenuItem disabled value="Company type">
           Select Company Type
         </MenuItem>
-        <MenuItem value="Hospital">Hospital</MenuItem>
-        <MenuItem value="Pharmacy">Pharmacy</MenuItem>
-        <MenuItem value="Finance">Finance</MenuItem>
-        <MenuItem value="Technology">Technology</MenuItem>
+        {companyTypes?.data.map((type) => (
+          <MenuItem key={type.id} value={type.id}>
+            {type.name}
+          </MenuItem>
+        ))}
       </Select>
-
-      {/* Text Input for Location with Icon */}
-      <TextField
+      <SearchableSelect
+        options={countries.map((x) => ({
+          icon: (
+            <Flag
+              code={x.isoCode.toLocaleLowerCase()}
+              name={x.name}
+              className="mr-2 inline"
+            />
+          ),
+          label: x.name,
+          value: x.isoCode,
+        }))}
         fullWidth
-        placeholder="Italy"
-        variant="outlined"
         value={country}
         onChange={(e) => steCountry(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <LocationOn />
-            </InputAdornment>
-          ),
+        variant="outlined"
+        displayEmpty
+        startAdornment={
+          <InputAdornment position="start">
+            <LocationOn />
+          </InputAdornment>
+        }
+        renderValue={(selected: string) => {
+          if (!selected) {
+            return <em className="text-gray-400">Select Country</em>;
+          }
+          const item = countries.find((x) => x.isoCode == selected);
+          return (
+            item && (
+              <span>
+                <Flag
+                  code={item.isoCode.toLocaleLowerCase()}
+                  name={item.name}
+                  className="mr-2 inline"
+                />
+                {item.name}
+              </span>
+            )
+          );
         }}
         sx={{
           backgroundColor: "white",
@@ -114,6 +161,12 @@ const SearchInputForm: React.FC = () => {
       />
 
       {/* Search Button */}
+      {(query || country || companyType) && (
+        <Button variant="outlined" onClick={onReset}>
+          {" "}
+          reset
+        </Button>
+      )}
       <Button
         variant="contained"
         type="submit"

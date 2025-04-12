@@ -1,26 +1,21 @@
 import CustomPagination from "@/components/UI/CustomPagination";
-import { getCompanies } from "@/lib/actions/employer.actions";
+import { searchCompanies } from "@/lib/actions/employer.actions";
 import CompanyCard from "./components/CompanyCard";
-
 
 const BrowseCompaniesPage = async ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const {
-    q: query,
-    counter,
-    page,
-    limit,
-  } = searchParams as {
+  const { q, country, ctp, page, limit } = searchParams as {
     [key: string]: string;
   };
-  const result = await getCompanies({
+  const result = await searchCompanies({
     page: parseInt(page || "1"),
     limit: parseInt(limit || "12"),
-    counter,
-    query,
+    companyTypeId: ctp,
+    countryCode: country || "EG" ,
+    q: q || " ",
   });
   const data = result.data;
   const companies = data?.data || [];
@@ -45,4 +40,3 @@ const BrowseCompaniesPage = async ({
 };
 
 export default BrowseCompaniesPage;
-

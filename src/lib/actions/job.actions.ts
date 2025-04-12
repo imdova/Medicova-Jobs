@@ -9,6 +9,7 @@ import {
   API_UPDATE_JOB,
 } from "@/api/employer";
 import { JobData, Result } from "@/types";
+import { toQueryString } from "@/util/general";
 import { revalidateTag } from "next/cache";
 
 export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
@@ -210,28 +211,15 @@ export const getJobsByFilters = async (
   } = {},
 ): Promise<Result<{ data: JobData[]; total: number }>> => {
   try {
-    const queryParams = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          value.forEach((v) => queryParams.append(key, v));
-        } else {
-          queryParams.append(key, value.toString());
-        }
-      }
-    });
-
-    const response = await fetch(
-      `${API_SEARCH_JOBS}?${queryParams.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        next: { tags: [TAGS.jobs] },
+    const queryParams = toQueryString(filters);
+    const response = await fetch(API_SEARCH_JOBS + queryParams, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
       },
-    );
+      next: { tags: [TAGS.jobs] },
+    });
 
     if (response.ok) {
       const data = await response.json();

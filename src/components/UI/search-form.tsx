@@ -1,23 +1,15 @@
 "use client";
-import {
-  FilterAltOutlined,
-  Group,
-  GroupOutlined,
-  LocationOnOutlined,
-  Search,
-} from "@mui/icons-material";
+import { GroupOutlined, LocationOnOutlined, Search } from "@mui/icons-material";
 import { Button, FormControl, MenuItem, Select } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Flag from "./flagitem";
-import { countries } from "@/constants";
 import { createUrl } from "@/util";
-import { fetchCountries } from "@/store/slices/locationSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import SearchableSelect from "./SearchableSelect";
 import useFetch from "@/hooks/useFetch";
 import { Industry } from "@/types";
 import { API_GET_CATEGORIES } from "@/api/admin";
+import { useLocationData } from "@/hooks/useLocationData";
 
 let timer: NodeJS.Timeout;
 function debounce<T extends (...args: string[]) => void>(
@@ -49,15 +41,7 @@ const SearchForm: React.FC<{
   fields = initialSearchFields,
   button = "Search my job",
 }) => {
-  const { countries } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      dispatch(fetchCountries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-
+  const { countries } = useLocationData();
   const { data: categoriesData } =
     useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
 
@@ -157,7 +141,7 @@ const SearchForm: React.FC<{
                 className="h-full w-full justify-center border-b border-solid border-gray-300"
               >
                 <SearchableSelect
-                  options={countries.data.map((x) => ({
+                  options={countries.map((x) => ({
                     icon: (
                       <Flag
                         code={x.isoCode.toLocaleLowerCase()}
@@ -177,9 +161,7 @@ const SearchForm: React.FC<{
                     if (!selected) {
                       return <em className="text-gray-400">Select Country</em>;
                     }
-                    const item = countries.data.find(
-                      (x) => x.isoCode == selected,
-                    );
+                    const item = countries.find((x) => x.isoCode == selected);
                     return (
                       item && (
                         <span>

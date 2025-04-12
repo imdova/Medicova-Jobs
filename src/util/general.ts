@@ -219,3 +219,21 @@ export function formatPrice(value?: number): string | null {
 
   return value.toString();
 }
+
+
+export function toQueryString(filters: Record<string, string | number | (string | number)[] | undefined>): string {
+  const queryParams = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      if (Array.isArray(value)) {
+        value.forEach((v) => queryParams.append(key, v.toString()));
+      } else {
+        queryParams.append(key, value.toString());
+      }
+    }
+  });
+
+  const queryString = queryParams.toString();
+  return queryString ? `?${queryString}` : '';
+}

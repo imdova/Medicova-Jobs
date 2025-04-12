@@ -1,6 +1,7 @@
 "use client";
 import DataTable from "@/components/UI/data-table";
 import { ColumnConfig } from "@/types";
+import { formatDate } from "@/util";
 import { Delete, KeyboardReturn } from "@mui/icons-material";
 import { Chip } from "@mui/material";
 import Link from "next/link";
@@ -92,7 +93,7 @@ const columns: ColumnConfig<ApplicationsType>[] = [
     key: "created_at",
     header: "Date Applied",
     sortable: true,
-    render: (app) => new Date(app.created_at).toLocaleDateString(),
+    render: (app) => formatDate(app.created_at),
   },
   {
     key: "status",
