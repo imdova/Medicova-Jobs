@@ -77,7 +77,9 @@ export const matchRoute = (pathname: string): RouteConfig | undefined => {
 };
 
 export function getSideBarLinks(user?: User, pathname?: string) {
+  // TODO:
   const userType = user?.type as RoleState;
+  // const userType = "admin" as RoleState;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
     if (type === "userType" && userType) {

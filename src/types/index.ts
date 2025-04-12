@@ -143,12 +143,17 @@ export interface Company {
   banner1?: string | null;
   banner2?: string | null;
   banner3?: string | null;
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+
 
   // TODO: add open jobs
   openJobs?: number | null;
 
   // only for admins
   revenue?: number | null;
+
+
 }
 export interface MiniCompany {
   name: string;

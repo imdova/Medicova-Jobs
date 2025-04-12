@@ -9,7 +9,6 @@ import {
   TableRow,
   Checkbox,
   IconButton,
-  TableSortLabel,
   Button,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
@@ -27,7 +26,8 @@ interface DataTableProps<T> {
   total: number;
   className?: string;
   columns: ColumnConfig<T>[]; // Column definitions
-  isSelectable?: boolean; // Enable row selection
+  selected?: (number | string)[];
+  setSelected?: React.Dispatch<React.SetStateAction<(number | string)[]>>;
   onRowClick?: (item: T) => void; // Click handler for rows
   onClick?: (folder: T) => void;
   onEdit?: (folder: T) => void;
@@ -43,7 +43,8 @@ function DataTable<T extends { id: number | string }>({
   data,
   noDataMessage,
   columns,
-  isSelectable = false,
+  selected = [],
+  setSelected,
   onClick,
   onEdit,
   onDelete,
@@ -55,7 +56,7 @@ function DataTable<T extends { id: number | string }>({
   className,
 }: DataTableProps<T>) {
   const isSmall = size === "small";
-  const [selected, setSelected] = useState<(number | string)[]>([]);
+  const isSelectable = Boolean(selected);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
   const handleSort = (key: Path<T>) => {
@@ -100,6 +101,7 @@ function DataTable<T extends { id: number | string }>({
   }, [filteredData, sortConfig]);
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!setSelected) return;
     if (event.target.checked) {
       setSelected(sortedData.map((row) => row.id));
     } else {
@@ -108,6 +110,8 @@ function DataTable<T extends { id: number | string }>({
   };
 
   const handleSelect = (id: number | string) => {
+    if (!setSelected) return;
+
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
     if (selectedIndex === -1) {
@@ -146,7 +150,7 @@ function DataTable<T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`font-semibold relative ${isSmall ? "p-2" : "p-5"}`}
+                  className={`relative font-semibold ${isSmall ? "p-2" : "p-5"}`}
                   style={{ width: col.width }}
                 >
                   {col.sortable && col.key ? (

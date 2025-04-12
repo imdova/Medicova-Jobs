@@ -73,7 +73,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
 
   return (
     <div
-      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg`}
+      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white p-2 shadow-soft`}
     >
       {/* Select Input for Items Per Page */}
       {fixedNumberPerPage ? null : (

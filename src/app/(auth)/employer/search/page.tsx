@@ -29,7 +29,7 @@ const page = async ({
     seeker.isLocked = !isUnlocked;
   });
   return (
-    <div className="flex min-h-screen w-full ">
+    <div className="flex min-h-screen w-full px-4 md:px-5">
       {/* Left Column: Filter Section */}
       <Filter
         sections={searchFilters}

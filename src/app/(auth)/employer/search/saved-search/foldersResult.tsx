@@ -59,6 +59,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
   const [folder, setFolder] = useState<Partial<Folder> | null>(null);
   const { isLoading, error, update, reset } = useUpdateApi<Folder>(onSuccess);
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<(number | string)[]>([]);
 
   const onOpen = () => setFolder({ name: "", companyId: companyId });
   const onEdit = (folder: Folder) => setFolder(folder);
@@ -131,7 +132,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
         onDelete={handleDelete}
         onClose={onCloseDelete}
       />
-      <div className="mb-4 flex items-center justify-between rounded-[10px] border border-gray-100 bg-white p-4 px-6 shadow-soft">
+      <div className="mb-4 flex items-center justify-between rounded-[10px] border border-gray-200 bg-white p-4 px-6 shadow-soft">
         <h1 className="text-3xl font-bold">Folders</h1>
         <IconButton
           onClick={onOpen}
@@ -200,6 +201,8 @@ const FolderResults: React.FC<FolderResultsProps> = ({
               total={total - RECENT_FOLDERS || 0}
               fixedNumberPerPage={5}
               searchQuery={query}
+              selected={selected}
+              setSelected={setSelected}
               columns={[
                 {
                   key: "name",
@@ -240,7 +243,6 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                     new Date(folder.updated_at).toLocaleDateString(),
                 },
               ]}
-              isSelectable
               onEdit={onEdit}
               onDelete={onDelete}
             />

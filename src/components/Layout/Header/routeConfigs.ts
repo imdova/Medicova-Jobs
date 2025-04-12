@@ -61,7 +61,8 @@ export const matchRoute = (pathname: string) => {
 };
 
 export function getNavLinks(user?: User, pathname?: string) {
-  const userType = user?.type;
+  // const userType = user?.type;
+  const userType = "admin" as User["type"] ;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
 

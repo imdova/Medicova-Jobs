@@ -8,6 +8,7 @@ import CompanyMiniCard, { CompanyMiniCardSkeleton } from "../CompanyMiniCard";
 import StatusCard from "@/components/UI/StatusCard";
 import useFetch from "@/hooks/useFetch";
 import { API_GET_COMPANIES } from "@/api/employer";
+import OverviewEmployersTable from "./OverviewEmployersTable";
 
 type TopCountry = {
   id: string;
@@ -141,6 +142,12 @@ const DashboardOverView: React.FC = () => {
     },
   );
 
+  const topCompanies = companies?.data
+    ?.sort(
+      (a, b) => Number(b.completencePercent) - Number(a.completencePercent),
+    )
+    ?.filter((x) => Boolean(x.username));
+
   return (
     <div className="mt-2 space-y-2">
       {/* Stats Section */}
@@ -152,7 +159,7 @@ const DashboardOverView: React.FC = () => {
             ))}
           </div>
           {/* Chart Section */}
-          <div className="relative mt-3 rounded-base rounded-t-base border border-gray-200 bg-white p-3 shadow-soft">
+          <div className="relative mt-3 rounded-base border border-gray-200 bg-white p-3 shadow-soft">
             <h5 className="p-1 text-xl font-semibold text-main">
               Employer
               <br />
@@ -215,7 +222,7 @@ const DashboardOverView: React.FC = () => {
         {/* Right Column */}
         <div className="flex flex-col gap-3 lg:w-2/5">
           {/* Performance Overview */}
-          <div className="rounded-base rounded-t-base border border-gray-200 bg-white p-3 shadow-soft">
+          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
               <h5 className="text-xl font-semibold text-main">
                 Performance Overview
@@ -232,13 +239,7 @@ const DashboardOverView: React.FC = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {companies?.data
-                  ?.sort(
-                    (a, b) =>
-                      Number(b.completencePercent) -
-                      Number(a.completencePercent),
-                  )
-                  ?.filter((x) => Boolean(x.username))
+                {topCompanies
                   ?.slice(0, 4)
                   .map((company) => (
                     <CompanyMiniCard key={company.id} company={company} />
@@ -247,7 +248,7 @@ const DashboardOverView: React.FC = () => {
             )}
           </div>
           {/* Top Countries */}
-          <div className="rounded-base rounded-t-base border border-gray-200 bg-white shadow-soft">
+          <div className="rounded-base border border-gray-200 bg-white shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-3 pb-2">
               <h5 className="text-xl font-semibold text-main">
                 Top Countries
@@ -279,7 +280,7 @@ const DashboardOverView: React.FC = () => {
                     render: (item) => (
                       <div className="flex">
                         <Flag {...item} />{" "}
-                        <span className="ml-2 py-3 text-xs">{item.name}</span>
+                        <span className="ml-2 text-xs">{item.name}</span>
                       </div>
                     ),
                   },
@@ -305,12 +306,12 @@ const DashboardOverView: React.FC = () => {
         </div>
       </div>
       {/* Employers Table */}
-      {/* <div className="mt-3 box-content overflow-hidden rounded-lg !p-0">
-        <div className="border-b bg-white p-4">
-          <Typography variant="h6">All Employers</Typography>
-        </div>
-        <OverviewEmployersTable endPoint={API_GET_EMPLOYERS_TABLE_DATA} />
-      </div> */}
+      
+      {topCompanies && (
+        <OverviewEmployersTable
+          companies={{ data: topCompanies, total: topCompanies?.length }}
+        />
+      )}
     </div>
   );
 };

@@ -21,7 +21,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
     <button
       onClick={onClick}
       className={cn(
-        "group flex cursor-pointer select-none items-center gap-1 text-left",
+        "group flex cursor-pointer w-full select-none items-center gap-1 text-left",
         isSmall && "text-xs",
       )}
     >

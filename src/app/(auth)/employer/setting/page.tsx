@@ -30,7 +30,7 @@ const SettingsPage = () => {
   return (
     <div className="px-2 md:px-5">
       <Tabs
-        className="mb-2 rounded-base border border-gray-100 bg-white px-4 shadow-soft"
+        className="mb-2 rounded-base border border-gray-200 bg-white px-4 shadow-soft"
         value={tabValue}
         onChange={handleTabChange}
       >
