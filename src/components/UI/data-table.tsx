@@ -25,6 +25,8 @@ interface DataTableProps<T> {
   data: T[];
   total: number;
   className?: string;
+  cellClassName?: string;
+  headerClassName?: string;
   columns: ColumnConfig<T>[]; // Column definitions
   selected?: (number | string)[];
   setSelected?: React.Dispatch<React.SetStateAction<(number | string)[]>>;
@@ -32,12 +34,23 @@ interface DataTableProps<T> {
   onClick?: (folder: T) => void;
   onEdit?: (folder: T) => void;
   onDelete?: (folder: T) => void;
-  size?: "small" | "medium";
   fixedNumberPerPage?: number;
   searchQuery?: string;
   options?: ActionOption<T>[]; // Action options for each row
   noDataMessage?: NoDataMessage;
 }
+
+// const getSizeClasses = (size?: Sizes) => {
+//   switch (size) {
+//     case "small":
+//       return "p-2 text-xs";
+//     case "medium":
+//       return "p-3 text-sm";
+//     case "large":
+//     default:
+//       return "p-4 text-base";
+//   }
+// };
 
 function DataTable<T extends { id: number | string }>({
   data,
@@ -48,14 +61,14 @@ function DataTable<T extends { id: number | string }>({
   onClick,
   onEdit,
   onDelete,
-  size,
+  cellClassName = "p-3 text-sm",
+  headerClassName = "text-sm",
   fixedNumberPerPage,
   searchQuery,
   total,
   options,
   className,
 }: DataTableProps<T>) {
-  const isSmall = size === "small";
   const isSelectable = Boolean(selected);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
@@ -126,7 +139,7 @@ function DataTable<T extends { id: number | string }>({
   const isSelected = (id: number | string) => selected.indexOf(id) !== -1;
 
   return (
-    <div className="w-full">
+    <div className="w-full text-[10px]">
       <TableContainer
         className={cn(
           "scroll-bar-minimal rounded-base border border-gray-200 bg-white shadow-soft",
@@ -137,7 +150,7 @@ function DataTable<T extends { id: number | string }>({
           <TableHead className={`bg-gray-50`}>
             <TableRow>
               {isSelectable ? (
-                <TableCell className="p-1 text-xs" padding="checkbox">
+                <TableCell className="p-1 text-[0.75em]" padding="checkbox">
                   <Checkbox
                     indeterminate={
                       selected.length > 0 && selected.length < sortedData.length
@@ -150,7 +163,7 @@ function DataTable<T extends { id: number | string }>({
               {columns.map((col) => (
                 <TableCell
                   key={String(col.key)}
-                  className={`relative font-semibold ${isSmall ? "p-2" : "p-5"}`}
+                  className={`relative font-semibold ${cellClassName}`}
                   style={{ width: col.width }}
                 >
                   {col.sortable && col.key ? (
@@ -162,17 +175,17 @@ function DataTable<T extends { id: number | string }>({
                           : "asc"
                       }
                       onClick={() => col.key && handleSort(col.key)}
-                      isSmall={isSmall}
+                      className={headerClassName}
                     >
                       <span
-                        className={`line-clamp-1 text-nowrap ${isSmall ? "text-xs" : ""}`}
+                        className={`line-clamp-1 text-nowrap ${cellClassName}`}
                       >
                         {col.header}
                       </span>
                     </SortableHeader>
                   ) : (
                     <span
-                      className={`line-clamp-1 text-nowrap ${isSmall ? "text-xs" : ""}`}
+                      className={`line-clamp-1 text-nowrap ${cellClassName}`}
                     >
                       {col.header}
                     </span>
@@ -180,9 +193,7 @@ function DataTable<T extends { id: number | string }>({
                 </TableCell>
               ))}
               {onEdit || onDelete || (options && options.length > 0) ? (
-                <TableCell
-                  className={`p-2 font-semibold ${isSmall ? "text-xs" : ""}`}
-                >
+                <TableCell className={`p-2 font-semibold ${cellClassName}`}>
                   Actions
                 </TableCell>
               ) : null}
@@ -201,7 +212,7 @@ function DataTable<T extends { id: number | string }>({
                   onClick={onClick ? () => onClick(item) : undefined}
                 >
                   {isSelectable && (
-                    <TableCell className="p-1 text-xs" padding="checkbox">
+                    <TableCell className="p-1 text-[0.75em]" padding="checkbox">
                       <Checkbox
                         checked={isItemSelected}
                         onChange={() => handleSelect(id)}
@@ -209,17 +220,14 @@ function DataTable<T extends { id: number | string }>({
                     </TableCell>
                   )}
                   {columns.map((col) => (
-                    <TableCell
-                      key={String(col.key)}
-                      className={`${isSmall ? "p-2 text-xs" : "p-5"}`}
-                    >
+                    <TableCell key={String(col.key)} className={cellClassName}>
                       {col.render
                         ? col.render(item)
                         : col.key && getNestedValue(item, col.key)}
                     </TableCell>
                   ))}
                   {(onEdit || onDelete) && (
-                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
+                    <TableCell className={cellClassName}>
                       <div className="flex space-x-2">
                         {onEdit && (
                           <IconButton
@@ -245,7 +253,7 @@ function DataTable<T extends { id: number | string }>({
                     </TableCell>
                   )}
                   {options && options.length > 0 && (
-                    <TableCell className={`${isSmall ? "p-2 text-xs" : "p-5"}`}>
+                    <TableCell className={cellClassName}>
                       <CellOptions options={options} item={item} />
                     </TableCell>
                   )}

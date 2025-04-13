@@ -261,7 +261,7 @@ const DashboardOverView: React.FC = () => {
               <DataTable
                 data={topCountriesData}
                 total={topCountriesData.length}
-                size="small"
+                cellClassName="p-2 text-xs"
                 className="border-none shadow-none"
                 // searchQuery={query}
                 columns={[
@@ -306,7 +306,7 @@ const DashboardOverView: React.FC = () => {
         </div>
       </div>
       {/* Employers Table */}
-      
+
       {topCompanies && (
         <OverviewEmployersTable
           companies={{ data: topCompanies, total: topCompanies?.length }}

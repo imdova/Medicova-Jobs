@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import DataTable from "@/components/UI/data-table";
-import { Company, FieldConfig, Sector } from "@/types";
+import { Company, Sector } from "@/types";
 import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
 import { formatDate } from "@/util";
@@ -28,6 +28,11 @@ import SearchableSelect from "@/components/UI/SearchableSelect";
 import Flag from "@/components/UI/flagitem";
 import { useLocationData } from "@/hooks/useLocationData";
 import DatePickerField from "@/components/form/FormModal/FormField/DatePickerField";
+import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
+import { TAGS } from "@/api";
+import { API_UPDATE_COMPANY } from "@/api/employer";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { CompanyStatus } from "@/constants/enums/company-status.enum";
 
 const tabs = [
   "New Employers",
@@ -40,6 +45,7 @@ const OverviewEmployersTable: React.FC<{
   companies: PaginatedResponse<Company> | null;
 }> = ({ companies: companiesData }) => {
   const { countries } = useLocationData();
+  const { isLoading, error, update } = useUpdateApi<Company>();
 
   const { data: companies, total } = companiesData || { data: [], total: 0 };
   const [selected, setSelected] = useState<(number | string)[]>([]);
@@ -61,6 +67,10 @@ const OverviewEmployersTable: React.FC<{
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
+ // TODO: Fix
+  const updateCompany = async (body: Company) => {
+    await update(API_UPDATE_COMPANY, { method: "POST", body }, TAGS.company);
+  };
 
   return (
     <div className="space-y-1">
@@ -71,7 +81,7 @@ const OverviewEmployersTable: React.FC<{
               All Employers
               <span className="ml-1 text-xs text-secondary">(4,050)</span>
             </h5>
-            <div className="max-w-[calc(100vw-40px)]">
+            <div className="max-w-full">
               <Tabs
                 value={activeTab}
                 onChange={(e, v) => setActiveTab(v)}
@@ -91,7 +101,7 @@ const OverviewEmployersTable: React.FC<{
               </Tabs>
             </div>
           </div>
-          <div className="m-3 flex gap-2">
+          <div className="m-3 flex flex-wrap gap-2">
             <TextField
               variant="outlined"
               placeholder="Search For Employer"
@@ -273,9 +283,9 @@ const OverviewEmployersTable: React.FC<{
               field={{
                 name: "date",
                 type: "date",
-                textFieldProps:{
-                  placeholder:"Date"
-                }
+                textFieldProps: {
+                  placeholder: "Date",
+                },
               }}
             />
           </div>
@@ -286,13 +296,15 @@ const OverviewEmployersTable: React.FC<{
           </Button>
         </div>
       )}
-      <div className="max-w-[calc(100vw-1rem)]">
+      <div className="body-container overflow-x-auto">
         <DataTable
           data={companies}
           total={total}
           selected={selected}
           setSelected={setSelected}
           searchQuery={query}
+          cellClassName="p-2 text-sm"
+          headerClassName="text-sm"
           columns={[
             {
               key: "name",
@@ -305,7 +317,7 @@ const OverviewEmployersTable: React.FC<{
                     <h6 className="line-clamp-1 text-sm">{item.name}</h6>
                     <Link
                       href={`mailto:${item.email}`}
-                      className="line-clamp-1 break-all text-sm underline hover:no-underline"
+                      className="line-clamp-1 break-all text-xs underline hover:no-underline"
                     >
                       {item.email}
                     </Link>
@@ -333,7 +345,7 @@ const OverviewEmployersTable: React.FC<{
               key: "companyTypeName",
               header: "Type",
               render: (item) => (
-                <span>
+                <span className="text-sm">
                   {
                     types?.data?.find(
                       (type) => type.id === item.companyTypeName,
@@ -346,7 +358,7 @@ const OverviewEmployersTable: React.FC<{
               key: "companySectorName",
               header: "Sector",
               render: (item) => (
-                <span>
+                <span className="text-sm">
                   {
                     sectors?.data?.find(
                       (sector) => sector.id === item.companySectorId,
@@ -357,16 +369,39 @@ const OverviewEmployersTable: React.FC<{
             },
             {
               header: "plan",
-              render: () => <span>Premium</span>,
+              render: () => <span className="text-sm">Premium</span>,
             },
             {
               key: "openJobs",
               header: "Jobs",
-              render: () => <span>25</span>,
+              render: () => <span className="text-sm">25</span>,
             },
             {
               key: "status",
               header: "Status",
+              render: (item) => (
+                <CheckboxField
+                  field={{
+                    name: "status",
+                    type: "checkbox",
+                  }}
+                  controllerField={{
+                    value: item.status === CompanyStatus.ACTIVE,
+                    onChange: (e) =>
+                      updateCompany({
+                        ...item,
+                        status: e.target.checked
+                          ? CompanyStatus.ACTIVE
+                          : CompanyStatus.INACTIVE,
+                      }),
+                  }}
+                />
+              ),
+            },
+
+            {
+              header: "Action",
+              render: handleStatus,
             },
           ]}
         />
@@ -376,3 +411,26 @@ const OverviewEmployersTable: React.FC<{
 };
 
 export default OverviewEmployersTable;
+
+const handleStatus = (company: Company) => {
+  const stateStyles: Record<NonNullable<Company["status"]>, string> = {
+    active:
+      "bg-green-50 text-green-700 ring-green-600/20 border-green-500 bg-inputDark text-green-500",
+    inactive:
+      "bg-red-50 text-red-700 ring-red-600/10 border-red-500 bg-inputDark text-red-500",
+  };
+
+  return company.status ? (
+    <span
+      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[company.status]}`}
+    >
+      {company.status}
+    </span>
+  ) : (
+    <span
+      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles.inactive}`}
+    >
+      inactive
+    </span>
+  );
+};

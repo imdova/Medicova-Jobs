@@ -159,3 +159,25 @@ html,
   border: 1px solid var(--light-primary);
   border-radius: 50%;
 }
+
+@layer components {
+  .body-container {
+    @apply mx-auto w-full;
+
+    /* Custom max widths per breakpoint */
+    max-width: calc(100vw - 2rem); /* base */
+
+    /* // side bar + scrollbar + paddings and margins */
+    @screen sm {
+      max-width: calc(640px - 15px - 2.5rem);
+    }
+    /* // side bar + scrollbar + paddings and margins */
+    @screen md {
+      max-width: calc(100vw - 50px - 119.5px);
+    }
+
+    @screen xl {
+      max-width: calc(1300px - 250px -  3.75rem);
+    }
+  }
+}
