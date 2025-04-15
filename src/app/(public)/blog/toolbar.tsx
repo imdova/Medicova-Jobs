@@ -1,15 +1,11 @@
-import DynamicFormModal from "@/components/form/DynamicFormModal";
-import {
-  buttonModal,
-  htmlModal,
-  imageModal,
-  ModalForm,
-} from "@/constants/pagebuilder/formFields";
+import FormModal from "@/components/form/FormModal/FormModal";
+import { blocksForm, BlockForm } from "@/constants/pagebuilder/formFields";
 
 import { FieldConfig } from "@/types";
 import { Block, BlockType, blockTypes } from "@/types/blog";
 import { Button, Tab, Tabs, TextField } from "@mui/material";
 import React, { useState } from "react";
+import StylePanel from "./stylePanel";
 
 interface TabProps {
   selectedBlock: Block | null;
@@ -20,22 +16,14 @@ interface TabProps {
 const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [onHoldBlock, setOnHoldBlock] = useState({} as Block);
-  const [modalData, setModalData] = useState<ModalForm | null>(null);
+  const [formData, setFormData] = useState<BlockForm | null>(null);
 
   const open = () => setIsModalOpen(true);
   const close = () => setIsModalOpen(false);
 
   const handleSubmit = (data: { [key: string]: string }) => {
-    if (onHoldBlock.type === "image") {
-      setBlocks((pv) => [...pv, { ...onHoldBlock, imageUrl: data.imageUrl }]);
-    } else if (onHoldBlock.type === "button") {
-      setBlocks((pv) => [
-        ...pv,
-        { ...onHoldBlock, content: data.linkName, linkUrl: data.linkUrl },
-      ]);
-    } else if (onHoldBlock.type === "html") {
-      setBlocks((pv) => [...pv, { ...onHoldBlock, content: data.Html }]);
-    }
+    setBlocks((pv) => [...pv, { ...onHoldBlock, ...data }]);
+    close();
   };
   const addBlock = (type: BlockType) => {
     const newBlock: Block = {
@@ -44,19 +32,10 @@ const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
       content: "",
       styles: {},
     };
-    if (type === "image") {
+    const blockFormData = blocksForm.find((form) => form.type.includes(type));
+    if (blockFormData && blockFormData.isModal) {
       open();
-      setModalData(imageModal);
-      setOnHoldBlock(newBlock);
-      return;
-    } else if (type === "button") {
-      open();
-      setModalData(buttonModal);
-      setOnHoldBlock(newBlock);
-      return;
-    } else if (type === "html") {
-      open();
-      setModalData(htmlModal);
+      setFormData(blockFormData);
       setOnHoldBlock(newBlock);
       return;
     }
@@ -66,12 +45,12 @@ const BlocksTab: React.FC<TabProps> = ({ setBlocks, setSelectedBlock }) => {
 
   return (
     <div className="mt-4">
-      {modalData && (
-        <DynamicFormModal
+      {formData && (
+        <FormModal
           open={isModalOpen}
           onClose={close}
           onSubmit={handleSubmit}
-          {...modalData}
+          {...formData}
         />
       )}
 
@@ -204,25 +183,35 @@ const ToolBar: React.FC<ToolBarProps> = ({
   setSelectedBlock,
 }) => {
   const [selectedTab, setSelectedTab] = useState("blocks");
-
   return (
-    <aside className="bg-muted/30 w-80 border-l p-6">
+    <aside className="bg-muted/30 w-96 border-l p-4">
       <div>
-        {/* <Tabs
+        <Tabs
           value={selectedTab}
           onChange={(event, newValue) => setSelectedTab(newValue)}
           aria-label="block and style tabs"
+          className="mb-4"
           variant="fullWidth"
         >
-          <Tab label="Blocks" value="blocks" />
-          <Tab label="Settings" value="settings" />
-        </Tabs> */}
-        <h4 className="text-xl font-semibold">Blocks</h4>
-        <BlocksTab
-          selectedBlock={selectedBlock}
-          setBlocks={setBlocks}
-          setSelectedBlock={setSelectedBlock}
-        />
+          <Tab label="Blocks" className="p-0 text-sm" value="blocks" />
+          <Tab label="Styles" className="p-0 text-sm" value="styles" />
+          {/* <Tab label="Settings" value="settings" /> */}
+        </Tabs>
+        {selectedTab === "blocks" && (
+          <BlocksTab
+            selectedBlock={selectedBlock}
+            setBlocks={setBlocks}
+            setSelectedBlock={setSelectedBlock}
+          />
+        )}
+        {selectedTab === "styles" && (
+          <StylePanel
+            selectedBlock={selectedBlock}
+            setBlocks={setBlocks}
+            setSelectedBlock={setSelectedBlock}
+          />
+        )}
+
         {/* )} */}
         {/* {selectedTab === "settings" && (
           <SettingsTab

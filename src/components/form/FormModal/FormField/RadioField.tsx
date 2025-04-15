@@ -10,7 +10,7 @@ import {
 interface RadioFieldProps {
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
-  error?: FieldError;
+  error?: FieldError | null;
 }
 
 export const RadioFieldComponent: React.FC<RadioFieldProps> = ({

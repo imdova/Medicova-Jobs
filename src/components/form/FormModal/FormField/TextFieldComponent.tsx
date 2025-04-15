@@ -12,7 +12,7 @@ import {
 interface TextFieldProps {
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
-  error?: FieldError;
+  error?: FieldError | null;
 }
 
 export const TextFieldComponent: React.FC<TextFieldProps> = ({

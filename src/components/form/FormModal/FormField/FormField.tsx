@@ -21,7 +21,8 @@ import { TextEditorField } from "./TextEditorField";
 
 interface FormFieldProps {
   field: FieldConfig;
-  control: any;
+  control?: any;
+  fieldController?: ControllerRenderProps<FieldValues, string>;
   hidden?: boolean;
   dependsOnField?: FieldConfig;
   onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -38,17 +39,19 @@ export const FormField: React.FC<FormFieldProps> = ({
   formValues,
   resetValues,
   dependsOnField,
+  fieldController,
   removeField,
 }) => {
   if (hidden) return null;
 
   const renderField = ({
     field: controllerField,
-    fieldState: { error },
+    fieldState,
   }: {
     field: ControllerRenderProps<FieldValues, string>;
-    fieldState: ControllerFieldState;
+    fieldState?: ControllerFieldState;
   }): React.ReactElement => {
+    const error = fieldState?.error || null;
     switch (field.type) {
       case "checkbox":
         return (
@@ -153,19 +156,27 @@ export const FormField: React.FC<FormFieldProps> = ({
 
   return (
     <div className="flex items-end gap-2">
-      <div className="max-w-full flex-1">
-        <Controller
-          name={String(field.name)}
-          control={control}
-          rules={{
-            required: field.required
-              ? `${field.label?.replace("*", "") || String(field.name)} is required`
-              : false,
-            ...field.rules,
-          }}
-          render={renderField}
-        />
-      </div>
+      {control ? (
+        <div className="max-w-full flex-1">
+          <Controller
+            name={String(field.name)}
+            control={control}
+            rules={{
+              required: field.required
+                ? `${field.label?.replace("*", "") || String(field.name)} is required`
+                : false,
+              ...field.rules,
+            }}
+            render={renderField}
+          />
+        </div>
+      ) : (
+        fieldController && (
+          <div className="max-w-full flex-1">
+            {renderField({ field: fieldController })}
+          </div>
+        )
+      )}
       {removeField && (
         <IconButton
           onClick={() => {

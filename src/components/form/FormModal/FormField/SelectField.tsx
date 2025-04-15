@@ -18,7 +18,7 @@ import {
 interface SelectFieldProps {
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
-  error?: FieldError;
+  error?: FieldError | null;
   resetValues?: (fieldNames: FieldConfig["name"][]) => void;
   formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;

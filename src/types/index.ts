@@ -8,7 +8,12 @@ import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
-import { FieldValues, Path, RegisterOptions } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  Path,
+  RegisterOptions,
+} from "react-hook-form";
 import { User } from "next-auth";
 import { DatePickerProps } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
@@ -146,14 +151,11 @@ export interface Company {
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
 
-
   // TODO: add open jobs
   openJobs?: number | null;
 
   // only for admins
   revenue?: number | null;
-
-
 }
 export interface MiniCompany {
   name: string;
@@ -457,7 +459,7 @@ export interface DynamicModalProps {
   onSubmit: (data: any) => void;
   onDelete?: (data: any) => void;
   fields: FieldConfig[];
-  title: string;
+  title?: string;
   description?: string;
   initialValues?: Record<string, any>;
   children?: React.ReactNode;

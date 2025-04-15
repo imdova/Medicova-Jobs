@@ -11,7 +11,7 @@ import {
 interface DatePickerFieldProps {
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
-  error?: FieldError;
+  error?: FieldError | null;
 }
 
 const DatePickerField: React.FC<DatePickerFieldProps> = ({

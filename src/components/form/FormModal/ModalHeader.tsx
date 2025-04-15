@@ -3,7 +3,7 @@ import { DialogTitle, Alert, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 interface ModalHeaderProps {
-  title: string;
+  title?: string;
   description?: string;
   error?: string;
   handleCancel: () => void;

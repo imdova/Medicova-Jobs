@@ -1,14 +1,19 @@
 import { FieldConfig } from "@/types";
+import { Block, BlockType } from "@/types/blog";
 
-export type ModalForm = {
-  title: string;
-  description: string;
-  fields: FieldConfig[];
+export type BlockForm = {
+  title?: string;
+  type: BlockType[];
+  description?: string;
+  isModal?: boolean;
+  fields: FieldConfig<Block>[];
 };
 
-export const imageModal: ModalForm = {
+export const imageModal: BlockForm = {
   title: "add Image",
+  type: ["image"],
   description: "",
+  isModal: true,
   fields: [
     {
       name: "imageUrl",
@@ -19,9 +24,11 @@ export const imageModal: ModalForm = {
     },
   ],
 };
-export const buttonModal: ModalForm = {
+export const buttonModal: BlockForm = {
   title: "Add Button",
+  type: ["button"],
   description: "",
+  isModal: true,
   fields: [
     {
       name: "content",
@@ -39,9 +46,11 @@ export const buttonModal: ModalForm = {
     },
   ],
 };
-export const htmlModal: ModalForm = {
+export const htmlModal: BlockForm = {
   title: "Add html",
+  type: ["html"],
   description: "",
+  isModal: true,
   fields: [
     {
       name: "content",
@@ -57,3 +66,31 @@ export const htmlModal: ModalForm = {
     },
   ],
 };
+export const normalModal: BlockForm = {
+  type: ["h1", "h2", "h3"],
+  fields: [
+    {
+      name: "content",
+      label: "Enter Your Content",
+      type: "text",
+    },
+  ],
+};
+export const paragraphData: BlockForm = {
+  type: ["paragraph"],
+  isModal: false,
+  fields: [
+    {
+      name: "content",
+      type: "textEditor",
+    },
+  ],
+};
+
+export const blocksForm: BlockForm[] = [
+  imageModal,
+  buttonModal,
+  htmlModal,
+  normalModal,
+  paragraphData,
+];

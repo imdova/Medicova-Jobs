@@ -39,6 +39,8 @@ export function BlockRenderer({
     );
   };
 
+  const { width, height, ...styles } = block.styles;
+
   // Render different block types
   switch (block.type) {
     case "h1":
@@ -47,6 +49,7 @@ export function BlockRenderer({
           minRows={1}
           maxRows={10}
           placeholder="Heading 1"
+          style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block.id, e.target.value)}
           className="w-full resize-none text-3xl font-bold tracking-tight focus:outline-none md:text-4xl"
@@ -58,6 +61,7 @@ export function BlockRenderer({
         <TextareaAutosize
           minRows={1}
           maxRows={10}
+          style={styles}
           placeholder="Heading 2"
           value={block.content}
           onChange={(e) => updateBlock(block.id, e.target.value)}
@@ -71,6 +75,7 @@ export function BlockRenderer({
           minRows={1}
           maxRows={10}
           placeholder="Heading 3"
+          style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block.id, e.target.value)}
           className="w-full resize-none text-xl font-semibold tracking-tight focus:outline-none md:text-2xl"
@@ -89,10 +94,7 @@ export function BlockRenderer({
     case "image":
       return (
         <Resize
-          value={{
-            width: block.styles?.width,
-            height: block.styles?.height,
-          }}
+          value={{ width, height }}
           onChange={(styles) => updateBlockStyles(block.id, styles)}
         >
           <Image
@@ -103,6 +105,7 @@ export function BlockRenderer({
             alt="Content"
             width={300}
             height={300}
+            style={styles}
             className="h-full w-full object-cover"
           />
         </Resize>
@@ -112,6 +115,8 @@ export function BlockRenderer({
       return (
         <a
           href={block.linkUrl}
+          style={styles}
+          target="_blank"
           className="rounded-base bg-primary px-4 py-2 text-primary-foreground"
         >
           {block.content}
@@ -121,6 +126,7 @@ export function BlockRenderer({
     case "html":
       return (
         <div
+          style={styles}
           dangerouslySetInnerHTML={{ __html: block.content }}
           className="prose max-w-none"
         />
