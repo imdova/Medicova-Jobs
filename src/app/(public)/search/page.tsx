@@ -8,16 +8,46 @@ const SearchPage: React.FC = async ({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const { q, country, page, limit, ctg } = searchParams as {
-    [key: string]: string;
+  const {
+    q,
+    country,
+    state,
+    page,
+    limit,
+    ctg,
+    ind,
+    sp,
+    clv,
+    emt,
+    wp,
+    gen,
+    edu,
+    sal,
+    age,
+  } = searchParams as {
+    [key: string]: any;
   };
 
+  const [salaryFrom, salaryTo] = sal?.split("_") || [];
+  const [ageFrom, ageTo] = age?.split("_") || []
   const result = await getJobsByFilters({
     q,
+    industryId: ind,
+    specialityId: sp,
+    categoryId: ctg,
+    careerLevelId: clv,
+    employmentTypeId: emt,
+    workPlace: wp,
+    gender: gen,
+    educationLevel: edu,
+    countryCode: country,
+    stateCode: state,
+    salaryFrom: salaryFrom,
+    salaryTo: salaryTo,
+    ageFrom: ageFrom,
+    ageTo: ageTo,
     page: parseInt(page || "1"),
     limit: parseInt(limit || "10"),
-    countryCode: country,
-    categoryId: ctg,
   });
   if (!result.success || !result.data) return <h1>No jobs found</h1>;
   const { data, total } = result.data;

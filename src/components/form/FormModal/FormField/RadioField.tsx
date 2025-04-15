@@ -88,7 +88,7 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
             key={String(option.value)}
             onClick={() => handleSelectionChange(option.value)}
             aria-selected={isSelected(option.value)}
-            className={`flex-center group flex h-[42px] min-w-24 items-center gap-2 rounded-base border px-4 font-normal hover:cursor-pointer focus:outline-offset-2 focus:outline-light-primary ${error ? "border-red-500 !text-red-500" : "border-neutral-300"} text-neutral-500 hover:border-black hover:text-secondary ${isSelected(option.value) ? "bg-primary text-white" : ""}`}
+            className={`flex-center group flex h-[42px] min-w-24 items-center gap-2 rounded-base border px-4 font-normal hover:cursor-pointer focus:outline-offset-2 focus:outline-light-primary ${error ? "border-red-500 !text-red-500" : "border-neutral-300"} text-neutral-500 hover:border-primary ${isSelected(option.value) ? "bg-primary text-white" : ""}`}
           >
             {option.icon}
             {option.label}

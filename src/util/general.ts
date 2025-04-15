@@ -220,20 +220,27 @@ export function formatPrice(value?: number): string | null {
   return value.toString();
 }
 
-
-export function toQueryString(filters: Record<string, string | number | (string | number)[] | undefined>): string {
+export function toQueryString(
+  filters: Record<
+    string,
+    string | number | (string | number)[] | undefined | null
+  >,
+): string {
   const queryParams = new URLSearchParams();
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
-      if (Array.isArray(value)) {
-        value.forEach((v) => queryParams.append(key, v.toString()));
-      } else {
-        queryParams.append(key, value.toString());
-      }
+  for (const [key, value] of Object.entries(filters)) {
+    if (value == null || value === "") continue; // Skip undefined, null, or empty string
+
+    if (Array.isArray(value)) {
+      // Filter out empty/null values in array
+      value
+        .filter((v) => v != null && v !== "")
+        .forEach((v) => queryParams.append(key, v.toString()));
+    } else {
+      queryParams.append(key, value.toString());
     }
-  });
+  }
 
   const queryString = queryParams.toString();
-  return queryString ? `?${queryString}` : '';
+  return queryString ? `?${queryString}` : "";
 }

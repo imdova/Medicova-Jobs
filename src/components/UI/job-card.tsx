@@ -42,7 +42,7 @@ const JobCard: React.FC<JobCardProps> = ({
   const education =
     educationOptions.find((x) => x.id === job?.educationLevel)?.label || "";
   return (
-    <div className="grid w-full grid-cols-1 flex-wrap justify-between gap-5 rounded-[10px] border border-gray-100 bg-white p-2 shadow-soft sm:flex-nowrap md:grid-cols-4 md:p-5">
+    <div className="grid w-full grid-cols-1 flex-wrap justify-between gap-5 rounded-[10px] border border-gray-200 bg-white p-2 shadow-soft sm:flex-nowrap md:grid-cols-4 md:p-5">
       <div className="flex flex-col gap-1 md:col-span-3 md:flex-nowrap md:justify-normal">
         <div className="flex items-start gap-2">
           <Link href={`/co/${job.company?.username}`}>

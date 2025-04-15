@@ -1,18 +1,32 @@
-type JobFilter = {
+type FilterItem = {
+  label: string;
+  count?: number;
+  value: string;
+};
+
+type FilterParam = {
+  sectionKey: string;
+  value: string[];
+};
+
+type FilterType = {
   name: string;
-  key: string;
-  items: FilterOption[];
+  sectionKey: string;
+  items: FilterItem[];
+  multiple?: boolean;
+  searchable?: boolean;
+  resetSections?: string[];
+  maxItems?: number;
 };
 
 type FilterProps = {
   className?: string;
-  sections: JobFilter[];
-  searchKeys?: string[];
+  sections: FilterType[];
 };
 
 type FilterDrawerProps = {
-  sections: JobFilter[];
+  sections: FilterType[];
   searchKeys?: string[];
-  selectedFilters: Record<string, string[]>
-  handleCheckChange: (sectionKey: string, value: string[]) => void
+  selectedFilters: Record<string, string[]>;
+  handleCheckChange: (params: FilterParam[]) => void;
 };

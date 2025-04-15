@@ -255,10 +255,10 @@ export const doctorsBase: Doctor[] = [
   // Add 5 more doctors here in a similar structure
 ];
 
-export const filterSections = [
+export const filterSections: FilterType[] = [
   {
     name: "Residency (Location)",
-    key: "loc",
+    sectionKey: "loc",
     items: [
       { label: "Egypt", count: 3, value: "egypt" },
       { label: "Qatar", count: 2, value: "Qatar" },
@@ -266,7 +266,7 @@ export const filterSections = [
   },
   {
     name: "Education Level",
-    key: "edu",
+    sectionKey: "edu",
     items: [
       { label: "Technical Institute", count: 50, value: "institute" },
       { label: "Bachelor's Degree", count: 100, value: "bachelor" },
@@ -276,7 +276,7 @@ export const filterSections = [
   },
   {
     name: "Years Of Experience",
-    key: "exp",
+    sectionKey: "exp",
     items: [
       { label: "1-3", count: 50, value: "1-3" },
       { label: "3-5", count: 40, value: "3-5" },
@@ -285,10 +285,10 @@ export const filterSections = [
     ],
   },
 ];
-export const searchFilters = [
+export const searchFilters: FilterType[] = [
   {
     name: "Residency (Location)",
-    key: "loc",
+    sectionKey: "loc",
     items: [
       { label: "Egypt", count: 3, value: "egypt" },
       { label: "Qatar", count: 2, value: "Qatar" },
@@ -296,7 +296,7 @@ export const searchFilters = [
   },
   {
     name: "City",
-    key: "city",
+    sectionKey: "city",
     items: [
       { label: "Cairo", count: 3, value: "cairo" },
       { label: "Riyadh", count: 2, value: "riyadh" },
@@ -304,7 +304,7 @@ export const searchFilters = [
   },
   {
     name: "Nationality",
-    key: "nat",
+    sectionKey: "nat",
     items: [
       { label: "Egyptian", count: 3, value: "egyptian" },
       { label: "Saudi Arabian", count: 2, value: "saudi arabian" },
@@ -312,7 +312,7 @@ export const searchFilters = [
   },
   {
     name: "Industry",
-    key: "ind",
+    sectionKey: "ind",
     items: [
       { label: "Physicians", count: 10, value: "Physicians" },
       { label: "Dentists", count: 100, value: "Dentists" },
@@ -323,7 +323,7 @@ export const searchFilters = [
   },
   {
     name: "Category",
-    key: "cat",
+    sectionKey: "cat",
     items: [
       { label: "Doctor", count: 100, value: "doctor" },
       { label: "Nurse", count: 50, value: "nurse" },
@@ -334,7 +334,7 @@ export const searchFilters = [
   },
   {
     name: "Education Level",
-    key: "edu",
+    sectionKey: "edu",
     items: [
       { label: "Institute", count: 50, value: "institute" },
       { label: "Bachelor's Degree", count: 100, value: "bachelor" },
@@ -345,7 +345,7 @@ export const searchFilters = [
   },
   {
     name: "Years Of Experience",
-    key: "exp",
+    sectionKey: "exp",
     items: [
       { label: "1-3", count: 50, value: "1-3" },
       { label: "3-5", count: 40, value: "3-5" },
@@ -355,7 +355,7 @@ export const searchFilters = [
   },
   {
     name: "Gender",
-    key: "gen",
+    sectionKey: "gen",
     items: [
       { label: "Male", count: 200, value: "male" },
       { label: "Female", count: 100, value: "female" },
@@ -363,7 +363,7 @@ export const searchFilters = [
   },
   {
     name: "Age",
-    key: "age",
+    sectionKey: "age",
     items: [
       { label: "18-25", count: 40, value: "18-25" },
       { label: "26-35", count: 50, value: "26-35" },
@@ -374,77 +374,11 @@ export const searchFilters = [
   },
 ];
 
-type FilterItem = {
-  label: string;
-  count: number;
-  value: string;
-};
-
-type JobFilter = {
-  name: string;
-  key: string;
-  items: FilterItem[];
-};
-
-export const searchJopFilters: JobFilter[] = [
-  {
-    name: "Industry",
-    key: "industry",
-    items: [
-      { label: "Pharmacist", count: 3, value: "pharmacist" },
-      { label: "HealthCare", count: 5, value: "healthcare" },
-      { label: "Administrator", count: 2, value: "administrator" },
-    ],
-  },
-  {
-    name: "Main Specialty",
-    key: "main_specialty",
-    items: [
-      { label: "Physicians", count: 3, value: "physicians" },
-      { label: "Dentists", count: 5, value: "dentists" },
-      { label: "Physiotherapists", count: 2, value: "physiotherapists" },
-      { label: "Pharmacists", count: 24, value: "pharmacists" },
-      { label: "Nurses", count: 3, value: "nurses" },
-    ],
-  },
-  {
-    name: "Work Time",
-    key: "work_time",
-    items: [
-      { label: "Full-time", count: 3, value: "full_time" },
-      { label: "Part-Time", count: 5, value: "part_time" },
-    ],
-  },
-  {
-    name: "Work Place",
-    key: "work_place",
-    items: [
-      { label: "Remote", count: 2, value: "remote" },
-      { label: "On site", count: 24, value: "on_site" },
-      { label: "Hybrid", count: 3, value: "hybrid" },
-    ],
-  },
-  {
-    name: "Categories",
-    key: "category",
-    items: [
-      { label: "Medical", count: 24, value: "medical" },
-      { label: "Physician/Doctor", count: 3, value: "physician_doctor" },
-      { label: "Medical Sonographer", count: 3, value: "medical_sonographer" },
-      { label: "Pharmacist", count: 3, value: "pharmacist" },
-      { label: "Clinical Healthcare", count: 6, value: "clinical_healthcare" },
-      {
-        label: "Radiologic Technologist",
-        count: 4,
-        value: "radiologic_technologist",
-      },
-      { label: "Nutritionist", count: 4, value: "nutritionist" },
-      { label: "Technology", count: 5, value: "technology" },
-    ],
-  },
+export const searchJopFilters: FilterType[] = [
   {
     name: "Job Level",
-    key: "job_level",
+    multiple: true,
+    sectionKey: "clv",
     items: [
       { label: "General", count: 57, value: "general" },
       { label: "Specialist", count: 3, value: "specialist" },
@@ -454,13 +388,63 @@ export const searchJopFilters: JobFilter[] = [
     ],
   },
   {
+    name: "Work Type",
+    multiple: true,
+    sectionKey: "emt",
+    items: [
+      { label: "Full-time", count: 3, value: "full_time" },
+      { label: "Part-Time", count: 5, value: "part_time" },
+    ],
+  },
+  {
+    name: "Work Place",
+    multiple: true,
+    sectionKey: "wp",
+    items: [
+      { label: "Remote", count: 2, value: "remote" },
+      { label: "On site", count: 24, value: "on_site" },
+      { label: "Hybrid", count: 3, value: "hybrid" },
+    ],
+  },
+  {
     name: "Salary Range",
-    key: "salary_range",
+    sectionKey: "sal",
     items: [
       { label: "$700 - $1000", count: 4, value: "700_1000" },
       { label: "$100 - $1500", count: 6, value: "100_1500" },
       { label: "$1500 - $2000", count: 10, value: "1500_2000" },
       { label: "$3000 or above", count: 4, value: "3000_above" },
+    ],
+  },
+  {
+    name: "Gender",
+    multiple: true,
+    sectionKey: "gen",
+    items: [
+      { label: "Male", count: 100, value: "male" },
+      { label: "Female", count: 80, value: "female" },
+    ],
+  },
+
+  {
+    name: "Age Range",
+    sectionKey: "age",
+    items: [
+      { label: "18-25", count: 10, value: "18_25" },
+      { label: "26-35", count: 20, value: "26_35" },
+      { label: "36-45", count: 15, value: "36_45" },
+      { label: "46-60", count: 8, value: "46_60" },
+    ],
+  },
+  {
+    name: "Education Level",
+    multiple: true,
+    sectionKey: "edu",
+    items: [
+      { label: "Bachelor's Degree", count: 30, value: "bachelor" },
+      { label: "Master's Degree", count: 20, value: "master" },
+      { label: "Doctorate Degree", count: 10, value: "doctorate" },
+      { label: "Diploma", count: 5, value: "diploma" },
     ],
   },
 ];

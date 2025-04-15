@@ -14,7 +14,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
-      <Filter sections={filterSections} searchKeys={["Residency (Location)"]} />
+      <Filter sections={filterSections} />
       {/* Right Column: Job Applicants */}
       <JobApplicantsResult applications={applications} />
       {total > 0 && total > applications.length && (

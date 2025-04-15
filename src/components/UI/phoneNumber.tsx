@@ -78,12 +78,13 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
         renderValue={(selected) => {
           const item = countries.find((x) => x.phonecode === selected);
           return (
-            item && (
-              <div className="flex items-center">
-                <Flag code={item.isoCode.toLowerCase()} name={item.name} />
-                <p className="ml-2 max-w-12">{formatCode(selected)}</p>
-              </div>
-            )
+            <div className="flex items-center">
+              <Flag
+                code={item?.isoCode.toLowerCase() || "eg"}
+                name={item?.name || "egypt"}
+              />
+              <p className="ml-2 max-w-12">{formatCode(selected)}</p>
+            </div>
           );
         }}
       />

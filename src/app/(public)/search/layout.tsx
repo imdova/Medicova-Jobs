@@ -5,6 +5,7 @@ import CountrySearchResult, {
   CountryHeading,
 } from "@/components/UI/CountrySearchResult";
 import Filter from "@/components/Layout/filter/filter";
+import JobFilter from "./components/JobFilter";
 
 const layout: React.FC<{
   children: React.ReactNode;
@@ -40,7 +41,7 @@ const layout: React.FC<{
       {/* Main Layout */}
       <main className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1170px]">
         {/* FilterSection */}
-        <Filter sections={searchJopFilters} />
+        <JobFilter />
         {/* Jobs result Section */}
         {children}
       </main>

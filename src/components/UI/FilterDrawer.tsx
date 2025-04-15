@@ -35,8 +35,8 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           },
         }}
       >
-        <div className="sticky top-0 z-[2] p-4 bg-white">
-          <div className=" flex items-center justify-between bg-[#DEF0EB] px-4 py-2">
+        <div className="sticky top-0 z-[2] bg-white p-4">
+          <div className="flex items-center justify-between bg-[#DEF0EB] px-4 py-2">
             <h5 className="text-3xl font-bold">Filters</h5>
             <IconButton onClick={onClose}>
               <Close />
@@ -46,16 +46,11 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
         <div className="space-y-6 p-6">
           {sections.map((section, index) => (
             <FilterItem
-              key={section.key}
+              key={section.sectionKey}
+              {...section}
               index={index}
-              section={{
-                key: section.key,
-                title: section.name,
-                options: section.items,
-              }}
-              value={selectedFilters[section.key] || []}
+              value={selectedFilters[section.sectionKey] || []}
               handleCheckChange={handleCheckChange}
-              isSearch={searchKeys ? searchKeys.includes(section.key) : false}
             />
           ))}
         </div>
