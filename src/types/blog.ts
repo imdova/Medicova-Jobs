@@ -14,14 +14,17 @@ export type BlockType =
   | "flex-column" // need to be added
   | "quote" // need to be added
   | "code" // need to be added
-  | "video" // need to be added
+  | "video"; // need to be added
 export interface Block {
   id: string;
+  parentId?: string;
   type: BlockType;
   content: string;
   imageUrl?: string;
   linkUrl?: string;
   styles: React.CSSProperties;
+  blocks: Block[];
+  allowNesting?: boolean;
   gridProps?: {
     xs?: number;
     sm?: number;
@@ -33,10 +36,11 @@ export type BlockButton = {
   id: BlockType;
   icon: React.ReactNode;
   label: string;
+  blockProps?: Partial<Block>
 };
 
 export interface TabProps {
-  selectedBlock: Block | null;
+  selectedBlock?: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
 }

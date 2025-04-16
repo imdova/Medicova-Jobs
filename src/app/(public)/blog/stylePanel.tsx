@@ -3,22 +3,35 @@
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { stylesFields } from "@/constants/pagebuilder/blocks";
 import { blocksForm } from "@/constants/pagebuilder/formFields";
-import { Block } from "@/types/blog";
+import { Block, TabProps } from "@/types/blog";
 import { Grid } from "@mui/material";
 
-interface TabProps {
-  selectedBlock: Block | null;
-  setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
-  setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
+function updateItem(
+  blocks: Block[],
+  block: Block,
+  updatedFields: Partial<Block>,
+) {
+  return blocks.map((parentBlock) => {
+    if (parentBlock.id !== block.parentId)
+      return parentBlock.id === block.id
+        ? { ...parentBlock, ...updatedFields }
+        : parentBlock;
+
+    const updatedNestedBlocks = parentBlock.blocks.map((item) => {
+      if (item.id === block.id) {
+        return { ...item, ...updatedFields };
+      }
+      return item;
+    });
+
+    return { ...parentBlock, blocks: updatedNestedBlocks };
+  });
 }
 
 export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
   const updateBlock = (data: Partial<Block>) => {
-    setBlocks((prevBlocks) =>
-      prevBlocks.map((block) =>
-        block.id === selectedBlock?.id ? { ...block, ...data } : block,
-      ),
-    );
+    if (selectedBlock)
+      setBlocks((blocks) => updateItem(blocks, selectedBlock, data));
   };
 
   const updateBlockStyles = (styles: Partial<Block["styles"]>) => {

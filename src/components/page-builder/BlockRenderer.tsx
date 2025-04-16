@@ -4,25 +4,56 @@ import Image from "next/image";
 import { BlockTextEditor } from "@/components/editor/editor";
 import Resize from "@/components/UI/Resize";
 import { Block } from "@/types/blog";
+import { Droppable } from "@hello-pangea/dnd";
+import { DraggableBlock } from "./DraggableBlock";
 
 interface BlockRendererProps {
   block: Block;
-  isSelected: boolean;
+  selectedBlock?: Block | null;
+  onSelect: (block: Block) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+}
+
+function updateItem(
+  blocks: Block[],
+  block: Block,
+  updatedFields: Partial<Block>,
+) {
+  return blocks.map((parentBlock) => {
+    if (parentBlock.id !== block.parentId)
+      return parentBlock.id === block.id
+        ? { ...parentBlock, ...updatedFields }
+        : parentBlock;
+
+    const updatedNestedBlocks = parentBlock.blocks.map((item) => {
+      if (item.id === block.id) {
+        return { ...item, ...updatedFields };
+      }
+      return item;
+    });
+
+    return { ...parentBlock, blocks: updatedNestedBlocks };
+  });
 }
 
 export function BlockRenderer({
   block,
-  isSelected,
+  onSelect,
+  selectedBlock,
   setBlocks,
 }: BlockRendererProps) {
+  const isSelected = selectedBlock?.id === block.id;
+
   // Helper function to update block content
-  const updateBlock = (id: string, content: string) => {
-    setBlocks((prevBlocks) =>
-      prevBlocks.map((block) =>
-        block.id === id ? { ...block, content } : block,
-      ),
-    );
+  // const updateBlock = (id: string, content: string) => {
+  //   setBlocks((prevBlocks) =>
+  //     prevBlocks.map((block) =>
+  //       block.id === id ? { ...block, content } : block,
+  //     ),
+  //   );
+  // };
+  const updateBlock = (block: Block, updatedFields: Partial<Block>) => {
+    setBlocks((blocks) => updateItem(blocks, block, updatedFields));
   };
 
   // Helper function to update block styles
@@ -51,7 +82,7 @@ export function BlockRenderer({
           placeholder="Heading 1"
           style={styles}
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-3xl font-bold tracking-tight focus:outline-none md:text-4xl"
         />
       );
@@ -64,7 +95,7 @@ export function BlockRenderer({
           style={styles}
           placeholder="Heading 2"
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-2xl font-semibold tracking-tight focus:outline-none md:text-3xl"
         />
       );
@@ -77,7 +108,7 @@ export function BlockRenderer({
           placeholder="Heading 3"
           style={styles}
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-xl font-semibold tracking-tight focus:outline-none md:text-2xl"
         />
       );
@@ -87,7 +118,7 @@ export function BlockRenderer({
         <BlockTextEditor
           isSelected={isSelected}
           value={block.content}
-          onChange={(content) => updateBlock(block.id, content)}
+          onChange={(content) => updateBlock(block, { content })}
         />
       );
 
@@ -130,6 +161,28 @@ export function BlockRenderer({
           dangerouslySetInnerHTML={{ __html: block.content }}
           className="prose max-w-none"
         />
+      );
+    case "container":
+      return (
+        <div>
+          <Droppable droppableId={block.id}>
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {block.blocks?.map((block, index) => (
+                  <DraggableBlock
+                    key={block.id}
+                    block={block}
+                    index={index}
+                    selectedBlock={selectedBlock}
+                    onSelect={onSelect}
+                    setBlocks={setBlocks}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
       );
 
     default:

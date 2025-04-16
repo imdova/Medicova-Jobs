@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
@@ -7,6 +6,7 @@ import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
 import { Block } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
+import { findNestedItemById, removeNestedItem } from "@/util/blog";
 // import BlogHeader from "@/components/page-builder/BlogHeader";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
@@ -27,13 +27,40 @@ export default function PageBuilder() {
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
 
-  // Block manipulation functions
-  const handleDragEnd = (result: any) => {
-    if (!result.destination) return;
-    const items = Array.from(blocks);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setBlocks(items);
+  const onDragEnd = (result: any) => {
+    const { source, draggableId, destination, type } = result;
+
+    const childBlock = findNestedItemById(blocks, draggableId);
+    if (!destination && childBlock) {
+      const newBlocks = removeNestedItem(blocks, childBlock);
+      setBlocks([...newBlocks, childBlock]);
+      return;
+    }
+
+    if (!destination) return;
+
+    if (type === "GROUP") {
+      const newBlocks = [...blocks];
+      const [movedBlock] = newBlocks.splice(source.index, 1);
+      newBlocks.splice(destination.index, 0, movedBlock);
+      setBlocks(newBlocks);
+      return;
+    }
+
+    // Handle item reordering within same group
+    if (source.droppableId === destination.droppableId) {
+      console.log("🚀 ~ onDragEnd ~ item reordering within same group");
+      const groupIndex = blocks.findIndex(
+        (group) => group.id === source.droppableId,
+      );
+      const newItems = [...blocks[groupIndex].blocks];
+      const [movedItem] = newItems.splice(source.index, 1);
+      newItems.splice(destination.index, 0, movedItem);
+
+      const newGroups = [...blocks];
+      newGroups[groupIndex].blocks = newItems;
+      setBlocks(newGroups);
+    } 
   };
 
   return (
@@ -41,7 +68,7 @@ export default function PageBuilder() {
       <EditorHeader />
       <div className="flex bg-background">
         <main className="flex-1">
-          <div className="max-h-[50px] flex items-center justify-center border-b p-4 border-gray-200">
+          <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
             <ViewModeSelector
               viewMode={viewMode}
               onViewModeChange={setViewMode}
@@ -54,11 +81,11 @@ export default function PageBuilder() {
             className={`scroll-bar-minimal h-[calc(100vh-132px)] overflow-auto bg-gray-50 p-4`}
           >
             <div
-              className={`mx-auto h-full border bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+              className={`mx-auto min-h-full border  bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="blocks">
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="blocks" type="GROUP">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {blocks.map((block, index) => (
@@ -66,7 +93,10 @@ export default function PageBuilder() {
                           key={block.id}
                           block={block}
                           index={index}
-                          isSelected={selectedBlock?.id === block.id}
+                          selectedBlock={findNestedItemById(
+                            blocks,
+                            selectedBlock?.id,
+                          )}
                           onSelect={setSelectedBlock}
                           setBlocks={setBlocks}
                         />
@@ -84,7 +114,7 @@ export default function PageBuilder() {
         <ToolBar
           blocks={blocks}
           setBlocks={setBlocks}
-          selectedBlock={blocks.find((x) => x.id === selectedBlock?.id) || null}
+          selectedBlock={findNestedItemById(blocks, selectedBlock?.id)}
           setSelectedBlock={setSelectedBlock}
         />
       </div>

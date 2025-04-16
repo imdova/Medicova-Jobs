@@ -42,6 +42,9 @@ export const layoutBlocks: BlockButton[] = [
     id: "container",
     icon: <Square className="mr-2 h-4 w-4" />,
     label: "Container",
+    blockProps: {
+      allowNesting: true,
+    },
   },
   {
     id: "grid",
@@ -76,7 +79,7 @@ export const contentBlocks: BlockButton[] = [
     label: "H3",
   },
   {
-    id: "text",
+    id: "paragraph",
     icon: <Type className="mr-2 h-4 w-4" />,
     label: "Paragraph",
   },
@@ -96,9 +99,6 @@ export const contentBlocks: BlockButton[] = [
     label: "Video",
   },
 ];
-
-
-
 
 export const stylesFields: FieldConfig<React.CSSProperties>[] = [
   // Typography Fields

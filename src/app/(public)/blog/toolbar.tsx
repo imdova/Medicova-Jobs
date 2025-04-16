@@ -7,7 +7,7 @@ import BlocksPanel from "./blocksPanel";
 interface ToolBarProps {
   blocks: Block[];
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
-  selectedBlock: Block | null;
+  selectedBlock?: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
 }
 const ToolBar: React.FC<ToolBarProps> = ({

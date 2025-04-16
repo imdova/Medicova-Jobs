@@ -1,21 +1,11 @@
 import { Block } from "@/types/blog";
 import { BlockAction } from "@/types/pageBuilder";
-import { DragIndicator, Edit } from "@mui/icons-material";
+import { DragIndicator } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
-import {
-  ContentCopy,
-  ContentCut,
-  DeleteOutline,
-  WidthFullOutlined,
-} from "@mui/icons-material";
+import { ContentCopy, DeleteOutline } from "@mui/icons-material";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
-import { useState } from "react";
-import {
-  buttonModal,
-  htmlModal,
-  imageModal,
-} from "@/constants/pagebuilder/formFields";
-import FormModal from "../form/FormModal/FormModal";
+import { duplicateNestedItem, removeNestedItem } from "@/util/blog";
+import { generateId } from "@/util";
 
 interface BlockOptionsProps {
   block: Block;
@@ -33,21 +23,23 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   const onAction = (block: Block, action: BlockAction) => {
     switch (action) {
       case "Delete":
-        setBlocks((prev) => prev.filter((x) => x.id !== block.id));
+        setBlocks((prev) => removeNestedItem(prev, block));
         break;
       case "Duplicate":
         const newBlock = {
           ...block,
-          id: Math.random().toString(36).slice(2, 11),
+          id: generateId(),
         };
-        setBlocks((prev) => [...prev, newBlock]);
+        setBlocks((prev) => duplicateNestedItem(prev, newBlock));
         onSelect(newBlock);
         break;
     }
   };
 
   return (
-    <div className="group/button absolute -right-4 z-20 mr-4 flex flex-row-reverse translate-x-1/2 rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 group-hover/item:opacity-100">
+    <div
+      className={`group/button absolute -right-4 z-20 mr-4 top-1/2 -translate-y-1/2  flex translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 ${block.type === "container" ? "group-hover/container:opacity-100" : "group-hover/block:opacity-100"} `}
+    >
       <Tooltip placement="top" arrow title="Drag to Reorder">
         <IconButton
           {...provided}
