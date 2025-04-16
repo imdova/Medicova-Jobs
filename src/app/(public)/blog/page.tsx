@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { Grid } from "@mui/material";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
 import { Block } from "@/types/blog";
-import BlogHeader from "@/components/page-builder/BlogHeader";
+import EditorHeader from "./EditorHeader";
+// import BlogHeader from "@/components/page-builder/BlogHeader";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 const getViewModeWidth = (viewMode: ViewMode) => {
@@ -37,57 +37,57 @@ export default function PageBuilder() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-70px)] bg-background">
-      <main className="scroll-bar-minimal flex-1 overflow-auto p-6">
-        {/* Header Section */}
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Post Your Blog Now</h1>
-          <ViewModeSelector
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-        </div>
+    <div>
+      <EditorHeader />
+      <div className="flex bg-background">
+        <main className="flex-1">
+          <div className="max-h-[50px] flex items-center justify-center border-b p-4 border-gray-200">
+            <ViewModeSelector
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
+          </div>
+          {/* Header Section */}
 
-        {/* Content Area */}
-        <div
-          className={`mx-auto rounded-lg border bg-white p-8 shadow-sm transition-all ${getViewModeWidth(viewMode)}`}
-        >
-          {/* <BlogHeader /> */}
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="blocks">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="min-h-[500px]"
-                >
-                  <Grid container spacing={2}>
-                    {blocks.map((block, index) => (
-                      <DraggableBlock
-                        key={block.id}
-                        block={block}
-                        index={index}
-                        isSelected={selectedBlock?.id === block.id}
-                        onSelect={setSelectedBlock}
-                        setBlocks={setBlocks}
-                      />
-                    ))}
-                  </Grid>
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-      </main>
+          {/* Content Area */}
+          <div
+            className={`scroll-bar-minimal h-[calc(100vh-132px)] overflow-auto bg-gray-50 p-4`}
+          >
+            <div
+              className={`mx-auto h-full border bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+            >
+              {/* <BlogHeader /> */}
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="blocks">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {blocks.map((block, index) => (
+                        <DraggableBlock
+                          key={block.id}
+                          block={block}
+                          index={index}
+                          isSelected={selectedBlock?.id === block.id}
+                          onSelect={setSelectedBlock}
+                          setBlocks={setBlocks}
+                        />
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+          </div>
+        </main>
 
-      {/* Toolbars and Menus */}
-      <ToolBar
-        blocks={blocks}
-        setBlocks={setBlocks}
-        selectedBlock={blocks.find((x) => x.id === selectedBlock?.id) || null}
-        setSelectedBlock={setSelectedBlock}
-      />
+        {/* Toolbars and Menus */}
+        <ToolBar
+          blocks={blocks}
+          setBlocks={setBlocks}
+          selectedBlock={blocks.find((x) => x.id === selectedBlock?.id) || null}
+          setSelectedBlock={setSelectedBlock}
+        />
+      </div>
     </div>
   );
 }

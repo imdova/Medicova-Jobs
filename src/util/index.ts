@@ -11,6 +11,9 @@ export function cn(...inputs: Parameters<typeof clsx>) {
   return twMerge(clsx(...inputs));
 }
 
+export function generateId(): string {
+  return Math.random().toString(36).substring(2, 9)
+}
 
 export const formatDate = (
   date: Date | string,

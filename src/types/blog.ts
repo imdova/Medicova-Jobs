@@ -1,21 +1,20 @@
-import {
-  Type,
-  Image,
-  Donut,
-  Code,
-  Heading1,
-  Heading2,
-  Heading3,
-} from "lucide-react";
-
 export type BlockType =
   | "h1"
   | "h2"
   | "h3"
+  | "text"
   | "paragraph"
   | "image"
   | "button"
-  | "html";
+  | "html"
+  | "divider" // need to be added
+  | "container" // need to be added
+  | "grid" // need to be added
+  | "flex-row" // need to be added
+  | "flex-column" // need to be added
+  | "quote" // need to be added
+  | "code" // need to be added
+  | "video" // need to be added
 export interface Block {
   id: string;
   type: BlockType;
@@ -30,16 +29,14 @@ export interface Block {
   };
 }
 
-export const blockTypes: {
+export type BlockButton = {
   id: BlockType;
-  icon: React.ElementType;
+  icon: React.ReactNode;
   label: string;
-}[] = [
-  { id: "h1", icon: Heading1, label: "Heading 1" },
-  { id: "h2", icon: Heading2, label: "Heading 2" },
-  { id: "h3", icon: Heading3, label: "Heading 3" },
-  { id: "paragraph", icon: Type, label: "Paragraph" },
-  { id: "image", icon: Image, label: "Image" },
-  { id: "button", icon: Donut, label: "Button" },
-  { id: "html", icon: Code, label: "HTML" },
-];
+};
+
+export interface TabProps {
+  selectedBlock: Block | null;
+  setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+  setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
+}
