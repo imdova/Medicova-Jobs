@@ -1,7 +1,6 @@
 "use client";
-
-import UpdateEmail from "@/app/(auth)/employer/setting/components/UpdateEmail";
-import UpdatePassword from "@/app/(auth)/employer/setting/components/UpdatePassword";
+import UpdateEmail from "@/components/settings/UpdateEmail";
+import UpdatePassword from "@/components/settings/UpdatePassword";
 import { CircularProgress } from "@mui/material";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
