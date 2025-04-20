@@ -1,12 +1,16 @@
 "use client";
 import { TAGS } from "@/api";
-import { API_CREATE_FOLDER, API_DELETE_FOLDER_BY_ID, API_UPDATE_FOLDER } from "@/api/seeker";
+import {
+  API_CREATE_FOLDER,
+  API_DELETE_FOLDER_BY_ID,
+  API_UPDATE_FOLDER,
+} from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import DataTable from "@/components/UI/data-table";
 import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
 import FolderMainCard from "@/components/UI/folder-main-card";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { FieldConfig, Folder, UserState } from "@/types";
+import { FieldConfig, Folder } from "@/types";
 import { getFullLastEdit } from "@/util";
 import { handleDuplicates } from "@/util/company/companyform";
 import { Add, Search } from "@mui/icons-material";
@@ -55,6 +59,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
   const [folder, setFolder] = useState<Partial<Folder> | null>(null);
   const { isLoading, error, update, reset } = useUpdateApi<Folder>(onSuccess);
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<(number | string)[]>([]);
 
   const onOpen = () => setFolder({ name: "", companyId: companyId });
   const onEdit = (folder: Folder) => setFolder(folder);
@@ -127,7 +132,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
         onDelete={handleDelete}
         onClose={onCloseDelete}
       />
-      <div className="mb-4 flex items-center justify-between rounded-[10px] border border-gray-100 bg-white p-4 px-6 shadow-soft">
+      <div className="mb-4 flex items-center justify-between rounded-[10px] border border-gray-200 bg-white p-4 px-6 shadow-soft">
         <h1 className="text-3xl font-bold">Folders</h1>
         <IconButton
           onClick={onOpen}
@@ -196,6 +201,8 @@ const FolderResults: React.FC<FolderResultsProps> = ({
               total={total - RECENT_FOLDERS || 0}
               fixedNumberPerPage={5}
               searchQuery={query}
+              selected={selected}
+              setSelected={setSelected}
               columns={[
                 {
                   key: "name",
@@ -214,7 +221,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                         href={`/folder/${folder.id}`}
                       >
                         <span>{folder.name}</span>
-                        <span className="text-xs text-secondary ml-2">
+                        <span className="ml-2 text-xs text-secondary">
                           ({getFullLastEdit(folder.created_at)})
                         </span>
                       </Link>
@@ -236,7 +243,6 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                     new Date(folder.updated_at).toLocaleDateString(),
                 },
               ]}
-              isSelectable
               onEdit={onEdit}
               onDelete={onDelete}
             />

@@ -9,13 +9,13 @@ import {
   WidthFullOutlined,
 } from "@mui/icons-material";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
-import DynamicFormModal from "../form/DynamicFormModal";
 import { useState } from "react";
 import {
   buttonModal,
   htmlModal,
   imageModal,
 } from "@/constants/pagebuilder/formFields";
+import FormModal from "../form/FormModal/FormModal";
 
 interface BlockOptionsProps {
   block: Block;
@@ -83,7 +83,7 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   return (
     <>
       {modalData && (
-        <DynamicFormModal
+        <FormModal
           open={isModalOpen}
           onClose={close}
           onSubmit={handleSubmit}

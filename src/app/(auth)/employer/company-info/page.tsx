@@ -15,6 +15,10 @@ const page = async () => {
   company.companySectorName = company.companySectorName || null;
   company.companyTypeName = company.companyTypeName || null;
 
-  return <CompanyInfoForm company={company} />;
+  return (
+    <div className="w-full px-4 md:px-5">
+      <CompanyInfoForm company={company} />
+    </div>
+  );
 };
 export default page;

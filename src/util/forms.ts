@@ -1,5 +1,6 @@
 import { FieldConfig } from "@/types";
 import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
+import { Path } from "react-hook-form";
 
 export const isValidEgyptianPhoneNumber = (phone: string): boolean => {
   const egyptianPhoneRegex = /^(?:\+20|0020)?(10|11|12|15)\d{8}$/;
@@ -31,13 +32,31 @@ export const getDefaultValues = (
   ...initialValues,
 });
 
-export function getNestedValue(
-  formValues: Record<string, any>,
-  path: string,
+export function getNestedValue<T>(
+  formValues: T,
+  path: Path<T>,
 ): any {
-  const keys = path.split(".");
-  const value = keys.reduce((current, key) => {
+  const keys = path.split(".") as (keyof T)[];
+  const value = keys.reduce((current: any, key: keyof T) => {
     return current && current[key] !== undefined ? current[key] : undefined;
   }, formValues);
   return value;
+}
+
+export function getDependsOnLabel(dependsOn: FieldConfig | null | undefined): string | undefined {
+  if (!dependsOn) {
+    return undefined;
+  }
+
+  if (dependsOn.textFieldProps?.label) {
+    return typeof dependsOn.textFieldProps.label === 'string'
+      ? dependsOn.textFieldProps.label.replace("*", "")
+      : undefined;
+  }
+
+  if (dependsOn.label) {
+    return dependsOn.label.replace("*", "");
+  }
+
+  return undefined;
 }

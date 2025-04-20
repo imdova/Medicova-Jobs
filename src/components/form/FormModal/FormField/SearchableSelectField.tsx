@@ -7,14 +7,14 @@ import {
 } from "@mui/material";
 import { FieldConfig } from "@/types";
 import SearchableSelect from "@/components/UI/SearchableSelect";
-import { getNestedValue } from "@/util/forms";
+import { getDependsOnLabel, getNestedValue } from "@/util/forms";
 
 interface SelectFieldProps {
   field: FieldConfig;
   controllerField: any;
   error: any;
-  resetValues: (fieldNames: (string | number)[]) => void;
-  formValues: Record<string, any>;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
+  formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;
 }
 
@@ -28,14 +28,18 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
 }) => {
   const options = field.options || [];
   const dependsOn =
-    field.dependsOn && !getNestedValue(formValues, field.dependsOn)
+    field.dependsOn &&
+    formValues &&
+    !getNestedValue(formValues, field.dependsOn)
       ? dependsOnField
       : null;
+  const dependsOnValue = getDependsOnLabel(dependsOn);
   const placeholder =
     "Select " +
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
       : field.label?.replace("*", ""));
+  const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
       {field.textFieldProps?.label ? (
@@ -47,17 +51,12 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
       )}
       <Tooltip
         title={
-          dependsOn
-            ? `Please select ${
-                dependsOn.textFieldProps?.label
-                  ? String(dependsOn.textFieldProps?.label)?.replace("*", "")
-                  : dependsOn.label?.replace("*", "")
-              } first`
-            : undefined
+          dependsOnValue ? `Please select ${dependsOnValue} first` : undefined
         }
         placement="bottom"
       >
         <SearchableSelect
+          className={`bg-white ${className}`}
           {...controllerField}
           displayEmpty
           options={options}
@@ -66,12 +65,12 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
           onChange={(e) => {
             controllerField.onChange(e);
             field.onChange?.(e.target.value);
-            if (field.resetFields) {
+            if (field.resetFields && resetValues) {
               resetValues(field.resetFields);
             }
           }}
           renderValue={(value) => {
-            const selected = options.find((opt) => opt.value === value)?.label;
+            const selected = options.find((opt) => opt.value == value)?.label;
             return selected ? (
               selected
             ) : (

@@ -1,6 +1,6 @@
 import { roleBasedSideBarLinks } from "@/constants/side-bar";
-import { UserState } from "@/types";
 import { RoleState } from "@/types/next-auth";
+import { User } from "next-auth";
 
 type SideBarType = "minimal" | "full" | "none";
 type LinksType = "default" | "userType";
@@ -16,7 +16,7 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/me/[id]", sideBarType: "full", linksType: "userType" },
   { pattern: "/co/[id]", sideBarType: "full", linksType: "userType" },
 
-  { pattern: "/chat", sideBarType: "full", linksType: "userType" },
+  { pattern: "/chat", sideBarType: "minimal", linksType: "userType" },
   { pattern: "/notifications", sideBarType: "full", linksType: "userType" },
 
   { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },
@@ -28,7 +28,12 @@ export const routeConfigs: RouteConfig[] = [
     linksType: "userType",
   },
   {
-    pattern: "/employer/job/manage-jobs/[id]", 
+    pattern: "/employer/subscription-plans",
+    sideBarType: "minimal",
+    linksType: "userType",
+  },
+  {
+    pattern: "/employer/job/manage-jobs/[id]",
     sideBarType: "minimal",
     linksType: "userType",
   },
@@ -40,6 +45,8 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/employer/*", sideBarType: "full", linksType: "userType" },
   //job-seeker
   { pattern: "/job-seeker/*", sideBarType: "full", linksType: "userType" },
+  //admin
+  { pattern: "/admin/*", sideBarType: "full", linksType: "userType" },
 ];
 
 export const matchRoute = (pathname: string): RouteConfig | undefined => {
@@ -69,8 +76,10 @@ export const matchRoute = (pathname: string): RouteConfig | undefined => {
   return wildcardMatch;
 };
 
-export function getSideBarLinks(user?: UserState, pathname?: string) {
+export function getSideBarLinks(user?: User, pathname?: string) {
+  // TODO:
   const userType = user?.type as RoleState;
+  // const userType = "admin" as RoleState;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
     if (type === "userType" && userType) {
@@ -87,5 +96,5 @@ export function getSideBarLinks(user?: UserState, pathname?: string) {
       }
     }
   }
-  return [];
+  return roleBasedSideBarLinks.default;
 }

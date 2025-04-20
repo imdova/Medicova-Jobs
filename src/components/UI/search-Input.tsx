@@ -10,6 +10,7 @@ interface SearchProps extends ComponentProps<typeof TextField> {
   children?: React.ReactNode;
   isBounce?: boolean;
   formClassName?: string;
+  keyParam?: string;
 }
 
 let timer: NodeJS.Timeout;
@@ -28,6 +29,7 @@ const Input: React.FC<SearchProps> = ({
   pathname: initialPathname,
   children,
   isBounce,
+  keyParam = "q",
   ...props
 }) => {
   const searchParams = useSearchParams();
@@ -35,16 +37,16 @@ const Input: React.FC<SearchProps> = ({
   const pathname = usePathname();
   // const currentPage = pathname.split("/").pop();
   const newPathname = initialPathname || pathname;
-  const initialSearchText = searchParams.get("q") || "";
+  const initialSearchText = searchParams.get(keyParam) || "";
   const [query, setQuery] = useState(initialSearchText);
 
   function onSubmit() {
     const newParams = new URLSearchParams(searchParams.toString());
     if (query) {
-      newParams.set("q", query);
+      newParams.set(keyParam, query);
       newParams.delete("page");
     } else {
-      newParams.delete("q");
+      newParams.delete(keyParam);
     }
     onClick?.();
     router.push(createUrl(newPathname, newParams));
@@ -52,7 +54,7 @@ const Input: React.FC<SearchProps> = ({
 
   const updateSearchParams = debounce((value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
-    newParams.set("q", value);
+    newParams.set(keyParam, value);
     newParams.delete("page");
     router.push(createUrl(pathname, newParams));
   }, 300);
@@ -67,7 +69,7 @@ const Input: React.FC<SearchProps> = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && query.trim()) {
       e.preventDefault();
-      onSubmit()
+      onSubmit();
     }
   };
   return (
@@ -76,7 +78,6 @@ const Input: React.FC<SearchProps> = ({
       value={query}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
-
     />
   );
 };
@@ -86,23 +87,24 @@ const SearchInputForm: React.FC<SearchProps> = ({
   children,
   isBounce,
   formClassName,
+  keyParam = "q",
   ...props
 }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const newPathname = initialPathname || pathname;
-  const initialSearchText = searchParams.get("q") || "";
+  const initialSearchText = searchParams.get(keyParam) || "";
   const [query, setQuery] = useState(initialSearchText);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const newParams = new URLSearchParams(searchParams.toString());
     if (query) {
-      newParams.set("q", query);
+      newParams.set(keyParam, query);
       newParams.delete("page");
     } else {
-      newParams.delete("q");
+      newParams.delete(keyParam);
     }
     onClick?.();
     router.push(createUrl(newPathname, newParams));
@@ -112,29 +114,22 @@ const SearchInputForm: React.FC<SearchProps> = ({
     setQuery(value);
   };
   return (
-    <form
-      onSubmit={onSubmit}
-      className={formClassName}
-    >
-      <TextField
-        {...props}
-        value={query}
-        onChange={handleChange}
-      />
+    <form onSubmit={onSubmit} className={formClassName}>
+      <TextField {...props} value={query} onChange={handleChange} />
       {children}
     </form>
   );
 };
 
 const SearchInput: React.FC<SearchProps> = (props) => {
-  return props.children ?
-    (<Suspense>
+  return props.children ? (
+    <Suspense>
       <SearchInputForm {...props} />
-    </Suspense>)
-    : (
-      <Suspense>
-        <Input {...props} />
-      </Suspense>
-    );
+    </Suspense>
+  ) : (
+    <Suspense>
+      <Input {...props} />
+    </Suspense>
+  );
 };
 export default SearchInput;

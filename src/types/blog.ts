@@ -22,9 +22,7 @@ export interface Block {
   content: string;
   imageUrl?: string;
   linkUrl?: string;
-  styles: {
-    [key: string]: string;
-  };
+  styles: React.CSSProperties;
   gridProps?: {
     xs?: number;
     sm?: number;

@@ -1,152 +1,109 @@
 "use client";
-import React, { useState, useRef } from "react";
-import {
-  Typography,
-  Grid,
-  Card,
-  Box,
-  Button,
-  IconButton,
-  Alert,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import pdf from "@/components/icons/pdf.png";
-import Image from "next/image";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import { FileUploadModal } from "@/components/form/FileUploadModal";
+import uploadFiles from "@/lib/files/imageUploader";
+import { PDF_ICON } from "@/components/icons/icons";
+import { Upload } from "@mui/icons-material";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { TAGS } from "@/api";
 
-const getFileNameFromUrl = (url: string): string => {
+const getFileNameFromUrl = (url?: string | null): string => {
+  if (!url) return "";
   const urlSplit = url.split("/");
   return urlSplit[urlSplit.length - 1];
 };
-const myCv = "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf";
 const Resume: React.FC<{
   user: UserProfile;
   isMe: boolean;
   isLocked: boolean;
 }> = ({ user, isMe, isLocked }) => {
-  const [fileName, setFileName] = useState<string | null>(getFileNameFromUrl(myCv));
-  const [fileUrl, setFileUrl] = useState<string | null>(myCv);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const myCv = user.resume;
+  const fileName = getFileNameFromUrl(myCv);
+  const { update } = useUpdateApi<UserProfile>();
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const allowedExtensions = [
-        "application/pdf",
-        "application/msword",
-        // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-      if (allowedExtensions.includes(file.type)) {
-        setFileName(file.name);
-        setFileUrl(URL.createObjectURL(file));
-        setAlertMessage(null); // Reset alert message on successful upload
-      } else {
-        setAlertMessage("Only Word and PDF files are allowed.");
-        event.target.value = ""; // Clear the invalid file
-      }
-    }
-  };
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const handleFileRemove = () => {
-    setFileName(null);
-    setFileUrl(null);
-    setAlertMessage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset the file input value
-    }
+  const handleUpload = async (files: File[]) => {
+    const file = files[0];
+    const [resume] = await uploadFiles([file]);
+    const body = { id: user.id, resume };
+    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
   };
 
   const handleReviewCV = () => {
-    if (fileUrl) {
-      window.open(fileUrl, "_blank"); // Open the PDF in a new tab
-      setAlertMessage(null); // Reset alert message on successful review
-    } else {
-      setAlertMessage("No CV uploaded.");
-    }
+    myCv && window.open(myCv, "_blank"); // Open the PDF in a new tab
   };
 
-  if (!isMe && !fileUrl) {
+  if (!isMe && !myCv) {
     return null;
   }
   if (!isMe && isLocked) {
     return null;
   }
   return (
-    <div className="mb-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
-      <h3 className="mb-2 text-2xl font-bold text-main">Resume</h3>
-
-      {/* Alert */}
-      {alertMessage && (
-        <Alert severity="error" sx={{ marginBottom: "16px" }}>
-          {alertMessage}
-        </Alert>
-      )}
+      <h3 className="mb-2 text-xl font-semibold text-main">Resume</h3>
 
       {/* Uploaded CV Display */}
-      <div className="my-2 flex items-center justify-between gap-2 rounded bg-primary-100 p-2">
-        <Image
-          src={pdf}
-          alt="profile"
-          width={40}
-          height={40}
-          className="rounded-xl object-cover"
+      <div className="my-2 flex items-center gap-2 rounded bg-primary-100 p-2">
+        <PDF_ICON
+          width={32}
+          height={32}
+          className="min-w-[40px] text-[#EF5350]"
         />
-        <p className="flex-1 font-semibold text-main">
-          {fileName || "No file uploaded"}
-        </p>
-        {isMe && (
-          <IconButton
-            color="error"
-            onClick={handleFileRemove}
-            disabled={!fileName}
-          >
-            <DeleteIcon />
-          </IconButton>
+        {fileName ? (
+          <p className="break-all text-sm text-main">{fileName}</p>
+        ) : (
+          <p className="text-sm text-secondary">No file uploaded</p>
         )}
       </div>
 
       {/* Buttons */}
       <div className="flex justify-between gap-3">
-        <Button
-          variant="outlined"
-          disabled={!fileUrl}
-          onClick={handleReviewCV}
-          className="flex-1"
-        >
-          Review CV
-        </Button>
-        {isMe ? (
+        {myCv && (
           <Button
-            variant="contained"
-            className="flex-1 text-nowrap"
-            color="primary"
-            component="label"
+            variant="outlined"
+            disabled={!myCv}
+            onClick={handleReviewCV}
+            className="flex-1 text-sm"
           >
-            Upload CV
-            <input
-              type="file"
-              accept=".pdf, .doc, .docx"
-              hidden
-              onChange={handleFileUpload}
-              ref={fileInputRef}
-            />
+            Download
           </Button>
-        ) : (
-          fileUrl && (
+        )}
+        {isMe ? (
+          myCv ? (
             <Button
-              href={fileUrl}
-              className="flex-1 text-nowrap"
               variant="contained"
-              color="primary"
-              component="a"
-              download
+              onClick={() => setIsUploadModalOpen(true)}
+              className="flex-1 text-sm"
             >
-              Download CV
+              Change
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              className="flex-1 text-sm"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              Upload <Upload className="ml-2" />
             </Button>
           )
-        )}
+        ) : null}
       </div>
+
+      <FileUploadModal
+        open={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={handleUpload}
+        acceptedFileTypes={["application/pdf"]}
+        title={"Upload a your resume"}
+        previewType="pdf"
+        uploadButtonText={"Upload"}
+        description="choose a pdf file as your resume. Supported formats: PDF"
+      />
     </div>
   );
 };

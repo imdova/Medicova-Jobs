@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Flag from "./flagitem";
 import SearchableSelect from "./SearchableSelect";
 import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js";
-import { isValidEgyptianPhoneNumber } from "@/util/forms";
 
 const formatCode = (code: string): string => {
   if (!code.startsWith("+")) {
@@ -79,12 +78,13 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
         renderValue={(selected) => {
           const item = countries.find((x) => x.phonecode === selected);
           return (
-            item && (
-              <div className="flex items-center">
-                <Flag code={item.isoCode.toLowerCase()} name={item.name} />
-                <p className="ml-2 max-w-12">{formatCode(selected)}</p>
-              </div>
-            )
+            <div className="flex items-center">
+              <Flag
+                code={item?.isoCode.toLowerCase() || "eg"}
+                name={item?.name || "egypt"}
+              />
+              <p className="ml-2 max-w-12">{formatCode(selected)}</p>
+            </div>
           );
         }}
       />
@@ -94,7 +94,11 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
           "& fieldset": { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
           ...props.sx,
         }}
-        defaultValue={phoneNumber || getOnlyPhoneNumber(props.value as string)}
+        defaultValue={
+          phoneNumber || props.value
+            ? getOnlyPhoneNumber(props.value as string)
+            : ""
+        }
         value={phoneNumber ? phoneNumber : undefined}
         onChange={handlePhoneChange}
       />

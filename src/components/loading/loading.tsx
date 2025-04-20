@@ -9,4 +9,9 @@ const Loading: React.FC = () => {
   );
 };
 
+
+export const IconSkeleton = () => {
+  return <div className="h-6 w-6 animate-pulse rounded-full bg-gray-300"></div>;
+};
+
 export default Loading;

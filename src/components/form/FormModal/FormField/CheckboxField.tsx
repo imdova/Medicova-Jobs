@@ -1,29 +1,38 @@
 import React from "react";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Switch, FormControlLabel } from "@mui/material";
+import { ControllerRenderProps, FieldValues } from "react-hook-form";
+import { FieldConfig } from "@/types";
 
 interface CheckboxFieldProps {
-    field: any;
-    controllerField: any;
-    onCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  field: any;
+  controllerField: Partial<ControllerRenderProps<FieldValues, string>>;
+  onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  resetValues?: (fieldNames: FieldConfig<any>["name"][]) => void;
 }
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = ({
-    field,
-    controllerField,
-    onCheckboxChange,
+  field,
+  controllerField,
+  onCheckboxChange,
+  resetValues,
 }) => (
-    <FormControlLabel
-        control={
-            <Checkbox
-                {...controllerField}
-                checked={!!controllerField.value}
-                onChange={(e) => {
-                    controllerField.onChange(e);
-                    onCheckboxChange(e);
-                }}
-                sx={{ "& .MuiSvgIcon-root": { fontSize: 24 } }}
-            />
-        }
-        label={field.label || ""}
-    />
+  <FormControlLabel
+    control={
+      <Switch
+        {...controllerField}
+        checked={!!controllerField.value}
+        onChange={(e) => {
+          controllerField.onChange?.(e);
+          onCheckboxChange?.(e);
+          if (field.resetFields && resetValues) {
+            resetValues(field.resetFields);
+          }
+        }}
+        sx={{
+          "& .MuiSwitch-thumb": { width: 20, height: 20 }, // optional customization
+        }}
+      />
+    }
+    label={field.label || ""}
+  />
 );

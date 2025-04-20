@@ -1,33 +1,253 @@
-import { NavItem } from "@/types";
-import { RoleState } from "@/types/next-auth";
+import { RoleBasedLinks } from "@/types";
 import {
   BusinessOutlined,
   DescriptionOutlined,
   FolderOutlined,
   HelpOutline,
   HomeOutlined,
-  InfoOutlined,
   MessageOutlined,
   NotificationsActiveOutlined,
   PaidOutlined,
-  Person,
   PostAddOutlined,
   Search,
   SettingsOutlined,
   WorkOutline,
 } from "@mui/icons-material";
 
-export type CommonLinksType = "home";
-
-export type RoleBasedLinks = {
-  [key: string]: NavItem[];
-};
-export type CommonLinks = {
-  [key in CommonLinksType]: NavItem[];
-};
-
 export const roleBasedSideBarLinks: RoleBasedLinks = {
-  admin: [],
+  admin: [
+    {
+      id: 0,
+      type: "profile",
+      pattern: "/me/[id]",
+    },
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: HomeOutlined,
+      path: "/admin",
+    },
+    {
+      id: 2,
+      label: "Manage Users",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 21,
+          label: "Manage All Users",
+          icon: WorkOutline,
+          path: "/admin/users",
+          type: "supLink",
+        },
+        {
+          id: 22,
+          label: "Manage Employers",
+          icon: WorkOutline,
+          path: "/admin/users/employers",
+          type: "supLink",
+        },
+        {
+          id: 23,
+          label: "Manage Job Seekers",
+          icon: PostAddOutlined,
+          path: "/admin/users/seekers",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 6,
+      label: "Content",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 61,
+          label: "Home Page",
+          icon: WorkOutline,
+          path: "/admin/users",
+          type: "supLink",
+        },
+        {
+          id: 62,
+          label: "Search Page",
+          icon: WorkOutline,
+          path: "/admin/users/employers",
+          type: "supLink",
+        },
+        {
+          id: 63,
+          label: "Company Page",
+          icon: PostAddOutlined,
+          path: "/admin/users/seekers",
+          type: "supLink",
+        },
+        {
+          id: 64,
+          label: "Seeker Page",
+          icon: PostAddOutlined,
+          path: "/admin/users/seekers",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 7,
+      label: "Manage Jobs",
+      icon: HomeOutlined,
+      path: "/admin/jobs",
+    },
+    {
+      id: 8,
+      label: "Manage Applications",
+      icon: HomeOutlined,
+      path: "/admin/Applications",
+    },
+    {
+      id: 11,
+      label: "Billing & Subscription",
+      icon: PaidOutlined,
+      path: "/employer/subscription-plans",
+    },
+    {
+      id: 12,
+      label: "Report",
+      icon: DescriptionOutlined,
+    },
+    {
+      id: 13,
+      label: "Chat",
+      icon: MessageOutlined,
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 40,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/admin/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
+  default: [
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: HomeOutlined,
+      path: "/employer/dashboard",
+    },
+    {
+      id: 2,
+      label: "Company Info",
+      icon: BusinessOutlined,
+      path: "/employer/company-info",
+    },
+    {
+      id: 3,
+      label: "Jobs",
+      icon: WorkOutline,
+      type: "collapse",
+      links: [
+        {
+          id: 4,
+          label: "Manage Jobs",
+          icon: WorkOutline,
+          path: "/employer/job/manage-jobs",
+          pattern: "/employer/job/manage-jobs/*",
+          type: "supLink",
+        },
+        {
+          id: 5,
+          label: "Post New Job",
+          icon: PostAddOutlined,
+          path: "/employer/job/posted",
+          pattern: "/employer/job/posted/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 7,
+      label: "Search",
+      icon: Search,
+      type: "collapse",
+      links: [
+        {
+          id: 8,
+          label: "Search",
+          icon: Search,
+          path: "/employer/search",
+          type: "supLink",
+        },
+        {
+          id: 10,
+          label: "My Folders",
+          icon: FolderOutlined,
+          path: "/employer/search/saved-search",
+          pattern: "/employer/search/saved-search/*",
+          type: "supLink",
+        },
+      ],
+    },
+    {
+      id: 11,
+      label: "Billing & Subscription",
+      icon: PaidOutlined,
+      path: "/employer/subscription-plans",
+    },
+    {
+      id: 12,
+      label: "Report",
+      icon: DescriptionOutlined,
+    },
+    {
+      id: 13,
+      label: "Chat",
+      icon: MessageOutlined,
+      path: "/chat",
+      notifications: 3,
+    },
+    {
+      id: 40,
+      icon: NotificationsActiveOutlined,
+      label: "Notifications",
+      path: "/notifications",
+      notifications: 4,
+    },
+    {
+      id: 15,
+      type: "text",
+      section: "Settings",
+    },
+    {
+      id: 16,
+      label: "Settings",
+      icon: SettingsOutlined,
+      path: "/employer/setting",
+    },
+    {
+      id: 17,
+      label: "Help Center",
+      icon: HelpOutline,
+    },
+  ],
   employer: [
     {
       id: 0,
@@ -149,12 +369,12 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       type: "profile",
       pattern: "/me/[id]",
     },
-    {
-      id: 18,
-      icon: HomeOutlined,
-      label: "Home",
-      path: "/",
-    },
+    // {
+    //   id: 18,
+    //   icon: HomeOutlined,
+    //   label: "Home",
+    //   path: "/",
+    // },
     {
       id: 20,
       icon: MessageOutlined,
@@ -198,6 +418,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: SettingsOutlined,
       label: "Settings",
       path: "/job-seeker/setting",
+      pattern: "/job-seeker/setting/*",
     },
     {
       id: 28,

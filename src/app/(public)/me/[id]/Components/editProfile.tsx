@@ -3,9 +3,9 @@ import { TAGS } from "@/api";
 import {
   API_GET_CAREER_LEVELS_BY_CATEGORY,
   API_GET_CATEGORIES,
-  API_GET_INDUSTRIES,
   API_GET_SPECIALITIES_BY_CATEGORY,
 } from "@/api/admin";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import ShareMenu from "@/components/UI/ShareMenu";
 import useFetch from "@/hooks/useFetch";
@@ -26,6 +26,8 @@ interface EditProfileProps {
 const initialValues = (user: Partial<UserProfile>): Partial<UserProfile> => ({
   firstName: user?.firstName,
   lastName: user?.lastName,
+  birth: user?.birth,
+  nationality: user?.nationality,
   title: user?.title,
   state: user?.state || null,
   country: user?.country || null,
@@ -60,54 +62,54 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
   }, [countryCode]);
 
   // categories and specialities
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const { data: categoriesData } = useFetch<PaginatedResponse<Industry>>(
+    API_GET_CATEGORIES,
+    {},
+    (categories) =>
+      setCategoryId(
+        categories.data?.find((category) => category.id === user?.categoryId)
+          ?.id || null,
+      ),
+  );
+  const { data: specialitiesData } = useFetch<PaginatedResponse<Industry>>(
+    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId : null,
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
+  );
+  const { data: careerLevelData } = useFetch<PaginatedResponse<Industry>>(
+    categoryId
+      ? `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${categoryId}`
+      : null,
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
+  );
 
-  const { data: categories } =
-    useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
-  const [jobCareerLevels, setJobCareerLevels] = useState<Industry[]>([]);
-  const [jobSpecialities, setJobSpecialities] = useState<Industry[]>([]);
-
-  const handleCategorySelect = async (id: string) => {
-    const specialtyResponse = await fetch(
-      API_GET_SPECIALITIES_BY_CATEGORY + id,
-    );
-    const specialtyData =
-      (await specialtyResponse.json()) as PaginatedResponse<Industry>;
-    setJobSpecialities(specialtyData.data);
-
-    const careerLevelResponse = await fetch(
-      `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${id}`,
-    );
-    const careerLevelData =
-      (await careerLevelResponse.json()) as PaginatedResponse<Industry>;
-    setJobCareerLevels(careerLevelData.data);
-  };
+  const categories = categoriesData?.data || [];
+  const specialities = specialitiesData?.data || [];
+  const careerLevels = careerLevelData?.data || [];
 
   // fields
   const handleUpdate = async (formData: Partial<UserProfile>) => {
-    const {
-      firstName,
-      lastName,
-      title,
-      city,
-      state: formState,
-      country: formCountry,
-    } = formData;
+    const { state: formState, country: formCountry } = formData;
     const country =
       countries.data.find((country) => country.isoCode === formCountry?.code) ||
       null;
     const state =
       states.data.find((state) => state.isoCode === formState?.code) || null;
+
     const body: Partial<UserProfile> = {
       id: user?.id,
+      ...formData,
       country: country ? { code: country.isoCode, name: country.name } : null,
       state: state ? { code: state.isoCode, name: state.name } : null,
-      firstName,
-      lastName,
-      title,
-      city,
     };
     console.log("🚀 ~ handleUpdate ~ body:", body);
-    // await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
+    await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
   };
 
   const fields: FieldConfig<UserProfile>[] = [
@@ -128,6 +130,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       type: "date",
       label: "Date of Birth*",
       gridProps: { xs: 6 },
+      textFieldProps: {
+        inputProps: {
+          max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+            .toISOString()
+            .split("T")[0],
+        },
+      },
     },
     {
       label: "Nationality*",
@@ -143,23 +152,22 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     {
       name: "categoryId",
       type: "select",
-      required: true,
       label: "Category*",
-      onChange: handleCategorySelect,
-      options: categories?.data.map((type) => ({
-        value: type.id,
-        label: type.name,
+      resetFields: ["specialityId", "careerLevelId"],
+      onChange: (value) => setCategoryId(value),
+      options: categories.map((category) => ({
+        value: category.id,
+        label: category.name,
       })),
     },
     {
       name: "specialityId",
       type: "select",
       dependsOn: "categoryId",
-      required: true,
       label: "Specialty*",
-      options: jobSpecialities.map((type) => ({
-        value: type.id,
-        label: type.name,
+      options: specialities.map((speciality) => ({
+        value: speciality.id,
+        label: speciality.name,
       })),
       gridProps: { xs: 6 },
     },
@@ -167,11 +175,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "careerLevelId",
       type: "select",
       dependsOn: "categoryId",
-      required: true,
       label: "Career Level*",
-      options: jobCareerLevels.map((type) => ({
-        value: type.id,
-        label: type.name,
+      options: careerLevels.map((careerLevel) => ({
+        value: careerLevel.id,
+        label: careerLevel.name,
       })),
       gridProps: { xs: 6 },
     },
@@ -179,7 +186,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "country.code",
       type: "search-select",
       label: "Country",
-      resetFields: ["state.code"],
+      resetFields: ["state.code", "city"],
       textFieldProps: {
         placeholder: "Select country",
       },
@@ -212,7 +219,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         placeholder: "Enter City",
       },
       gridProps: { xs: 12, md: 4 },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
     },

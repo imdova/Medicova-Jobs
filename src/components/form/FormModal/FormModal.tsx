@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect } from "react";
 import { Dialog, DialogContent } from "@mui/material";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import { ModalHeader } from "./ModalHeader";
@@ -14,13 +13,20 @@ const FormModal: React.FC<DynamicModalProps> = ({
   open,
   onClose,
   onSubmit,
+  onDelete,
   fields,
   title,
   description,
   initialValues = {},
   children,
   loading,
+  deleteLoading,
   error,
+  submitButtonText,
+  deleteButtonText,
+  cancelButtonText,
+  removeField,
+  mode
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -31,7 +37,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     preventDefault: open,
   });
 
-  const formMethods = useFormState(open, fields, initialValues);
+  const formMethods = useFormState(open, fields, initialValues,mode);
   const {
     reset,
     setValue,
@@ -43,7 +49,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
       const field = fields.find((f) => f.name === name);
       if (field) {
         const defaultValue = field.type === "checkbox" ? false : "";
-        setValue(String(name), defaultValue);
+        setValue(String(name), defaultValue, { shouldDirty: true });
       }
     });
   };
@@ -78,7 +84,12 @@ const FormModal: React.FC<DynamicModalProps> = ({
           "& .MuiPaper-root": { overflowX: "hidden" },
         }}
       >
-        <ModalHeader title={title} description={description} error={error} />
+        <ModalHeader
+          title={title}
+          description={description}
+          error={error}
+          handleCancel={handleCancel}
+        />
         <DialogContent className="p-0">
           <FormContent
             fields={fields}
@@ -87,8 +98,14 @@ const FormModal: React.FC<DynamicModalProps> = ({
             hiddenFields={hiddenFields}
             onCheckboxChange={handleCheckboxChange}
             loading={loading}
+            deleteLoading={deleteLoading}
+            onDelete={onDelete}
             resetValues={resetValues}
             onCancel={handleCancel}
+            submitButtonText={submitButtonText}
+            deleteButtonText={deleteButtonText}
+            cancelButtonText={cancelButtonText}
+            removeField={removeField}
           >
             {children}
           </FormContent>

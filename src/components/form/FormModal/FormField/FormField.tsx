@@ -11,16 +11,24 @@ import { SelectField } from "./SelectField";
 import { ComponentField } from "./ComponentField";
 import { TextFieldComponent } from "./TextFieldComponent";
 import { SearchableSelectField } from "./SearchableSelectField";
+import { PhoneNumberField } from "./phoneNumberField";
+import { IconButton } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import { FileField } from "./FileField";
+import DatePickerField from "./DatePickerField";
+import { RadioFieldComponent } from "./RadioField";
 import { TextEditorField } from "./TextEditorField";
 
 interface FormFieldProps {
   field: FieldConfig;
-  control: any;
-  hidden: boolean;
+  control?: any;
+  fieldController?: ControllerRenderProps<FieldValues, string>;
+  hidden?: boolean;
   dependsOnField?: FieldConfig;
-  onCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  formValues: Record<string, any>;
-  resetValues: (fieldNames: (string | number)[]) => void;
+  onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  formValues?: Record<string, any>;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
+  removeField?: (fieldName: string) => void;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -31,22 +39,26 @@ export const FormField: React.FC<FormFieldProps> = ({
   formValues,
   resetValues,
   dependsOnField,
+  fieldController,
+  removeField,
 }) => {
   if (hidden) return null;
 
   const renderField = ({
     field: controllerField,
-    fieldState: { error },
+    fieldState,
   }: {
     field: ControllerRenderProps<FieldValues, string>;
-    fieldState: ControllerFieldState;
+    fieldState?: ControllerFieldState;
   }): React.ReactElement => {
+    const error = fieldState?.error || null;
     switch (field.type) {
       case "checkbox":
         return (
           <CheckboxField
             field={field}
             controllerField={controllerField}
+            resetValues={resetValues}
             onCheckboxChange={onCheckboxChange}
           />
         );
@@ -83,6 +95,14 @@ export const FormField: React.FC<FormFieldProps> = ({
           );
         }
         break;
+      case "file":
+        return (
+          <FileField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
       case "textEditor":
         return (
           <TextEditorField
@@ -91,7 +111,30 @@ export const FormField: React.FC<FormFieldProps> = ({
             error={error}
           />
         );
-        break;
+      case "phone":
+        return (
+          <PhoneNumberField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
+      case "date":
+        return (
+          <DatePickerField
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
+      case "radio":
+        return (
+          <RadioFieldComponent
+            field={field}
+            controllerField={controllerField}
+            error={error}
+          />
+        );
       default:
         return (
           <TextFieldComponent
@@ -112,16 +155,39 @@ export const FormField: React.FC<FormFieldProps> = ({
   };
 
   return (
-    <Controller
-      name={String(field.name)}
-      control={control}
-      rules={{
-        required: field.required
-          ? `${field.label || String(field.name)} is required`
-          : false,
-        ...field.validation,
-      }}
-      render={renderField}
-    />
+    <div className="flex items-end gap-2">
+      {control ? (
+        <div className="max-w-full flex-1">
+          <Controller
+            name={String(field.name)}
+            control={control}
+            rules={{
+              required: field.required
+                ? `${field.label?.replace("*", "") || String(field.name)} is required`
+                : false,
+              ...field.rules,
+            }}
+            render={renderField}
+          />
+        </div>
+      ) : (
+        fieldController && (
+          <div className="max-w-full flex-1">
+            {renderField({ field: fieldController })}
+          </div>
+        )
+      )}
+      {removeField && (
+        <IconButton
+          onClick={() => {
+            resetValues?.([field.name]);
+            removeField(field.name);
+          }}
+          className="h-[42px] w-[42px] rounded-base border border-solid border-gray-300 p-2 hover:bg-red-100 hover:text-red-500"
+        >
+          <Delete />
+        </IconButton>
+      )}
+    </div>
   );
 };

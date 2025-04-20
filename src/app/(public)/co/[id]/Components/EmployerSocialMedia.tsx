@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { KeyboardEvent, useState } from "react";
 import { IconButton, TextField } from "@mui/material";
 import {
@@ -16,7 +16,6 @@ import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";
 import Link from "next/link";
-
 
 type Props = {
   data?: Company; // Optional prop
@@ -59,23 +58,29 @@ const userFields: FieldConfig[] = [
 
 const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   const companyId = data?.id;
-  const socialLinks = data?.socialLinks
+  const socialLinks = data?.socialLinks;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [fields, setFields] = useState(userFields);
 
   const { isLoading, error, update, reset } = useUpdateApi<Company>((e) => {
-    setIsModalOpen(false)
+    setIsModalOpen(false);
   });
 
-
   const open = () => setIsModalOpen(true);
-  const close = () => { setIsModalOpen(false); reset(); };
+  const close = () => {
+    setIsModalOpen(false);
+    reset();
+  };
 
   const handleUpdate = async (formData: Partial<Company>) => {
-    await update(API_UPDATE_COMPANY, {
-      body: { id: companyId, socialLinks: formData } as Company,
-    }, TAGS.company);
+    await update(
+      API_UPDATE_COMPANY,
+      {
+        body: { id: companyId, socialLinks: formData } as Company,
+      },
+      TAGS.company,
+    );
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -100,13 +105,13 @@ const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
   };
 
   return (
-    <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
-      <div className="flex justify-between items-center">
+    <div className="relative rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
+      <div className="flex items-center justify-between">
         <h6 className="mb-2 text-2xl font-semibold text-main">Social Links</h6>
         {isEmployee && (
           <IconButton
             onClick={open}
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
           >
             <Edit />
           </IconButton>
@@ -139,25 +144,29 @@ const EmployerSocialMedia: React.FC<Props> = ({ data, isEmployee }) => {
           </IconButton>
         </div>
       </DynamicFormModal>
-      {!socialLinks || Object.keys(socialLinks).length === 0 ? <p className="text-center text-gray-600">No social media links found.</p> : <div className="flex gap-4">
-        {Object.entries(socialLinks).map(
-          ([key, link]) =>
-            link && (
-              <Link
-                href={link}
-                key={key}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {socialMediaIcons[key.toLowerCase()] || (
-                  <LinkOutlined sx={{ color: "rgba(128, 128, 128, 1)" }} />
-                )}
-              </Link>
-            ),
-        )}
-      </div>}
+      {!socialLinks || Object.keys(socialLinks).length === 0 ? (
+        <p className="text-gray-600">No social media links found.</p>
+      ) : (
+        <div className="flex gap-4">
+          {Object.entries(socialLinks).map(
+            ([key, link]) =>
+              link && (
+                <Link
+                  href={link}
+                  key={key}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {socialMediaIcons[key.toLowerCase()] || (
+                    <LinkOutlined sx={{ color: "rgba(128, 128, 128, 1)" }} />
+                  )}
+                </Link>
+              ),
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-export default EmployerSocialMedia
+export default EmployerSocialMedia;

@@ -37,7 +37,7 @@ export default function PageBuilder() {
   };
 
   return (
-    <div className="bg-background flex h-[calc(100vh-70px)]">
+    <div className="flex h-[calc(100vh-70px)] bg-background">
       <main className="scroll-bar-minimal flex-1 overflow-auto p-6">
         {/* Header Section */}
         <div className="mb-4 flex items-center justify-between">
@@ -52,7 +52,7 @@ export default function PageBuilder() {
         <div
           className={`mx-auto rounded-lg border bg-white p-8 shadow-sm transition-all ${getViewModeWidth(viewMode)}`}
         >
-          <BlogHeader />
+          {/* <BlogHeader /> */}
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="blocks">
               {(provided) => (
@@ -85,7 +85,7 @@ export default function PageBuilder() {
       <ToolBar
         blocks={blocks}
         setBlocks={setBlocks}
-        selectedBlock={selectedBlock}
+        selectedBlock={blocks.find((x) => x.id === selectedBlock?.id) || null}
         setSelectedBlock={setSelectedBlock}
       />
     </div>

@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 
 interface ResizeProps {
-  value: { width: string; height: string };
+  value: { width?: string | number; height?: string | number };
   onChange: (size: { width: string; height: string }) => void;
   children: React.ReactNode;
 }

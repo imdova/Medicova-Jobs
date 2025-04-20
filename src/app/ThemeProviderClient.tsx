@@ -7,11 +7,11 @@ import { ReactNode } from "react";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#50BF73", // Your primary button color
+      main: "#2ba149", // Your primary button color
     },
-    // secondary: {
-    //   main: "#134834", // Your secondary button color
-    // },
+    secondary: {
+      main: "#6d6c80", // Your secondary button color
+    },
   },
   typography: {
     // Apply the font globally to all typography variants
@@ -59,40 +59,11 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         containedPrimary: {
-          background: "var(--primary)",
           color: "var(--primary-foreground)",
-          fontWeight: "bold",
-          textTransform: "none",
-          borderRadius: "10px",
-          "&:hover": {
-            background: "var(--primary-900)",
-          },
-          "&:disabled": {
-            opacity: 0.6,
-            color: "var(--primary-foreground)",
-          },
         },
         root: {
-          textTransform: "none", // Disable uppercase text
-          fontWeight: "bold", // Bold text
-          padding: "8px 16px", // Custom padding
-          borderRadius: "10px", // Add border radius
-        },
-        contained: {
-          boxShadow: "none", // Remove shadow from contained buttons
-          "&:hover": {
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow on hover
-          },
-        },
-        outlined: {
-          borderColor: "var(--primary)",
           borderRadius: "10px",
-          color: "var(--primary)",
-          "&:hover": {
-            borderColor: "var(--primary)",
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-foreground)",
-          },
+          padding: "8px 16px", // Custom padding
         },
       },
     },

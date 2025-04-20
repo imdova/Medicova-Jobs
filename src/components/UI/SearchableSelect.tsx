@@ -11,6 +11,7 @@ import { Search } from "@mui/icons-material";
 type Option = {
   value: string;
   label: string;
+  icon?: React.ReactNode;
 };
 
 interface SearchableSelectProps
@@ -26,6 +27,7 @@ const filterItems = (items: Option[], searchTerm: string) => {
 
 const SearchableSelect: React.FC<SearchableSelectProps> = ({
   options,
+  value,
   ...props
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,9 +54,31 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
     props.onClose?.({} as React.SyntheticEvent);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (e.key === "Enter") {
+      const filteredOptions = filterItems(options, searchTerm);
+      if (filteredOptions.length > 0) {
+        const firstOption = filteredOptions[0];
+        const event = {
+          target: { value: firstOption.value },
+        } as React.ChangeEvent<{ value: unknown }>;
+
+        if (props.onChange) {
+          const syntheticEvent = {
+            target: { value: firstOption.value || "" },
+          } as unknown as React.ChangeEvent<HTMLInputElement>;
+          props.onChange(syntheticEvent, null);
+        }
+        handleClose();
+      }
+    }
+  };
+
   return (
     <Select
       {...props}
+      value={searchTerm ? "" : value}
       open={isOpen}
       onOpen={handleOpen}
       onClose={handleClose}
@@ -76,6 +100,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
           placeholder="Search..."
           fullWidth
           value={searchTerm}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
@@ -96,12 +121,11 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
             form: "off", // Additional security against form autofill
           }}
           onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
         />
       </div>
       {filterItems(options, searchTerm).map((item, i) => (
         <MenuItem key={item.value + i} value={item.value}>
-          {item.label}
+          {item.icon}{item.label}
         </MenuItem>
       ))}
     </Select>

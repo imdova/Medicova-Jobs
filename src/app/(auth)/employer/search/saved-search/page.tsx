@@ -10,7 +10,15 @@ const Page = async () => {
   if (!user?.companyId) return notFound();
   const result = await getPaginatedFolders(user?.companyId);
   const { data: folders } = result.data || { data: [], total: 0 };
-  return <FolderResults folders={folders} total={result.data?.total || 0} companyId={user.companyId} />;
+  return (
+    <div className="w-full px-4 md:px-5">
+      <FolderResults
+        folders={folders}
+        total={result.data?.total || 0}
+        companyId={user.companyId}
+      />
+    </div>
+  );
 };
 
 export default Page;

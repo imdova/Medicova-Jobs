@@ -5,11 +5,11 @@ import FullHeader from "./FullHeader";
 import CenteredHeader from "./CenteredHeader";
 import TransparentHeader from "./TransparentHeader";
 import DarkHeader from "./DarkHeader";
-import { UserState } from "@/types";
 import { usePathname } from "next/navigation";
+import { User } from "next-auth";
 // import useValidateUser from "@/hooks/useValidateUser";
 
-const HeaderSelector: React.FC<{ user?: UserState }> = ({ user }) => {
+const HeaderSelector: React.FC<{ user?: User}> = ({ user }) => {
     const pathname = usePathname();
     const headerType = matchRoute(pathname)?.headerType || "minimal";
 
@@ -23,7 +23,7 @@ const HeaderSelector: React.FC<{ user?: UserState }> = ({ user }) => {
 
     const SelectedHeader = headerComponents[headerType];
 
-    return <SelectedHeader user={user} pathname={"/"} />;
+    return <SelectedHeader user={user} pathname={pathname} />;
 };
 
 export default HeaderSelector;

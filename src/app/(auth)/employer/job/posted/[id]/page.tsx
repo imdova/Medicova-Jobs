@@ -39,11 +39,13 @@ const page = async ({
     (employmentResult.success && employmentResult.data) || [];
 
   return (
-    <PostJobForm
-      job={isDuplicated ? { ...job, id: undefined } : job}
-      industries={industries}
-      employmentTypes={employmentTypes}
-    />
+    <div className="w-full px-4 md:px-5">
+      <PostJobForm
+        job={isDuplicated ? { ...job, id: undefined } : job}
+        industries={industries}
+        employmentTypes={employmentTypes}
+      />
+    </div>
   );
 };
 

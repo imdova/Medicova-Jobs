@@ -1,3 +1,5 @@
+import { IconSkeleton } from "./loading";
+
 const healthTips = [
   {
     name: "Healthy Eating",
@@ -22,9 +24,7 @@ const healthTips = [
   },
 ];
 
-const IconSkeleton = () => {
-  return <div className="h-6 w-6 animate-pulse rounded-full bg-gray-300"></div>;
-};
+
 
 const FilterSkeleton = () => {
   return (

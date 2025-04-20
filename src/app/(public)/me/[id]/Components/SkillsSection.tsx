@@ -1,77 +1,108 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Typography,
-  Grid,
-  Card,
-  Box,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import useFetch from "@/hooks/useFetch";
+import {
+  API_CREATE_SEEKER_SKILL,
+  API_DELETE_SEEKER_SKILL,
+  API_GET_SEEKER_SKILLS,
+} from "@/api/seeker";
+import useUpdateApi from "@/hooks/useUpdateApi";
 
-const skillsData: string[] = [];
+let timer: NodeJS.Timeout;
+function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  delay: number,
+): (...args: Parameters<T>) => void {
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+}
 
 const SkillsSection: React.FC<{
   user: UserProfile;
   isMe: boolean;
 }> = ({ user, isMe }) => {
-  const [keywords, setKeywords] = useState(skillsData);
-  const [newKeyword, setNewKeyword] = useState("");
+  const { data: initialSkills, refetch } = useFetch<SkillData[]>(
+    API_GET_SEEKER_SKILLS + user.id,
+    {},
+    init,
+  );
+  const { update } = useUpdateApi<SkillData>(refetch);
 
-  const handleAddKeyword = (e: React.FormEvent<HTMLFormElement>) => {
+  const [skills, setSkills] = useState<SkillData[]>(initialSkills || []);
+  const [value, setValue] = useState("");
+
+  const addSkill = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newKeyword.trim() && keywords.length < 12) {
-      setKeywords((prevKeywords) => [...prevKeywords, newKeyword]);
-      setNewKeyword(""); // Reset the input field after adding
+    if (value.trim() && skills.length < 12) {
+      const isDuplicated = skills.find((skill) => skill.name === value);
+      if (isDuplicated) {
+        return shake(isDuplicated.name);
+      }
+      const skill = { name: value } as SkillData;
+      setSkills((prevKeywords) => [...prevKeywords, skill]);
+      setValue(""); // Reset the input field after adding
+      const body = { seekerId: user.id, name: value };
+      await update(API_CREATE_SEEKER_SKILL, { method: "POST", body });
     }
   };
 
-  const handleDeleteKeyword = (index: number) => {
-    setKeywords((prevKeywords) => prevKeywords.filter((_, i) => i !== index));
+  const debouncedInit = debounce((data?: SkillData[]) => {
+    if (data) {
+      setSkills(data);
+    }
+  }, 1000);
+
+  function init(data?: SkillData[]) {
+    debouncedInit(data);
+  }
+
+  const onDelete = async (id: string) => {
+    setSkills((prevKeywords) => prevKeywords.filter((x) => x.id !== id));
+    await update(API_DELETE_SEEKER_SKILL + id, { method: "DELETE" });
   };
 
-  if (!isMe && skillsData.length === 0) {
+  const [isShake, setIsShake] = useState<string | null>(null);
+
+  function shake(name: string) {
+    setIsShake(name);
+    setTimeout(() => {
+      setIsShake(null);
+    }, 500);
+  }
+
+  if (!isMe && skills.length === 0) {
     return null;
   }
   return (
-    <div className="mt-5 rounded-base border border-gray-100 bg-white p-3 shadow-lg md:p-5">
+    <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="flex flex-col items-center justify-between md:flex-row">
-        <h3 className="text-2xl font-bold text-main">Skills</h3>
+        <h3 className="text-xl font-semibold text-main">Skills</h3>
 
         {/* TextField and Add Skill Button in the same row */}
         {isMe && (
-          <form onSubmit={handleAddKeyword}>
+          <form onSubmit={addSkill}>
             <TextField
-              value={newKeyword}
-              onChange={(e) => setNewKeyword(e.target.value)}
-              className="m-0 rounded-base"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="m-0 rounded"
               variant="outlined"
               placeholder={
-                keywords.length >= 12
-                  ? "Maximum Entry 12 skills"
-                  : "Enter Skills"
+                skills.length >= 12 ? "Maximum Entry 12 skill" : "Enter Skills"
               }
-              disabled={keywords.length >= 12} // Disable if 12 keywords are reached
-              sx={{
-                width: "250px",
-                height: "40px",
-                border: "none",
-                backgroundColor: "#F8F8FD",
-                "& .MuiOutlinedInput-root": {
-                  p: 0,
-                  "& fieldset": {
-                    border: "none",
-                  },
-                  "& input": {
-                    padding: "10px 10px", // Vertically center the text inside
-                  },
-                },
-              }}
+              disabled={skills.length >= 12} // Disable if 12 skills are reached
               InputProps={{
+                className: "p-0 rounded",
                 endAdornment: (
-                  <IconButton type="submit" disabled={keywords.length >= 12}>
+                  <IconButton
+                    className="flex h-full w-[42px] items-center justify-center rounded"
+                    type="submit"
+                    disabled={skills.length >= 12}
+                  >
                     <AddIcon />
                   </IconButton>
                 ),
@@ -83,18 +114,20 @@ const SkillsSection: React.FC<{
 
       {/* Display Keywords */}
       <div className="mt-2 flex flex-wrap">
-        {keywords.map((skill, index) => (
+        {skills.map((item) => (
           <div
-            key={index}
-            className="mb-2 mr-2 rounded-md bg-primary-100 px-2 py-1 text-main"
+            key={item.id + item.name}
+            className={`${isMe?"":"pr-4"} ${isShake === item.name ? "animate-shake border-red-400" : "border-gray-200"} mb-2 mr-2 rounded-full border bg-primary-100 px-2 py-2 pl-4 text-main`}
           >
-            <span>{skill}</span>
+            <span>{item.name}</span>
             {isMe && (
               <IconButton
-                onClick={() => handleDeleteKeyword(index)}
-                color="error"
+                size="small"
+                className="ml-2 border border-solid border-gray-200 bg-white"
+                disabled={!item.id}
+                onClick={() => onDelete(item.id)}
               >
-                <CloseIcon />
+                <CloseIcon className="h-4 w-4" />
               </IconButton>
             )}
           </div>

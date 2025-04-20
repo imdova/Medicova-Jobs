@@ -10,18 +10,21 @@ import { Box, TextFieldProps } from "@mui/material";
 const TextEditor: React.FC<TextFieldProps> = ({ value, onChange }) => {
   const editor = useEditor({
     extensions,
-    content: value as string,
+    content: value as string | undefined,
+    onUpdate: ({ editor }) => {
+      onChange &&
+        onChange({
+          target: { value: editor.getHTML() },
+        } as React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>);
+    },
   });
 
+  // Update editor content when value prop changes
   useEffect(() => {
-    if (editor && onChange) {
-      const syntheticEvent = {
-        target: { value: editor.getHTML() || "" },
-      } as unknown as React.ChangeEvent<HTMLInputElement>;
-      onChange(syntheticEvent);
+    if (editor && editor.getHTML() !== value) {
+      editor.commands.setContent(value as string);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor?.getHTML()]);
+  }, [value, editor]);
 
   if (!editor) {
     return null;
@@ -42,14 +45,20 @@ export const BlockTextEditor: React.FC<{
   const editor = useEditor({
     extensions,
     content: value,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
   });
 
+  // Update editor content when value prop changes
   useEffect(() => {
-    if (editor) {
-      onChange(editor.getHTML());
+    if (editor && editor.getHTML() !== value) {
+      editor.commands.setContent(value as string);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor?.getHTML()]);
+  }, [value, editor]);
+
+  // Remove the problematic effect that was creating issues
+  // The onUpdate handler above will handle changes instead
 
   if (!editor) {
     return null;

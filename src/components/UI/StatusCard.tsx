@@ -1,26 +1,13 @@
 import clsx from "clsx";
 import React from "react";
 
-interface StatusCardProps {
-  title: string;
-  value: string | number;
-  icon: React.ElementType;
-  className?: string;
-  trend?: {
-    value?: string;
-    description?: string;
-    trendDirection?: "up" | "down";
-  };
-}
-
-const StatusCard: React.FC<StatusCardProps> = ({
+const StatusCard: React.FC<StatusCardType> = ({
   title,
   value,
   icon,
   trend,
   className,
 }) => {
-  const Icon = icon;
   const trendColor =
     trend?.trendDirection === "up" ? "text-green-600" : "text-red-600";
   const trendIcon =
@@ -59,7 +46,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
   return (
     <article
       className={clsx(
-        "rounded-base border border-gray-100 bg-white p-6 shadow-soft",
+        "rounded-base border border-gray-200 bg-white p-4 shadow-soft",
         className,
       )}
     >
@@ -68,7 +55,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
           <p className="text-sm text-gray-500">{title}</p>
           <p className="text-2xl font-medium text-gray-900">{value}</p>
         </div>
-        <Icon className="block h-10 w-10 rounded-full bg-primary-100 p-2 text-primary" />
+        {icon}
       </div>
       {trend && (
         <div className={`mt-1 flex gap-1 ${trendColor}`}>

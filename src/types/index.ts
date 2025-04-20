@@ -7,8 +7,16 @@ import { StartDateType } from "@/constants/enums/start-type.enum";
 import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
-import { AlertColor, TextFieldProps } from "@mui/material";
-import { Path } from "react-hook-form";
+import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  Path,
+  RegisterOptions,
+} from "react-hook-form";
+import { User } from "next-auth";
+import { DatePickerProps } from "@mui/x-date-pickers";
+import { Dayjs } from "dayjs";
 
 export type Country = {
   name: string;
@@ -49,43 +57,6 @@ export interface Result<T = any> {
   data?: T;
 }
 
-export interface UserState {
-  id: string | null;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  userName: string | null;
-  type: RoleState;
-  photo: string | null;
-  phone: string | null;
-  companyId: string | null;
-  companyName: string | null;
-  companyUserName: string | null;
-  companyEmail: string | null;
-  companyPhoto: string | null;
-  permissions: Permission[];
-}
-
-// export interface UserProfile extends UserState {
-//   about: string | null;
-//   title: string | null;
-//   age: number | null;
-//   languages: string[] | null;
-//   resume: string | null;
-//   socialLinks: { [key: string]: string } | null;
-//   whatsapp: string | null;
-//   nationality: string | null;
-//   maritalStatus: string | null;
-//   hasDrivingLicence: boolean | null;
-//   country: CountryMin | null;
-//   state: State | null;
-//   city: City | null;
-//   isPublic: boolean | null;
-//   category: string | null;
-//   speciality: string | null;
-//   careerLevel: string | null;
-// }
-
 export interface registerData {
   firstName: string;
   lastName: string;
@@ -95,7 +66,7 @@ export interface registerData {
 }
 
 export interface BaseHeaderProps {
-  user?: UserState;
+  user?: User;
   pathname?: string;
 }
 
@@ -177,6 +148,14 @@ export interface Company {
   banner1?: string | null;
   banner2?: string | null;
   banner3?: string | null;
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+
+  // TODO: add open jobs
+  openJobs?: number | null;
+
+  // only for admins
+  revenue?: number | null;
 }
 export interface MiniCompany {
   name: string;
@@ -293,6 +272,23 @@ export interface JobData {
   updated_at: string; // ISO date string
 }
 
+export type CareerPreference = {
+  id?: string;
+  seekerId: string | null;
+  jobEmploymentTypesIds: string[];
+  industriesIds: string[];
+  availableForHiringDate: string | null;
+  relocation: boolean;
+  jobWorkPlace: JobWorkPlace | null;
+  country: LocationItem | null;
+  state: LocationItem | null;
+
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  _version: number;
+};
+
 export type JobStringData = Omit<
   JobData,
   "country" | "keywords" | "skills" | "questions"
@@ -365,10 +361,11 @@ export interface HeaderLink {
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
-  [key in RoleState]: HeaderLink[];
+  [key in RoleState | "unEmployee" | "default"]: NavItem[];
 };
+
 export type CommonLinks = {
-  [key in CommonLinksType]: HeaderLink[];
+  [key in CommonLinksType]: NavItem[];
 };
 
 export type NavItem = {
@@ -409,17 +406,21 @@ export type FieldType =
   | "text"
   | "number"
   | "email"
+  | "phone"
   | "password"
   | "date"
   | "textEditor"
   | "select"
   | "search-select"
   | "checkbox"
-  | "component";
+  | "component"
+  | "radio"
+  | "file";
 
-export interface Option {
-  value: string | number;
+export interface Option<T = Record<string, any>> {
+  value: keyof T;
   label: string;
+  icon?: React.ReactNode;
 }
 
 // Updated FieldConfig to support multiple hidden fields
@@ -429,30 +430,59 @@ export interface FieldConfig<T = any> {
   type: FieldType;
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
-  validation?: any;
+  rules?:
+    | Omit<
+        RegisterOptions<FieldValues, string>,
+        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+      >
+    | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;
     md?: number;
   };
-  resetFields?: Path<T>[]; // New property for fields to reset
+  multiple?: boolean;
+  resetFields?: FieldConfig<T>["name"][]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
+  dateFieldProps?: Partial<DatePickerProps<Dayjs, boolean>>;
+  selectProps?: Partial<SelectProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;
   // options?: { label: string; value: string | number }[];
   options?: Option[]; // Updated to support dynamic options
-  hideFieldNames?: Path<T>[];
+  hideFieldNames?: FieldConfig<T>["name"][];
   onChange?: (value: any) => void; // Updated to include formMethods
 }
 export interface DynamicModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: any) => void;
+  onDelete?: (data: any) => void;
   fields: FieldConfig[];
-  title: string;
+  title?: string;
   description?: string;
   initialValues?: Record<string, any>;
   children?: React.ReactNode;
   loading?: boolean;
+  deleteLoading?: boolean;
   error?: string;
+  removeField?: (fieldName: string) => void;
+  mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined;
+  ///
+  submitButtonText?: string;
+  deleteButtonText?: string;
+  cancelButtonText?: string;
+}
+
+export interface ColumnConfig<T> {
+  key?: Path<T>; // Field to display
+  header: string; // Column header text
+  sortable?: boolean; // Enable sorting
+  render?: (item: T) => React.ReactNode; // Custom render function
+  width?: string | number; // Optional column width
+}
+
+export interface SortConfig<T> {
+  key: Path<T>;
+  direction: "asc" | "desc";
 }

@@ -4,7 +4,18 @@ import { JobData, Role } from "@/types";
 import { Permission } from "@/types/permissions";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const formatDate = (date: Date): string => {
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: Parameters<typeof clsx>) {
+  return twMerge(clsx(...inputs));
+}
+
+
+export const formatDate = (
+  date: Date | string,
+  options?: { year?: boolean; month?: boolean; day?: boolean },
+): string => {
   const months = [
     "Jan",
     "Feb",
@@ -20,23 +31,50 @@ export const formatDate = (date: Date): string => {
     "Dec",
   ];
   const d = new Date(date);
-  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+
+  const year = options?.year !== false ? d.getFullYear() : "";
+  const month = options?.month !== false ? months[d.getMonth()] : "";
+  const day = options?.day !== false ? d.getDate() : "";
+
+  const formattedDate = [month, day, year].filter(Boolean).join(", ");
+  return formattedDate.trim();
+};
+export const getDuration = ({
+  startDate,
+  endDate,
+}: Partial<ExperienceData>): string => {
+  if (!startDate) return "";
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+  const durationInMonths =
+    (end.getFullYear() - start.getFullYear()) * 12 +
+    end.getMonth() -
+    start.getMonth();
+  const years = Math.floor(durationInMonths / 12);
+  const months = durationInMonths % 12;
+  if (years === 0) {
+    return `${months} month`;
+  }
+  return `${years} y ${months} m`;
 };
 export function formatName(
   {
     firstName,
     lastName,
   }: {
-    firstName: string;
-    lastName: string;
+    firstName?: string | null;
+    lastName?: string | null;
   },
   isAvailable?: boolean,
 ): string {
+  const capitalize = (name: string | null | undefined) =>
+    name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
+
   if (isAvailable) {
-    return `${firstName} ${lastName}`;
+    return `${capitalize(firstName)} ${capitalize(lastName)}`;
   }
-  const lastNameInitial = lastName.charAt(0).toUpperCase();
-  return `${firstName} .${lastNameInitial}`;
+  const lastNameInitial = lastName?.charAt(0).toUpperCase();
+  return `${capitalize(firstName)} .${lastNameInitial}`;
 }
 export function formatFullName(fullName: string): string {
   const nameParts = fullName.trim().split(" ");

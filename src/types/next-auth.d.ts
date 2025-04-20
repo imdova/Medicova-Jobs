@@ -10,6 +10,7 @@ declare module "next-auth" {
     lastName: string | null;
     userName: string | null;
     type: RoleState;
+    isVerified: boolean;
     photo: string | null;
     phone: string | null;
     companyId: string | null;

@@ -41,7 +41,7 @@ const AboutCompany: React.FC<{
   );
 
   const open = () => setIsModalOpen(true);
-  const close = () => {
+  const onClose = () => {
     setIsModalOpen(false);
     reset();
   };
@@ -60,14 +60,14 @@ const AboutCompany: React.FC<{
   };
 
   return (
-    <div className="rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
+    <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
       {/* Title */}
       {isEmployee && (
         <FormModal
           open={isModalOpen}
           error={error?.message}
           loading={isLoading}
-          onClose={close}
+          onClose={onClose}
           onSubmit={handleUpdate}
           fields={fields}
           title="About Company "
@@ -76,18 +76,18 @@ const AboutCompany: React.FC<{
         />
       )}
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-2xl font-bold text-main">About Company :</h3>
+        <h3 className="text-xl font-semibold text-main">About Company :</h3>
         {isEmployee && (
           <IconButton
             onClick={open}
-            className="rounded border border-solid border-gray-300 p-2"
+            className="rounded border border-solid border-gray-200 p-2"
           >
             <Edit />
           </IconButton>
         )}
       </div>
       {company?.about ? (
-        <ClampedText className="px-2 text-secondary" lines={3}>
+        <ClampedText className="px-2 text-secondary" lines={3} lineHeight={20} >
           <PendingActions className="-ml-1 mr-2 inline text-primary" />
           {company?.about}
         </ClampedText>

@@ -1,35 +1,30 @@
+"use client";
 import React from "react";
 import { CircularProgress } from "@mui/material";
 import Link from "next/link";
+import { getProgressColor } from "@/util/general";
 
-type CompleteProfileProps = {
+type EmployerCompleteProps = {
   percentage?: number;
 };
-const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
-  // Function to determine color based on value
-  const getProgressColor = (progress: number): string => {
-    if (progress >= 80) return "var(--primary)";
-    if (progress >= 50) return "var(--warning)";
-    return "var(--error)";
-  };
 
+const EmployerComplete: React.FC<EmployerCompleteProps> = ({ percentage }) => {
   if (!percentage || percentage >= 100) return null;
-
   const progressColor = getProgressColor(percentage);
-
   return (
-    <div className="mb-5 flex rounded-base border border-gray-100 bg-white p-3 shadow-soft md:p-5">
+    <div className="flex rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       {/* Title and Description */}
       <div className="flex-1">
         <Link
-          href={"/employer/company-info"}
+          href="/employer/company-info"
           className="mb-2 text-2xl font-bold hover:underline"
           style={{ color: progressColor }}
         >
           Complete your company profile!
         </Link>
+
         <p className="max-w-60 text-secondary">
-          You are almost there—lets finish setting things up!
+          You are almost there—let&apos;s finish setting things up!
         </p>
       </div>
       {/* Circular Progress with Value */}
@@ -53,4 +48,4 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ percentage }) => {
   );
 };
 
-export default CompleteProfile;
+export default EmployerComplete;

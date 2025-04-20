@@ -1,6 +1,5 @@
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
-import { handleSocialLogin } from "./utils";
 import { divideName } from "@/util";
 import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
@@ -41,6 +40,12 @@ export const callbacks = {
       if (session?.companyUserName)
         token.companyUserName = session.companyUserName;
       if (session?.companyEmail) token.companyEmail = session.companyEmail;
+      if (session?.email) token.email = session.email;
+      if (session?.firstName) token.firstName = session.firstName;
+      if (session?.lastName) token.lastName = session.lastName;
+      if (session?.userName) token.userName = session.userName;
+      if (session?.photo) token.photo = session.photo;
+      if (session?.phone) token.phone = session.phone;
     }
     return token;
   },

@@ -9,13 +9,18 @@ import {
 } from "@mui/material";
 import { FieldConfig } from "@/types";
 import { getNestedValue } from "@/util/forms";
+import {
+  ControllerRenderProps,
+  FieldError,
+  FieldValues,
+} from "react-hook-form";
 
 interface SelectFieldProps {
   field: FieldConfig;
-  controllerField: any;
-  error: any;
-  resetValues: (fieldNames: (string | number)[]) => void;
-  formValues: Record<string, any>;
+  controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
+  error?: FieldError | null;
+  resetValues?: (fieldNames: FieldConfig["name"][]) => void;
+  formValues?: Record<string, any>;
   dependsOnField?: FieldConfig;
 }
 
@@ -29,7 +34,9 @@ export const SelectField: React.FC<SelectFieldProps> = ({
 }) => {
   const options = field.options || [];
   const dependsOn =
-    field.dependsOn && !getNestedValue(formValues, field.dependsOn)
+    field.dependsOn &&
+    formValues &&
+    !getNestedValue(formValues, field.dependsOn)
       ? dependsOnField
       : null;
   const placeholder =
@@ -37,6 +44,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
       : field.label?.replace("*", ""));
+  const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
       {field.textFieldProps?.label ? (
@@ -59,29 +67,31 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <Select
+          className={`bg-white ${className}`}
           {...controllerField}
           labelId={String(field.name) + "Label"}
           id={String(field.name)}
           displayEmpty
-          disabled={dependsOn}
+          disabled={!!dependsOn}
           MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
           onChange={(e) => {
-            controllerField.onChange(e);
+            controllerField?.onChange?.(e);
             field.onChange?.(e.target.value);
             if (field.resetFields) {
-              resetValues(field.resetFields);
+              resetValues?.(field.resetFields);
             }
           }}
           renderValue={(value) => {
-            const selected = options.find((opt) => opt.value === value)?.label;
+            const selected = options.find((opt) => opt.value == value)?.label;
             return selected ? (
               selected
             ) : (
-              <span className="text-neutral-500">
+              <span className="text-neutral-400">
                 {field.textFieldProps?.placeholder || placeholder || "Select"}
               </span>
             );
           }}
+          {...field.selectProps}
         >
           <MenuItem value="" disabled>
             <em>

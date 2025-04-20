@@ -12,11 +12,13 @@ import { createUrl } from "@/util";
 
 interface PaginationProps {
   fixedNumberPerPage?: number;
+  initialNumberPerPage?: number;
   totalItems: number;
 }
 
 const CustomPagination: React.FC<PaginationProps> = ({
   fixedNumberPerPage,
+  initialNumberPerPage = 10,
   totalItems,
 }) => {
   const router = useRouter();
@@ -26,7 +28,9 @@ const CustomPagination: React.FC<PaginationProps> = ({
   // Get current values from search params
   const currentPage = Number(searchParams.get("page")) || 1;
   const itemsPerPage =
-    fixedNumberPerPage || Number(searchParams.get("limit")) || 10;
+    fixedNumberPerPage ||
+    Number(searchParams.get("limit")) ||
+    initialNumberPerPage 
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -59,13 +63,17 @@ const CustomPagination: React.FC<PaginationProps> = ({
   // Validate current page on total items change
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      router.push(`?${createQueryString("page", totalPages.toString())}`, { scroll: false });
+      router.push(`?${createQueryString("page", totalPages.toString())}`, {
+        scroll: false,
+      });
     }
   }, [totalItems, currentPage, totalPages, router, createQueryString]);
 
+  if (totalPages < 2 &&  itemsPerPage === initialNumberPerPage) return null;
+
   return (
     <div
-      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-100 bg-white p-2 shadow-lg`}
+      className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white p-2 shadow-soft`}
     >
       {/* Select Input for Items Per Page */}
       {fixedNumberPerPage ? null : (

@@ -1,10 +1,11 @@
 interface ApplicationsFilter {
   page?: number;
   limit?: number;
-  jobId?: string;
-  seekerId?: string;
-  companyId?: string;
-  startDate?: string;
+  jobId?: string | null;
+  seekerId?: string | null;
+  companyId?: string | null;
+  startDate?: string | null;
+  status?: ApplicationStatus;
 }
 enum MaritalStatus {
   Single = "Single",
@@ -12,9 +13,15 @@ enum MaritalStatus {
   Divorced = "Divorced",
   Widowed = "Widowed",
 }
+
 type LocationItem = {
   name: string;
   code: string;
+};
+type NotificationSettings = {
+  reciveApplications: boolean;
+  reciveJobs: boolean;
+  reciveRecommendations: boolean;
 };
 type UserProfile = {
   id: string;
@@ -29,7 +36,7 @@ type UserProfile = {
   active: boolean;
   about: string | null;
   title: string | null;
-  languages: string[] | null;
+  languages: LanguageProficiency[] | null;
   resume: string | null;
   socialLinks: Record<string, string> | null;
   whatsapp: string | null;
@@ -39,7 +46,7 @@ type UserProfile = {
   country: LocationItem | null;
   state: LocationItem | null;
   city: string | null;
-  isPublic: boolean | null;
+  isPublic: boolean;
   categoryId: string | null;
   category: string | null;
   specialityId: string | null;
@@ -50,42 +57,19 @@ type UserProfile = {
   updated_at: string;
   deleted_at: string | null;
   _version: number;
+
+  /// TODO: need to add
+  isVerified: boolean;
+  isEmailVerified: boolean;
+  isVisible: boolean;
+  isImmediate: boolean;
+
+  gender: string; // male | female
 };
 
-const user: UserProfile = {
-  id: "aaeb9e66-ef4e-4a46-8bdd-fe687edd5794",
-  userName: "abdelrahman-ahmed",
-  about: "I'm Abd El-Rahman Ahmed, a Full Stack Developer and UI/UX Designer with expertise in creating user-focused digital solutions. I specialize in Next.js, Tailwind CSS, TypeScript, and MongoDB, developing high-performing, accessible, and visually stunning web applications. I have a strong foundation in both frontend and backend development, as well as mobile app development with React Native. My focus is on blending creative design with",
-  title: "Senior Software Engineer",
-  languages: ["English", "Spanish"],
-  resume: "https://abdelrahman501.github.io/abdelrahman/resume/abdelrahman.pdf",
-  socialLinks: {
-    linkedin: "https://linkedin.com/in/johndoe",
-    github: "https://github.com/johndoe",
-    twitter: "https://twitter.com/johndoe",
-  },
-  whatsapp: "1234567890",
-  nationality: "American",
-  maritalStatus: MaritalStatus.Single,
-  hasDrivingLicence: true,
-  country: { code: "EG", name: "Egypt" },
-  state: { code: "C", name: "Cairo" },
-  city: "Naser City",
-  isPublic: true,
-  categoryId: "9669773b-f883-4946-95ed-9da81caf6e0b",
-  category: "Doctors",
-  specialityId: "8daaf757-0e3f-4d4f-81d8-c3febad21617",
-  speciality: "Cardiology",
-  careerLevelId: "88fd0a64-ba36-463e-9713-905ce2be62ef",
-  careerLevel: "Consultant",
-  phone: "+201015753327",
-  firstName: "abdelrahman",
-  lastName: "ahmed",
-  email: "abdelrahman.27@gmail.com",
-  birth: "1990-06-15",
-  avatar: "https://avatars.githubusercontent.com/u/104017661?v=4",
-  type: "seeker",
-  active: true,
+type LanguageProficiency = {
+  name: string;
+  proficiency: string;
 };
 
 type JobApplicationData = {
@@ -103,49 +87,57 @@ type TapType = "all" | "locked" | "unlocked" | "shortListed";
 
 // Represents the data structure for job applicants. This type is used to store and display
 // information about individuals who have applied for a specific job posting.
-type ApplicationsType = {
-  id: string; // id of the application
-  seekerId: string; // id for the job seeker who applied
-  status: ApplicationStatus; // status of the application
-  answers: Record<string, string> | null; // stores the applicant's responses to job-specific questions, if any
+interface ApplicationsType {
+  id: string;
+  seekerId: string;
+  status: ApplicationStatus;
+  answers: Record<string, string> | null;
   job: {
-    id: string; // id of the job
+    id: string;
+    title: string;
+    // jobSpeciality?: string | null; // add this please
+    // jobCategory?: string | null; // add this please
+    // jobCareerLevel?: string | null; // add this please
+    // jobEmploymentType?: string | null; // add this please
     company: {
-      id: string; // id of the company offering the job
+      id: string;
+      // name: string; // add this please
+      // username: string; // add this please
+      // avatar: string; // add this please
     };
   };
   applicant: {
-    id: string; // id for the job seeker
-    avatar: string; // URL to the applicant's avatar image
-    userName: string; // username of the applicant
-    firstName: string; // first name of the applicant
-    lastName: string; // last name of the applicant
-    title: string | null; // title of the applicant
-    whatsApp: string | null; // WhatsApp contact of the applicant
-    phone: string; // phone number of the applicant
-    email: string; // email address of the applicant
-    country: LocationItem | null; // country of the applicant
-    state: LocationItem | null; // state of the applicant
-    city: string | null; // city of the applicant
-    category: string | null; // category of the applicant
-    specialty: string | null; // specialty of the applicant
-    careerLevel: string | null; // career level of the applicant
-    isLocked: boolean; // whether the applicant is locked
+    id: string;
+    avatar: string;
+    userName: string;
+    firstName: string;
+    lastName: string;
+    title: string | null;
+    whatsApp: string | null;
+    phone: string;
+    email: string;
+    country: LocationItem | null;
+    state: LocationItem | null;
+    city: string | null;
+    category: string | null;
+    specialty: string | null;
+    careerLevel: string | null;
+    isLocked: boolean;
     yearsOfExperience: {
-      totalYears: string; // total years of experience of the applicant
+      totalYears: string;
     };
-    lastEducation: EducationData | null; // last education of the applicant
-    lastExperience: ExperienceData | null; // last experience of the applicant
+    lastEducation: EducationData | null;
+    lastExperience: ExperienceData | null;
     folders: {
-      folderId: string; // id of the folder
-      folderName: string; // name of the folder
-      isFavorite: boolean; // whether the folder is marked as favorite
+      folderId: string;
+      folderName: string;
+      isFavorite: boolean;
     }[];
   };
-  created_at: string; // creation date of the application
-  updated_at: string; // last update date of the application
-  _version: number; // version of the application record
-};
+  created_at: string;
+  updated_at: string;
+  _version: number;
+}
 
 // Represents the data structure for potential candidates who can be invited to apply for a job.
 // This type is used to store and display information about individuals who match the job criteria
@@ -204,8 +196,33 @@ type EducationData = {
   id: string;
   inistitute: string;
   degree: string;
-  country: LocationItem;
+  // country: LocationItem;
+  countryCode: string;
   startYear: number;
   endYear: number;
   grade: string;
+};
+type CertificationData = {
+  id: string;
+  title: string;
+  provider: string;
+  speciality: string;
+  issueDate: string;
+  completionDate: string;
+  description: string;
+};
+
+type ActivityData = {
+  id: string;
+  title: string;
+  provider: string;
+  issueDate: string;
+  completionDate: string;
+  description: string;
+  isPresent: boolean;
+};
+
+type SkillData = {
+  id: string;
+  name: string;
 };

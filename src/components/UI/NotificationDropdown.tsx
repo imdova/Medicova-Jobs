@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { Badge, Menu, MenuItem, IconButton, Button } from "@mui/material";
 import {
@@ -10,6 +10,7 @@ import {
 import { notifications } from "@/constants";
 import Link from "next/link";
 import { SmallNotificationCard } from "./SmallNotificationCard";
+import { isCurrentPage } from "@/util";
 
 interface NotificationDropdownProps {
   pathname?: string;
@@ -28,10 +29,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   };
 
   const open = Boolean(anchorEl);
-  const pageName = pathname
-    ? pathname.split("/").filter(Boolean).pop() || "home"
-    : "home";
-  const isNotifications = pageName === "notifications";
+  const isNotifications = isCurrentPage(pathname, "/notifications");
 
   return (
     <div className="relative">

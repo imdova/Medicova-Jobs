@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { UserState } from "@/types";
 import {
   LogoutOutlined,
   SettingsOutlined,
@@ -20,16 +19,17 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import Avatar from "./Avatar";
+import { User } from "next-auth";
 
 interface UserDropdownProps {
-  user: UserState;
+  user: User;
 }
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ user: initialUser }) => {
   const { data: session } = useSession();
-  const sessionUser = session?.user as UserState;
+  const sessionUser = session?.user;
   const user = sessionUser || initialUser;
-  
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

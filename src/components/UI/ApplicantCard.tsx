@@ -195,19 +195,19 @@ const ApplicantCard: React.FC<ApplicationCardProps> = ({
                   disabled={isLocked}
                   LinkComponent={Link}
                   href={whatsAppLink(applicant.phone)}
-                  className="rounded border border-solid border-gray-300 p-2 text-primary hover:border-primary"
+                  className="rounded border border-solid border-gray-200 p-2 text-primary hover:border-primary"
                 >
                   <WhatsApp className="h-5 w-5 md:h-6 md:w-6" />
                 </IconButton>
                 <IconButton
                   disabled={isLocked}
-                  className="rounded border border-solid border-gray-300 p-2 text-primary hover:border-primary"
+                  className="rounded border border-solid border-gray-200 p-2 text-primary hover:border-primary"
                 >
                   <Message className="h-5 w-5 md:h-6 md:w-6" />
                 </IconButton>
                 <IconButton
                   onClick={toggleShortListed}
-                  className="rounded border border-solid border-gray-300 p-2 text-primary hover:border-primary"
+                  className="rounded border border-solid border-gray-200 p-2 text-primary hover:border-primary"
                 >
                   {isShortListed ? (
                     <Star className="h-5 w-5 md:h-6 md:w-6" />

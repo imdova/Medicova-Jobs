@@ -8,11 +8,12 @@ import {
   API_GET_INDUSTRIES,
 } from "@/api/admin";
 import {
-  API_CHECK_UNLOCKED_SEEKER,
+  API_GET_COMPANIES,
   API_GET_COMPANY_BY_ID,
   API_GET_COMPANY_BY_USER_NAME,
   API_GET_JOBS,
   API_GET_UNLOCKED_SEEKERS,
+  API_SEARCH_COMPANIES,
 } from "@/api/employer";
 import {
   API_GET_FOLDER_BY_ID,
@@ -28,9 +29,9 @@ import {
   JobCategory,
   Result,
   Sector,
-  UserState,
 } from "@/types";
-import { errorResult } from "@/util/general";
+import { errorResult, toQueryString } from "@/util/general";
+import { User } from "next-auth";
 
 export const getCompanyByUserName = async (
   userName: string,
@@ -49,6 +50,82 @@ export const getCompanyByUserName = async (
       success: true,
       message: "Company fetched successfully",
       data: await response.json(),
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getCompanies = async ({
+  page = 1,
+  limit = 10,
+  query = "",
+  counter = "",
+  companyType = "",
+}: {
+  page: number;
+  limit: number;
+  query?: string;
+  counter?: string;
+  companyType?: string;
+}): Promise<Result<PaginatedResponse<Company>>> => {
+  try {
+    const url = new URL(API_GET_COMPANIES);
+    url.searchParams.append("page", page.toString());
+    url.searchParams.append("limit", limit.toString());
+    if (query) url.searchParams.append("query", query);
+    if (counter) url.searchParams.append("counter", counter);
+    if (companyType) url.searchParams.append("companyType", companyType);
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.companies] },
+    });
+    if (!response.ok) return errorResult("fetching companies data");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Companies fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const searchCompanies = async (
+  filters: {
+    page?: number;
+    limit?: number;
+    q?: string;
+    countryCode?: string;
+    companyTypeId?: string;
+  } = {},
+): Promise<Result<PaginatedResponse<Company>>> => {
+  try {
+    const queryParams = toQueryString(filters);
+    const response = await fetch(API_SEARCH_COMPANIES + queryParams, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      next: { tags: [TAGS.companies] },
+    });
+    if (!response.ok) return errorResult("fetching companies data");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Companies fetched successfully",
+      data: data,
     };
   } catch (error: any) {
     return {
@@ -300,12 +377,7 @@ export const getSpecialtyFromCategoryId = async (
 export const getPaginatedSeekers = async (
   page: number = 1,
   limit: number = 10,
-): Promise<
-  Result<{
-    data: UserState[];
-    total: number;
-  }>
-> => {
+): Promise<Result<PaginatedResponse<User>>> => {
   try {
     const response = await fetch(
       `${API_GET_SEEKERS}?page=${page}&limit=${limit}`,
@@ -318,7 +390,7 @@ export const getPaginatedSeekers = async (
       },
     );
     if (response.ok) {
-      const data: { total: number; data: UserState[] } = await response.json();
+      const data = await response.json();
       return {
         success: true,
         message: "Seekers list fetched successfully",

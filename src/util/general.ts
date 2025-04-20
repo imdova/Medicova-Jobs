@@ -60,14 +60,14 @@ export function calculateAge(birthDate: Date): number {
 export function formatLocation(location: LocationType): string | null {
   const parts: string[] = [];
 
-  if (location.city) {
-    parts.push(location.city);
+  if (location.country?.name) {
+    parts.push(location.country.name);
   }
   if (location.state?.name) {
     parts.push(location.state.name);
   }
-  if (location.country?.name) {
-    parts.push(location.country.name);
+  if (location.city) {
+    parts.push(location.city);
   }
 
   return parts.join(", ") || null;
@@ -173,3 +173,74 @@ export const whatsAppLink = (phone: string, message?: string) => {
   const encodedMessage = encodeURIComponent(message || "");
   return `https://api.whatsapp.com/send?phone=${cleanedNumber}&text=${encodedMessage}`;
 };
+export const getProgressColor = (progress: number): string => {
+  if (progress >= 80) return "var(--primary)";
+  if (progress >= 50) return "var(--warning)";
+  return "var(--error)";
+};
+
+export function updateSearchParams(
+  searchKey: string,
+  value: string,
+  searchParams?: { [key: string]: string | string[] | undefined },
+): string {
+  const params = new URLSearchParams();
+
+  // Add existing params
+  if (searchParams) {
+    Object.entries(searchParams).forEach(([paramKey, paramValue]) => {
+      if (Array.isArray(paramValue)) {
+        paramValue.forEach((val) => params.append(paramKey, val));
+      } else if (paramValue !== undefined) {
+        params.set(paramKey, paramValue);
+      }
+    });
+  }
+
+  // Update or add the new key-value pair
+  params.set(searchKey, value);
+
+  return `?${params.toString()}`;
+}
+
+export function formatPrice(value?: number): string | null {
+  if (!value) return null;
+  const suffixes = [
+    { threshold: 1_000_000_000, suffix: "b" },
+    { threshold: 1_000_000, suffix: "m" },
+    { threshold: 1_000, suffix: "k" },
+  ];
+
+  for (const { threshold, suffix } of suffixes) {
+    if (value >= threshold) {
+      return `${(value / threshold).toFixed(1).replace(/\.0$/, "")}${suffix}`;
+    }
+  }
+
+  return value.toString();
+}
+
+export function toQueryString(
+  filters: Record<
+    string,
+    string | number | (string | number)[] | undefined | null
+  >,
+): string {
+  const queryParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (value == null || value === "") continue; // Skip undefined, null, or empty string
+
+    if (Array.isArray(value)) {
+      // Filter out empty/null values in array
+      value
+        .filter((v) => v != null && v !== "")
+        .forEach((v) => queryParams.append(key, v.toString()));
+    } else {
+      queryParams.append(key, value.toString());
+    }
+  }
+
+  const queryString = queryParams.toString();
+  return queryString ? `?${queryString}` : "";
+}

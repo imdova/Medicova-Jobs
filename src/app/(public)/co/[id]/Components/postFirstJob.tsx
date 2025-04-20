@@ -12,7 +12,7 @@ export const PostYourFirstJob = async ({
     const { data: jobs, total } = result.data || { data: [], total: 0 };
     if (total > 0) return null
     return (
-        <div className="relative mb-5 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:p-5">
+        <div className="relative rounded-base border border-gray-200 bg-white p-4 shadow-soft md:p-5">
             <div className="flex flex-col items-center gap-2">
                 {/* Centered Image */}
                 <Image

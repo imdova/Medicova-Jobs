@@ -126,7 +126,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           {/* Job Description */}
           {job.description && (
             <div className="max-w-[800px] overflow-hidden">
-              <h3 className="text-2xl font-bold text-main">Job Description</h3>
+              <h3 className="text-xl font-semibold text-main">Job Description</h3>
               <div
                 className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl mt-2 max-w-[800px] text-wrap text-secondary"
                 dangerouslySetInnerHTML={{ __html: job.description }}
@@ -142,7 +142,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
 
           {job.requirements && (
             <>
-              <h3 className="mt-8 text-2xl font-bold text-main">
+              <h3 className="mt-8 text-xl font-semibold text-main">
                 Job Requirements
               </h3>
               <div
@@ -154,7 +154,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
 
           {job.salaryDetails && (
             <>
-              <h3 className="mt-8 text-2xl font-bold text-main">
+              <h3 className="mt-8 text-xl font-semibold text-main">
                 Additional Details
               </h3>
               <p className="mt-2 text-secondary">{job.salaryDetails}</p>
@@ -162,7 +162,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           )}
 
           {/* Skills related to the job post */}
-          <h3 className="mt-8 text-2xl font-bold text-main">
+          <h3 className="mt-8 text-xl font-semibold text-main">
             Skills related to the job post{" "}
           </h3>
           <div className="mt-2 flex flex-wrap">
@@ -177,7 +177,7 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           </div>
 
           {/* Related Search */}
-          <h3 className="mt-8 text-2xl font-bold text-main">Related Search</h3>
+          <h3 className="mt-8 text-xl font-semibold text-main">Related Search</h3>
           <div className="mt-2 flex flex-wrap">
             {job.keywords?.map((keyWord, i) => (
               <button

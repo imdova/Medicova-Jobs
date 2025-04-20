@@ -130,7 +130,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
         placeholder: "Enter the Name of Your Company",
       },
       gridProps: { xs: 12, md: 6 },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "Name must be at least 2 characters" },
       },
     },
@@ -141,7 +141,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
       textFieldProps: {
         placeholder: "Enter Your Company Title",
       },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "Title must be at least 2 characters" },
       },
     },
@@ -211,7 +211,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
         placeholder: "Enter City",
       },
       gridProps: { xs: 12, md: 4 },
-      validation: {
+      rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
     },

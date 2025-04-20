@@ -1,11 +1,18 @@
-import React from "react";
-import { TextField } from "@mui/material";
+import React, { useState } from "react";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { FieldConfig } from "@/types";
+import {
+  ControllerRenderProps,
+  FieldError,
+  FieldValues,
+} from "react-hook-form";
 
 interface TextFieldProps {
   field: FieldConfig;
-  controllerField: any;
-  error: any;
+  controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
+  error?: FieldError | null;
 }
 
 export const TextFieldComponent: React.FC<TextFieldProps> = ({
@@ -13,6 +20,18 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
   controllerField,
   error,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+  };
+
   const placeholder =
     "Enter " +
     (field.textFieldProps?.label
@@ -20,25 +39,56 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
       : field.label
         ? field.label?.replace("*", "")
         : field.name);
+
+  const { className, ...labelProps } =
+    field.textFieldProps?.InputLabelProps || {};
   return (
     <div>
       {field.label && (
-        <label htmlFor={String(field.name)} className="mb-1 font-semibold">
-          {field.label}
-        </label>
+        <div className="mb-1">
+          <label
+            htmlFor={String(field.name)}
+            className={`font-semibold ${className}`}
+            {...labelProps}
+          >
+            {field.label}
+          </label>
+        </div>
       )}
       <TextField
         {...controllerField}
-        // label={
-        //   !field.textFieldProps?.label && !field.label ? field.name : undefined
-        // }
         {...field.textFieldProps}
         placeholder={field.textFieldProps?.placeholder || placeholder || ""}
         fullWidth
-        type={field.type}
+        type={
+          field.type === "password"
+            ? !showPassword
+              ? "password"
+              : "text"
+            : field.type
+        } // Conditional type
         variant="outlined"
         error={!!error}
         helperText={error?.message}
+        InputProps={{
+          className: "bg-white",
+          endAdornment:
+            field.type === "password" ? (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : (
+              ""
+            ),
+          ...field.textFieldProps?.InputProps,
+        }}
       />
     </div>
   );

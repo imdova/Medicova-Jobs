@@ -15,7 +15,7 @@ export const useFieldVisibility = (
     fields.forEach((field) => {
       if (field.type === "checkbox" && field.hideFieldNames?.length) {
         const isChecked = values[String(field.name)] ?? false;
-        if (!isChecked) {
+        if (isChecked) {
           field.hideFieldNames.forEach((name) => {
             if (!newHiddenFields.includes(String(name))) {
               newHiddenFields.push(String(name));
@@ -40,12 +40,7 @@ export const useFieldVisibility = (
       if (field.hideFieldNames?.length) {
         setHiddenFields((prev) => {
           if (event.target.checked) {
-            // Remove hidden fields when checkbox is checked
-            return prev.filter(
-              (name) => !field.hideFieldNames!.includes(String(name)),
-            );
-          } else {
-            // Add hidden fields when checkbox is unchecked
+            // Add hidden fields when checkbox is checked
             const newHiddenFields = [...prev];
             field.hideFieldNames!.forEach((fieldName) => {
               if (!prev.includes(String(fieldName))) {
@@ -53,6 +48,11 @@ export const useFieldVisibility = (
               }
             });
             return newHiddenFields;
+          } else {
+            // Remove hidden fields when checkbox is unchecked
+            return prev.filter(
+              (name) => !field.hideFieldNames!.includes(String(name)),
+            );
           }
         });
       }

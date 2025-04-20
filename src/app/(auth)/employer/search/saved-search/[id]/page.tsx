@@ -22,7 +22,7 @@ const page = async ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
-      <Filter sections={filterSections} searchKeys={["Residency (Location)"]} />
+      <Filter sections={filterSections} />
       {/* Right Column: Results Section */}
       <div className="w-full p-2 md:p-4 lg:w-[80%]">
         <div className="mb-5 flex w-full gap-3 pl-[32px]">
@@ -33,7 +33,7 @@ const page = async ({ params }: { params: { id: string } }) => {
             width={24}
             height={24}
           />
-          <h2 className="text-2xl font-bold text-main">{folder.name}</h2>
+          <h2 className="text-xl font-semibold text-main">{folder.name}</h2>
         </div>
         <FolderDetails candidates={candidates} />
         {/* Pagination */}

@@ -79,7 +79,7 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
       type: "text",
       label: "Job Title*",
       required: true,
-      validation: {
+      rules: {
         minLength: { value: 5, message: "Title must be at least 5 characters" },
       },
     },

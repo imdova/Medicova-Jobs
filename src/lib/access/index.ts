@@ -9,14 +9,10 @@ import {
   API_SEND_OTP,
   API_VALIDATE_OTP,
 } from "@/api/users";
-import { registerData, Result, Role, UserState } from "@/types";
+import { registerData, Result } from "@/types";
 import { errorResult } from "@/util/general";
 import { transformRegisterData, transLoginData } from "@/util/user";
-
-interface UserResponse {
-  user: UserState;
-  roles: Role[];
-}
+import { User } from "next-auth";
 
 export const sendOTP = async (email: string): Promise<Result> => {
   try {
@@ -93,7 +89,7 @@ export const serverSignIn = async ({
       body: JSON.stringify({ email, password }),
     });
     if (!response.ok) return errorResult("serverSignIn");
-    const user: UserState = await response.json();
+    const user: User = await response.json();
     return {
       success: true,
       message: "OTP validated successfully",
@@ -114,7 +110,7 @@ export const register = async (data: registerData): Promise<Result> => {
       body: JSON.stringify(data),
     });
     if (!response.ok) return errorResult("register");
-    const user: UserState = await response.json();
+    const user: User = await response.json();
     return {
       success: true,
       message: "Registered successfully",

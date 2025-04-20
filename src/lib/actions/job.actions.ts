@@ -4,7 +4,7 @@ import {
   API_CREATE_JOB,
   API_DELETE_JOB,
   API_GET_JOB_BY_ID,
-  API_GET_JOBS,
+  API_SEARCH_JOBS,
   API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_JOB,
 } from "@/api/employer";
@@ -12,7 +12,7 @@ import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { Gender } from "@/constants/enums/gender.enum";
 import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { JobData, Result } from "@/types";
-import { transformFromJsonStrings } from "@/util/job/post-job";
+import { toQueryString } from "@/util/general";
 import { revalidateTag } from "next/cache";
 
 export const createJob = async (jobData: JobData): Promise<Result<JobData>> => {
@@ -184,40 +184,31 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
 
 export const getJobsByFilters = async (
   filters: {
+    q?: string;
+    industryId?: string[];
+    specialityId?: string[];
+    categoryId?: string[];
+    careerLevelId?: string[];
+    employmentTypeId?: string[];
+    workPlace?: JobWorkPlace[];
+    gender?: Gender[];
+    educationLevel?: EducationLevel[];
+    countryCode?: string[];
+    stateCode?: string[];
+    salaryFrom?: number;
+    salaryTo?: number;
+    ageFrom?: number;
+    ageTo?: number;
     page?: number;
     limit?: number;
-    companyIds?: string[];
-    jobIndustryIds?: string[];
-    jobSpecialityIds?: string[];
-    jobCategoryIds?: string[];
-    jobCareerLevelIds?: string[];
-    jobEmploymentTypeIds?: string[];
-    jobWorkPlaces?: JobWorkPlace[];
-    genders?: Gender[];
-    educationLevels?: EducationLevel[];
-    countryCodes?: string[];
-    stateCodes?: string[];
-    minAge?: number;
-    maxAge?: number;
-    minExpYears?: number;
-    maxExpYears?: number;
-    salaryRangeStart?: number;
-    salaryRangeEnd?: number;
+    // minExpYears?: number;
+    // maxExpYears?: number;
   } = {},
 ): Promise<Result<{ data: JobData[]; total: number }>> => {
   try {
-    const queryParams = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          value.forEach((v) => queryParams.append(key, v));
-        } else {
-          queryParams.append(key, value.toString());
-        }
-      }
-    });
-    //  TODO: filter is draft and inactive jobs
-    const response = await fetch(`${API_GET_JOBS}?${queryParams.toString()}`, {
+    const queryParams = toQueryString(filters);
+    // console.log("🚀 ~ queryParams:", queryParams)
+    const response = await fetch(API_SEARCH_JOBS + queryParams, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

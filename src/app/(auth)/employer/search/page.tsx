@@ -29,12 +29,9 @@ const page = async ({
     seeker.isLocked = !isUnlocked;
   });
   return (
-    <div className="flex min-h-screen w-full ">
+    <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
-      <Filter
-        sections={searchFilters}
-        searchKeys={["Residency (Location)", "nationality"]}
-      />
+      <Filter sections={searchFilters} />
       {/* Right Column: Results Section */}
       <div className="w-full px-4 lg:w-[80%]">
         <CvResults seekers={seekers} total={total} />

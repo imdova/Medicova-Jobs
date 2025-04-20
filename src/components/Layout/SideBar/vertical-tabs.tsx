@@ -5,12 +5,13 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 import Avatar from "@/components/UI/Avatar";
-import { NavItem, UserState } from "@/types";
+import { NavItem } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
 import useActiveTab from "@/hooks/useActiveTab";
+import { User } from "next-auth";
 // ====== TYPES ======
 interface SideBarProps {
-  user?: UserState;
+  user?: User;
   pathname: string;
   isMinimal: boolean;
 }
@@ -22,7 +23,7 @@ interface TabComponentProps {
 }
 
 interface ProfileTabProps {
-  user: UserState;
+  user: User;
   pathname: string;
   activeTab: number | null;
   isMinimal: boolean;
@@ -47,7 +48,7 @@ const SectionHeader = ({
   <div className="h-[45px]">
     <Divider />
     <p
-      className={`${isMinimal ? "px-1 text-xs" : "text-xs px-1 lg:text-sm"} lg:p-4 font-medium normal-case text-gray-600`}
+      className={`${isMinimal ? "px-1 text-xs" : "px-1 text-xs xl:text-sm"} font-medium normal-case text-gray-600 xl:p-4`}
     >
       {text}
     </p>
@@ -114,7 +115,7 @@ const CollapseTab = ({
       </div>
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
         <div
-          className={`${isMinimal ? "group-hover:ml-10" : "max-lg:group-hover:ml-10 lg:ml-10"} transition-all duration-300`}
+          className={`${isMinimal ? "group-hover:ml-10" : "max-xl:group-hover:ml-10 xl:ml-10"} transition-all duration-300`}
         >
           {item.links?.map((link, linkIndex) => {
             const isActive = isOpen
@@ -157,7 +158,7 @@ const ProfileTab = ({
 
   return (
     <Link
-      className={`${isMinimal ? "mx-0" : "lg:mx-2"} flex h-[45px] flex-row justify-start rounded-[10px] p-[5px] opacity-100 transition-all duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"} `}
+      className={`${isMinimal ? "mx-0" : "xl:mx-2"} flex h-[45px] flex-row justify-start rounded-[10px] p-[5px] opacity-100 transition-all duration-300 ease-in-out ${isActive ? "bg-light-primary text-white" : "text-gray-800/60"} `}
       href={path}
     >
       <div className="flex items-center gap-1">
@@ -172,7 +173,7 @@ const ProfileTab = ({
     </Link>
   );
 };
- // TODO : add hover effect 
+// TODO : add hover effect
 // ====== MAIN COMPONENT ======
 export default function VerticalTabs({
   user: initialUser,
@@ -180,7 +181,7 @@ export default function VerticalTabs({
   isMinimal = false,
 }: SideBarProps) {
   const { data: session } = useSession();
-  const sessionUser = session?.user as UserState;
+  const sessionUser = session?.user;
   const user = sessionUser || initialUser;
   const links = getSideBarLinks(user, pathname);
   const { activeTab, isCollapsed, setIsCollapsed } = useActiveTab(
