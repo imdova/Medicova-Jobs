@@ -6,34 +6,13 @@ import Resize from "@/components/UI/Resize";
 import { Block } from "@/types/blog";
 import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
+import { updateItem } from "@/util/blog";
 
 interface BlockRendererProps {
   block: Block;
   selectedBlock?: Block | null;
   onSelect: (block: Block) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
-}
-
-function updateItem(
-  blocks: Block[],
-  block: Block,
-  updatedFields: Partial<Block>,
-) {
-  return blocks.map((parentBlock) => {
-    if (parentBlock.id !== block.parentId)
-      return parentBlock.id === block.id
-        ? { ...parentBlock, ...updatedFields }
-        : parentBlock;
-
-    const updatedNestedBlocks = parentBlock.blocks.map((item) => {
-      if (item.id === block.id) {
-        return { ...item, ...updatedFields };
-      }
-      return item;
-    });
-
-    return { ...parentBlock, blocks: updatedNestedBlocks };
-  });
 }
 
 export function BlockRenderer({
@@ -44,16 +23,12 @@ export function BlockRenderer({
 }: BlockRendererProps) {
   const isSelected = selectedBlock?.id === block.id;
 
-  // Helper function to update block content
-  // const updateBlock = (id: string, content: string) => {
-  //   setBlocks((prevBlocks) =>
-  //     prevBlocks.map((block) =>
-  //       block.id === id ? { ...block, content } : block,
-  //     ),
-  //   );
-  // };
-  const updateBlock = (block: Block, updatedFields: Partial<Block>) => {
-    setBlocks((blocks) => updateItem(blocks, block, updatedFields));
+  const updateBlock = (block: Block, data: Partial<Block>) => {
+    setBlocks((blocks) => {
+      const newBlocks = [...blocks];
+      updateItem(newBlocks, block.id, data);
+      return newBlocks;
+    });
   };
 
   // Helper function to update block styles
@@ -183,6 +158,31 @@ export function BlockRenderer({
             )}
           </Droppable>
         </div>
+      );
+    case "flex-row":
+      return (
+        <Droppable droppableId={block.id} direction="horizontal">
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              className="flex"
+              ref={provided.innerRef}
+            >
+              {block.blocks?.map((block, index) => (
+                <div key={block.id} className="flex-1">
+                  <DraggableBlock
+                    block={block}
+                    index={index}
+                    selectedBlock={selectedBlock}
+                    onSelect={onSelect}
+                    setBlocks={setBlocks}
+                  />
+                </div>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       );
 
     default:

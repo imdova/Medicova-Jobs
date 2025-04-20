@@ -4,49 +4,28 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { stylesFields } from "@/constants/pagebuilder/blocks";
 import { blocksForm } from "@/constants/pagebuilder/formFields";
 import { Block, TabProps } from "@/types/blog";
+import { updateItem } from "@/util/blog";
 import { Grid } from "@mui/material";
-
-function updateItem(
-  blocks: Block[],
-  block: Block,
-  updatedFields: Partial<Block>,
-) {
-  return blocks.map((parentBlock) => {
-    if (parentBlock.id !== block.parentId)
-      return parentBlock.id === block.id
-        ? { ...parentBlock, ...updatedFields }
-        : parentBlock;
-
-    const updatedNestedBlocks = parentBlock.blocks.map((item) => {
-      if (item.id === block.id) {
-        return { ...item, ...updatedFields };
-      }
-      return item;
-    });
-
-    return { ...parentBlock, blocks: updatedNestedBlocks };
-  });
-}
 
 export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
   const updateBlock = (data: Partial<Block>) => {
     if (selectedBlock)
-      setBlocks((blocks) => updateItem(blocks, selectedBlock, data));
+      setBlocks((blocks) => {
+        const newBlocks = [...blocks];
+        updateItem(newBlocks, selectedBlock?.id, data);
+        return newBlocks;
+      });
   };
 
   const updateBlockStyles = (styles: Partial<Block["styles"]>) => {
-    setBlocks((pv) =>
-      pv.map((block) =>
-        block.id === selectedBlock?.id
-          ? {
-              ...block,
-              styles: { ...block.styles, ...styles } as Partial<
-                Block["styles"]
-              >,
-            }
-          : block,
-      ),
-    );
+    if (selectedBlock)
+      setBlocks((blocks) => {
+        const newBlocks = [...blocks];
+        updateItem(newBlocks, selectedBlock?.id, {
+          styles: { ...selectedBlock.styles, ...styles },
+        });
+        return newBlocks;
+      });
   };
   const formFields = blocksForm.find(
     (form) => selectedBlock?.type && form.type.includes(selectedBlock?.type),

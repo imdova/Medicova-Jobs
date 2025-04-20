@@ -1,5 +1,6 @@
 import { FieldConfig } from "@/types";
-import { BlockButton } from "@/types/blog";
+import { Block, BlockButton } from "@/types/blog";
+import { generateId } from "@/util";
 import {
   AlignLeft,
   Code,
@@ -42,9 +43,6 @@ export const layoutBlocks: BlockButton[] = [
     id: "container",
     icon: <Square className="mr-2 h-4 w-4" />,
     label: "Container",
-    blockProps: {
-      allowNesting: true,
-    },
   },
   {
     id: "grid",
@@ -62,6 +60,36 @@ export const layoutBlocks: BlockButton[] = [
     label: "Flex Column",
   },
 ];
+export const getBlockProps = (type: Block["type"]): Partial<Block> => {
+  if (type === "flex-row") {
+    return {
+      blocks: [
+        {
+          id: generateId(),
+          type: "container",
+          allowNesting: true,
+          content: "",
+          styles: {},
+          blocks: [],
+        },
+        {
+          id: generateId(),
+          type: "container",
+          allowNesting: true,
+          content: "",
+          styles: {},
+          blocks: [],
+        },
+      ],
+    };
+  }
+  if (type === "container") {
+    return {
+      allowNesting: true,
+    };
+  }
+  return {};
+};
 export const contentBlocks: BlockButton[] = [
   {
     id: "h1",

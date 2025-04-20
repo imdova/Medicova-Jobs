@@ -4,8 +4,7 @@ import { DragIndicator } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { ContentCopy, DeleteOutline } from "@mui/icons-material";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
-import { duplicateNestedItem, removeNestedItem } from "@/util/blog";
-import { generateId } from "@/util";
+import { deleteItem, duplicateItem } from "@/util/blog";
 
 interface BlockOptionsProps {
   block: Block;
@@ -23,22 +22,25 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   const onAction = (block: Block, action: BlockAction) => {
     switch (action) {
       case "Delete":
-        setBlocks((prev) => removeNestedItem(prev, block));
+        setBlocks((blocks) => {
+          const newBlocks = structuredClone(blocks);
+          deleteItem(newBlocks, block?.id);
+          return newBlocks;
+        });
         break;
       case "Duplicate":
-        const newBlock = {
-          ...block,
-          id: generateId(),
-        };
-        setBlocks((prev) => duplicateNestedItem(prev, newBlock));
-        onSelect(newBlock);
+        setBlocks((blocks) => {
+          const newBlocks = structuredClone(blocks);
+          duplicateItem(newBlocks, block.id);
+          return newBlocks;
+        });
         break;
     }
   };
 
   return (
     <div
-      className={`group/button absolute -right-4 z-20 mr-4 top-1/2 -translate-y-1/2  flex translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 ${block.type === "container" ? "group-hover/container:opacity-100" : "group-hover/block:opacity-100"} `}
+      className={`group/button absolute -right-4 top-1/2 z-20 mr-4 flex -translate-y-1/2 translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 group-hover/${block.type}:opacity-100 `}
     >
       <Tooltip placement="top" arrow title="Drag to Reorder">
         <IconButton

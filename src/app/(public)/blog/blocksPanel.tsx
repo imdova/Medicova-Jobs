@@ -2,12 +2,13 @@ import FormModal from "@/components/form/FormModal/FormModal";
 import {
   basicBlocks,
   contentBlocks,
+  getBlockProps,
   layoutBlocks,
 } from "@/constants/pagebuilder/blocks";
 import { BlockForm, blocksForm } from "@/constants/pagebuilder/formFields";
 import { Block, TabProps } from "@/types/blog";
 import { generateId } from "@/util";
-import { addNestedItem } from "@/util/blog";
+import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useState } from "react";
 
@@ -24,17 +25,20 @@ const BlocksPanel: React.FC<TabProps> = ({
   const close = () => setIsModalOpen(false);
 
   const handleSubmit = (data: { [key: string]: string }) => {
-    if (selectedBlock && selectedBlock.type === "container") {
-      setBlocks((blocks) =>
-        addNestedItem(blocks, { ...onHoldBlock, ...data }, selectedBlock),
-      );
+    if (selectedBlock && selectedBlock.allowNesting) {
+      setBlocks((blocks) => {
+        const newBlocks = structuredClone(blocks);
+        addItem(newBlocks, { ...onHoldBlock, ...data }, selectedBlock.id);
+        return newBlocks;
+      });
     } else {
       setBlocks((pv) => [...pv, { ...onHoldBlock, ...data }]);
     }
     close();
   };
 
-  const handleAddBlock = (type: Block["type"], blockProps?: Partial<Block>) => {
+  const handleAddBlock = (type: Block["type"]) => {
+    const blockProps = getBlockProps(type);
     const newBlock: Block = {
       id: generateId(),
       type,
@@ -50,12 +54,16 @@ const BlocksPanel: React.FC<TabProps> = ({
       setOnHoldBlock(newBlock);
       return;
     }
+
     if (selectedBlock && selectedBlock.allowNesting) {
-      setBlocks((blocks) => addNestedItem(blocks, newBlock, selectedBlock));
-      return;
+      setBlocks((blocks) => {
+        const newBlocks = structuredClone(blocks);
+        addItem(newBlocks, newBlock, selectedBlock.id);
+        return newBlocks;
+      });
+    } else {
+      setBlocks((pv) => [...pv, newBlock]);
     }
-    setBlocks((blocks) => [...blocks, newBlock]);
-    setSelectedBlock(newBlock);
   };
 
   return (
@@ -77,7 +85,7 @@ const BlocksPanel: React.FC<TabProps> = ({
                 <Button
                   variant="outlined"
                   className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id, item.blockProps)}
+                  onClick={() => handleAddBlock(item.id)}
                 >
                   {item.icon}
                   {item.label}
@@ -95,7 +103,7 @@ const BlocksPanel: React.FC<TabProps> = ({
                 <Button
                   variant="outlined"
                   className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id, item.blockProps)}
+                  onClick={() => handleAddBlock(item.id)}
                 >
                   {item.icon}
                   {item.label}
@@ -113,7 +121,7 @@ const BlocksPanel: React.FC<TabProps> = ({
                 <Button
                   variant="outlined"
                   className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id, item.blockProps)}
+                  onClick={() => handleAddBlock(item.id)}
                 >
                   {item.icon}
                   {item.label}

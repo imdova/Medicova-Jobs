@@ -19,6 +19,7 @@ export function DraggableBlock({
   setBlocks,
 }: DraggableBlockProps) {
   const isSelected = selectedBlock?.id === block.id;
+
   return (
     <Draggable draggableId={block.id} index={index}>
       {(provided) => (
@@ -29,7 +30,7 @@ export function DraggableBlock({
             e.stopPropagation();
             onSelect(block);
           }}
-          className={`${block.allowNesting ? "group/container pr-10" : "group/block"} w-full  relative rounded-base border m-1 p-2 ${
+          className={`group/${block.type} relative m-1 w-full rounded-base border p-2 pr-10 ${
             isSelected
               ? "border-primary"
               : "border-transparent hover:border-neutral-400"

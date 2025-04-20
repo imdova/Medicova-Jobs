@@ -6,7 +6,7 @@ import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
 import { Block } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
-import { findNestedItemById, removeNestedItem } from "@/util/blog";
+import { deleteItem, findItemById } from "@/util/blog";
 // import BlogHeader from "@/components/page-builder/BlogHeader";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
@@ -30,12 +30,13 @@ export default function PageBuilder() {
   const onDragEnd = (result: any) => {
     const { source, draggableId, destination, type } = result;
 
-    const childBlock = findNestedItemById(blocks, draggableId);
-    if (!destination && childBlock) {
-      const newBlocks = removeNestedItem(blocks, childBlock);
-      setBlocks([...newBlocks, childBlock]);
-      return;
-    }
+    // const childBlock = findItemById(blocks, draggableId);
+    // if (!destination && childBlock) {
+    //   const newBlocks = [...blocks];
+    //   deleteItem(newBlocks, childBlock?.id);
+    //   setBlocks([...newBlocks, childBlock]);
+    //   return;
+    // }
 
     if (!destination) return;
 
@@ -49,7 +50,6 @@ export default function PageBuilder() {
 
     // Handle item reordering within same group
     if (source.droppableId === destination.droppableId) {
-      console.log("🚀 ~ onDragEnd ~ item reordering within same group");
       const groupIndex = blocks.findIndex(
         (group) => group.id === source.droppableId,
       );
@@ -60,7 +60,7 @@ export default function PageBuilder() {
       const newGroups = [...blocks];
       newGroups[groupIndex].blocks = newItems;
       setBlocks(newGroups);
-    } 
+    }
   };
 
   return (
@@ -81,7 +81,10 @@ export default function PageBuilder() {
             className={`scroll-bar-minimal h-[calc(100vh-132px)] overflow-auto bg-gray-50 p-4`}
           >
             <div
-              className={`mx-auto min-h-full border  bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+              onClick={() => {
+                setSelectedBlock(null);
+              }}
+              className={`mx-auto min-h-full border bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
               <DragDropContext onDragEnd={onDragEnd}>
@@ -93,10 +96,11 @@ export default function PageBuilder() {
                           key={block.id}
                           block={block}
                           index={index}
-                          selectedBlock={findNestedItemById(
-                            blocks,
-                            selectedBlock?.id,
-                          )}
+                          selectedBlock={
+                            selectedBlock?.id
+                              ? findItemById(blocks, selectedBlock?.id)
+                              : undefined
+                          }
                           onSelect={setSelectedBlock}
                           setBlocks={setBlocks}
                         />
@@ -114,7 +118,11 @@ export default function PageBuilder() {
         <ToolBar
           blocks={blocks}
           setBlocks={setBlocks}
-          selectedBlock={findNestedItemById(blocks, selectedBlock?.id)}
+          selectedBlock={
+            selectedBlock?.id
+              ? findItemById(blocks, selectedBlock?.id)
+              : undefined
+          }
           setSelectedBlock={setSelectedBlock}
         />
       </div>
