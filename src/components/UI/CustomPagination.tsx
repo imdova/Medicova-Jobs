@@ -16,7 +16,7 @@ interface PaginationProps {
   totalItems: number;
 }
 
-const CustomPagination: React.FC<PaginationProps> = ({
+const Pagination: React.FC<PaginationProps> = ({
   fixedNumberPerPage,
   initialNumberPerPage = 10,
   totalItems,
@@ -112,11 +112,11 @@ const CustomPagination: React.FC<PaginationProps> = ({
   );
 };
 
-const Pagination: React.FC<PaginationProps> = (props) => {
+const CustomPagination: React.FC<PaginationProps> = (props) => {
   return (
     <Suspense>
-      <CustomPagination {...props} />
+      <Pagination {...props} />
     </Suspense>
   );
 };
-export default Pagination;
+export default CustomPagination;

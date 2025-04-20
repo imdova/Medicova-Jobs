@@ -66,7 +66,7 @@ export const BlockTextEditor: React.FC<{
 
   return (
     <div className="mt-2 w-full">
-      <div className={isSelected ? "block" : "hidden"}>
+      <div className={isSelected ? "block" : "hidden group-hover/block:block"}>
         <BlockEditorToolbar editor={editor} />
       </div>
       <Box

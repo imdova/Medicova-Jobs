@@ -1,5 +1,4 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { Grid } from "@mui/material";
 import { Block } from "@/types/blog";
 import { BlockRenderer } from "./BlockRenderer";
 import BlockOptions from "./BlockOptions";
@@ -7,7 +6,7 @@ import BlockOptions from "./BlockOptions";
 interface DraggableBlockProps {
   block: Block;
   index: number;
-  isSelected: boolean;
+  selectedBlock?: Block | null;
   onSelect: (block: Block) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
 }
@@ -15,43 +14,42 @@ interface DraggableBlockProps {
 export function DraggableBlock({
   block,
   index,
-  isSelected,
+  selectedBlock,
   onSelect,
   setBlocks,
 }: DraggableBlockProps) {
+  const isSelected = selectedBlock?.id === block.id;
+
   return (
-    <Grid
-      item
-      xs={block.gridProps?.xs ?? 12}
-      sm={block.gridProps?.sm}
-      md={block.gridProps?.md}
-    >
-      <Draggable draggableId={block.id} index={index}>
-        {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            onClick={() => onSelect(block)}
-            className={`group/item relative flex items-center rounded-base border p-4 ${
-              isSelected
-                ? "border-primary"
-                : "border-transparent hover:border-neutral-400"
-            }`}
-          >
-            <BlockOptions
-              block={block}
-              onSelect={onSelect}
-              setBlocks={setBlocks}
-              provided={provided.dragHandleProps}
-            />
-            <BlockRenderer
-              block={block}
-              isSelected={isSelected}
-              setBlocks={setBlocks}
-            />
-          </div>
-        )}
-      </Draggable>
-    </Grid>
+    <Draggable draggableId={block.id} index={index}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(block);
+          }}
+          className={`group/${block.type} relative m-1 w-full rounded-base border p-2 pr-10 ${
+            isSelected
+              ? "border-primary"
+              : "border-transparent hover:border-neutral-400"
+          }`}
+        >
+          <BlockOptions
+            block={block}
+            onSelect={onSelect}
+            setBlocks={setBlocks}
+            provided={provided.dragHandleProps}
+          />
+          <BlockRenderer
+            block={block}
+            onSelect={onSelect}
+            selectedBlock={selectedBlock}
+            setBlocks={setBlocks}
+          />
+        </div>
+      )}
+    </Draggable>
   );
 }

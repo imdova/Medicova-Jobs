@@ -1,5 +1,5 @@
 import { Laptop, Smartphone, Tablet } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 
 interface ViewModeSelectorProps {
   viewMode: "desktop" | "tablet" | "mobile";
@@ -17,17 +17,21 @@ export function ViewModeSelector({
         { mode: "tablet", icon: Tablet },
         { mode: "mobile", icon: Smartphone },
       ].map(({ mode, icon: Icon }) => (
-        <IconButton
+        <Button
+          variant="outlined"
           key={mode}
           className={`border border-solid border-gray-200 ${
-            viewMode === mode ? "bg-light-primary text-white" : ""
+            viewMode === mode ? "bg-light-primary text-sm text-white hover:bg-light-primary" : ""
           }`}
           onClick={() =>
             onViewModeChange(mode as "desktop" | "tablet" | "mobile")
           }
         >
-          <Icon className="h-4 w-4" />
-        </IconButton>
+          <Icon className="h-4 w-4 mr-2" />
+          <span className="text-sm">
+          {mode}
+          </span>
+        </Button>
       ))}
     </div>
   );

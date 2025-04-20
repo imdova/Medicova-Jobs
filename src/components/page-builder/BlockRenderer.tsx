@@ -4,25 +4,31 @@ import Image from "next/image";
 import { BlockTextEditor } from "@/components/editor/editor";
 import Resize from "@/components/UI/Resize";
 import { Block } from "@/types/blog";
+import { Droppable } from "@hello-pangea/dnd";
+import { DraggableBlock } from "./DraggableBlock";
+import { updateItem } from "@/util/blog";
 
 interface BlockRendererProps {
   block: Block;
-  isSelected: boolean;
+  selectedBlock?: Block | null;
+  onSelect: (block: Block) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
 }
 
 export function BlockRenderer({
   block,
-  isSelected,
+  onSelect,
+  selectedBlock,
   setBlocks,
 }: BlockRendererProps) {
-  // Helper function to update block content
-  const updateBlock = (id: string, content: string) => {
-    setBlocks((prevBlocks) =>
-      prevBlocks.map((block) =>
-        block.id === id ? { ...block, content } : block,
-      ),
-    );
+  const isSelected = selectedBlock?.id === block.id;
+
+  const updateBlock = (block: Block, data: Partial<Block>) => {
+    setBlocks((blocks) => {
+      const newBlocks = [...blocks];
+      updateItem(newBlocks, block.id, data);
+      return newBlocks;
+    });
   };
 
   // Helper function to update block styles
@@ -51,7 +57,7 @@ export function BlockRenderer({
           placeholder="Heading 1"
           style={styles}
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-3xl font-bold tracking-tight focus:outline-none md:text-4xl"
         />
       );
@@ -64,7 +70,7 @@ export function BlockRenderer({
           style={styles}
           placeholder="Heading 2"
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-2xl font-semibold tracking-tight focus:outline-none md:text-3xl"
         />
       );
@@ -77,7 +83,7 @@ export function BlockRenderer({
           placeholder="Heading 3"
           style={styles}
           value={block.content}
-          onChange={(e) => updateBlock(block.id, e.target.value)}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none text-xl font-semibold tracking-tight focus:outline-none md:text-2xl"
         />
       );
@@ -87,7 +93,7 @@ export function BlockRenderer({
         <BlockTextEditor
           isSelected={isSelected}
           value={block.content}
-          onChange={(content) => updateBlock(block.id, content)}
+          onChange={(content) => updateBlock(block, { content })}
         />
       );
 
@@ -130,6 +136,53 @@ export function BlockRenderer({
           dangerouslySetInnerHTML={{ __html: block.content }}
           className="prose max-w-none"
         />
+      );
+    case "container":
+      return (
+        <div>
+          <Droppable droppableId={block.id}>
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {block.blocks?.map((block, index) => (
+                  <DraggableBlock
+                    key={block.id}
+                    block={block}
+                    index={index}
+                    selectedBlock={selectedBlock}
+                    onSelect={onSelect}
+                    setBlocks={setBlocks}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      );
+    case "flex-row":
+      return (
+        <Droppable droppableId={block.id} direction="horizontal">
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              className="flex"
+              ref={provided.innerRef}
+            >
+              {block.blocks?.map((block, index) => (
+                <div key={block.id} className="flex-1">
+                  <DraggableBlock
+                    block={block}
+                    index={index}
+                    selectedBlock={selectedBlock}
+                    onSelect={onSelect}
+                    setBlocks={setBlocks}
+                  />
+                </div>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       );
 
     default:

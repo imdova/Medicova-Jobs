@@ -61,6 +61,10 @@ const theme = createTheme({
         containedPrimary: {
           color: "var(--primary-foreground)",
         },
+        outlinedPrimary: {
+          color: "var(--text-secondary)",
+          borderColor: "var(--text-secondary)"
+        },
         root: {
           borderRadius: "10px",
           padding: "8px 16px", // Custom padding
