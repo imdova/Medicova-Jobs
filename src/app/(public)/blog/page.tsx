@@ -4,10 +4,9 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
-import { Block } from "@/types/blog";
+import { Block, BlogSettings } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
-import { deleteItem, findItemById } from "@/util/blog";
-// import BlogHeader from "@/components/page-builder/BlogHeader";
+import { findItemById } from "@/util/blog";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 const getViewModeWidth = (viewMode: ViewMode) => {
@@ -21,8 +20,18 @@ const getViewModeWidth = (viewMode: ViewMode) => {
   }
 };
 
+const initialSetting: BlogSettings = {
+  title: "",
+  slug: "",
+  cover: "",
+  category: "",
+  shortDescription: "",
+  author: "1",
+};
+
 export default function PageBuilder() {
   // State management
+  const [settings, setSettings] = useState<BlogSettings>(initialSetting);
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
@@ -123,6 +132,8 @@ export default function PageBuilder() {
               ? findItemById(blocks, selectedBlock?.id)
               : undefined
           }
+          settings={settings}
+          updateSettings={setSettings}
           setSelectedBlock={setSelectedBlock}
         />
       </div>

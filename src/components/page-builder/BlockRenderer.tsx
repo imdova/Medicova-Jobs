@@ -142,7 +142,7 @@ export function BlockRenderer({
         <div>
           <Droppable droppableId={block.id}>
             {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <div {...provided.droppableProps} className="min-h-24 border-gray-200 border shadow-soft rounded-base" ref={provided.innerRef}>
                 {block.blocks?.map((block, index) => (
                   <DraggableBlock
                     key={block.id}
@@ -165,7 +165,7 @@ export function BlockRenderer({
           {(provided) => (
             <div
               {...provided.droppableProps}
-              className="flex"
+              className="flex gap-3"
               ref={provided.innerRef}
             >
               {block.blocks?.map((block, index) => (

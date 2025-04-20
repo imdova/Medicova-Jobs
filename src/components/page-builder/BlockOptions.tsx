@@ -38,9 +38,17 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
     }
   };
 
+  const groupsLevel = [
+    "group-hover/block-1:opacity-100",
+    "group-hover/block-2:opacity-100",
+    "group-hover/block-3:opacity-100",
+    "group-hover/block-4:opacity-100",
+    "group-hover/block-5:opacity-100",
+  ];
+
   return (
     <div
-      className={`group/button absolute -right-4 top-1/2 z-20 mr-4 flex -translate-y-1/2 translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 group-hover/${block.type}:opacity-100 `}
+      className={`group/button absolute -right-4 top-1/2 z-20 mr-4 flex -translate-y-1/2 translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 group-hover/block-${block.level}:opacity-100 `}
     >
       <Tooltip placement="top" arrow title="Drag to Reorder">
         <IconButton

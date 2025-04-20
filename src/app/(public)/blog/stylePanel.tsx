@@ -31,9 +31,16 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
     (form) => selectedBlock?.type && form.type.includes(selectedBlock?.type),
   )?.fields;
 
+  if (!selectedBlock) {
+    return (
+      <div className="text-muted-foreground p-4 text-center">
+        Select a block to customize its styles
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
-      <h4 className="text-xl font-semibold">Content Editor</h4>
+      <h4 className="text-xl font-semibold">Content Editor ({selectedBlock.type})</h4>
       {formFields &&
         formFields.map((field) => (
           <Grid
