@@ -82,7 +82,7 @@ export const RadioFieldComponent: React.FC<RadioFieldProps> = ({
         </label>
       </div>
 
-      <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
+      <div className="flex w-full flex-wrap gap-2 ">
         {options?.map((option) => (
           <div
             key={String(option.value)}

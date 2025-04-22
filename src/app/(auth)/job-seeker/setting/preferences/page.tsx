@@ -299,7 +299,7 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
 const CareerPreferencePage = () => {
   const { data: session, status } = useSession();
   const sessionUser = session?.user;
-  const { data, loading } = useFetch<CareerPreference[]>(
+  const { data: careerPreference, loading } = useFetch<CareerPreference>(
     sessionUser?.id
       ? API_GET_CAREER_PREFERENCES_BY_SEEKER_ID + sessionUser.id
       : null,
@@ -316,8 +316,6 @@ const CareerPreferencePage = () => {
       </div>
     );
   if (status === "unauthenticated") return notFound();
-
-  const careerPreference = data?.[0];
 
   const defaultValues: Partial<CareerPreference> = {
     id: careerPreference?.id,
