@@ -220,15 +220,19 @@ export function formatPrice(value?: number): string | null {
   return value.toString();
 }
 
-export function toQueryString(
-  filters: Record<
-    string,
-    string | number | (string | number)[] | undefined | null
-  >,
+export function toQueryString<T>(
+  filters:
+    | T
+    | Record<string, string | number | (string | number)[] | undefined | null>,
 ): string {
   const queryParams = new URLSearchParams();
 
-  for (const [key, value] of Object.entries(filters)) {
+  for (const [key, value] of Object.entries(
+    filters as Record<
+      string,
+      string | number | (string | number)[] | undefined | null
+    >,
+  )) {
     if (value == null || value === "") continue; // Skip undefined, null, or empty string
 
     if (Array.isArray(value)) {
@@ -248,3 +252,12 @@ export function toQueryString(
 export const getOptionLabel = (options: Option[], value: string | null) => {
   return options.find((x) => x.value === value)?.label;
 };
+
+export function enumToOptions<T extends Record<string, string>>(
+  enumObj: T,
+): Option[] {
+  return Object.values(enumObj).map((value) => ({
+    value: value as string,
+    label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
+  }));
+}

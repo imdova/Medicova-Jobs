@@ -8,10 +8,8 @@ import {
   API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_JOB,
 } from "@/api/employer";
-import { EducationLevel } from "@/constants/enums/education-level.enum";
-import { Gender } from "@/constants/enums/gender.enum";
-import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { JobData, Result } from "@/types";
+import { JobSearchFilter, SearchResult } from "@/types/jobs";
 import { toQueryString } from "@/util/general";
 import { revalidateTag } from "next/cache";
 
@@ -183,31 +181,10 @@ export const getJobById = async (jobId: string): Promise<Result<JobData>> => {
 };
 
 export const getJobsByFilters = async (
-  filters: {
-    q?: string;
-    industryId?: string[];
-    specialityId?: string[];
-    categoryId?: string[];
-    careerLevelId?: string[];
-    employmentTypeId?: string[];
-    workPlace?: JobWorkPlace[];
-    gender?: Gender[];
-    educationLevel?: EducationLevel[];
-    countryCode?: string[];
-    stateCode?: string[];
-    salaryFrom?: number;
-    salaryTo?: number;
-    ageFrom?: number;
-    ageTo?: number;
-    page?: number;
-    limit?: number;
-    // minExpYears?: number;
-    // maxExpYears?: number;
-  } = {},
-): Promise<Result<{ data: JobData[]; total: number }>> => {
+  filters: JobSearchFilter = {},
+): Promise<Result<SearchResult>> => {
   try {
     const queryParams = toQueryString(filters);
-    // console.log("🚀 ~ queryParams:", queryParams)
     const response = await fetch(API_SEARCH_JOBS + queryParams, {
       method: "GET",
       headers: {

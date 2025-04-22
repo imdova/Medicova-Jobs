@@ -393,7 +393,7 @@ export const searchJopFilters: FilterType[] = [
   {
     name: "Work Type",
     multiple: true,
-    sectionKey: "emt",
+    sectionKey: "emp",
     items: [
       { label: "Full-time", count: 3, value: "full_time" },
       { label: "Part-Time", count: 5, value: "part_time" },
@@ -402,7 +402,7 @@ export const searchJopFilters: FilterType[] = [
   {
     name: "Work Place",
     multiple: true,
-    sectionKey: "wp",
+    sectionKey: "wrk",
     items: [
       { label: "Remote", count: 2, value: "remote" },
       { label: "On site", count: 24, value: "on_site" },
