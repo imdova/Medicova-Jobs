@@ -38,7 +38,7 @@ export function DraggableBlock({
             e.stopPropagation();
             onSelect(block);
           }}
-          className={`group/block-${block.level} relative m-1 w-full rounded-base border p-2 pr-10 ${
+          className={`group/block-${block.level} relative  w-full rounded-base border p-2 ${
             isSelected
               ? "border-primary"
               : "border-transparent hover:border-neutral-400"

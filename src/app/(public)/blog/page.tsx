@@ -7,8 +7,10 @@ import ToolBar from "./toolbar";
 import { Block, BlogSettings } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
 import { findItemById } from "@/util/blog";
+import { onDragEndHandler } from "./blog";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
+
 const getViewModeWidth = (viewMode: ViewMode) => {
   switch (viewMode) {
     case "desktop":
@@ -39,15 +41,10 @@ export default function PageBuilder() {
   const onDragEnd = (result: any) => {
     const { source, draggableId, destination, type } = result;
 
-    // const childBlock = findItemById(blocks, draggableId);
-    // if (!destination && childBlock) {
-    //   const newBlocks = [...blocks];
-    //   deleteItem(newBlocks, childBlock?.id);
-    //   setBlocks([...newBlocks, childBlock]);
-    //   return;
-    // }
-
     if (!destination) return;
+
+    destination.droppableId = destination.droppableId.replace("drop-", "");
+    source.droppableId = source.droppableId.replace("drop-", "");
 
     if (type === "GROUP") {
       const newBlocks = [...blocks];
@@ -56,20 +53,13 @@ export default function PageBuilder() {
       setBlocks(newBlocks);
       return;
     }
-
-    // Handle item reordering within same group
-    if (source.droppableId === destination.droppableId) {
-      const groupIndex = blocks.findIndex(
-        (group) => group.id === source.droppableId,
-      );
-      const newItems = [...blocks[groupIndex].blocks];
-      const [movedItem] = newItems.splice(source.index, 1);
-      newItems.splice(destination.index, 0, movedItem);
-
-      const newGroups = [...blocks];
-      newGroups[groupIndex].blocks = newItems;
-      setBlocks(newGroups);
-    }
+    const newBlocks = onDragEndHandler(
+      blocks,
+      draggableId,
+      source,
+      destination,
+    );
+    setBlocks(newBlocks);
   };
 
   return (
@@ -93,7 +83,7 @@ export default function PageBuilder() {
               onClick={() => {
                 setSelectedBlock(null);
               }}
-              className={`mx-auto min-h-full border bg-white p-4 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+              className={`mx-auto min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
               <DragDropContext onDragEnd={onDragEnd}>

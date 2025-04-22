@@ -1,7 +1,6 @@
 import { Block } from "@/types/blog";
 import { generateId } from ".";
 
-
 export function findItemById(blocks: Block[], id: string): Block | null {
   for (const block of blocks) {
     if (block.id === id) return block;
@@ -62,26 +61,34 @@ export function deleteItem(blocks: Block[], id: string): boolean {
   return false;
 }
 
-
-export function duplicateItem(blocks: Block[], targetId: string): boolean {
-  function recursiveDuplicate(items: Block[]): boolean {
+export function duplicateItem(blocks: Block[], targetId: string): Block | null {
+  function recursiveDuplicate(items: Block[]): Block | null {
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
 
       if (item.id === targetId) {
         // Deep clone the item
         const clone: Block = structuredClone(item);
-        clone.id = generateId(); // Set a new ID
+
+        // Function to recursively assign new IDs to all sub-blocks
+        const assignNewIds = function (block: Block): void {
+          block.id = generateId();
+          if (block.blocks) {
+            block.blocks.forEach(assignNewIds);
+          }
+        };
+
+        assignNewIds(clone); // Assign new IDs to the clone and its sub-blocks
 
         // Insert after the original
         items.splice(i + 1, 0, clone);
-        return true;
+        return clone;
       }
-
-      if (item.blocks && recursiveDuplicate(item.blocks)) return true;
+      const dubBlock = item.blocks && recursiveDuplicate(item.blocks);
+      if (dubBlock) return dubBlock;
     }
 
-    return false;
+    return null;
   }
 
   return recursiveDuplicate(blocks);

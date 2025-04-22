@@ -38,7 +38,7 @@ const BlocksPanel: React.FC<TabProps> = ({
   };
 
   const handleAddBlock = (type: Block["type"]) => {
-    const blockProps = getBlockProps(type);
+    const blockProps = getBlockProps(type, generateId());
     const newBlock: Block = {
       id: generateId(),
       type,
