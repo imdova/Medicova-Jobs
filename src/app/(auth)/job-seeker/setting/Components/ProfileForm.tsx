@@ -8,11 +8,26 @@ import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxFie
 import { Female, Male } from "@mui/icons-material";
 import LocationSelect from "./LocationSelect";
 import CategorySelect from "./CategorySelect";
-import { maritalStatusOptions } from "@/constants";
+import {
+  gendersOptions,
+  maritalStatusOptions,
+  nationalitiesOptions,
+} from "@/constants";
+import { Gender } from "@/constants/enums/gender.enum";
 
 interface ProfileFormProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;
 }
+
+const genderIcons: Record<keyof typeof Gender, React.ReactNode> = {
+  MALE: (
+    <Male className="h-7 w-7 text-blue-500 group-aria-selected:text-white" />
+  ),
+  FEMALE: (
+    <Female className="h-7 w-7 text-pink-500 group-aria-selected:text-white" />
+  ),
+  ANY: null,
+};
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
   const { control } = formMethods;
@@ -70,7 +85,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
         <FormField
           field={
             {
-              name: "birth",
+              name: "birthDate",
               type: "date",
               label: "Date of Birth*",
               dateFieldProps: {
@@ -87,41 +102,22 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
             name: "gender",
             type: "radio",
             label: "Gender",
-            options: [
-              {
-                label: "Male",
-                value: "male",
-                icon: (
-                  <Male className="h-7 w-7 text-blue-500 group-aria-selected:text-white" />
-                ),
-              },
-              {
-                label: "Female",
-                value: "female",
-                icon: (
-                  <Female className="h-7 w-7 text-pink-500 group-aria-selected:text-white" />
-                ),
-              },
-            ],
+            options: gendersOptions.map((x) => ({
+              ...x,
+              icon: genderIcons[x.value as keyof typeof Gender],
+            })),
           }}
           control={control}
         />
       </div>
       <div className="md:w-1/2">
         <FormField
-          field={
-            {
-              name: "nationality",
-              type: "text",
-              label: "Nationality",
-              rules: {
-                minLength: {
-                  value: 2,
-                  message: "Nationality must be larger than 2 word",
-                },
-              },
-            } as FieldConfig<UserProfile>
-          }
+          field={{
+            name: "nationality",
+            type: "search-select",
+            label: "Nationality",
+            options: nationalitiesOptions,
+          }}
           control={control}
         />
       </div>
@@ -157,8 +153,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
       {/* Location */}
       <LocationSelect formMethods={formMethods} />
       <CategorySelect formMethods={formMethods} />
-
-     
     </div>
   );
 };

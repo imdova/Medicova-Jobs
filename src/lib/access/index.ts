@@ -90,6 +90,7 @@ export const serverSignIn = async ({
     });
     if (!response.ok) return errorResult("serverSignIn");
     const user: User = await response.json();
+    user.type = user.type ? user.type : "seeker";
     return {
       success: true,
       message: "OTP validated successfully",

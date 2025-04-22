@@ -4,6 +4,7 @@ import {
   Folder,
   Job,
   NotificationItem,
+  Option,
   Specialty,
 } from "@/types";
 import {
@@ -14,6 +15,8 @@ import {
   Search,
 } from "@mui/icons-material";
 import { CompanySize } from "./enums/company-size.enum";
+import { Nationalities } from "./enums/nationalities.enum";
+import { Gender } from "./enums/gender.enum";
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export const DEFAULT_COVER_IMAGE =
@@ -1046,9 +1049,22 @@ enum MaritalStatus {
   Divorced = "Divorced",
   Widowed = "Widowed",
 }
-export const maritalStatusOptions: { label: string; value: MaritalStatus }[] = [
-  { label: "Single", value: MaritalStatus.Single },
-  { label: "Married", value: MaritalStatus.Married },
-  { label: "Divorced", value: MaritalStatus.Divorced },
-  { label: "Widowed", value: MaritalStatus.Widowed },
-];
+
+export const maritalStatusOptions: Option[] = Object.values(MaritalStatus).map(
+  (status) => ({
+    value: status as keyof typeof MaritalStatus,
+    label:
+      status.charAt(0).toUpperCase() + status.slice(1).toLowerCase(),
+  }),
+);
+export const nationalitiesOptions: Option[] = Object.values(Nationalities).map(
+  (nationality) => ({
+    value: nationality as keyof typeof Nationalities,
+    label:
+      nationality.charAt(0).toUpperCase() + nationality.slice(1).toLowerCase(),
+  }),
+);
+export const gendersOptions: Option[] = Object.values(Gender).map((gender) => ({
+  value: gender as keyof typeof Gender,
+  label: gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase(),
+}));

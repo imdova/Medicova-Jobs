@@ -12,6 +12,7 @@ interface FetchResult<T> {
   loading: boolean;
   error: Error | null;
   refetch: () => void; // Add refetch function to the return type
+  setData: React.Dispatch<React.SetStateAction<T | null>>; // Add refetch function to the return type
 }
 
 const defaultOptions: FetchOptions = {
@@ -120,5 +121,5 @@ export default function useFetch<T>(
     fetchData,
   ]);
 
-  return { data, loading, error, refetch }; // Return refetch function
+  return { data, loading, error, refetch, setData }; // Return refetch function
 }

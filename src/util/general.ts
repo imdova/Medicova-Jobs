@@ -1,4 +1,4 @@
-import { ActiveLinkResult, NavItem, Result } from "@/types";
+import { ActiveLinkResult, NavItem, Option, Result } from "@/types";
 import { isCurrentPage } from ".";
 
 export const errorResult = (type: string): Result => {
@@ -244,3 +244,7 @@ export function toQueryString(
   const queryString = queryParams.toString();
   return queryString ? `?${queryString}` : "";
 }
+
+export const getOptionLabel = (options: Option[], value: string | null) => {
+  return options.find((x) => x.value === value)?.label;
+};

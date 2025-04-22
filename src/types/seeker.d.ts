@@ -31,7 +31,7 @@ type UserProfile = {
   firstName: string | null;
   lastName: string | null;
   avatar: string | null;
-  birth: string | null;
+  birthDate: string | null;
   type: string;
   active: boolean;
   about: string | null;
@@ -172,7 +172,7 @@ type CandidateType = {
   firstName: string;
   lastName: string;
   email: string;
-  birth: string | null;
+  birthDate: string | null;
   avatar: string | null;
   type: string;
   active: boolean;

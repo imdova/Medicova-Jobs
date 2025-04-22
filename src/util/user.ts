@@ -42,7 +42,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  birth: string | null;
+  birthDate: string | null;
   avatar: string | null;
   type: string;
   userName: string | null;
