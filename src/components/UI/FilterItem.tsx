@@ -150,10 +150,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     onChange={handleAllChange}
                     // indeterminate={!isNoneSelected && !isAllSelected}
                     icon={
-                      <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
+                      <div className="h-5 w-5  rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                      <div className="flex h-5 w-5 items-center justify-center  rounded-md rounded-tr-none border-2 border-primary bg-primary">
                         <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
                       </div>
                     }
@@ -172,10 +172,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     checked={value.includes(option.value)}
                     onChange={() => handleCheckboxChange(option.value)}
                     icon={
-                      <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
+                      <div className="h-5 w-5 rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2 border-primary bg-primary">
                         <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
                       </div>
                     }
