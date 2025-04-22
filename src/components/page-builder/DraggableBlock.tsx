@@ -3,6 +3,23 @@ import { Block } from "@/types/blog";
 import { BlockRenderer } from "./BlockRenderer";
 import BlockOptions from "./BlockOptions";
 
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
 interface DraggableBlockProps {
   block: Block;
   index: number;
@@ -20,6 +37,20 @@ export function DraggableBlock({
 }: DraggableBlockProps) {
   const isSelected = selectedBlock?.id === block.id;
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   const groupsLevel = [
     "group/block-1",
     "group/block-2",
@@ -29,35 +60,27 @@ export function DraggableBlock({
   ];
 
   return (
-    <Draggable draggableId={block.id} index={index}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(block);
-          }}
-          className={`group/block-${block.level} relative  w-full rounded-base border p-2 ${
-            isSelected
-              ? "border-primary"
-              : "border-transparent hover:border-neutral-400"
-          }`}
-        >
-          <BlockOptions
-            block={block}
-            onSelect={onSelect}
-            setBlocks={setBlocks}
-            provided={provided.dragHandleProps}
-          />
-          <BlockRenderer
-            block={block}
-            onSelect={onSelect}
-            selectedBlock={selectedBlock}
-            setBlocks={setBlocks}
-          />
-        </div>
-      )}
-    </Draggable>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`mb-2 cursor-move rounded border bg-white p-4 text-center shadow-sm ${
+        isDragging ? "opacity-50" : ""
+      }`}
+    >
+      <BlockOptions
+        block={block}
+        selectedBlock={selectedBlock}
+        onSelect={onSelect}
+        setBlocks={setBlocks}
+      />
+      <BlockRenderer
+        block={block}
+        onSelect={onSelect}
+        selectedBlock={selectedBlock}
+        setBlocks={setBlocks}
+      />
+    </div>
   );
 }

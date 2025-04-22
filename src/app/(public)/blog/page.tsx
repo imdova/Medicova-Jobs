@@ -1,6 +1,22 @@
 "use client";
 import { useState } from "react";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
@@ -38,29 +54,40 @@ export default function PageBuilder() {
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
 
-  const onDragEnd = (result: any) => {
-    const { source, draggableId, destination, type } = result;
+  const sensors = useSensors(useSensor(PointerSensor));
 
-    if (!destination) return;
-
-    destination.droppableId = destination.droppableId.replace("drop-", "");
-    source.droppableId = source.droppableId.replace("drop-", "");
-
-    if (type === "GROUP") {
-      const newBlocks = [...blocks];
-      const [movedBlock] = newBlocks.splice(source.index, 1);
-      newBlocks.splice(destination.index, 0, movedBlock);
-      setBlocks(newBlocks);
-      return;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = blocks.map((x) => x.id).indexOf(active.id as string);
+      const newIndex = blocks.map((x) => x.id).indexOf(over.id as string);
+      setBlocks(arrayMove(blocks, oldIndex, newIndex));
     }
-    const newBlocks = onDragEndHandler(
-      blocks,
-      draggableId,
-      source,
-      destination,
-    );
-    setBlocks(newBlocks);
   };
+
+  // const onDragEnd = (result: any) => {
+  //   const { source, draggableId, destination, type } = result;
+
+  //   if (!destination) return;
+
+  //   destination.droppableId = destination.droppableId.replace("drop-", "");
+  //   source.droppableId = source.droppableId.replace("drop-", "");
+
+  //   if (type === "GROUP") {
+  //     const newBlocks = [...blocks];
+  //     const [movedBlock] = newBlocks.splice(source.index, 1);
+  //     newBlocks.splice(destination.index, 0, movedBlock);
+  //     setBlocks(newBlocks);
+  //     return;
+  //   }
+  //   const newBlocks = onDragEndHandler(
+  //     blocks,
+  //     draggableId,
+  //     source,
+  //     destination,
+  //   );
+  //   setBlocks(newBlocks);
+  // };
 
   return (
     <div>
@@ -86,29 +113,32 @@ export default function PageBuilder() {
               className={`mx-auto min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="blocks" type="GROUP">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {blocks.map((block, index) => (
-                        <DraggableBlock
-                          key={block.id}
-                          block={block}
-                          index={index}
-                          selectedBlock={
-                            selectedBlock?.id
-                              ? findItemById(blocks, selectedBlock?.id)
-                              : undefined
-                          }
-                          onSelect={setSelectedBlock}
-                          setBlocks={setBlocks}
-                        />
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+                modifiers={[restrictToVerticalAxis]}
+              >
+                <SortableContext
+                  items={blocks}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {blocks.map((block, index) => (
+                    <DraggableBlock
+                      key={block.id}
+                      block={block}
+                      index={index}
+                      selectedBlock={
+                        selectedBlock?.id
+                          ? findItemById(blocks, selectedBlock?.id)
+                          : undefined
+                      }
+                      onSelect={setSelectedBlock}
+                      setBlocks={setBlocks}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
             </div>
           </div>
         </main>
