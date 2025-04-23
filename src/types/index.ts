@@ -427,7 +427,7 @@ export interface Option<T = Record<string, any>> {
 export interface FieldConfig<T = any> {
   name: Path<T>;
   label?: string;
-  type: FieldType;
+  type?: FieldType;
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:

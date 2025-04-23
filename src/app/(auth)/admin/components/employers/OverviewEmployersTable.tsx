@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonGroup,
+  IconButton,
   InputAdornment,
   Menu,
   MenuItem,
@@ -23,7 +24,11 @@ import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
 import { formatDate } from "@/util";
 import useFetch from "@/hooks/useFetch";
-import { API_GET_COMPANY_SECTORS, API_GET_COMPANY_TYPES } from "@/api/admin";
+import {
+  API_GET_COMPANY_SECTORS,
+  API_GET_COMPANY_TYPES,
+  API_GET_COMPANY_TYPES_BY_SECTOR,
+} from "@/api/admin";
 import SearchableSelect from "@/components/UI/SearchableSelect";
 import Flag from "@/components/UI/flagitem";
 import { useLocationData } from "@/hooks/useLocationData";
@@ -33,6 +38,9 @@ import { TAGS } from "@/api";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
+import { Filter } from "lucide-react";
+import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
+import { FormField } from "@/components/form/FormModal/FormField/FormField";
 
 const tabs = [
   "New Employers",
@@ -51,12 +59,21 @@ const OverviewEmployersTable: React.FC<{
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [query, setQuery] = useState("");
+  const [sector, setSector] = useState("");
+
+  const [data, setData] = useState({});
+
+  console.log(data);
 
   const { data: sectors } = useFetch<PaginatedResponse<Sector>>(
     API_GET_COMPANY_SECTORS,
   );
   const { data: types } = useFetch<PaginatedResponse<Sector>>(
-    API_GET_COMPANY_TYPES,
+    sector ? API_GET_COMPANY_TYPES_BY_SECTOR + sector : null,
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
   );
 
   const [exportAnchorEl, setExportAnchorEl] = useState(null);
@@ -67,7 +84,7 @@ const OverviewEmployersTable: React.FC<{
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
- // TODO: Fix
+  // TODO: Fix
   const updateCompany = async (body: Company) => {
     await update(API_UPDATE_COMPANY, { method: "POST", body }, TAGS.company);
   };
@@ -101,7 +118,7 @@ const OverviewEmployersTable: React.FC<{
               </Tabs>
             </div>
           </div>
-          <div className="m-3 flex flex-wrap gap-2">
+          <div className="m-2 flex flex-wrap items-end gap-2">
             <TextField
               variant="outlined"
               placeholder="Search For Employer"
@@ -111,6 +128,7 @@ const OverviewEmployersTable: React.FC<{
               }}
               onChange={(e) => setQuery(e.target.value)}
             />
+
             <div>
               <Button
                 onClick={exportHandleClick}
@@ -118,10 +136,11 @@ const OverviewEmployersTable: React.FC<{
                 aria-controls={exportOpen ? "export-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={exportOpen ? "true" : undefined}
+                className="space-x-2"
               >
-                <Download className="mr-2 inline-block h-6 w-6" />
-                <p className="inline-block w-16">Export</p>
-                <ExpandMore className="ml-2 inline-block h-6 w-6" />
+                <Download className="inline-block h-5 w-5" />
+                <p className="inline-block text-sm">Export</p>
+                <ExpandMore className="inline-block h-5 w-5" />
               </Button>
               <Menu
                 id="export-menu"
@@ -138,7 +157,7 @@ const OverviewEmployersTable: React.FC<{
         </div>
       </div>
       {selected.length > 0 && (
-        <div className="flex max-w-full gap-2 overflow-hidden rounded-base border border-gray-200 bg-white p-3 shadow-soft">
+        <div className="body-container flex gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft">
           <SearchableSelect
             options={countries.map((x) => ({
               label: x.name,
@@ -173,16 +192,16 @@ const OverviewEmployersTable: React.FC<{
             }}
           />
           <Select
-            // value={country}
-            // onChange={(e) => steCountry(e.target.value)}
+            value={sector}
+            onChange={(e) => setSector(e.target.value)}
             className="flex-1"
             variant="outlined"
             displayEmpty
             renderValue={(selected: string) => {
               if (!selected) {
-                return <em className="text-gray-400">Select Country</em>;
+                return <em className="text-gray-400">Select Sector</em>;
               }
-              const item = countries.find((x) => x.isoCode == selected);
+              const item = sectors?.data.find((x) => x.id == selected);
               return item && <span>{item.name}</span>;
             }}
             sx={{
@@ -200,85 +219,42 @@ const OverviewEmployersTable: React.FC<{
               </MenuItem>
             ))}
           </Select>
-          <Select
-            // value={country}
-            // onChange={(e) => steCountry(e.target.value)}
-            className="flex-1"
-            variant="outlined"
-            displayEmpty
-            renderValue={(selected: string) => {
-              if (!selected) {
-                return <em className="text-gray-400">Select Country</em>;
-              }
-              const item = countries.find((x) => x.isoCode == selected);
-              return (
-                item && (
-                  <span>
-                    <Flag
-                      code={item.isoCode.toLocaleLowerCase()}
-                      name={item.name}
-                      className="mr-2 inline"
-                    />
-                    {item.name}
-                  </span>
-                )
-              );
-            }}
-            sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
-          >
-            {sectors?.data.map((sector) => (
-              <MenuItem
-                key={sector.id}
-                className="text-xs md:text-sm"
-                value={"Sector"}
-              >
-                {sector.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <Select
-            // value={country}
-            // onChange={(e) => steCountry(e.target.value)}
-            variant="outlined"
-            className="flex-1"
-            displayEmpty
-            renderValue={(selected: string) => {
-              if (!selected) {
-                return <em className="text-gray-400">Select Country</em>;
-              }
-              const item = countries.find((x) => x.isoCode == selected);
-              return (
-                item && (
-                  <span>
-                    <Flag
-                      code={item.isoCode.toLocaleLowerCase()}
-                      name={item.name}
-                      className="mr-2 inline"
-                    />
-                    {item.name}
-                  </span>
-                )
-              );
-            }}
-            sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
-          >
-            {sectors?.data.map((sector) => (
-              <MenuItem
-                key={sector.id}
-                className="text-xs md:text-sm"
-                value={"Sector"}
-              >
-                {sector.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <div className="w-32">
+
+          <div className="flex-1">
+            <SelectField
+              field={{
+                name: "type",
+                type: "select",
+                textFieldProps: {
+                  placeholder: "Select Company Type",
+                },
+                dependsOn: "sector",
+                options: types?.data.map((type) => ({
+                  label: type.name,
+                  value: type.id,
+                })),
+              }}
+              controllerField={{ onChange: (e) => console.log(e.target.value) }}
+              formValues={{ sector }}
+              dependsOnField={{ name: "sector" }}
+            />
+          </div>
+          <div className="flex-1">
+            <FormField
+              field={{
+                name: "status",
+                type: "select",
+                options: ["active", "inActive"].map((type) => ({
+                  label: type,
+                  value: type,
+                })),
+              }}
+              data={data}
+              setData={setData}
+            />
+          </div>
+
+          <div className="w-52">
             <DatePickerField
               field={{
                 name: "date",
@@ -290,10 +266,9 @@ const OverviewEmployersTable: React.FC<{
             />
           </div>
 
-          <Button variant="outlined">
-            <Tune className="mr-2 inline-block h-6 w-6" />
-            <p className="inline-block w-16">Filter</p>
-          </Button>
+          <IconButton className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary">
+            <Filter className="h-4 w-4" />
+          </IconButton>
         </div>
       )}
       <div className="body-container overflow-x-auto">

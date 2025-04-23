@@ -261,3 +261,23 @@ export function enumToOptions<T extends Record<string, string>>(
     label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
   }));
 }
+
+export function updateData<T>(data: T, path: string, value: any): T {
+  const keys = path.split(".");
+  const result = structuredClone(data); // Deep clone to avoid mutating original
+  let current: any = result;
+
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+
+    if (!(key in current) || typeof current[key] !== "object") {
+      current[key] = {};
+    }
+
+    current = current[key];
+  }
+
+  current[keys[keys.length - 1]] = value;
+
+  return result;
+}

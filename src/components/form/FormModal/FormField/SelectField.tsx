@@ -43,7 +43,9 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     "Select " +
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
-      : field.label?.replace("*", ""));
+      : field.label
+        ? field.label.replace("*", "")
+        : field.name);
   const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
@@ -51,16 +53,16 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         <InputLabel className="bg-white px-1" id={String(field.name) + "Label"}>
           {field.textFieldProps.label}
         </InputLabel>
-      ) : (
+      ) : field.label ? (
         <label className="mb-1 font-semibold">{field.label}</label>
-      )}
+      ) : null}
       <Tooltip
         title={
           dependsOn
             ? `Please select ${
                 dependsOn.textFieldProps?.label
                   ? String(dependsOn.textFieldProps?.label)?.replace("*", "")
-                  : dependsOn.label?.replace("*", "")
+                  : dependsOn.label?.replace("*", "") || dependsOn.name
               } first`
             : undefined
         }

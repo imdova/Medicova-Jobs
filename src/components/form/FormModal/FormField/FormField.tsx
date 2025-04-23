@@ -18,17 +18,21 @@ import { FileField } from "./FileField";
 import DatePickerField from "./DatePickerField";
 import { RadioFieldComponent } from "./RadioField";
 import { TextEditorField } from "./TextEditorField";
+import { getNestedValue } from "@/util/forms";
+import { updateData } from "@/util/general";
 
 interface FormFieldProps {
   field: FieldConfig;
   control?: any;
-  fieldController?: ControllerRenderProps<FieldValues, string>;
+  fieldController?: Partial<ControllerRenderProps<FieldValues, string>>;
   hidden?: boolean;
   dependsOnField?: FieldConfig;
   onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   formValues?: Record<string, any>;
   resetValues?: (fieldNames: FieldConfig["name"][]) => void;
   removeField?: (fieldName: string) => void;
+  data?: any;
+  setData?: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -41,6 +45,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   dependsOnField,
   fieldController,
   removeField,
+  data,
+  setData,
 }) => {
   if (hidden) return null;
 
@@ -48,9 +54,10 @@ export const FormField: React.FC<FormFieldProps> = ({
     field: controllerField,
     fieldState,
   }: {
-    field: ControllerRenderProps<FieldValues, string>;
+    field: Partial<ControllerRenderProps<FieldValues, string>>;
     fieldState?: ControllerFieldState;
   }): React.ReactElement => {
+    console.log(controllerField)
     const error = fieldState?.error || null;
     switch (field.type) {
       case "checkbox":
@@ -170,10 +177,22 @@ export const FormField: React.FC<FormFieldProps> = ({
             render={renderField}
           />
         </div>
+      ) : fieldController ? (
+        <div className="max-w-full flex-1">
+          {renderField({ field: fieldController })}
+        </div>
       ) : (
-        fieldController && (
+        data &&
+        setData && (
           <div className="max-w-full flex-1">
-            {renderField({ field: fieldController })}
+            {renderField({
+              field: {
+                value: getNestedValue(data, String(field.name)) || "",
+                name: String(field.name),
+                onChange: (e) =>
+                  setData(updateData(data, String(field.name), e.target.value)),
+              },
+            })}
           </div>
         )
       )}
