@@ -160,9 +160,9 @@ function DataTable<T extends { id: number | string }>({
                   />
                 </TableCell>
               ) : null}
-              {columns.map((col) => (
+              {columns.map((col, index) => (
                 <TableCell
-                  key={String(col.key)}
+                  key={index}
                   className={`relative font-semibold ${cellClassName}`}
                   style={{ width: col.width }}
                 >
@@ -200,7 +200,7 @@ function DataTable<T extends { id: number | string }>({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedData.map((item) => {
+            {sortedData.map((item, index) => {
               const id = item.id;
               const isItemSelected = isSelected(id);
               return (
@@ -219,8 +219,8 @@ function DataTable<T extends { id: number | string }>({
                       />
                     </TableCell>
                   )}
-                  {columns.map((col) => (
-                    <TableCell key={String(col.key)} className={cellClassName}>
+                  {columns.map((col, index) => (
+                    <TableCell key={index} className={cellClassName}>
                       {col.render
                         ? col.render(item)
                         : col.key && getNestedValue(item, col.key)}

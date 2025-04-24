@@ -451,6 +451,44 @@ export const searchJopFilters: FilterType[] = [
     ],
   },
 ];
+export const employerFilters: FilterType[] = [
+  {
+    name: "Country",
+    sectionKey: "country",
+    items: [
+      { label: "Egypt", count: 4, value: "EG" },
+    ],
+  },
+  {
+    name: "Sector",
+    sectionKey: "sector",
+    items: [
+      { label: "Hospital", count: 3, value: "hospital" },
+    ],
+  },
+  {
+    name: "Status",
+    sectionKey: "status",
+    items: [
+      { label: "Active", count: 1, value: "active" },
+      { label: "Inactive", count: 4, value: "inactive" },
+    ],
+  },
+  {
+    name: "Plan",
+    sectionKey: "plan",
+    items: [
+      { label: "Premium", count: 4, value: "premium" },
+    ],
+  },
+  {
+    name: "Jobs",
+    sectionKey: "jobs",
+    items: [
+      { label: "25 Jobs", count: 4, value: "25" },
+    ],
+  },
+];
 
 export const jobs: Job[] = [
   {

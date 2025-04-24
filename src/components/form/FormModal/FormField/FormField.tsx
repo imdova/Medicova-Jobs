@@ -40,7 +40,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   control,
   hidden,
   onCheckboxChange,
-  formValues,
+  formValues: initialFormValue,
   resetValues,
   dependsOnField,
   fieldController,
@@ -49,6 +49,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   setData,
 }) => {
   if (hidden) return null;
+  const formValues = initialFormValue || data;
 
   const renderField = ({
     field: controllerField,
@@ -57,7 +58,6 @@ export const FormField: React.FC<FormFieldProps> = ({
     field: Partial<ControllerRenderProps<FieldValues, string>>;
     fieldState?: ControllerFieldState;
   }): React.ReactElement => {
-    console.log(controllerField)
     const error = fieldState?.error || null;
     switch (field.type) {
       case "checkbox":
@@ -190,7 +190,9 @@ export const FormField: React.FC<FormFieldProps> = ({
                 value: getNestedValue(data, String(field.name)) || "",
                 name: String(field.name),
                 onChange: (e) =>
-                  setData(updateData(data, String(field.name), e.target.value)),
+                  setData(
+                    updateData(data, String(field.name), e.target.value || e),
+                  ),
               },
             })}
           </div>

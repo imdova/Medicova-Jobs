@@ -19,7 +19,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import DataTable from "@/components/UI/data-table";
-import { Company, Sector } from "@/types";
+import { Company, FieldConfig, Sector } from "@/types";
 import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
 import { formatDate } from "@/util";
@@ -41,6 +41,8 @@ import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { Filter } from "lucide-react";
 import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
+import { employerFilters } from "@/constants";
+import FilterDrawer from "@/components/UI/FilterDrawer";
 
 const tabs = [
   "New Employers",
@@ -49,27 +51,44 @@ const tabs = [
   "Inactive Employers",
 ];
 
+const initialFilter = {
+  country: "",
+  sector: "",
+  companyType: "",
+  status: "",
+  date: "",
+};
+interface EmployerFilter {
+  country: string;
+  sector: string;
+  companyType: string;
+  status: string;
+  date: string;
+}
+
 const OverviewEmployersTable: React.FC<{
   companies: PaginatedResponse<Company> | null;
 }> = ({ companies: companiesData }) => {
   const { countries } = useLocationData();
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const openFilter = () => setIsFilterOpen(true);
+  const closeFilter = () => setIsFilterOpen(false);
+
   const { isLoading, error, update } = useUpdateApi<Company>();
 
   const { data: companies, total } = companiesData || { data: [], total: 0 };
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [query, setQuery] = useState("");
-  const [sector, setSector] = useState("");
 
-  const [data, setData] = useState({});
-
-  console.log(data);
+  const [data, setData] = useState({} as EmployerFilter);
 
   const { data: sectors } = useFetch<PaginatedResponse<Sector>>(
     API_GET_COMPANY_SECTORS,
   );
   const { data: types } = useFetch<PaginatedResponse<Sector>>(
-    sector ? API_GET_COMPANY_TYPES_BY_SECTOR + sector : null,
+    data?.sector ? API_GET_COMPANY_TYPES_BY_SECTOR + data?.sector : null,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,
@@ -89,16 +108,75 @@ const OverviewEmployersTable: React.FC<{
     await update(API_UPDATE_COMPANY, { method: "POST", body }, TAGS.company);
   };
 
+  const fields: FieldConfig<EmployerFilter>[] = [
+    {
+      name: "country",
+      type: "search-select",
+      textFieldProps: {
+        placeholder: "country",
+      },
+      options: countries.map((country) => ({
+        value: country.isoCode,
+        label: country.name,
+      })),
+    },
+    {
+      name: "sector",
+      type: "select",
+      textFieldProps: {
+        placeholder: "Sector",
+      },
+      resetFields: ["companyType"],
+      options: sectors?.data.map((sector) => ({
+        value: sector.id,
+        label: sector.name,
+      })),
+      gridProps: { xs: 6 },
+    },
+    {
+      name: "companyType",
+      type: "select",
+      textFieldProps: {
+        placeholder: "Company Type",
+      },
+      dependsOn: "sector",
+      options: types?.data.map((type) => ({
+        value: type.id,
+        label: type.name,
+      })),
+      gridProps: { xs: 6 },
+    },
+
+    {
+      name: "status",
+      type: "select",
+      textFieldProps: {
+        placeholder: "Status",
+      },
+      options: ["active", "inActive"].map((status) => ({
+        value: status,
+        label: status,
+      })),
+    },
+    {
+      name: "date",
+      type: "date",
+      textFieldProps: {
+        placeholder: "date",
+      },
+    },
+  ];
+
   return (
-    <div className="space-y-1">
-      <div className="overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
-        <div className="flex flex-col items-end justify-between md:flex-row">
+    <div className="space-y-1 ">
+      <div className=" overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
+        <div className="flex flex-col md:items-end justify-between md:flex-row">
           <div>
             <h5 className="p-4 pb-1 text-xl font-semibold text-main">
               All Employers
               <span className="ml-1 text-xs text-secondary">(4,050)</span>
             </h5>
-            <div className="max-w-full">
+            <div className="body-container overflow-x-auto ">
               <Tabs
                 value={activeTab}
                 onChange={(e, v) => setActiveTab(v)}
@@ -157,118 +235,24 @@ const OverviewEmployersTable: React.FC<{
         </div>
       </div>
       {selected.length > 0 && (
-        <div className="body-container flex gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-          <SearchableSelect
-            options={countries.map((x) => ({
-              label: x.name,
-              value: x.isoCode,
-            }))}
-            // value={country}
-            // onChange={(e) => steCountry(e.target.value)}
-            className="flex-1"
-            variant="outlined"
-            displayEmpty
-            renderValue={(selected: string) => {
-              if (!selected) {
-                return <em className="text-gray-400">Select Country</em>;
-              }
-              const item = countries.find((x) => x.isoCode == selected);
-              return (
-                item && (
-                  <span>
-                    <Flag
-                      code={item.isoCode.toLocaleLowerCase()}
-                      name={item.name}
-                      className="mr-2 inline"
-                    />
-                    {item.name}
-                  </span>
-                )
-              );
-            }}
-            sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
-          />
-          <Select
-            value={sector}
-            onChange={(e) => setSector(e.target.value)}
-            className="flex-1"
-            variant="outlined"
-            displayEmpty
-            renderValue={(selected: string) => {
-              if (!selected) {
-                return <em className="text-gray-400">Select Sector</em>;
-              }
-              const item = sectors?.data.find((x) => x.id == selected);
-              return item && <span>{item.name}</span>;
-            }}
-            sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
+        <div className="body-container flex flex-wrap md:flex-nowrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft">
+          {fields.map((field) => (
+            <div className="flex-1" key={field.name}>
+              <FormField field={field} data={data} setData={setData} />
+            </div>
+          ))}
+
+          <IconButton
+            onClick={openFilter}
+            className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
           >
-            {sectors?.data.map((sector) => (
-              <MenuItem
-                key={sector.id}
-                className="text-xs md:text-sm"
-                value={"Sector"}
-              >
-                {sector.name}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <div className="flex-1">
-            <SelectField
-              field={{
-                name: "type",
-                type: "select",
-                textFieldProps: {
-                  placeholder: "Select Company Type",
-                },
-                dependsOn: "sector",
-                options: types?.data.map((type) => ({
-                  label: type.name,
-                  value: type.id,
-                })),
-              }}
-              controllerField={{ onChange: (e) => console.log(e.target.value) }}
-              formValues={{ sector }}
-              dependsOnField={{ name: "sector" }}
-            />
-          </div>
-          <div className="flex-1">
-            <FormField
-              field={{
-                name: "status",
-                type: "select",
-                options: ["active", "inActive"].map((type) => ({
-                  label: type,
-                  value: type,
-                })),
-              }}
-              data={data}
-              setData={setData}
-            />
-          </div>
-
-          <div className="w-52">
-            <DatePickerField
-              field={{
-                name: "date",
-                type: "date",
-                textFieldProps: {
-                  placeholder: "Date",
-                },
-              }}
-            />
-          </div>
-
-          <IconButton className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary">
             <Filter className="h-4 w-4" />
           </IconButton>
+          <FilterDrawer
+            isOpen={isFilterOpen}
+            onClose={closeFilter}
+            sections={employerFilters}
+          />
         </div>
       )}
       <div className="body-container overflow-x-auto">

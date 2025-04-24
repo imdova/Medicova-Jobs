@@ -2,14 +2,19 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FilterItem from "@/components/UI/FilterItem";
 import { createUrl } from "@/util";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import FilterSkeleton from "@/components/loading/filterSkelton";
+import { FilterList } from "@mui/icons-material";
 
 const FilterSideBar: React.FC<FilterProps> = ({ sections }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => setIsOpen(false);
+  const onOpen = () => setIsOpen(true);
 
   const handleCheckChange = (params: FilterParam[]) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -53,10 +58,16 @@ const FilterSideBar: React.FC<FilterProps> = ({ sections }) => {
           ))}
         </div>
       </div>
+      <button
+        className="fixed bottom-4 left-4 z-30 block rounded-full bg-[#2EAE7D] p-2 shadow-lg md:left-16 lg:hidden"
+        onClick={onOpen}
+      >
+        <FilterList className="h-8 w-8 text-white" />
+      </button>
       <FilterDrawer
+        isOpen={isOpen}
+        onClose={onClose}
         sections={sections}
-        selectedFilters={selectedFilters}
-        handleCheckChange={handleCheckChange}
       />
     </>
   );

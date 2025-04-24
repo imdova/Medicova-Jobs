@@ -46,9 +46,9 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
         <InputLabel className="bg-white px-1" id={String(field.name) + "Label"}>
           {field.textFieldProps.label}
         </InputLabel>
-      ) : (
+      ) : field.label ? (
         <label className="mb-1 font-semibold">{field.label}</label>
-      )}
+      ) : null}
       <Tooltip
         title={
           dependsOnValue ? `Please select ${dependsOnValue} first` : undefined

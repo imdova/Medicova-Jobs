@@ -37,7 +37,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     field.dependsOn &&
     formValues &&
     !getNestedValue(formValues, field.dependsOn)
-      ? dependsOnField
+      ? { name: field.dependsOn, ...dependsOnField }
       : null;
   const placeholder =
     "Select " +
