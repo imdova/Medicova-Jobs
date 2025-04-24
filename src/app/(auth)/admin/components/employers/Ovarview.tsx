@@ -135,12 +135,13 @@ const chartData: ChartData = {
 };
 
 const DashboardOverView: React.FC = () => {
-  const { data: companies, loading } = useFetch<PaginatedResponse<Company>>(
-    API_GET_COMPANIES,
-    {
-      defaultLoading: true,
-    },
-  );
+  const {
+    data: companies,
+    loading,
+    setData,
+  } = useFetch<PaginatedResponse<Company>>(API_GET_COMPANIES, {
+    defaultLoading: true,
+  });
 
   const topCompanies = companies?.data
     ?.sort(
@@ -149,7 +150,7 @@ const DashboardOverView: React.FC = () => {
     ?.filter((x) => Boolean(x.username));
 
   return (
-    <div className="mt-2 space-y-2">
+    <div className="space-y-2">
       {/* Stats Section */}
       <div className="flex flex-col gap-2 lg:flex-row">
         <div className="flex-1 lg:w-3/5">
@@ -310,6 +311,7 @@ const DashboardOverView: React.FC = () => {
       {topCompanies && (
         <OverviewEmployersTable
           companies={{ data: topCompanies, total: topCompanies?.length }}
+          updateCompanyData={setData}
         />
       )}
     </div>

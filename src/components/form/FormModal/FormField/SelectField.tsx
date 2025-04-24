@@ -14,6 +14,7 @@ import {
   FieldError,
   FieldValues,
 } from "react-hook-form";
+import { cn } from "@/util";
 
 interface SelectFieldProps {
   field: FieldConfig;
@@ -69,7 +70,8 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         placement="bottom"
       >
         <Select
-          className={`bg-white ${className}`}
+          className={cn("bg-white", className)}
+          sx={field.textFieldProps?.sx}
           {...controllerField}
           labelId={String(field.name) + "Label"}
           id={String(field.name)}

@@ -281,3 +281,11 @@ export function updateData<T>(data: T, path: string, value: any): T {
 
   return result;
 }
+
+export function updateItemInArray<T extends { id: string }>(
+  array: T[],
+  newItem: T,
+): T[] {
+  const newArray = structuredClone(array); // Deep clone to avoid mutating original
+  return newArray.map((item) => (item.id === newItem.id ? newItem : item));
+}

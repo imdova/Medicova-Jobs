@@ -1,22 +1,13 @@
 import {
   Button,
-  ButtonGroup,
   IconButton,
-  InputAdornment,
   Menu,
   MenuItem,
-  Select,
   Tab,
   Tabs,
   TextField,
 } from "@mui/material";
-import {
-  Download,
-  ExpandMore,
-  LocationOn,
-  Search,
-  Tune,
-} from "@mui/icons-material";
+import { Download, ExpandMore, Search } from "@mui/icons-material";
 import { useState } from "react";
 import DataTable from "@/components/UI/data-table";
 import { Company, FieldConfig, Sector } from "@/types";
@@ -26,13 +17,9 @@ import { formatDate } from "@/util";
 import useFetch from "@/hooks/useFetch";
 import {
   API_GET_COMPANY_SECTORS,
-  API_GET_COMPANY_TYPES,
   API_GET_COMPANY_TYPES_BY_SECTOR,
 } from "@/api/admin";
-import SearchableSelect from "@/components/UI/SearchableSelect";
-import Flag from "@/components/UI/flagitem";
 import { useLocationData } from "@/hooks/useLocationData";
-import DatePickerField from "@/components/form/FormModal/FormField/DatePickerField";
 import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
 import { TAGS } from "@/api";
 import { API_UPDATE_COMPANY } from "@/api/employer";
@@ -43,6 +30,7 @@ import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { employerFilters } from "@/constants";
 import FilterDrawer from "@/components/UI/FilterDrawer";
+import { updateItemInArray } from "@/util/general";
 
 const tabs = [
   "New Employers",
@@ -68,7 +56,10 @@ interface EmployerFilter {
 
 const OverviewEmployersTable: React.FC<{
   companies: PaginatedResponse<Company> | null;
-}> = ({ companies: companiesData }) => {
+  updateCompanyData?: React.Dispatch<
+    React.SetStateAction<PaginatedResponse<Company> | null>
+  >;
+}> = ({ companies: companiesData, updateCompanyData }) => {
   const { countries } = useLocationData();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -103,9 +94,15 @@ const OverviewEmployersTable: React.FC<{
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
-  // TODO: Fix
+
   const updateCompany = async (body: Company) => {
-    await update(API_UPDATE_COMPANY, { method: "POST", body }, TAGS.company);
+    const newCompanyData = await update(
+      API_UPDATE_COMPANY,
+      { body },
+      TAGS.company,
+    );
+    const newCompanies = updateItemInArray(companies, newCompanyData);
+    updateCompanyData?.({ data: newCompanies, total });
   };
 
   const fields: FieldConfig<EmployerFilter>[] = [
@@ -168,15 +165,15 @@ const OverviewEmployersTable: React.FC<{
   ];
 
   return (
-    <div className="space-y-1 ">
-      <div className=" overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
-        <div className="flex flex-col md:items-end justify-between md:flex-row">
+    <div className="space-y-1">
+      <div className="overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
+        <div className="flex flex-col justify-between md:flex-row md:items-end">
           <div>
             <h5 className="p-4 pb-1 text-xl font-semibold text-main">
               All Employers
               <span className="ml-1 text-xs text-secondary">(4,050)</span>
             </h5>
-            <div className="body-container overflow-x-auto ">
+            <div className="body-container overflow-x-auto">
               <Tabs
                 value={activeTab}
                 onChange={(e, v) => setActiveTab(v)}
@@ -234,27 +231,25 @@ const OverviewEmployersTable: React.FC<{
           </div>
         </div>
       </div>
-      {selected.length > 0 && (
-        <div className="body-container flex flex-wrap md:flex-nowrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-          {fields.map((field) => (
-            <div className="flex-1" key={field.name}>
-              <FormField field={field} data={data} setData={setData} />
-            </div>
-          ))}
+      <div className="body-container flex flex-wrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-nowrap">
+        {fields.map((field) => (
+          <div className="flex-1" key={field.name}>
+            <FormField field={field} data={data} setData={setData} />
+          </div>
+        ))}
 
-          <IconButton
-            onClick={openFilter}
-            className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
-          >
-            <Filter className="h-4 w-4" />
-          </IconButton>
-          <FilterDrawer
-            isOpen={isFilterOpen}
-            onClose={closeFilter}
-            sections={employerFilters}
-          />
-        </div>
-      )}
+        <IconButton
+          onClick={openFilter}
+          className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
+        >
+          <Filter className="h-4 w-4" />
+        </IconButton>
+        <FilterDrawer
+          isOpen={isFilterOpen}
+          onClose={closeFilter}
+          sections={employerFilters}
+        />
+      </div>
       <div className="body-container overflow-x-auto">
         <DataTable
           data={companies}
@@ -328,7 +323,32 @@ const OverviewEmployersTable: React.FC<{
             },
             {
               header: "plan",
-              render: () => <span className="text-sm">Premium</span>,
+              render: (item) => (
+                <SelectField
+                  field={{
+                    name: "plan",
+                    type: "select",
+                    textFieldProps: {
+                      className: "bg-transparent ",
+                      sx: {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          padding: 0,
+                          border: "none",
+                        },
+                      },
+                    },
+
+                    options: ["silver", "gold", "diamond"].map((x) => ({
+                      value: x,
+                      label: x,
+                    })),
+                  }}
+                  controllerField={{
+                    value: "silver",
+                    onChange: (e) => console.log(e.target.value),
+                  }}
+                />
+              ),
             },
             {
               key: "openJobs",

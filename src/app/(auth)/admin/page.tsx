@@ -3,6 +3,7 @@ import DashboardOverView from "./components/employers/Ovarview";
 import { Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { LayoutDashboard, Settings, Users } from "lucide-react";
+import EmployerListPanel from "./components/employers/EmployerList";
 
 type Tab = "over-view" | "employer-list" | "setting";
 
@@ -27,7 +28,7 @@ const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tabs[0].key);
 
   return (
-    <div className="w-full px-4 md:px-5">
+    <div className="w-full px-4 md:px-5 space-y-3">
       <div className="flex flex-col items-center justify-between overflow-hidden rounded-base border border-gray-200 shadow-soft sm:flex-row md:items-center">
         <Tabs
           value={activeTab}
@@ -49,7 +50,7 @@ const AdminPage: React.FC = () => {
         </Tabs>
       </div>
       {activeTab === "over-view" && <DashboardOverView />}
-      {/* {activeTab === "employer-list" && <EmployerList />} */}
+      {activeTab === "employer-list" && <EmployerListPanel />}
     </div>
   );
 };
