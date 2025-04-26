@@ -23,7 +23,7 @@ import { cn } from "@/util";
 
 interface DataTableProps<T> {
   data: T[];
-  total: number;
+  total?: number;
   className?: string;
   cellClassName?: string;
   headerClassName?: string;
@@ -38,6 +38,7 @@ interface DataTableProps<T> {
   searchQuery?: string;
   options?: ActionOption<T>[]; // Action options for each row
   noDataMessage?: NoDataMessage;
+  hideTableHeader?: boolean;
 }
 
 // const getSizeClasses = (size?: Sizes) => {
@@ -68,8 +69,9 @@ function DataTable<T extends { id: number | string }>({
   total,
   options,
   className,
+  hideTableHeader,
 }: DataTableProps<T>) {
-  const isSelectable = Boolean(selected);
+  const isSelectable = Boolean(selected.length > 0);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
   const handleSort = (key: Path<T>) => {
@@ -147,58 +149,61 @@ function DataTable<T extends { id: number | string }>({
         )}
       >
         <Table className="min-w-full">
-          <TableHead className={`bg-gray-50`}>
-            <TableRow>
-              {isSelectable ? (
-                <TableCell className="p-1 text-[0.75em]" padding="checkbox">
-                  <Checkbox
-                    indeterminate={
-                      selected.length > 0 && selected.length < sortedData.length
-                    }
-                    checked={selected.length === sortedData.length}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-              ) : null}
-              {columns.map((col, index) => (
-                <TableCell
-                  key={index}
-                  className={`relative font-semibold ${cellClassName}`}
-                  style={{ width: col.width }}
-                >
-                  {col.sortable && col.key ? (
-                    <SortableHeader
-                      active={sortConfig?.key === col.key}
-                      direction={
-                        sortConfig?.key === col.key
-                          ? sortConfig.direction
-                          : "asc"
+          {hideTableHeader ? null : (
+            <TableHead className={`bg-gray-50`}>
+              <TableRow>
+                {isSelectable ? (
+                  <TableCell className="p-1 text-[0.75em]" padding="checkbox">
+                    <Checkbox
+                      indeterminate={
+                        selected.length > 0 &&
+                        selected.length < sortedData.length
                       }
-                      onClick={() => col.key && handleSort(col.key)}
-                      className={headerClassName}
-                    >
+                      checked={selected.length === sortedData.length}
+                      onChange={handleSelectAll}
+                    />
+                  </TableCell>
+                ) : null}
+                {columns.map((col, index) => (
+                  <TableCell
+                    key={index}
+                    className={`relative font-semibold ${cellClassName}`}
+                    style={{ width: col.width }}
+                  >
+                    {col.sortable && col.key ? (
+                      <SortableHeader
+                        active={sortConfig?.key === col.key}
+                        direction={
+                          sortConfig?.key === col.key
+                            ? sortConfig.direction
+                            : "asc"
+                        }
+                        onClick={() => col.key && handleSort(col.key)}
+                        className={headerClassName}
+                      >
+                        <span
+                          className={`line-clamp-1 text-nowrap ${cellClassName}`}
+                        >
+                          {col.header}
+                        </span>
+                      </SortableHeader>
+                    ) : (
                       <span
                         className={`line-clamp-1 text-nowrap ${cellClassName}`}
                       >
                         {col.header}
                       </span>
-                    </SortableHeader>
-                  ) : (
-                    <span
-                      className={`line-clamp-1 text-nowrap ${cellClassName}`}
-                    >
-                      {col.header}
-                    </span>
-                  )}
-                </TableCell>
-              ))}
-              {onEdit || onDelete || (options && options.length > 0) ? (
-                <TableCell className={`p-2 font-semibold ${cellClassName}`}>
-                  Actions
-                </TableCell>
-              ) : null}
-            </TableRow>
-          </TableHead>
+                    )}
+                  </TableCell>
+                ))}
+                {onEdit || onDelete || (options && options.length > 0) ? (
+                  <TableCell className={`p-2 font-semibold ${cellClassName}`}>
+                    Actions
+                  </TableCell>
+                ) : null}
+              </TableRow>
+            </TableHead>
+          )}
           <TableBody>
             {sortedData.map((item, index) => {
               const id = item.id;
@@ -280,10 +285,12 @@ function DataTable<T extends { id: number | string }>({
           </div>
         )}
       </TableContainer>
-      <CustomPagination
-        fixedNumberPerPage={fixedNumberPerPage}
-        totalItems={total}
-      />
+      {total && (
+        <CustomPagination
+          fixedNumberPerPage={fixedNumberPerPage}
+          totalItems={total}
+        />
+      )}
     </div>
   );
 }

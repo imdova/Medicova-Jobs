@@ -1,12 +1,12 @@
 "use client";
-import DashboardOverView from "./components/employers/Ovarview";
 import { Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
+import OverviewUsers from "./OverviewUsers";
+import UserList from "./UserList";
 import { LayoutDashboard, Settings, Users } from "lucide-react";
-import EmployerListPanel from "./components/employers/EmployerList";
 import { Add } from "@mui/icons-material";
 
-type Tab = "over-view" | "employer-list" | "setting";
+type Tab = "over-view" | "users-list" | "setting";
 
 const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
   {
@@ -15,8 +15,8 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
     icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
-    key: "employer-list",
-    title: "Employer List",
+    key: "users-list",
+    title: "Users List",
     icon: <Users className="h-5 w-5" />,
   },
   {
@@ -25,7 +25,8 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
     icon: <Settings className="h-5 w-5" />,
   },
 ];
-const AdminPage: React.FC = () => {
+
+const UsersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tabs[0].key);
 
   return (
@@ -51,14 +52,15 @@ const AdminPage: React.FC = () => {
             ))}
           </Tabs>
         </div>
-        <Button variant="contained"  startIcon={<Add className="h-5 w-5" />}>
-          <span className="text-nowrap text-sm">Add Company</span>
+        <Button variant="contained" startIcon={<Add className="h-5 w-5" />}>
+          <span className="text-nowrap text-sm">Add User</span>
         </Button>
       </div>
-      {activeTab === "over-view" && <DashboardOverView />}
-      {activeTab === "employer-list" && <EmployerListPanel />}
+
+      {activeTab === "over-view" && <OverviewUsers />}
+      {/* {activeTab === "users-list" && <UserList />} */}
     </div>
   );
 };
 
-export default AdminPage;
+export default UsersPage;

@@ -16,9 +16,13 @@ export default withAuth(function middleware(req) {
     if (userType === "seeker") {
       return NextResponse.redirect(new URL(`/me/${token.userName}`, req.url));
     } else if (userType === "employer") {
-      return NextResponse.redirect(new URL(`/co/${token.companyUserName}`, req.url));
+      return NextResponse.redirect(
+        new URL(`/co/${token.companyUserName}`, req.url),
+      );
     } else if (userType === "unEmployee") {
       return NextResponse.redirect(new URL(`/employer/company-info`, req.url));
+    } else if (userType === "admin") {
+      return NextResponse.redirect(new URL(`/admin`, req.url));
     }
   }
 
@@ -36,6 +40,7 @@ export const config = {
     "/job-seeker/:path*",
     "/employer/:path*",
     "/dashboard/:path*",
+    "/admin/:path*",
     "/me",
   ],
 };
@@ -44,6 +49,7 @@ const roleAccessMap: Record<string, string[]> = {
   employer: ["/employer/*"],
   unEmployee: ["/employer/company-info"],
   seeker: ["/job-seeker/*"],
+  admin: ["/*"],
 };
 
 function doesRoleHaveAccessToURL(userType: string, url: string): boolean {
