@@ -38,3 +38,17 @@ type Aggregations = {
   experienceYears: { from: number; to: number; count: number }[];
   age: { from: number; to: number; count: number }[];
 };
+type JobsAggregations = {
+  industry: { id: string; count: number }[];
+  speciality: { id: string; count: number }[];
+  category: { id: string; count: number }[];
+  careerLevel: { id: string; count: number }[];
+  employmentType: { id: string; count: number }[];
+  workPlace: { name: string; count: number }[];
+  gender: { name: string; count: number }[];
+  educationLevel: { name: string; count: number }[];
+  country: { code: string; count: number }[];
+  state: { code: string; count: number }[];
+  ageRange: { from: number; to: number; count: number }[];
+  salaryRange: { from: number; to: number; count: number }[];
+};

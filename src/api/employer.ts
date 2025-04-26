@@ -17,6 +17,7 @@ export const JOBS = API_EMPLOYER_BASE + "/jobs";
 export const API_CREATE_JOB = JOBS; // POST
 export const API_GET_JOBS = JOBS; // GET
 export const API_SEARCH_JOBS = JOBS + "/search"; // GET ?q=ahmed&categoryId=9669773b-f883-4946-95ed-9da81caf6e0b&countryCode=EG
+export const API_FILTER_SEARCH_JOBS = JOBS + "/filters"; // GET ?q=ahmed&categoryId=9669773b-f883-4946-95ed-9da81caf6e0b&countryCode=EG
 export const API_GET_JOB_BY_ID = JOBS + "/"; // GET + [jobID]
 export const API_GET_JOBS_BY_COMPANY_ID = JOBS + "/company/"; // GET + [companyID]
 export const API_UPDATE_JOB = JOBS + "/"; // PATCH + [jobID]

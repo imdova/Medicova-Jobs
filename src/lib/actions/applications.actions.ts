@@ -184,7 +184,6 @@ export const getSeekersFilter = async (): Promise<Result<Aggregations>> => {
         "Content-Type": "application/json",
         accept: "application/json",
       },
-      credentials: "include",
     });
     if (response.ok) {
       const data = await response.json();
