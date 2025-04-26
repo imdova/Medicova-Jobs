@@ -21,6 +21,7 @@ import { signIn } from "next-auth/react";
 import PhoneNumberInput from "@/components/UI/phoneNumber";
 import { isValidPhoneNumber } from "@/util/forms";
 import { passwordRules } from "@/constants";
+import { API_REGISTER_USER } from "@/api/users";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -47,22 +48,40 @@ const RegisterForm: React.FC = () => {
     setLoading(true);
     setError("");
     try {
-      const result = await signIn("register", {
-        ...data,
-        type: userType,
-        redirect: false,
-      });
-      if (result?.error) {
-        setError(
-          result.error === "CredentialsSignin"
-            ? "Invalid email or phone Number"
-            : "An error occurred during sign in",
-        );
-      } else {
-        if (window?.location) window.location.href = "/me";
+      try {
+        const response = await fetch(API_REGISTER_USER, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            type: userType,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            (result as any)?.message || `Update failed: ${response.status}`,
+          );
+        }
+        const signinResult = await signIn("credentials", {
+          email: data.email.trim().toLowerCase(),
+          password: data.password,
+          redirect: false,
+        });
+        if (signinResult?.error) {
+          setError("Sorry we are having a problem try again later");
+        } else {
+          if (window?.location) window.location.href = "/me";
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message); // Safe now!
+        } else {
+          setError("Unknown error : Failed to Create Account");
+        }
       }
     } catch (error) {
-      setError("Failed to sign in");
+      setError("Sorry we are having a problem try again later");
     } finally {
       setLoading(false);
     }
