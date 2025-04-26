@@ -31,7 +31,7 @@ import { UNLOCKED_SEEKERS } from "@/api/employer";
 import { TAGS } from "@/api";
 
 interface SeekerCardProps {
-  seeker: CandidateType;
+  seeker: UserProfile;
   selected: string[];
   companyId: string;
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
@@ -180,36 +180,42 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                   <LocalPhoneIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">{seeker.location}</p>
                 </div> */}
-                <div className="flex min-w-[80px] items-center rounded-base bg-primary-100 px-2 py-1 text-main">
-                  <LocalPhoneIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
-                  {isAvailable ? (
-                    <span className="text-xs md:text-base">{seeker.phone}</span>
-                  ) : (
-                    <div className="col-span-1 row-span-1 grid h-fit">
-                      <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                      <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                        this is dumy number
+                {seeker.phone && (
+                  <div className="flex min-w-[80px] items-center rounded-base bg-primary-100 px-2 py-1 text-main">
+                    <LocalPhoneIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+                    {isAvailable ? (
+                      <span className="text-xs md:text-base">
+                        {seeker.phone}
                       </span>
-                    </div>
-                  )}
-                  <CopyButton text={seeker.phone} disabled={!isAvailable} />
-                </div>
-                <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
-                  <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
-                  {isAvailable ? (
-                    <span className="h-fit text-sm text-main md:text-base">
-                      {seeker.email}
-                    </span>
-                  ) : (
-                    <div className="col-span-1 row-span-1 grid h-fit">
-                      <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
-                      <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
-                        this is dumy number
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dumy number
+                        </span>
+                      </div>
+                    )}
+                    <CopyButton text={seeker.phone} disabled={!isAvailable} />
+                  </div>
+                )}
+                {seeker.email && (
+                  <div className="flex items-center rounded-base bg-primary-100 px-2 py-1 text-main">
+                    <EmailIcon className="h-4 w-4 text-secondary md:h-5 md:w-5" />
+                    {isAvailable ? (
+                      <span className="h-fit text-sm text-main md:text-base">
+                        {seeker.email}
                       </span>
-                    </div>
-                  )}
-                  <CopyButton text={seeker.email} disabled={!isAvailable} />
-                </div>
+                    ) : (
+                      <div className="col-span-1 row-span-1 grid h-fit">
+                        <span className="z-10 col-start-1 row-start-1 bg-white/20 px-2 text-sm backdrop-blur-[3px] md:text-base"></span>
+                        <span className="col-start-1 row-start-1 select-none px-2 text-sm md:text-base">
+                          this is dumy number
+                        </span>
+                      </div>
+                    )}
+                    <CopyButton text={seeker.email} disabled={!isAvailable} />
+                  </div>
+                )}
               </div>
               <div className="my-1 flex flex-wrap gap-2 text-main">
                 {location && (

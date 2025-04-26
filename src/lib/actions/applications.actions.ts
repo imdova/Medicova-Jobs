@@ -1,9 +1,14 @@
 "use server";
 import { TAGS } from "@/api";
 import { API_CREATE_JOB_APPLICATION } from "@/api/employer";
-import { API_GET_SEEKERS } from "@/api/seeker";
+import {
+  API_FILTER_SEARCH_SEEKERS,
+  API_GET_SEEKERS,
+  API_SEARCH_SEEKERS,
+} from "@/api/seeker";
 import { Doctor, Result } from "@/types";
-import { errorResult } from "@/util/general";
+import { JobSearchFilter, SeekerSearchFilter } from "@/types/jobs";
+import { errorResult, toQueryString } from "@/util/general";
 
 export const applyForJob = async (
   applicationData: Partial<JobApplicationData>,
@@ -113,6 +118,76 @@ export const getSeekers = async ({
     if (response.ok) {
       const data = await response.json();
 
+      return {
+        success: true,
+        message: "Seekers fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const searchSeekers = async (
+  filters: SeekerSearchFilter = {},
+): Promise<Result<PaginatedResponse<UserProfile>>> => {
+  try {
+    const queryParams = toQueryString(filters);
+    const response = await fetch(API_SEARCH_SEEKERS + queryParams, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+    });
+    console.log(
+      "🚀 ~ API_GET_SEEKERS + queryParams:",
+      API_SEARCH_SEEKERS + queryParams,
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        message: "Seekers fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export const getSeekersFilter = async (): Promise<Result<Aggregations>> => {
+  try {
+    const response = await fetch(API_FILTER_SEARCH_SEEKERS, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
       return {
         success: true,
         message: "Seekers fetched successfully",

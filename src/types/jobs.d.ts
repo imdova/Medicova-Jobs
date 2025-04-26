@@ -41,3 +41,20 @@ export interface JobSearchFilter {
   // minExpYears?: number;
   // maxExpYears?: number;
 }
+export interface SeekerSearchFilter {
+  q?: string;
+  countryCode?: string[];
+  stateCode?: string[];
+  nationality?: string[];
+  educationLevel?: EducationLevel[];
+  experienceFrom?: number;
+  experienceTo?: number;
+  gender?: Gender[];
+  ageFrom?: number;
+  ageTo?: number;
+  specialityIds?: string[];
+  categoryIds?: string[];
+  careerLevelIds?: string[];
+  page?: number;
+  limit?: number;
+}

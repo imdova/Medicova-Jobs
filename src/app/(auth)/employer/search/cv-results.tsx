@@ -22,7 +22,7 @@ import { useSession } from "next-auth/react";
 import { API_GET_FOLDERS } from "@/api/seeker";
 import useFetch from "@/hooks/useFetch";
 
-const CvResults: React.FC<{ seekers: CandidateType[]; total: number }> = ({
+const CvResults: React.FC<{ seekers: UserProfile[]; total: number }> = ({
   seekers,
   total,
 }) => {

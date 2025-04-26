@@ -225,7 +225,7 @@ export function toQueryString<T>(
     | T
     | Record<string, string | number | (string | number)[] | undefined | null>,
 ): string {
-  const queryParams = new URLSearchParams();
+  const parts: string[] = [];
 
   for (const [key, value] of Object.entries(
     filters as Record<
@@ -236,17 +236,17 @@ export function toQueryString<T>(
     if (value == null || value === "") continue; // Skip undefined, null, or empty string
 
     if (Array.isArray(value)) {
-      // Filter out empty/null values in array
       value
         .filter((v) => v != null && v !== "")
-        .forEach((v) => queryParams.append(key, v.toString()));
+        .forEach((v) => {
+          parts.push(`${key}=${v}`);
+        });
     } else {
-      queryParams.append(key, value.toString());
+      parts.push(`${key}=${value}`);
     }
   }
 
-  const queryString = queryParams.toString();
-  return queryString ? `?${queryString}` : "";
+  return parts.length ? `?${parts.join("&")}` : "";
 }
 
 export const getOptionLabel = (options: Option[], value: string | null) => {

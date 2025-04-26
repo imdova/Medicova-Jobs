@@ -1,24 +1,62 @@
 import Filter from "@/components/Layout/filter/filter";
 import CvResults from "./cv-results";
-import { getSeekers } from "@/lib/actions/applications.actions";
+import {
+  getSeekersFilter,
+  searchSeekers,
+} from "@/lib/actions/applications.actions";
 import { searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { getUnlockedSeeker } from "@/lib/actions/employer.actions";
+import { Suspense } from "react";
+import SeekerFilter from "./seeker-filter";
 
 const page = async ({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const { q: query } = searchParams as {
-    [key: string]: string;
+  const {
+    q,
+    country,
+    state,
+    page,
+    limit,
+    ctg,
+    nat,
+    sp,
+    clv,
+    gen,
+    edu,
+    exp,
+    age,
+  } = searchParams as {
+    [key: string]: any;
   };
+  const [expFrom, expTo] = exp?.split("_") || [];
+  const [ageFrom, ageTo] = age?.split("_") || [];
+
   const data = await getServerSession(authOptions);
   const user = data?.user;
+  const result = await searchSeekers({
+    q,
+    countryCode: country,
+    stateCode: state,
+    nationality: nat,
+    categoryIds: ctg,
+    specialityIds: sp,
+    careerLevelIds: clv,
+    educationLevel: edu,
+    gender: gen,
+    experienceFrom: expFrom,
+    experienceTo: expTo,
+    ageFrom: ageFrom,
+    ageTo: ageTo,
+    page: parseInt(page || "1"),
+    limit: parseInt(limit || "10"),
+  });
 
-  const result = await getSeekers();
   const unLockedSeekersResult = await getUnlockedSeeker(user?.companyId || "");
   const { data: unLockedSeekers } = unLockedSeekersResult || { data: [] };
   const { data: seekers, total } = result.data || { data: [], total: 0 };
@@ -31,7 +69,9 @@ const page = async ({
   return (
     <div className="flex min-h-screen w-full px-2">
       {/* Left Column: Filter Section */}
-      <Filter sections={searchFilters} />
+      <Suspense fallback={<div> loading</div>}>
+        <CvSearchFilter />
+      </Suspense>
       {/* Right Column: Results Section */}
       <div className="w-full px-4 lg:w-[80%]">
         <CvResults seekers={seekers} total={total} />
@@ -39,6 +79,13 @@ const page = async ({
       </div>
     </div>
   );
+};
+
+export const CvSearchFilter = async () => {
+  const { data } = await getSeekersFilter();
+  if (!data) return null;
+
+  return <SeekerFilter data={data} />;
 };
 
 export default page;
