@@ -21,6 +21,8 @@ export interface Block {
   type: BlockType;
   content: string;
   imageUrl?: string;
+  videoUrl?: string;
+  videoThumbnail?: string;
   linkUrl?: string;
   styles: React.CSSProperties;
   blocks: Block[];

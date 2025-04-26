@@ -66,7 +66,7 @@ export default function PageBuilder() {
     <div>
       <EditorHeader />
       <div className="flex bg-background">
-        <main className="flex-1">
+        <main className="flex-1 max-w-full overflow-hidden">
           <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
             <ViewModeSelector
               viewMode={viewMode}
@@ -86,7 +86,7 @@ export default function PageBuilder() {
               className={`mx-auto min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
-              <DragDropContext onDragEnd={onDragEnd}>
+              <DragDropContext onDragEnd={onDragEnd}  >
                 <Droppable droppableId="blocks" type="GROUP">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>

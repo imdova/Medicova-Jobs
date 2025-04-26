@@ -20,14 +20,6 @@ export function DraggableBlock({
 }: DraggableBlockProps) {
   const isSelected = selectedBlock?.id === block.id;
 
-  const groupsLevel = [
-    "group/block-1",
-    "group/block-2",
-    "group/block-3",
-    "group/block-4",
-    "group/block-5",
-  ];
-
   return (
     <Draggable draggableId={block.id} index={index}>
       {(provided) => (
@@ -38,7 +30,7 @@ export function DraggableBlock({
             e.stopPropagation();
             onSelect(block);
           }}
-          className={`group/block-${block.level} relative  w-full rounded-base border p-2 ${
+          className={`relative w-full rounded-base border p-2 ${
             isSelected
               ? "border-primary"
               : "border-transparent hover:border-neutral-400"
@@ -48,6 +40,7 @@ export function DraggableBlock({
             block={block}
             onSelect={onSelect}
             setBlocks={setBlocks}
+            selectedBlock={selectedBlock}
             provided={provided.dragHandleProps}
           />
           <BlockRenderer
