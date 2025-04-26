@@ -59,7 +59,7 @@ const RegisterForm: React.FC = () => {
             : "An error occurred during sign in",
         );
       } else {
-        window.location.href = "/me";
+        if (window?.location) window.location.href = "/me";
       }
     } catch (error) {
       setError("Failed to sign in");
