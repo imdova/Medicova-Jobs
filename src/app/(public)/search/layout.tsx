@@ -39,12 +39,9 @@ const layout: React.FC<{
         </div>
       </div>
       {/* Main Layout */}
-      <main className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1170px]">
-        {/* FilterSection */}
-        <JobFilter />
-        {/* Jobs result Section */}
-        {children}
-      </main>
+      
+      {children}
+
       <Suspense>
         <CountrySearchResult />
       </Suspense>

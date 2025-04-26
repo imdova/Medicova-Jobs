@@ -56,7 +56,7 @@ const LoginForm: React.FC = () => {
             : "An error occurred during sign in",
         );
       } else {
-        window.location.href = "/me";
+        if (window?.location) window.location.href = "/me";
       }
     } catch (error) {
       setError("Failed to sign in");
@@ -104,7 +104,11 @@ const LoginForm: React.FC = () => {
         <Divider sx={{ flex: 1 }} />
       </Box>
 
-      <form className="w-full space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form
+        className="w-full space-y-4"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         {/* Email Field */}
         <div>
           <Controller

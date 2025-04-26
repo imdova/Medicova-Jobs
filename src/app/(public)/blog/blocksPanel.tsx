@@ -38,10 +38,11 @@ const BlocksPanel: React.FC<TabProps> = ({
   };
 
   const handleAddBlock = (type: Block["type"]) => {
-    const blockProps = getBlockProps(type);
+    const blockProps = getBlockProps(type, generateId());
     const newBlock: Block = {
       id: generateId(),
       type,
+      level: 1,
       blocks: [],
       content: "",
       styles: {},
@@ -58,12 +59,14 @@ const BlocksPanel: React.FC<TabProps> = ({
     if (selectedBlock && selectedBlock.allowNesting) {
       setBlocks((blocks) => {
         const newBlocks = structuredClone(blocks);
+        newBlock.level = selectedBlock.level + 1;
         addItem(newBlocks, newBlock, selectedBlock.id);
         return newBlocks;
       });
     } else {
       setBlocks((pv) => [...pv, newBlock]);
     }
+    setSelectedBlock((pv) => (pv?.allowNesting ? pv : newBlock));
   };
 
   return (

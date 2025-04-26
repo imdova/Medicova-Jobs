@@ -8,6 +8,7 @@ import {
 import { API_UPDATE_SEEKER } from "@/api/seeker";
 import FormModal from "@/components/form/FormModal/FormModal";
 import ShareMenu from "@/components/UI/ShareMenu";
+import { nationalitiesOptions } from "@/constants";
 import useFetch from "@/hooks/useFetch";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -26,7 +27,7 @@ interface EditProfileProps {
 const initialValues = (user: Partial<UserProfile>): Partial<UserProfile> => ({
   firstName: user?.firstName,
   lastName: user?.lastName,
-  birth: user?.birth,
+  birthDate: user?.birthDate,
   nationality: user?.nationality,
   title: user?.title,
   state: user?.state || null,
@@ -108,7 +109,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       country: country ? { code: country.isoCode, name: country.name } : null,
       state: state ? { code: state.isoCode, name: state.name } : null,
     };
-    console.log("🚀 ~ handleUpdate ~ body:", body);
     await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
   };
 
@@ -126,7 +126,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       gridProps: { xs: 6 },
     },
     {
-      name: "birth",
+      name: "birthDate",
       type: "date",
       label: "Date of Birth*",
       gridProps: { xs: 6 },
@@ -139,9 +139,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       },
     },
     {
-      label: "Nationality*",
       name: "nationality",
-      type: "text",
+      label: "Nationality*",
+      type: "search-select",
+      options: nationalitiesOptions,
       gridProps: { xs: 6 },
     },
     {

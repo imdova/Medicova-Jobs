@@ -60,22 +60,27 @@ export const layoutBlocks: BlockButton[] = [
     label: "Flex Column",
   },
 ];
-export const getBlockProps = (type: Block["type"]): Partial<Block> => {
+export const getBlockProps = (
+  type: Block["type"],
+  id: string,
+): Partial<Block> => {
   if (type === "flex-row") {
     return {
       blocks: [
         {
-          id: generateId(),
+          id: id + 1,
           type: "container",
           allowNesting: true,
+          level: 2,
           content: "",
           styles: {},
           blocks: [],
         },
         {
-          id: generateId(),
+          id: id + 2,
           type: "container",
           allowNesting: true,
+          level: 2,
           content: "",
           styles: {},
           blocks: [],

@@ -1,17 +1,21 @@
-import { Block } from "@/types/blog";
+import { Block, BlogSettings } from "@/types/blog";
 import { Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
 import StylePanel from "./stylePanel";
 import BlocksPanel from "./blocksPanel";
+import SettingsPanel from "./SettingsPanel";
 
 interface ToolBarProps {
+  settings: BlogSettings;
+  updateSettings: (settings: BlogSettings) => void;
   blocks: Block[];
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   selectedBlock?: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
 }
 const ToolBar: React.FC<ToolBarProps> = ({
-  blocks,
+  settings,
+  updateSettings,
   setBlocks,
   selectedBlock,
   setSelectedBlock,
@@ -24,14 +28,18 @@ const ToolBar: React.FC<ToolBarProps> = ({
           value={selectedTab}
           onChange={(event, newValue) => setSelectedTab(newValue)}
           aria-label="block and style tabs"
-          className="border-gray-200 border-b"
+          className="border-b border-gray-200"
           variant="fullWidth"
         >
-          <Tab label="Blocks" className="p-0 text-sm h-[50px]" value="blocks" />
-          <Tab label="Styles" className="p-0 text-sm h-[50px]" value="styles" />
-          {/* <Tab label="Settings" value="settings" /> */}
+          <Tab label="Blocks" className="h-[50px] p-0 text-sm" value="blocks" />
+          <Tab label="Styles" className="h-[50px] p-0 text-sm" value="styles" />
+          <Tab
+            label="Settings"
+            className="h-[50px] p-0 text-sm"
+            value="settings"
+          />
         </Tabs>
-        <div className="max-h-[calc(100vh-146px)] space-y-6 overflow-y-auto p-4 scroll-bar-minimal">
+        <div className="scroll-bar-minimal max-h-[calc(100vh-146px)] space-y-6 overflow-y-auto p-4">
           {selectedTab === "blocks" && (
             <BlocksPanel
               selectedBlock={selectedBlock}
@@ -46,16 +54,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setSelectedBlock={setSelectedBlock}
             />
           )}
+          {selectedTab === "settings" && (
+            <SettingsPanel
+              settings={settings}
+              updateSettings={updateSettings}
+            />
+          )}
         </div>
-
         {/* )} */}
-        {/* {selectedTab === "settings" && (
-          <SettingsTab
-            setBlocks={setBlocks}
-            selectedBlock={selectedBlock}
-            setSelectedBlock={setSelectedBlock}
-          />
-        )} */}
       </div>
     </aside>
   );

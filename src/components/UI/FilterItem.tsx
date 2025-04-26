@@ -15,7 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 interface FilterItemProps extends FilterType {
   value: string[];
   index?: number;
-  handleCheckChange: (params: FilterParam[]) => void; 
+  handleCheckChange: (params: FilterParam[]) => void;
 }
 
 function getTotalCount(items: FilterItem[]) {
@@ -48,8 +48,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
   searchable,
 }) => {
   const [query, setQuery] = useState("");
+  const isAnySelected = value.length > 0;
+
   const [isExpanded, setIsExpanded] = useState(
-    index ? index === 0 || index === 1 : true,
+    isAnySelected ? isAnySelected : index ? index === 0 || index === 1 : true,
   );
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
@@ -90,11 +92,15 @@ const FilterItem: React.FC<FilterItemProps> = ({
         ? value.filter((val) => val !== optionValue)
         : [...value, optionValue];
     } else {
-      newValue = [optionValue]; // Only one can be selected
+      newValue = value.includes(optionValue) ? [] : [optionValue]; // Only one can be selected
     }
     const params = [];
     params.push({ sectionKey, value: newValue });
-    if (resetSections && resetSections?.length > 0 && value.includes(optionValue)) {
+    if (
+      resetSections &&
+      resetSections?.length > 0 &&
+      value.includes(optionValue)
+    ) {
       const resetParams: FilterParam[] = resetSections.map((key) => ({
         sectionKey: key,
         value: [],
@@ -150,10 +156,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     onChange={handleAllChange}
                     // indeterminate={!isNoneSelected && !isAllSelected}
                     icon={
-                      <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
+                      <div className="h-5 w-5 rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2 border-primary bg-primary">
                         <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
                       </div>
                     }
@@ -172,10 +178,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     checked={value.includes(option.value)}
                     onChange={() => handleCheckboxChange(option.value)}
                     icon={
-                      <div className="h-5 w-5 rounded-sm border-2 border-[#D6DDEB]" />
+                      <div className="h-5 w-5 rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-sm border-2 border-primary bg-primary">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2 border-primary bg-primary">
                         <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
                       </div>
                     }

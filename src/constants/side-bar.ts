@@ -13,6 +13,7 @@ import {
   SettingsOutlined,
   WorkOutline,
 } from "@mui/icons-material";
+import { GraduationCap, UserCog, Users, Users2 } from "lucide-react";
 
 export const roleBasedSideBarLinks: RoleBasedLinks = {
   admin: [
@@ -30,28 +31,35 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
     {
       id: 2,
       label: "Manage Users",
-      icon: WorkOutline,
+      icon: Users,
       type: "collapse",
       links: [
         {
-          id: 21,
+          id: 1,
           label: "Manage All Users",
-          icon: WorkOutline,
+          icon: Users,
           path: "/admin/users",
           type: "supLink",
         },
         {
-          id: 22,
+          id: 2,
           label: "Manage Employers",
           icon: WorkOutline,
           path: "/admin/users/employers",
           type: "supLink",
         },
         {
-          id: 23,
+          id: 3,
           label: "Manage Job Seekers",
-          icon: PostAddOutlined,
+          icon: GraduationCap,
           path: "/admin/users/seekers",
+          type: "supLink",
+        },
+        {
+          id: 4,
+          label: "Medicova Team",
+          icon: UserCog,
+          path: "/admin/employees",
           type: "supLink",
         },
       ],

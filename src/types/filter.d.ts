@@ -24,9 +24,4 @@ type FilterProps = {
   sections: FilterType[];
 };
 
-type FilterDrawerProps = {
-  sections: FilterType[];
-  searchKeys?: string[];
-  selectedFilters: Record<string, string[]>;
-  handleCheckChange: (params: FilterParam[]) => void;
-};
+type FilterDrawerProps = FilterProps & { isOpen: boolean; onClose: () => void };

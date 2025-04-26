@@ -14,6 +14,7 @@ import {
   FieldError,
   FieldValues,
 } from "react-hook-form";
+import { cn } from "@/util";
 
 interface SelectFieldProps {
   field: FieldConfig;
@@ -37,13 +38,15 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     field.dependsOn &&
     formValues &&
     !getNestedValue(formValues, field.dependsOn)
-      ? dependsOnField
+      ? { name: field.dependsOn, ...dependsOnField }
       : null;
   const placeholder =
     "Select " +
     (field.textFieldProps?.label
       ? String(field.textFieldProps?.label).replace("*", "")
-      : field.label?.replace("*", ""));
+      : field.label
+        ? field.label.replace("*", "")
+        : field.name);
   const className = field.textFieldProps?.className || "";
   return (
     <FormControl fullWidth error={!!error}>
@@ -51,23 +54,24 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         <InputLabel className="bg-white px-1" id={String(field.name) + "Label"}>
           {field.textFieldProps.label}
         </InputLabel>
-      ) : (
+      ) : field.label ? (
         <label className="mb-1 font-semibold">{field.label}</label>
-      )}
+      ) : null}
       <Tooltip
         title={
           dependsOn
             ? `Please select ${
                 dependsOn.textFieldProps?.label
                   ? String(dependsOn.textFieldProps?.label)?.replace("*", "")
-                  : dependsOn.label?.replace("*", "")
+                  : dependsOn.label?.replace("*", "") || dependsOn.name
               } first`
             : undefined
         }
         placement="bottom"
       >
         <Select
-          className={`bg-white ${className}`}
+          className={cn("bg-white", className)}
+          sx={field.textFieldProps?.sx}
           {...controllerField}
           labelId={String(field.name) + "Label"}
           id={String(field.name)}

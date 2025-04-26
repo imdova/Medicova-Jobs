@@ -427,7 +427,7 @@ export interface Option<T = Record<string, any>> {
 export interface FieldConfig<T = any> {
   name: Path<T>;
   label?: string;
-  type: FieldType;
+  type?: FieldType;
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:
@@ -476,7 +476,7 @@ export interface DynamicModalProps {
 
 export interface ColumnConfig<T> {
   key?: Path<T>; // Field to display
-  header: string; // Column header text
+  header?: string; // Column header text
   sortable?: boolean; // Enable sorting
   render?: (item: T) => React.ReactNode; // Custom render function
   width?: string | number; // Optional column width

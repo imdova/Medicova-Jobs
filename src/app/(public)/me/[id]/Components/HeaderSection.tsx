@@ -8,9 +8,10 @@ import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
 import uploadFiles from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
-import { calculateAge } from "@/util/general";
+import { calculateAge, getOptionLabel } from "@/util/general";
 import EditProfile from "./editProfile";
 import { formatName } from "@/util";
+import { nationalitiesOptions } from "@/constants";
 
 const HeaderSection: React.FC<{
   user: UserProfile;
@@ -41,7 +42,8 @@ const HeaderSection: React.FC<{
     setImage(file);
   };
 
-  const age = user.birth ? calculateAge(new Date(user.birth)) : "";
+  const age = user.birthDate ? calculateAge(new Date(user.birthDate)) : "";
+  const nationality = getOptionLabel(nationalitiesOptions, user.nationality);
   return (
     <div className="flex h-fit min-h-[200px] w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-primary-100 p-5 shadow-soft lg:flex-row">
       {isMe ? (
@@ -74,7 +76,7 @@ const HeaderSection: React.FC<{
           <div>
             <p className="text-sm text-secondary">
               {age ? `${age} years old` : ""}{" "}
-              {user.nationality ? `- ${user.nationality}` : ""}{" "}
+              {nationality ? `- ${nationality}` : ""}{" "}
               {user.maritalStatus ? `- ${user.maritalStatus}` : ""}{" "}
               {user.speciality ? `- ${user.speciality}` : ""}{" "}
               {/* {user.careerLevel ? `- Ex ${user.careerLevel} years` : ""}{" "} */}

@@ -12,8 +12,8 @@ interface LocationSectionProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 const CategorySelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
-  const { control, getValues, setValue, watch } = formMethods;
-  const categoryId = watch("categoryId");
+  const { control, getValues, setValue } = formMethods;
+  const categoryId = getValues("categoryId");
 
   const { data: categoriesData } =
     useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);

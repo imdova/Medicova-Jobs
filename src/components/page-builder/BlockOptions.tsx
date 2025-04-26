@@ -9,6 +9,7 @@ import { deleteItem, duplicateItem } from "@/util/blog";
 interface BlockOptionsProps {
   block: Block;
   provided: DraggableProvidedDragHandleProps | null;
+  selectedBlock?: Block | null;
   onSelect: (block: Block) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
 }
@@ -17,8 +18,11 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   provided,
   setBlocks,
   onSelect,
+  selectedBlock,
   block,
 }) => {
+  const isSelected = selectedBlock?.id === block.id;
+
   const onAction = (block: Block, action: BlockAction) => {
     switch (action) {
       case "Delete":
@@ -31,16 +35,27 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
       case "Duplicate":
         setBlocks((blocks) => {
           const newBlocks = structuredClone(blocks);
-          duplicateItem(newBlocks, block.id);
+          const newBlock = duplicateItem(newBlocks, block.id);
+          newBlock && onSelect(newBlock);
           return newBlocks;
         });
         break;
     }
   };
 
+  const groupsLevel = [
+    "group-hover/block-1:opacity-100",
+    "group-hover/block-2:opacity-100",
+    "group-hover/block-3:opacity-100",
+    "group-hover/block-4:opacity-100",
+    "group-hover/block-5:opacity-100",
+  ];
+
   return (
     <div
-      className={`group/button absolute -right-4 top-1/2 z-20 mr-4 flex -translate-y-1/2 translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1 opacity-0 transition-all duration-500 hover:right-5 group-hover/${block.type}:opacity-100 `}
+      style={{ zIndex: 20 - block.level }}
+      aria-selected={isSelected}
+      className={`group/button absolute -right-4 top-1/2 mr-4  -translate-y-1/2 translate-x-1/2 flex-row-reverse rounded-base bg-gray-800 p-1  transition-all duration-500 hover:right-5 hidden aria-selected:flex`}
     >
       <Tooltip placement="top" arrow title="Drag to Reorder">
         <IconButton

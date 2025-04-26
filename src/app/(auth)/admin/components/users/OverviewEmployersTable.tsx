@@ -13,7 +13,7 @@ import DataTable from "@/components/UI/data-table";
 import { Company, FieldConfig, Sector } from "@/types";
 import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
-import { formatDate } from "@/util";
+import { formatDate, formatName } from "@/util";
 import useFetch from "@/hooks/useFetch";
 import {
   API_GET_COMPANY_SECTORS,
@@ -31,6 +31,7 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { employerFilters } from "@/constants";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import { updateItemInArray } from "@/util/general";
+import { API_UPDATE_SEEKER } from "@/api/seeker";
 
 const tabs = [
   "New Employers",
@@ -54,21 +55,21 @@ interface EmployerFilter {
   date: string;
 }
 
-const OverviewEmployersTable: React.FC<{
-  companies: PaginatedResponse<Company> | null;
-  updateCompanyData?: React.Dispatch<
-    React.SetStateAction<PaginatedResponse<Company> | null>
+const UsersTable: React.FC<{
+  users: PaginatedResponse<UserProfile> | null;
+  updateUsers?: React.Dispatch<
+    React.SetStateAction<PaginatedResponse<UserProfile> | null>
   >;
-}> = ({ companies: companiesData, updateCompanyData }) => {
+}> = ({ users: usersData, updateUsers }) => {
   const { countries } = useLocationData();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const openFilter = () => setIsFilterOpen(true);
   const closeFilter = () => setIsFilterOpen(false);
 
-  const { isLoading, error, update } = useUpdateApi<Company>();
+  const { isLoading, error, update } = useUpdateApi<UserProfile>();
 
-  const { data: companies, total } = companiesData || { data: [], total: 0 };
+  const { data: users, total } = usersData || { data: [], total: 0 };
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [query, setQuery] = useState("");
@@ -95,14 +96,10 @@ const OverviewEmployersTable: React.FC<{
     setExportAnchorEl(null);
   };
 
-  const updateCompany = async (body: Company) => {
-    const newCompanyData = await update(
-      API_UPDATE_COMPANY,
-      { body },
-      TAGS.company,
-    );
-    const newCompanies = updateItemInArray(companies, newCompanyData);
-    updateCompanyData?.({ data: newCompanies, total });
+  const updateCompany = async (body: UserProfile) => {
+    const newUserData = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
+    const newCompanies = updateItemInArray(users, newUserData);
+    updateUsers?.({ data: newCompanies, total });
   };
 
   const fields: FieldConfig<EmployerFilter>[] = [
@@ -252,7 +249,7 @@ const OverviewEmployersTable: React.FC<{
       </div>
       <div className="body-container overflow-x-auto">
         <DataTable
-          data={companies}
+          data={users}
           total={total}
           selected={selected}
           setSelected={setSelected}
@@ -261,14 +258,16 @@ const OverviewEmployersTable: React.FC<{
           headerClassName="text-sm"
           columns={[
             {
-              key: "name",
+              key: "firstName",
               header: "Name",
               sortable: true,
               render: (item) => (
                 <div className="flex items-center gap-2">
                   <Avatar src={item.avatar} />
                   <div>
-                    <h6 className="line-clamp-1 text-sm">{item.name}</h6>
+                    <h6 className="line-clamp-1 text-sm">
+                      {formatName(item, true)}
+                    </h6>
                     <Link
                       href={`mailto:${item.email}`}
                       className="line-clamp-1 break-all text-xs underline hover:no-underline"
@@ -294,32 +293,6 @@ const OverviewEmployersTable: React.FC<{
               key: "country.name",
               header: "Country",
               sortable: true,
-            },
-            {
-              key: "companyTypeName",
-              header: "Type",
-              render: (item) => (
-                <span className="text-sm">
-                  {
-                    types?.data?.find(
-                      (type) => type.id === item.companyTypeName,
-                    )?.name
-                  }
-                </span>
-              ),
-            },
-            {
-              key: "companySectorName",
-              header: "Sector",
-              render: (item) => (
-                <span className="text-sm">
-                  {
-                    sectors?.data?.find(
-                      (sector) => sector.id === item.companySectorId,
-                    )?.name
-                  }
-                </span>
-              ),
             },
             {
               header: "plan",
@@ -350,38 +323,32 @@ const OverviewEmployersTable: React.FC<{
                 />
               ),
             },
-            {
-              key: "openJobs",
-              header: "Jobs",
-              render: () => <span className="text-sm">25</span>,
-            },
-            {
-              key: "status",
-              header: "Status",
-              render: (item) => (
-                <CheckboxField
-                  field={{
-                    name: "status",
-                    type: "checkbox",
-                  }}
-                  controllerField={{
-                    value: item.status === CompanyStatus.ACTIVE,
-                    onChange: (e) =>
-                      updateCompany({
-                        ...item,
-                        status: e.target.checked
-                          ? CompanyStatus.ACTIVE
-                          : CompanyStatus.INACTIVE,
-                      }),
-                  }}
-                />
-              ),
-            },
-
-            {
-              header: "Action",
-              render: handleStatus,
-            },
+            // {
+            //   key: "status",
+            //   header: "Status",
+            //   render: (item) => (
+            //     <CheckboxField
+            //       field={{
+            //         name: "status",
+            //         type: "checkbox",
+            //       }}
+            //       controllerField={{
+            //         value: item.status === CompanyStatus.ACTIVE,
+            //         onChange: (e) =>
+            //           updateCompany({
+            //             ...item,
+            //             status: e.target.checked
+            //               ? CompanyStatus.ACTIVE
+            //               : CompanyStatus.INACTIVE,
+            //           }),
+            //       }}
+            //     />
+            //   ),
+            // },
+            // {
+            //   header: "Action",
+            //   render: handleStatus,
+            // },
           ]}
         />
       </div>
@@ -389,27 +356,27 @@ const OverviewEmployersTable: React.FC<{
   );
 };
 
-export default OverviewEmployersTable;
+export default UsersTable;
 
-const handleStatus = (company: Company) => {
-  const stateStyles: Record<NonNullable<Company["status"]>, string> = {
-    active:
-      "bg-green-50 text-green-700 ring-green-600/20 border-green-500 bg-inputDark text-green-500",
-    inactive:
-      "bg-red-50 text-red-700 ring-red-600/10 border-red-500 bg-inputDark text-red-500",
-  };
+// const handleStatus = (user: UserProfile) => {
+//   const stateStyles: Record<NonNullable<UserProfile["isPublic"]>, string> = {
+//     active:
+//       "bg-green-50 text-green-700 ring-green-600/20 border-green-500 bg-inputDark text-green-500",
+//     inactive:
+//       "bg-red-50 text-red-700 ring-red-600/10 border-red-500 bg-inputDark text-red-500",
+//   };
 
-  return company.status ? (
-    <span
-      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[company.status]}`}
-    >
-      {company.status}
-    </span>
-  ) : (
-    <span
-      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles.inactive}`}
-    >
-      inactive
-    </span>
-  );
-};
+//   return company.status ? (
+//     <span
+//       className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[company.status]}`}
+//     >
+//       {company.status}
+//     </span>
+//   ) : (
+//     <span
+//       className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles.inactive}`}
+//     >
+//       inactive
+//     </span>
+//   );
+// };

@@ -67,7 +67,7 @@ const LinkTab = ({ item, isActive, isMinimal }: TabComponentProps) => {
     >
       <div className="flex w-full flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center gap-4 text-left normal-case">
-          {IconComponent && <IconComponent />}
+          {IconComponent && <IconComponent className="w-5 h-5 mx-1" />}
           <span>{item.label}</span>
         </div>
         {item.notifications && (
@@ -105,7 +105,7 @@ const CollapseTab = ({
       >
         <div className="flex w-full flex-row items-center justify-between gap-2">
           <div className="flex flex-row items-center gap-4 text-left normal-case">
-            {IconComponent && <IconComponent />}
+            {IconComponent && <IconComponent className="w-5 h-5 mx-1" />}
             <span>{item.label}</span>
           </div>
           <KeyboardArrowDown

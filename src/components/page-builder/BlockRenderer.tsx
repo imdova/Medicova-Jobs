@@ -140,9 +140,13 @@ export function BlockRenderer({
     case "container":
       return (
         <div>
-          <Droppable droppableId={block.id}>
+          <Droppable droppableId={"drop-" + block.id}>
             {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <div
+                {...provided.droppableProps}
+                className={`${block.blocks.length === 0 ? "min-h-24 border border-gray-200 shadow-soft" : ""} h-full min-w-60 rounded-base`}
+                ref={provided.innerRef}
+              >
                 {block.blocks?.map((block, index) => (
                   <DraggableBlock
                     key={block.id}
@@ -165,11 +169,11 @@ export function BlockRenderer({
           {(provided) => (
             <div
               {...provided.droppableProps}
-              className="flex"
+              className="flex flex-col flex-wrap gap-3 md:flex-row"
               ref={provided.innerRef}
             >
               {block.blocks?.map((block, index) => (
-                <div key={block.id} className="flex-1">
+                <div key={block.id} className="h-full w-full flex-1">
                   <DraggableBlock
                     block={block}
                     index={index}

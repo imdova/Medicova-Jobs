@@ -1,4 +1,4 @@
-import { ActiveLinkResult, NavItem, Result } from "@/types";
+import { ActiveLinkResult, NavItem, Option, Result } from "@/types";
 import { isCurrentPage } from ".";
 
 export const errorResult = (type: string): Result => {
@@ -220,15 +220,19 @@ export function formatPrice(value?: number): string | null {
   return value.toString();
 }
 
-export function toQueryString(
-  filters: Record<
-    string,
-    string | number | (string | number)[] | undefined | null
-  >,
+export function toQueryString<T>(
+  filters:
+    | T
+    | Record<string, string | number | (string | number)[] | undefined | null>,
 ): string {
   const queryParams = new URLSearchParams();
 
-  for (const [key, value] of Object.entries(filters)) {
+  for (const [key, value] of Object.entries(
+    filters as Record<
+      string,
+      string | number | (string | number)[] | undefined | null
+    >,
+  )) {
     if (value == null || value === "") continue; // Skip undefined, null, or empty string
 
     if (Array.isArray(value)) {
@@ -243,4 +247,45 @@ export function toQueryString(
 
   const queryString = queryParams.toString();
   return queryString ? `?${queryString}` : "";
+}
+
+export const getOptionLabel = (options: Option[], value: string | null) => {
+  return options.find((x) => x.value === value)?.label;
+};
+
+export function enumToOptions<T extends Record<string, string>>(
+  enumObj: T,
+): Option[] {
+  return Object.values(enumObj).map((value) => ({
+    value: value as string,
+    label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
+  }));
+}
+
+export function updateData<T>(data: T, path: string, value: any): T {
+  const keys = path.split(".");
+  const result = structuredClone(data); // Deep clone to avoid mutating original
+  let current: any = result;
+
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+
+    if (!(key in current) || typeof current[key] !== "object") {
+      current[key] = {};
+    }
+
+    current = current[key];
+  }
+
+  current[keys[keys.length - 1]] = value;
+
+  return result;
+}
+
+export function updateItemInArray<T extends { id: string }>(
+  array: T[],
+  newItem: T,
+): T[] {
+  const newArray = structuredClone(array); // Deep clone to avoid mutating original
+  return newArray.map((item) => (item.id === newItem.id ? newItem : item));
 }

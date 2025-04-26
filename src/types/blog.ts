@@ -24,6 +24,7 @@ export interface Block {
   linkUrl?: string;
   styles: React.CSSProperties;
   blocks: Block[];
+  level: number;
   allowNesting?: boolean;
   gridProps?: {
     xs?: number;
@@ -32,11 +33,19 @@ export interface Block {
   };
 }
 
+export type BlogSettings = {
+  title: string;
+  slug: string;
+  cover: string;
+  category: string;
+  shortDescription: string;
+  author: string;
+};
 export type BlockButton = {
   id: BlockType;
   icon: React.ReactNode;
   label: string;
-  blockProps?: Partial<Block>
+  blockProps?: Partial<Block>;
 };
 
 export interface TabProps {

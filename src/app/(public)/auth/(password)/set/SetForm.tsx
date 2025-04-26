@@ -84,7 +84,8 @@ const SetForm: React.FC = () => {
               : "An error occurred during sign in",
           );
         } else {
-          window.location.href = "/me";
+          // TODO: fix or remove it
+          if (window?.location) window.location.href = "/me";
         }
       } catch (error) {
         setError("Failed to sign in");

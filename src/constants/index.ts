@@ -4,6 +4,7 @@ import {
   Folder,
   Job,
   NotificationItem,
+  Option,
   Specialty,
 } from "@/types";
 import {
@@ -14,6 +15,8 @@ import {
   Search,
 } from "@mui/icons-material";
 import { CompanySize } from "./enums/company-size.enum";
+import { Nationalities } from "./enums/nationalities.enum";
+import { Gender } from "./enums/gender.enum";
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export const DEFAULT_COVER_IMAGE =
@@ -32,228 +35,6 @@ export const passwordRules = {
       "Password must include at least one lowercase letter, one uppercase letter, one number, and one symbol",
   },
 };
-
-export const doctorsBase: Doctor[] = [
-  {
-    id: "doc-001", // Unique ID
-    image: "https://randomuser.me/api/portraits/women/90.jpg",
-    name: "Catherine Thompson",
-    location: "New York, USA",
-    specialty: "Cardiology",
-    yearsOfExperience: 15,
-    consultant: true,
-    field: "Cardiology",
-    available: false,
-    contactInfo: {
-      whatsapp: "+1 555-123-4567",
-      phoneNumber: "+1 555-987-6543",
-      email: "sarah.johnson@example.com",
-    },
-    experience: [
-      {
-        name: "Senior Cardiologist",
-        country: {
-          name: "USA",
-          code: "us",
-        },
-        startDate: "2010",
-        endDate: "Present",
-      },
-      {
-        name: "Cardiology Resident",
-        country: {
-          name: "USA",
-          code: "us",
-        },
-        startDate: "2007",
-        endDate: "2010",
-      },
-    ],
-    education: [
-      {
-        name: "Harvard Medical School",
-        country: {
-          name: "USA",
-          code: "us",
-        },
-        specialty: "Cardiology",
-        degree: "Doctor of Medicine (MD)",
-        startDate: "2000",
-        endDate: "2006",
-      },
-    ],
-  },
-  {
-    id: "doc-002", // Unique ID
-    image: "https://randomuser.me/api/portraits/men/6.jpg",
-    name: "Michael Brown",
-    location: "London, UK",
-    specialty: "Cardiology",
-    yearsOfExperience: 20,
-    available: false,
-    consultant: true,
-    field: "Cardiology",
-    contactInfo: {
-      whatsapp: "+44 7700-123456",
-      phoneNumber: "+44 7700-987654",
-      email: "michael.brown@example.com",
-    },
-    experience: [
-      {
-        name: "Head of Cardiology",
-        country: {
-          name: "UK",
-          code: "gb",
-        },
-        startDate: "2010",
-        endDate: "Present",
-      },
-      {
-        name: "Cardiology Fellow",
-        country: {
-          name: "UK",
-          code: "gb",
-        },
-        startDate: "2005",
-        endDate: "2010",
-      },
-    ],
-    education: [
-      {
-        name: "University of Oxford",
-        country: {
-          name: "UK",
-          code: "gb",
-        },
-        specialty: "Cardiology",
-        degree: "Doctor of Medicine (MD)",
-        startDate: "1995",
-        endDate: "2003",
-      },
-    ],
-  },
-  {
-    id: "doc-003", // Unique ID
-    image: "https://randomuser.me/api/portraits/women/79.jpg",
-    name: "Aisha Khan",
-    location: "Dubai, UAE",
-    specialty: "Cardiology",
-    yearsOfExperience: 10,
-    available: false,
-    consultant: true,
-    field: "Cardiology",
-    contactInfo: {
-      whatsapp: "+971 50-123-4567",
-      phoneNumber: "+971 50-987-6543",
-      email: "aisha.khan@example.com",
-    },
-    experience: [
-      {
-        name: "Consultant Cardiologist",
-        country: {
-          name: "UAE",
-          code: "ae",
-        },
-        startDate: "2015",
-        endDate: "Present",
-      },
-    ],
-    education: [
-      {
-        name: "Dubai Medical College",
-        country: {
-          name: "UAE",
-          code: "ae",
-        },
-        specialty: "Cardiology",
-        degree: "Doctor of Medicine (MD)",
-        startDate: "2005",
-        endDate: "2012",
-      },
-    ],
-  },
-  {
-    id: "doc-004", // Unique ID
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
-    name: "Ramesh Patel",
-    location: "Mumbai, India",
-    specialty: "Cardiology",
-    yearsOfExperience: 12,
-    consultant: true,
-    available: false,
-    field: "Cardiology",
-    contactInfo: {
-      whatsapp: "+91 98765-43210",
-      phoneNumber: "+91 98765-12345",
-      email: "ramesh.patel@example.com",
-    },
-    experience: [
-      {
-        name: "Senior Consultant",
-        country: {
-          name: "India",
-          code: "in",
-        },
-        startDate: "2011",
-        endDate: "Present",
-      },
-    ],
-    education: [
-      {
-        name: "All India Institute of Medical Sciences",
-        country: {
-          name: "India",
-          code: "in",
-        },
-        specialty: "Cardiology",
-        degree: "Doctor of Medicine (MD)",
-        startDate: "2003",
-        endDate: "2010",
-      },
-    ],
-  },
-  {
-    id: "doc-005", // Unique ID
-    image: "https://randomuser.me/api/portraits/women/8.jpg",
-    name: "Emma Wilson",
-    location: "Sydney, Australia",
-    specialty: "Cardiology",
-    yearsOfExperience: 18,
-    consultant: true,
-    available: false,
-    field: "Cardiology",
-    contactInfo: {
-      whatsapp: "+61 400-123-456",
-      phoneNumber: "+61 400-654-321",
-      email: "emma.wilson@example.com",
-    },
-    experience: [
-      {
-        name: "Consultant Cardiologist",
-        country: {
-          name: "Australia",
-          code: "au",
-        },
-        startDate: "2005",
-        endDate: "Present",
-      },
-    ],
-    education: [
-      {
-        name: "University of Sydney",
-        country: {
-          name: "Australia",
-          code: "au",
-        },
-        specialty: "Cardiology",
-        degree: "Doctor of Medicine (MD)",
-        startDate: "1995",
-        endDate: "2001",
-      },
-    ],
-  },
-  // Add 5 more doctors here in a similar structure
-];
 
 export const filterSections: FilterType[] = [
   {
@@ -390,7 +171,7 @@ export const searchJopFilters: FilterType[] = [
   {
     name: "Work Type",
     multiple: true,
-    sectionKey: "emt",
+    sectionKey: "emp",
     items: [
       { label: "Full-time", count: 3, value: "full_time" },
       { label: "Part-Time", count: 5, value: "part_time" },
@@ -399,7 +180,7 @@ export const searchJopFilters: FilterType[] = [
   {
     name: "Work Place",
     multiple: true,
-    sectionKey: "wp",
+    sectionKey: "wrk",
     items: [
       { label: "Remote", count: 2, value: "remote" },
       { label: "On site", count: 24, value: "on_site" },
@@ -445,6 +226,44 @@ export const searchJopFilters: FilterType[] = [
       { label: "Master's Degree", count: 20, value: "master" },
       { label: "Doctorate Degree", count: 10, value: "doctorate" },
       { label: "Diploma", count: 5, value: "diploma" },
+    ],
+  },
+];
+export const employerFilters: FilterType[] = [
+  {
+    name: "Country",
+    sectionKey: "country",
+    items: [
+      { label: "Egypt", count: 4, value: "EG" },
+    ],
+  },
+  {
+    name: "Sector",
+    sectionKey: "sector",
+    items: [
+      { label: "Hospital", count: 3, value: "hospital" },
+    ],
+  },
+  {
+    name: "Status",
+    sectionKey: "status",
+    items: [
+      { label: "Active", count: 1, value: "active" },
+      { label: "Inactive", count: 4, value: "inactive" },
+    ],
+  },
+  {
+    name: "Plan",
+    sectionKey: "plan",
+    items: [
+      { label: "Premium", count: 4, value: "premium" },
+    ],
+  },
+  {
+    name: "Jobs",
+    sectionKey: "jobs",
+    items: [
+      { label: "25 Jobs", count: 4, value: "25" },
     ],
   },
 ];
@@ -1046,9 +865,22 @@ enum MaritalStatus {
   Divorced = "Divorced",
   Widowed = "Widowed",
 }
-export const maritalStatusOptions: { label: string; value: MaritalStatus }[] = [
-  { label: "Single", value: MaritalStatus.Single },
-  { label: "Married", value: MaritalStatus.Married },
-  { label: "Divorced", value: MaritalStatus.Divorced },
-  { label: "Widowed", value: MaritalStatus.Widowed },
-];
+
+export const maritalStatusOptions: Option[] = Object.values(MaritalStatus).map(
+  (status) => ({
+    value: status as keyof typeof MaritalStatus,
+    label:
+      status.charAt(0).toUpperCase() + status.slice(1).toLowerCase(),
+  }),
+);
+export const nationalitiesOptions: Option[] = Object.values(Nationalities).map(
+  (nationality) => ({
+    value: nationality as keyof typeof Nationalities,
+    label:
+      nationality.charAt(0).toUpperCase() + nationality.slice(1).toLowerCase(),
+  }),
+);
+export const gendersOptions: Option[] = Object.values(Gender).map((gender) => ({
+  value: gender as keyof typeof Gender,
+  label: gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase(),
+}));

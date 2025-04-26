@@ -11,18 +11,19 @@ import useIsLeaving from "@/hooks/useIsLeaving";
 import { useForm } from "react-hook-form";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import { TAGS } from "@/api";
+import React from "react";
 
 const getDefaultUserData = (user: UserProfile) => {
   const defaultValues = {
-    ...user,
     avatar: user?.avatar || "",
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    phone: user?.phone,
-    whatsapp: user?.whatsapp,
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    phone: user?.phone || "",
+    whatsapp: user?.whatsapp || "",
+    birthDate: user?.birthDate || "",
     gender: user?.gender || "",
     nationality: user?.nationality || "",
-    maritalStatus: user?.maritalStatus,
+    maritalStatus: user?.maritalStatus || "",
     hasDrivingLicence: user?.hasDrivingLicence || false,
     country: user?.country || {
       code: "",
@@ -40,7 +41,11 @@ const getDefaultUserData = (user: UserProfile) => {
   return defaultValues;
 };
 
-const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
+interface ProfileInfoFormProps {
+  user: UserProfile;
+  setData: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+}
+const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user, setData }) => {
   const {
     isLoading,
     error,
@@ -53,10 +58,12 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
     mode: "onChange",
     defaultValues: getDefaultUserData(user),
   });
+
   const {
     handleSubmit,
     formState: { isDirty, isValid },
     reset,
+    watch,
   } = formMethods;
 
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
@@ -71,7 +78,7 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
       state: formData.state?.code ? formData.state : null,
     };
     const newProfile = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
-    reset(getDefaultUserData(newProfile));
+    setData(newProfile);
     updateSession({
       photo: newProfile.avatar,
       firstName: newProfile.firstName,
@@ -139,7 +146,11 @@ const ProfileInfoForm: React.FC<{ user: UserProfile }> = ({ user }) => {
 const ProfileInfoPage = () => {
   const { data: session, status } = useSession();
   const sessionUser = session?.user;
-  const { data: user, loading } = useFetch<UserProfile>(
+  const {
+    data: user,
+    loading,
+    setData,
+  } = useFetch<UserProfile>(
     sessionUser?.id ? API_GET_SEEKER_BY_ID + sessionUser.id : null,
     {
       defaultLoading: true,
@@ -155,7 +166,7 @@ const ProfileInfoPage = () => {
     );
   if (status === "unauthenticated") return notFound();
 
-  return <ProfileInfoForm user={user as UserProfile} />;
+  return <ProfileInfoForm user={user as UserProfile} setData={setData} />;
 };
 
 export default ProfileInfoPage;

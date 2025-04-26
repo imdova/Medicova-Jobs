@@ -27,13 +27,14 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
         ? field.label?.replace("*", "")
         : field.name);
 
-  const value = controllerField?.value
-    ? dayjs(controllerField.value)
-    : null;
+  const value = controllerField?.value ? dayjs(controllerField.value) : null;
 
   const handleChange = (date: Dayjs | null) => {
     if (controllerField?.onChange) {
-      controllerField.onChange(date ? date.toISOString() : null);
+      const syntheticEvent = {
+        target: { value: date ? date.toISOString() : "" },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      controllerField.onChange(syntheticEvent);
     }
   };
 
