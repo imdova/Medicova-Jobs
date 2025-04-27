@@ -82,13 +82,13 @@ const languages = [
 
 const baseFields: FieldConfig[] = [
   {
-    name: "arabic",
+    name: "Arabic",
     label: "Arabic",
     type: "select",
     options: languageOptions,
   },
   {
-    name: "english",
+    name: "English",
     label: "English",
     type: "select",
     options: languageOptions,
@@ -131,10 +131,11 @@ const LanguageSection: React.FC<LanguageSectionProps> = ({ user, isMe }) => {
     reset();
   };
 
-  const handleUpdate = async (formData: { [key: string]: string }) => {
+  // TODO: fix languages
+  const handleUpdate = async (formData: any) => {
     const languages: LanguageProficiency[] = Object.keys(formData)
       .map((key) => ({
-        name: key,
+        name: key as LanguageProficiency["name"],
         proficiency: formData[key],
       }))
       .filter((lang) => lang.proficiency !== "");

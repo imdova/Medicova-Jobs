@@ -10,7 +10,7 @@ import { User } from "next-auth";
 // import useValidateUser from "@/hooks/useValidateUser";
 
 const HeaderSelector: React.FC<{ user?: User }> = ({ user }) => {
-  const pathname = usePathname();
+  const pathname = usePathname() || "/";
   const headerType = matchRoute(pathname)?.headerType || "minimal";
 
   const headerComponents = {

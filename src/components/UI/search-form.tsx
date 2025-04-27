@@ -10,6 +10,7 @@ import useFetch from "@/hooks/useFetch";
 import { Industry } from "@/types";
 import { API_GET_CATEGORIES } from "@/api/admin";
 import { useLocationData } from "@/hooks/useLocationData";
+import { API_FILTER_SEARCH_JOBS } from "@/api/employer";
 
 let timer: NodeJS.Timeout;
 function debounce<T extends (...args: string[]) => void>(
@@ -41,9 +42,42 @@ const SearchForm: React.FC<{
   fields = initialSearchFields,
   button = "Search my job",
 }) => {
+  const { data } = useFetch<JobsAggregations>(API_FILTER_SEARCH_JOBS);
   const { countries } = useLocationData();
-  const { data: categoriesData } =
+  const { data: categories } =
     useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
+
+  const filters: FilterType[] = [];
+
+  if (data?.country?.length) {
+    filters.push({
+      name: "Country",
+      multiple: true,
+      searchable: true,
+      sectionKey: "country",
+      items: data.country.map((item) => ({
+        label:
+          countries?.find((x) => x.isoCode === item.code)?.name || item.code, // You can map code to real country names if needed
+        count: item.count,
+        value: item.code,
+      })),
+    });
+  }
+
+  if (data?.category?.length) {
+    filters.push({
+      name: "Category",
+      multiple: true,
+      sectionKey: "ctg",
+      items: data.category.map((item) => ({
+        label:
+          categories?.data.find((x) => x.id === item.id)?.name ||
+          item.id.slice(0, 5), // same, ideally you map the id to real category name
+        count: item.count,
+        value: item.id,
+      })),
+    });
+  }
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -53,9 +87,8 @@ const SearchForm: React.FC<{
 
   const initialSearchText = searchParams.get("q") || "";
   const country = searchParams.get("country") || "";
-  const initialCategory = searchParams.get("ctg") || "";
+  const category = searchParams.get("ctg") || "";
   const [query, setQuery] = useState(initialSearchText);
-  const [category, setCategory] = useState(initialCategory);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -66,11 +99,6 @@ const SearchForm: React.FC<{
       newParams.delete("page");
     } else {
       newParams.delete("q");
-    }
-    if (category) {
-      newParams.set("ctg", category);
-    } else {
-      newParams.delete("ctg");
     }
     onClick?.();
     router.push(createUrl(newPathname, newParams));
@@ -84,6 +112,15 @@ const SearchForm: React.FC<{
     }
     router.push(createUrl(newPathname, newParams));
   }
+  function categoryChange(newCategory: string) {
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (newCategory) {
+      newParams.set("ctg", newCategory);
+    } else {
+      newParams.delete("ctg");
+    }
+    router.push(createUrl(newPathname, newParams));
+  }
 
   const onReset = () => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -92,7 +129,6 @@ const SearchForm: React.FC<{
     newParams.delete("country");
     newParams.delete("ctg");
     setQuery("");
-    setCategory("");
     router.push(createUrl(newPathname, newParams));
   };
 
@@ -141,17 +177,21 @@ const SearchForm: React.FC<{
                 className="h-full w-full justify-center border-b border-solid border-gray-300"
               >
                 <SearchableSelect
-                  options={countries.map((x) => ({
-                    icon: (
-                      <Flag
-                        code={x.isoCode.toLocaleLowerCase()}
-                        name={x.name}
-                        className="mr-2 inline"
-                      />
-                    ),
-                    label: x.name,
-                    value: x.isoCode,
-                  }))}
+                  options={
+                    filters
+                      ?.find((x) => x.name === "Country")
+                      ?.items.map((item) => ({
+                        icon: (
+                          <Flag
+                            code={item.value.toLocaleLowerCase()}
+                            name={item.label}
+                            className="mr-2 inline"
+                          />
+                        ),
+                        label: `${item.label} (${item.count})`,
+                        value: item.value,
+                      })) || []
+                  }
                   displayEmpty
                   value={country || ""}
                   onChange={(e) => countryChange(e.target.value)}
@@ -162,17 +202,17 @@ const SearchForm: React.FC<{
                       return <em className="text-gray-400">Select Country</em>;
                     }
                     const item = countries.find((x) => x.isoCode == selected);
-                    return (
-                      item && (
-                        <span>
-                          <Flag
-                            code={item.isoCode.toLocaleLowerCase()}
-                            name={item.name}
-                            className="mr-2 inline"
-                          />
-                          {item.name}
-                        </span>
-                      )
+                    return item ? (
+                      <span>
+                        <Flag
+                          code={item.isoCode.toLocaleLowerCase()}
+                          name={item.name}
+                          className="mr-2 inline"
+                        />
+                        {item.name}
+                      </span>
+                    ) : (
+                      selected
                     );
                   }}
                 />
@@ -191,25 +231,29 @@ const SearchForm: React.FC<{
                   className="border-none bg-transparent text-main focus:outline-none"
                   disableUnderline
                   value={category || ""}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => categoryChange(e.target.value)}
                   renderValue={(selected) => {
-                    const item = categoriesData?.data.find(
+                    const item = categories?.data.find(
                       (category) => category.id === selected,
                     );
                     if (!selected) {
                       return <em className="text-gray-400">Select Category</em>;
                     }
                     return (
-                      <span>{item ? item.name : selected.toString()}</span>
+                      <span>
+                        {item ? item.name : selected.toString()?.slice(0, 5)}{" "}
+                      </span>
                     );
                   }}
                   // defaultValue="Select-Category"
                 >
-                  {categoriesData?.data.map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
+                  {filters
+                    ?.find((x) => x.name === "Category")
+                    ?.items.map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </div>

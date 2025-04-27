@@ -11,9 +11,10 @@ import {
 interface DeleteConfirmationDialogProps {
   open: boolean;
   title: string;
-  message: string;
+  message?: string;
   onDelete: () => void;
   onClose: () => void;
+  loading?: boolean;
 }
 
 const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
@@ -22,6 +23,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   message,
   onDelete,
   onClose,
+  loading,
 }) => {
   return (
     <Dialog
@@ -33,7 +35,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         },
       }}
     >
-      <DialogTitle className="text-red-600" >{title}</DialogTitle>
+      <DialogTitle className="text-red-600">{title}</DialogTitle>
       <DialogContent>
         <p className="text-secondary">{message}</p>
       </DialogContent>
@@ -41,8 +43,8 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         <Button onClick={onClose} color="secondary" variant="outlined">
           No
         </Button>
-        <Button onClick={onDelete} color="error" variant="contained" >
-          Yes, Delete
+        <Button onClick={onDelete} color="error" variant="contained">
+        {loading ? "loading..." : "Yes Delete"}
         </Button>
       </DialogActions>
     </Dialog>

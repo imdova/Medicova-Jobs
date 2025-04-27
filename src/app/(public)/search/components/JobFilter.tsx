@@ -121,9 +121,9 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
   }
   if (data.employmentType?.length) {
     filters.push({
-      name: "Career Level",
+      name: "Employment Type", 
       multiple: true,
-      sectionKey: "clv",
+      sectionKey: "emp",
       items: data.employmentType.map((item) => ({
         label:
           employmentTypes?.data.find((x) => x.id === item.id)?.name ||

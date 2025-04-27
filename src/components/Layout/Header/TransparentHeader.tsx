@@ -5,6 +5,7 @@ import { getNavLinks } from "./routeConfigs";
 import HeaderAction from "./HeaderAction";
 import useScrollDetection from "@/hooks/useScrollDetection";
 import { isCurrentPage } from "@/util";
+import SideBarDrawer from "../SideBar/mobile-side-bar";
 
 const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
   const isScrolled = useScrollDetection();
@@ -15,12 +16,15 @@ const TransparentHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
     >
       <div className="container mx-auto px-6 lg:max-w-[1170px]">
         <div className="flex h-[70px] items-center">
+        <div className="flex-1 justify-start items-center flex md:hidden">
+            <SideBarDrawer user={user} pathname={pathname} />
+          </div>
           <Link href="/">
             <LogoIcon
               className={`${isScrolled ? "text-primary" : "text-white"} h-[30px] w-auto md:h-[40px]`}
             />
           </Link>
-          <nav className="ml-auto flex items-center space-x-8">
+          <nav className="ml-auto flex flex-1 items-center justify-end space-x-8 md:justify-end">
             <div className="hidden items-center space-x-8 md:flex">
               {links.map((link, i) => {
                 const path = link.pattern || link.path;

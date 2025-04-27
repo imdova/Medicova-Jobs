@@ -16,9 +16,9 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   handleCancel,
 }) => (
   <>
-    <DialogTitle className="border-b border-gray-200 text-lg font-bold">
-      <div className="flex items-start">
-        <div className="flex-1">
+    <DialogTitle className="border-b p-2 border-gray-200 text-lg font-bold">
+      <div className="flex items-start ">
+        <div className="flex-1 p-2">
           {title}
           {description && (
             <p className="mt-1 text-sm font-normal text-secondary">

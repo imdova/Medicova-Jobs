@@ -59,18 +59,34 @@ type UserProfile = {
   _version: number;
 
   /// TODO: need to add
-  isVerified: boolean;
-  isEmailVerified: boolean;
-  isVisible: boolean;
-  isImmediate: boolean;
+  // isVerified: boolean;
+  
+  // isEmailVerified: boolean;
+  
+  // isImmediate: boolean;
   isLocked: boolean;
 
   gender: string; // male | female
 };
 
+enum LanguageName {
+  Arabic = "Arabic",
+  English = "English",
+  French = "French",
+  German = "German",
+}
+
+enum LanguageProficiencyLevel {
+  Native = "Native",
+  Fluent = "Fluent",
+  Intermediate = "Intermediate",
+  Beginner = "Beginner",
+}
+
+
 type LanguageProficiency = {
-  name: string;
-  proficiency: string;
+  name: LanguageName;
+  proficiency: LanguageProficiencyLevel;
 };
 
 type JobApplicationData = {

@@ -285,12 +285,12 @@ function DataTable<T extends { id: number | string }>({
           </div>
         )}
       </TableContainer>
-      {total && (
+      {total ? (
         <CustomPagination
           fixedNumberPerPage={fixedNumberPerPage}
           totalItems={total}
         />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -67,23 +67,6 @@ const UpdateEmail: React.FC<{ user: User }> = ({ user }) => {
 
           {/* Right Section */}
           <div className="min-[250px] flex flex-1 flex-col">
-            {!user.isVerified && (
-              <div className="mb-2 flex items-center gap-1">
-                <p className="text-sm text-red-500">
-                  Your email address is not verified.
-                </p>
-                <Button
-                  variant="text"
-                  color="error"
-                  sx={{
-                    textTransform: "capitalize",
-                    fontWeight: "600",
-                  }}
-                >
-                  Verify Now
-                </Button>
-              </div>
-            )}
             <Controller
               name="email"
               control={control}

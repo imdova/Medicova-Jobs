@@ -26,7 +26,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   deleteButtonText,
   cancelButtonText,
   removeField,
-  mode
+  mode,
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -37,7 +37,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     preventDefault: open,
   });
 
-  const formMethods = useFormState(open, fields, initialValues,mode);
+  const formMethods = useFormState(open, fields, initialValues, mode);
   const {
     reset,
     setValue,
@@ -81,7 +81,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
         fullWidth
         sx={{
           "& .MuiDialog-paper": { borderRadius: "10px" },
-          "& .MuiPaper-root": { overflowX: "hidden" },
+          "& .MuiPaper-root": { overflowX: "hidden", margin: 0, width: "calc(100% - 32px)" },
         }}
       >
         <ModalHeader
@@ -90,7 +90,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
           error={error}
           handleCancel={handleCancel}
         />
-        <DialogContent className="p-0">
+        <DialogContent className="m-0 p-0">
           <FormContent
             fields={fields}
             onSubmit={onSubmit}

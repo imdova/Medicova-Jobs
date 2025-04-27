@@ -67,7 +67,7 @@ export interface registerData {
 
 export interface BaseHeaderProps {
   user?: User;
-  pathname?: string;
+  pathname: string;
 }
 
 export interface Notification {
