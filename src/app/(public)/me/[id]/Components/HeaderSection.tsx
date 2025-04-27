@@ -68,9 +68,10 @@ const HeaderSection: React.FC<{
         <div className="mr-5 flex-1">
           <h5 className="text-xl font-bold text-main">
             {formatName(user, true)}{" "}
-            {user.isVerified && (
+            {/* TODO: add it  */}
+            {/* {user.isVerified && (
               <Verified color="primary" className="ml-1 h-6 w-6" />
-            )}
+              )} */}
           </h5>
           <p className="text-sm text-secondary">{user.title}</p>
           <div>

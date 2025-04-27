@@ -42,10 +42,31 @@ const FilterSideBar: React.FC<FilterProps> = ({ sections }) => {
   };
 
   const selectedFilters = getSelectedFilters();
-
+  const filtersCounter = Object.values(selectedFilters).flat().length;
   return (
     <>
       <div className="hidden w-1/5 rounded-[10px] border border-gray-200 bg-white p-[20px] shadow-xl lg:block">
+        <div className="mb-4 flex flex-col border-b border-gray-300 pb-4">
+          <h2 className="text-lg text-main font-semibold">Filters</h2>
+          <div className="flex items-center justify-between space-x-4">
+            <span className="text-sm text-gray-500">
+              {filtersCounter} filters selected
+            </span>
+            {filtersCounter > 0 && (
+              <button
+                className="text-sm text-primary underline"
+                onClick={() => {
+                  const newParams = new URLSearchParams();
+                  router.push(createUrl(pathname, newParams), {
+                    scroll: false,
+                  });
+                }}
+              >
+                Clear all 
+              </button>
+            )}
+          </div>
+        </div>
         <div className="space-y-6">
           {sections.map((section, index) => (
             <FilterItem
@@ -64,11 +85,7 @@ const FilterSideBar: React.FC<FilterProps> = ({ sections }) => {
       >
         <FilterList className="h-8 w-8 text-white" />
       </button>
-      <FilterDrawer
-        isOpen={isOpen}
-        onClose={onClose}
-        sections={sections}
-      />
+      <FilterDrawer isOpen={isOpen} onClose={onClose} sections={sections} />
     </>
   );
 };

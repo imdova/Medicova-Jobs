@@ -154,6 +154,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "categoryId",
       type: "select",
       label: "Category*",
+      required: true,
       resetFields: ["specialityId", "careerLevelId"],
       onChange: (value) => setCategoryId(value),
       options: categories.map((category) => ({
@@ -165,6 +166,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "specialityId",
       type: "select",
       dependsOn: "categoryId",
+      required: true,
       label: "Specialty*",
       options: specialities.map((speciality) => ({
         value: speciality.id,
@@ -177,6 +179,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       type: "select",
       dependsOn: "categoryId",
       label: "Career Level*",
+      required: true,
       options: careerLevels.map((careerLevel) => ({
         value: careerLevel.id,
         label: careerLevel.name,

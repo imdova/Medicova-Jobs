@@ -13,7 +13,7 @@ import { User } from "next-auth";
 interface SideBarProps {
   user?: User;
   pathname: string;
-  isMinimal: boolean;
+  isMinimal?: boolean;
 }
 
 interface TabComponentProps {

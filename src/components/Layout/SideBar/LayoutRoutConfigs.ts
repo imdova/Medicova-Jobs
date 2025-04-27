@@ -1,4 +1,5 @@
 import { roleBasedSideBarLinks } from "@/constants/side-bar";
+import { NavItem } from "@/types";
 import { RoleState } from "@/types/next-auth";
 import { User } from "next-auth";
 
@@ -15,6 +16,7 @@ export const routeConfigs: RouteConfig[] = [
   // default
   { pattern: "/me/[id]", sideBarType: "full", linksType: "userType" },
   { pattern: "/co/[id]", sideBarType: "full", linksType: "userType" },
+  // { pattern: "/search", sideBarType: "none", linksType: "userType" },
 
   { pattern: "/chat", sideBarType: "minimal", linksType: "userType" },
   { pattern: "/notifications", sideBarType: "full", linksType: "userType" },
@@ -76,25 +78,17 @@ export const matchRoute = (pathname: string): RouteConfig | undefined => {
   return wildcardMatch;
 };
 
-export function getSideBarLinks(user?: User, pathname?: string) {
-  // TODO:
+export function getSideBarLinks(user?: User, pathname?: string): NavItem[] {
   const userType = user?.type as RoleState;
-  // const userType = "admin" as RoleState;
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
-    if (type === "userType" && userType) {
-      if (userType === "seeker") {
-        return roleBasedSideBarLinks.seeker;
-      } else if (userType === "employer") {
-        if (user?.companyName) {
-          return roleBasedSideBarLinks.employer;
-        } else {
-          return roleBasedSideBarLinks.unEmployee;
-        }
-      } else if (userType === "admin") {
-        return roleBasedSideBarLinks.admin;
-      }
+    if (type === "default") return roleBasedSideBarLinks.default;
+    if (userType === "seeker") return roleBasedSideBarLinks.seeker;
+    if (userType === "employer") {
+      if (user?.companyName) return roleBasedSideBarLinks.employer;
+      return roleBasedSideBarLinks.unEmployee;
     }
+    if (userType === "admin") return roleBasedSideBarLinks.admin;
   }
   return roleBasedSideBarLinks.default;
 }

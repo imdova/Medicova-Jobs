@@ -165,11 +165,11 @@ html,
     @apply mx-auto w-full;
 
     /* Custom max widths per breakpoint */
-    max-width: calc(100vw - 17px - 2rem); /* base */
+    max-width: calc(100vw - 2rem); /* base */
 
     /* // side bar + scrollbar + paddings and margins */
     @screen sm {
-      max-width: calc(640px - 17px - 2.5rem);
+      max-width: calc(640px - 2.5rem);
     }
     /* // side bar + scrollbar + paddings and margins */
     @screen md {

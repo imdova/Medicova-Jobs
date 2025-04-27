@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, DialogActions } from "@mui/material";
+import DeleteConfirmationDialog from "@/components/UI/DeleteConfirmationDialog";
 
 interface FormActionsProps {
   onCancel: () => void;
@@ -19,22 +20,39 @@ export const FormActions: React.FC<FormActionsProps> = ({
   submitButtonText = "Save",
   deleteButtonText = "Delete",
   cancelButtonText = "Cancel",
-}) => (
-  <DialogActions className="border-t border-gray-200">
-    <div className="flex w-full justify-between">
+}) => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const onDeleteOpen = () => setOpenDialog(true);
+  const onDeleteCancel = () => setOpenDialog(false);
+  return (
+    <>
+      <DialogActions className="border-t border-gray-200">
+        <div className="flex w-full justify-between">
+          {onDelete && (
+            <Button onClick={onDeleteOpen} variant="text" color="secondary">
+              {deleteButtonText}
+            </Button>
+          )}
+          <div className="flex flex-1 justify-end gap-2">
+            <Button onClick={onCancel} variant="text" color="secondary">
+              {cancelButtonText}
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              {loading ? "Loading..." : submitButtonText}
+            </Button>
+          </div>
+        </div>
+      </DialogActions>
       {onDelete && (
-        <Button onClick={onDelete} variant="text" color="secondary">
-          {deleteLoading ? "loading..." : deleteButtonText}
-        </Button>
+        <DeleteConfirmationDialog
+          open={openDialog}
+          title="Confirm Deletion"
+          loading={deleteLoading}
+          message={`Are you sure you want to ${deleteButtonText}? This action cannot be undone.`}
+          onDelete={onDelete}
+          onClose={onDeleteCancel}
+        />
       )}
-      <div className="flex flex-1 justify-end gap-2">
-        <Button onClick={onCancel} variant="text" color="secondary">
-          {cancelButtonText}
-        </Button>
-        <Button type="submit" color="primary" variant="contained">
-          {loading ? "Loading..." : submitButtonText}
-        </Button>
-      </div>
-    </div>
-  </DialogActions>
-);
+    </>
+  );
+};

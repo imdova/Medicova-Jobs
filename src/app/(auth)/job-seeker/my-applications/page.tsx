@@ -16,43 +16,48 @@ import {
 import ApplicationsResult from "./components/applicationsResult";
 import ApplicationsFilter from "./components/ApplicationsFilter";
 import { updateSearchParams } from "@/util/general";
-import { getApplications } from "@/lib/actions/applications.actions";
+import {
+  getApplications,
+  getApplicationStatusCount,
+} from "@/lib/actions/applications.actions";
+import { notFound } from "next/navigation";
 
-type ApplicationTap =
-  | "Review"
-  | "Viewed"
-  | "Shortlisted"
-  | "Interviewed"
-  | "Accepted"
-  | "Rejected"
-  | "Withdrawn";
+enum ApplicationStatus {
+  REVIEW = "Review",
+  VIEWED = "Viewed",
+  SHORTLISTED = "Shortlisted",
+  INTERVIEWED = "Interviewed",
+  ACCEPTED = "Accepted",
+  REJECTED = "Rejected",
+  WITHDRAWN = "Withdrawn",
+}
 
 const tabs: {
-  type: ApplicationTap;
+  type: ApplicationStatus;
   icon: React.ReactNode;
 }[] = [
   {
-    type: "Review",
+    type: ApplicationStatus.REVIEW,
     icon: <Eye className="h-5 w-5 text-blue-500" />,
   },
   {
-    type: "Viewed",
+    type: ApplicationStatus.VIEWED,
     icon: <CheckCircle className="h-5 w-5 text-indigo-500" />,
   },
   {
-    type: "Shortlisted",
+    type: ApplicationStatus.SHORTLISTED,
     icon: <Star className="h-5 w-5 text-yellow-500" />,
   },
   {
-    type: "Interviewed",
+    type: ApplicationStatus.INTERVIEWED,
     icon: <User className="h-5 w-5 text-purple-500" />,
   },
   {
-    type: "Accepted",
+    type: ApplicationStatus.ACCEPTED,
     icon: <ThumbsUp className="h-5 w-5 text-green-600" />,
   },
   {
-    type: "Rejected",
+    type: ApplicationStatus.REJECTED,
     icon: <ThumbsDown className="h-5 w-5 text-red-600" />,
   },
 ];
@@ -72,6 +77,8 @@ const page = async ({
   const data = await getServerSession(authOptions);
   const user = data?.user;
 
+  if (!user?.id) return notFound();
+
   const { data: applicationsData, success: applicantsSuccess } =
     await getApplications({
       seekerId: user?.id,
@@ -85,23 +92,15 @@ const page = async ({
     total: 0,
   };
 
-  // const result = await getJobsByCompanyId(
-  //     user?.companyId,
-  //     page,
-  //      100,
-  //   );
-  //   const { data: jobs, total } = result.data || { data: [], total: 0 };
-  //   const filteredJobsQuery = searchJobsByQuery(jobs, query);
-  //   const filteredJobsDate = filterItemsByDate(
-  //     filteredJobsQuery,
-  //     startDate,
-  //     endDate,
-  //   );
-  //   const tabJobs = filteredJobs(filteredJobsDate, activeTab);
+  const applicationStatusCounter = await getApplicationStatusCount(user?.id);
+  const sumApplicationStatus = (statusCounter: Record<string, number>) => {
+    return Object.values(statusCounter).reduce((sum, count) => sum + count, 0);
+  };
 
-  // TODO:  number of applications in each  tab
+  const allApplications = sumApplicationStatus(applicationStatusCounter?.data || {});
+
   return (
-    <div className="space-y-4 px-2 md:px-5">
+    <div className="space-y-4 px-4 md:px-5">
       <HeaderSection />
       <div className="flex items-center justify-between">
         <h6 className="text-xl font-medium">Applications History</h6>
@@ -119,7 +118,7 @@ const page = async ({
       </div>
       {/* <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5"> */}
 
-      <div className="max-w-[calc(100vw-40px)] overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
+      <div className="body-container m-0 overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
         <Tabs
           value={activeTab || "all"}
           aria-label="basic tabs example"
@@ -133,7 +132,7 @@ const page = async ({
             value={"all"}
             label={
               <div className="flex items-center gap-2">
-                <span>all ({total})</span>
+                <span>all ({allApplications})</span>
               </div>
             }
           />
@@ -146,7 +145,9 @@ const page = async ({
               label={
                 <div className="flex items-center gap-2">
                   <span>{tab.icon}</span>
-                  <span>{tab.type} (0)</span>
+                  <span>
+                    {tab.type} ({applicationStatusCounter?.data?.[tab.type]})
+                  </span>
                 </div>
               }
             />
@@ -154,7 +155,7 @@ const page = async ({
         </Tabs>
       </div>
       <ApplicationsResult applications={applications} />
-      {applications.length === 0 && !activeTab && (
+      {applications.length === 0 && !activeTab ? (
         <div className="flex min-h-64 w-full flex-col items-center justify-center gap-2 p-5">
           <h3 className="text-center text-xl font-semibold text-secondary">
             No applications found
@@ -166,7 +167,7 @@ const page = async ({
             Find Jobs
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

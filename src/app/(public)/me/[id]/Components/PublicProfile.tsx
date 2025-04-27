@@ -146,12 +146,12 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
       </div>
 
       {/* Centered Typography with Background */}
-      {!user.isImmediate && (
+      {/* {!user.isImmediate && (
         <p className="mt-1 rounded-base bg-primary-100 p-2 text-sm text-secondary">
           Let companies know you can start immediately by adding the Immediate
           start badge to your profile
         </p>
-      )}
+      )} */}
     </div>
   );
 };

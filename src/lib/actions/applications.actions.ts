@@ -1,6 +1,9 @@
 "use server";
 import { TAGS } from "@/api";
-import { API_CREATE_JOB_APPLICATION } from "@/api/employer";
+import {
+  API_CREATE_JOB_APPLICATION,
+  API_GET_JOB_APPLICATION_STATUS_COUNT_FOR_SEEKER,
+} from "@/api/employer";
 import {
   API_FILTER_SEARCH_SEEKERS,
   API_GET_SEEKERS,
@@ -85,6 +88,35 @@ export const getApplications = async ({
     return {
       success: true,
       message: "Job applications fetched successfully",
+      data: data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+export const getApplicationStatusCount = async (
+  seekerId: string,
+): Promise<Result<Record<ApplicationStatus, number>>> => {
+  try {
+    const response = await fetch(
+      `${API_GET_JOB_APPLICATION_STATUS_COUNT_FOR_SEEKER + seekerId}/status-count`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        credentials: "include",
+      },
+    );
+    if (!response.ok) return errorResult("fetching application status count");
+    const data = await response.json();
+    return {
+      success: true,
+      message: "Application status count fetched successfully",
       data: data,
     };
   } catch (error: any) {

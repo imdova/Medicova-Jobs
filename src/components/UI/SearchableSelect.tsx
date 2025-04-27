@@ -60,9 +60,6 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
       const filteredOptions = filterItems(options, searchTerm);
       if (filteredOptions.length > 0) {
         const firstOption = filteredOptions[0];
-        const event = {
-          target: { value: firstOption.value },
-        } as React.ChangeEvent<{ value: unknown }>;
 
         if (props.onChange) {
           const syntheticEvent = {

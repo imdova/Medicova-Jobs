@@ -7,7 +7,6 @@ import Carousel, { CompanyCard, SpecialtyCard } from "@/components/UI/Carousel";
 import { companies, jobs, specialists } from "@/constants";
 import BasicTabs from "@/components/UI/tabs";
 import Testimonials from "@/components/UI/testimonials";
-import MinJobCard from "@/components/UI/job-card-min";
 
 const countries = [
   { name: "Saudi Arabia", code: "SA" },
@@ -65,14 +64,14 @@ const HomePage = () => {
                   ICU Nurse
                 </Link>
                 <Link
-                  href="/search?q=Obsteric+Consultant&country=Saudi Arabia&cCd=SA"
+                  href="/search?q=Obsteric+Consultant&country=SA"
                   className="rounded-full border border-white px-4 py-2 text-sm text-primary-foreground transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white"
                 >
                   Obsteric Consultant Saudi Arabia
                 </Link>
 
                 <Link
-                  href="/search?q=Internal Medicine&country=Oman&cCd=om"
+                  href="/search?q=Internal Medicine&country=OM"
                   className="rounded-full border border-white px-4 py-2 text-sm text-primary-foreground transition-colors duration-300 hover:bg-white hover:text-primary focus:ring-2 focus:ring-white"
                 >
                   Internal Medicine Registrar Oman
