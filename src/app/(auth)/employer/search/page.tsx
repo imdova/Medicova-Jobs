@@ -1,10 +1,8 @@
-import Filter from "@/components/Layout/filter/filter";
 import CvResults from "./cv-results";
 import {
   getSeekersFilter,
   searchSeekers,
 } from "@/lib/actions/applications.actions";
-import { searchFilters } from "@/constants";
 import CustomPagination from "@/components/UI/CustomPagination";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -81,7 +79,7 @@ const page = async ({
   );
 };
 
-export const CvSearchFilter = async () => {
+const CvSearchFilter = async () => {
   const { data } = await getSeekersFilter();
   if (!data) return null;
 

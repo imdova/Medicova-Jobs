@@ -64,7 +64,7 @@ const SearchPage: React.FC = async ({
   );
 };
 
-export const JobSearchFilter = async () => {
+const JobSearchFilter = async () => {
   const { data } = await getJobFilters();
   if (!data) return null;
 
