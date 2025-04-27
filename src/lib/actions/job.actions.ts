@@ -7,6 +7,7 @@ import {
   API_SEARCH_JOBS,
   API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_JOB,
+  API_FILTER_SEARCH_JOBS,
 } from "@/api/employer";
 import { JobData, Result } from "@/types";
 import { JobSearchFilter, SearchResult } from "@/types/jobs";
@@ -192,6 +193,38 @@ export const getJobsByFilters = async (
         accept: "application/json",
       },
       next: { tags: [TAGS.jobs] },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        message: "Jobs list fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export const getJobFilters = async (): Promise<Result<JobsAggregations>> => {
+  try {
+    const response = await fetch(API_FILTER_SEARCH_JOBS, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
     });
 
     if (response.ok) {

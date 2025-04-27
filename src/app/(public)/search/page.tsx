@@ -1,5 +1,5 @@
 import JobsResult from "./jobsResult";
-import { getJobsByFilters } from "@/lib/actions/job.actions";
+import { getJobFilters, getJobsByFilters } from "@/lib/actions/job.actions";
 import CustomPagination from "@/components/UI/CustomPagination";
 import { filteredJobs } from "@/lib/auth/utils";
 import JobFilter from "./components/JobFilter";
@@ -33,16 +33,16 @@ const SearchPage: React.FC = async ({
   const [ageFrom, ageTo] = age?.split("_") || [];
   const result = await getJobsByFilters({
     q,
-    industryId: ind,
-    specialityId: sp,
-    categoryId: ctg,
-    careerLevelId: clv,
-    employmentTypeId: emp,
-    workPlace: wp,
-    gender: gen,
-    educationLevel: edu,
-    countryCode: country,
-    stateCode: state,
+    industryId: ind?.split(","),
+    specialityId: sp?.split(","),
+    categoryId: ctg?.split(","),
+    careerLevelId: clv?.split(","),
+    employmentTypeId: emp?.split(","),
+    workPlace: wp?.split(","),
+    gender: gen?.split(","),
+    educationLevel: edu?.split(","),
+    countryCode: country?.split(","),
+    stateCode: state?.split(","),
     salaryFrom: salaryFrom,
     salaryTo: salaryTo,
     ageFrom: ageFrom,
@@ -50,12 +50,10 @@ const SearchPage: React.FC = async ({
     page: parseInt(page || "1"),
     limit: parseInt(limit || "10"),
   });
-  if (!result.success || !result.data) return <h1>No jobs found</h1>;
-  const { data, total, breakdown } = result.data;
-  const jobs = filteredJobs(data, "active");
+  const { data: jobs, total } = result.data || { data: [], total: 0 };
   return (
     <main className="container mx-auto my-8 flex min-h-screen w-full flex-row p-2 lg:max-w-[1170px]">
-      <JobFilter breakdown={breakdown} />
+      <JobSearchFilter />
       <div className="w-full px-2 md:px-6 md:pl-9 lg:w-[80%]">
         <JobsResult jobs={jobs} total={total} />
         {total > 0 && total > jobs.length && (
@@ -64,6 +62,13 @@ const SearchPage: React.FC = async ({
       </div>
     </main>
   );
+};
+
+const JobSearchFilter = async () => {
+  const { data } = await getJobFilters();
+  if (!data) return null;
+
+  return <JobFilter data={data} />;
 };
 
 export default SearchPage;

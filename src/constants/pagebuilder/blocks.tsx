@@ -45,19 +45,9 @@ export const layoutBlocks: BlockButton[] = [
     label: "Container",
   },
   {
-    id: "grid",
-    icon: <Grid className="mr-2 h-4 w-4" />,
-    label: "Grid",
-  },
-  {
     id: "flex-row",
     icon: <Columns className="mr-2 h-4 w-4" />,
     label: "Flex Row",
-  },
-  {
-    id: "flex-column",
-    icon: <Columns className="mr-2 h-4 w-4 rotate-90" />,
-    label: "Flex Column",
   },
 ];
 export const getBlockProps = (

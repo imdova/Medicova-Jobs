@@ -2,39 +2,27 @@
 import {
   API_GET_CAREER_LEVELS,
   API_GET_CATEGORIES,
-  API_GET_EMPLOYMENT_TYPES,
-  API_GET_INDUSTRIES,
   API_GET_SPECIALITIES,
 } from "@/api/admin";
-import { API_GET_COUNTRIES } from "@/api/general";
 import Filter from "@/components/Layout/filter/filter";
-import { gendersOptions } from "@/constants";
-import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
+import { gendersOptions, nationalitiesOptions } from "@/constants";
+import { educationOptions } from "@/constants/job";
 import useFetch from "@/hooks/useFetch";
 import { useLocationData } from "@/hooks/useLocationData";
-import { Country, Industry } from "@/types";
-import { SearchBreakdown } from "@/types/jobs";
-import { breakdownToFilters } from "@/util/job/searchInJobs";
-
+import { Industry } from "@/types";
 type Result = PaginatedResponse<Industry>;
 
-interface JobSearchFilterProps {
-  breakdown: SearchBreakdown;
-}
-
-const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
+const SeekerFilter: React.FC<{ data: Aggregations }> = ({ data }) => {
   const { countries, states } = useLocationData();
-  const { data: industries } = useFetch<Result>(API_GET_INDUSTRIES);
   const { data: categories } = useFetch<Result>(API_GET_CATEGORIES);
   const { data: specialities } = useFetch<Result>(API_GET_SPECIALITIES);
   const { data: careerLevels } = useFetch<Result>(API_GET_CAREER_LEVELS);
-  const { data: employmentTypes } = useFetch<Result>(API_GET_EMPLOYMENT_TYPES);
 
   const filters: FilterType[] = [];
 
   if (data.country?.length) {
     filters.push({
-      name: "Country",
+      name: "Residency (Location)",
       multiple: true,
       searchable: true,
       sectionKey: "country",
@@ -61,20 +49,21 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
     });
   }
 
-  if (data.industry?.length) {
+  if (data.nationality?.length) {
     filters.push({
-      name: "Industry",
+      name: "Nationality",
       multiple: true,
-      sectionKey: "ind",
-      items: data.industry.map((item) => ({
+      sectionKey: "nat",
+      items: data.nationality.map((item) => ({
         label:
-          industries?.data.find((x) => x.id === item.id)?.name ||
-          item.id.slice(0, 5), // same, ideally you map the id to real category name
+          nationalitiesOptions.find((x) => item.name === x.value)?.label ||
+          item.name,
         count: item.count,
-        value: item.id,
+        value: item.name,
       })),
     });
   }
+
   if (data.category?.length) {
     filters.push({
       name: "Category",
@@ -92,8 +81,8 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
 
   if (data.speciality?.length) {
     filters.push({
-      name: "Main Speciality",
-      // multiple: true,
+      name: "Speciality",
+      multiple: true,
       sectionKey: "sp",
       items: data.speciality.map((item) => ({
         label:
@@ -119,20 +108,6 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
       })),
     });
   }
-  if (data.employmentType?.length) {
-    filters.push({
-      name: "Career Level",
-      multiple: true,
-      sectionKey: "clv",
-      items: data.employmentType.map((item) => ({
-        label:
-          employmentTypes?.data.find((x) => x.id === item.id)?.name ||
-          item.id.slice(0, 5), // same, ideally replace id with readable career level name
-        count: item.count,
-        value: item.id,
-      })),
-    });
-  }
 
   if (data.educationLevel?.length) {
     filters.push({
@@ -142,20 +117,6 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
       items: data.educationLevel.map((item) => ({
         label:
           educationOptions.find((x) => x.id === item.name)?.label || item.name,
-        count: item.count,
-        value: item.name,
-      })),
-    });
-  }
-  if (data.workPlace?.length) {
-    filters.push({
-      name: "work Place",
-      multiple: true,
-      sectionKey: "wp",
-      items: data.workPlace.map((item) => ({
-        label:
-          jobWorkPlaceOptions.find((x) => x.id === item.name)?.label ||
-          item.name,
         count: item.count,
         value: item.name,
       })),
@@ -177,11 +138,11 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
     });
   }
 
-  if (data.salaryRange?.length) {
+  if (data.experienceYears?.length) {
     filters.push({
-      name: "Salary Rang",
-      sectionKey: "sal",
-      items: data.salaryRange.map((item) => ({
+      name: "Years Of Experience",
+      sectionKey: "exp",
+      items: data.experienceYears.map((item) => ({
         label: `${item.from}-${item.to}`,
         count: item.count,
         value: `${item.from}-${item.to}`,
@@ -189,11 +150,11 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
     });
   }
 
-  if (data.ageRange?.length) {
+  if (data.age?.length) {
     filters.push({
       name: "Age",
       sectionKey: "age",
-      items: data.ageRange.map((item) => ({
+      items: data.age.map((item) => ({
         label: `${item.from}-${item.to}`,
         count: item.count,
         value: `${item.from}-${item.to}`,
@@ -203,4 +164,4 @@ const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
   return <Filter sections={filters} />;
 };
 
-export default JobFilter;
+export default SeekerFilter;

@@ -1,5 +1,5 @@
 // components/page-builder/BlockRenderer.tsx
-import { TextareaAutosize } from "@mui/material";
+import { Divider, TextareaAutosize } from "@mui/material";
 import Image from "next/image";
 import { BlockTextEditor } from "@/components/editor/editor";
 import Resize from "@/components/UI/Resize";
@@ -7,6 +7,10 @@ import { Block } from "@/types/blog";
 import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
 import { updateItem } from "@/util/blog";
+import { ResizableBox } from "react-resizable";
+import ImageResizer from "./ImageResizer";
+import YouTubePlayer from "../UI/youtube-video-player";
+import { Info } from "lucide-react";
 
 interface BlockRendererProps {
   block: Block;
@@ -87,34 +91,39 @@ export function BlockRenderer({
           className="w-full resize-none text-xl font-semibold tracking-tight focus:outline-none md:text-2xl"
         />
       );
+    case "text":
+      return (
+        <TextareaAutosize
+          minRows={1}
+          maxRows={10}
+          placeholder="Text"
+          style={styles}
+          value={block.content}
+          onChange={(e) => updateBlock(block, { content: e.target.value })}
+          className="w-full resize-none focus:outline-none"
+        />
+      );
 
     case "paragraph":
       return (
         <BlockTextEditor
           isSelected={isSelected}
-          value={block.content}
+          value={block.content || "<p> This Is My Paragraph </p>"}
           onChange={(content) => updateBlock(block, { content })}
         />
       );
+    case "divider":
+      return <Divider sx={styles} />;
 
     case "image":
       return (
-        <Resize
-          value={{ width, height }}
-          onChange={(styles) => updateBlockStyles(block.id, styles)}
-        >
-          <Image
-            src={
-              block.imageUrl ||
-              "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
-            }
-            alt="Content"
-            width={300}
-            height={300}
-            style={styles}
-            className="h-full w-full object-cover"
-          />
-        </Resize>
+        <ImageResizer
+          src={
+            block.imageUrl ||
+            "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
+          }
+          styles={styles}
+        />
       );
 
     case "button":
@@ -144,9 +153,16 @@ export function BlockRenderer({
             {(provided) => (
               <div
                 {...provided.droppableProps}
-                className={`${block.blocks.length === 0 ? "min-h-24 border border-gray-200 shadow-soft" : ""} h-full min-w-60 rounded-base`}
+                className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
                 ref={provided.innerRef}
               >
+                {block.blocks?.length === 0 && (
+                  <div className="flex items-center justify-center p-5">
+                    <span className="max-w-44 text-center text-2xl font-semibold text-gray-300">
+                      Add block to container
+                    </span>
+                  </div>
+                )}
                 {block.blocks?.map((block, index) => (
                   <DraggableBlock
                     key={block.id}
@@ -189,6 +205,57 @@ export function BlockRenderer({
         </Droppable>
       );
 
+    case "quote":
+      return (
+        <blockquote
+          style={styles}
+          className="border-l-4 border-gray-300 bg-gray-50 p-4 italic text-gray-600"
+        >
+          <TextareaAutosize
+            minRows={1}
+            maxRows={10}
+            placeholder="Quote"
+            value={block.content}
+            onChange={(e) => updateBlock(block, { content: e.target.value })}
+            className="w-full resize-none bg-transparent focus:outline-none"
+          />
+        </blockquote>
+      );
+
+    case "code":
+      return (
+        <pre
+          style={styles}
+          className="overflow-auto rounded bg-gray-800 p-4 text-sm text-white"
+        >
+          <TextareaAutosize
+            minRows={1}
+            maxRows={20}
+            placeholder="Insert your code here"
+            value={block.content}
+            onChange={(e) => updateBlock(block, { content: e.target.value })}
+            className="w-full resize-none bg-transparent text-white focus:outline-none"
+          />
+        </pre>
+      );
+
+    case "video":
+      return (
+        <div className="aspect-video h-auto max-h-[400px] w-full overflow-hidden">
+          {block.videoUrl ? (
+            <YouTubePlayer
+              videoUrl={block.videoUrl}
+              priority={true}
+              autoPlay={true}
+              thumbnailUrl={block.videoThumbnail}
+            />
+          ) : (
+            <div className="flex items-center justify-center bg-gray-500">
+              <Info /> <span>This Video isn&apos;t Available </span>
+            </div>
+          )}
+        </div>
+      );
     default:
       return null;
   }

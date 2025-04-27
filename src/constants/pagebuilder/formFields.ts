@@ -24,6 +24,27 @@ export const imageModal: BlockForm = {
     },
   ],
 };
+export const videoModal: BlockForm = {
+  title: "add Youtube Video Url ",
+  type: ["video"],
+  description: "Enter link of video url from youtube",
+  isModal: true,
+  fields: [
+    {
+      name: "videoUrl",
+      label: "Enter Your Video Url",
+      type: "text",
+      textFieldProps: { placeholder: "Video Url" },
+      required: true,
+    },
+    {
+      name: "videoThumbnail",
+      label: "Enter Your Thumbnail Url",
+      type: "text",
+      textFieldProps: { placeholder: "Thumbnail Url" },
+    },
+  ],
+};
 export const buttonModal: BlockForm = {
   title: "Add Button",
   type: ["button"],
@@ -67,7 +88,7 @@ export const htmlModal: BlockForm = {
   ],
 };
 export const normalModal: BlockForm = {
-  type: ["h1", "h2", "h3"],
+  type: ["h1", "h2", "h3","code","quote"],
   fields: [
     {
       name: "content",
@@ -89,6 +110,7 @@ export const paragraphData: BlockForm = {
 
 export const blocksForm: BlockForm[] = [
   imageModal,
+  videoModal,
   buttonModal,
   htmlModal,
   normalModal,

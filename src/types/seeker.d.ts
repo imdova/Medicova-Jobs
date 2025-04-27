@@ -63,6 +63,7 @@ type UserProfile = {
   isEmailVerified: boolean;
   isVisible: boolean;
   isImmediate: boolean;
+  isLocked: boolean;
 
   gender: string; // male | female
 };

@@ -22,6 +22,7 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   block,
 }) => {
   const isSelected = selectedBlock?.id === block.id;
+  console.log("🚀 ~ isSelected:", isSelected)
 
   const onAction = (block: Block, action: BlockAction) => {
     switch (action) {
@@ -43,13 +44,6 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
     }
   };
 
-  const groupsLevel = [
-    "group-hover/block-1:opacity-100",
-    "group-hover/block-2:opacity-100",
-    "group-hover/block-3:opacity-100",
-    "group-hover/block-4:opacity-100",
-    "group-hover/block-5:opacity-100",
-  ];
 
   return (
     <div
