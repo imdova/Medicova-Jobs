@@ -10,14 +10,13 @@ import FormModal from "@/components/form/FormModal/FormModal";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { nationalitiesOptions } from "@/constants";
 import useFetch from "@/hooks/useFetch";
+import { useLocationData } from "@/hooks/useLocationData";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
 import { FieldConfig, Industry } from "@/types";
 import { Edit } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface EditProfileProps {
   user: UserProfile;
@@ -46,21 +45,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
 
   // location selection
   const [countryCode, setCountryCode] = useState(user?.country?.code || "");
-
-  const { countries, states } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      dispatch(fetchCountries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-  useEffect(() => {
-    if (countryCode) {
-      dispatch(fetchStates(countryCode));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countryCode]);
+  const { countries, states } = useLocationData(countryCode);
 
   // categories and specialities
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -74,7 +59,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       ),
   );
   const { data: specialitiesData } = useFetch<PaginatedResponse<Industry>>(
-    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId : null,
+    categoryId
+      ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId + "&limit=200"
+      : null,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,
@@ -98,10 +85,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
   const handleUpdate = async (formData: Partial<UserProfile>) => {
     const { state: formState, country: formCountry } = formData;
     const country =
-      countries.data.find((country) => country.isoCode === formCountry?.code) ||
+      countries.find((country) => country.isoCode === formCountry?.code) ||
       null;
     const state =
-      states.data.find((state) => state.isoCode === formState?.code) || null;
+      states.find((state) => state.isoCode === formState?.code) || null;
 
     const body: Partial<UserProfile> = {
       id: user?.id,
@@ -114,22 +101,24 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
 
   const fields: FieldConfig<UserProfile>[] = [
     {
-      label: "First Name*",
+      label: "First Name",
       name: "firstName",
       type: "text",
       gridProps: { xs: 6 },
+      required: true,
     },
     {
-      label: "Last Name*",
+      label: "Last Name",
       name: "lastName",
       type: "text",
       gridProps: { xs: 6 },
+      required: true,
     },
     {
       name: "birthDate",
       type: "date",
-      label: "Date of Birth*",
       gridProps: { xs: 6 },
+      label: "Date of Birth",
       textFieldProps: {
         inputProps: {
           max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
@@ -140,20 +129,20 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     },
     {
       name: "nationality",
-      label: "Nationality*",
+      label: "Nationality",
       type: "search-select",
       options: nationalitiesOptions,
       gridProps: { xs: 6 },
     },
     {
       name: "title",
-      label: "Title*",
+      label: "Title",
       type: "text",
     },
     {
       name: "categoryId",
       type: "select",
-      label: "Category*",
+      label: "Category",
       required: true,
       resetFields: ["specialityId", "careerLevelId"],
       onChange: (value) => setCategoryId(value),
@@ -166,8 +155,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "specialityId",
       type: "select",
       dependsOn: "categoryId",
+      label: "Specialty",
       required: true,
-      label: "Specialty*",
       options: specialities.map((speciality) => ({
         value: speciality.id,
         label: speciality.name,
@@ -178,7 +167,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "careerLevelId",
       type: "select",
       dependsOn: "categoryId",
-      label: "Career Level*",
+      label: "Career Level",
       required: true,
       options: careerLevels.map((careerLevel) => ({
         value: careerLevel.id,
@@ -189,12 +178,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     {
       name: "country.code",
       type: "search-select",
-      label: "Country",
       resetFields: ["state.code", "city"],
-      textFieldProps: {
-        placeholder: "Select country",
-      },
-      options: countries.data.map((country) => ({
+      label: "Country",
+      options: countries.map((country) => ({
         value: country.isoCode,
         label: country.name,
       })),
@@ -204,12 +190,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     {
       name: "state.code",
       type: "search-select",
-      label: "State",
       dependsOn: "country.code",
-      textFieldProps: {
-        placeholder: "Select state",
-      },
-      options: states.data.map((state) => ({
+      label: "State",
+      options: states.map((state) => ({
         value: state.isoCode,
         label: state.name,
       })),
@@ -219,9 +202,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       name: "city",
       type: "text",
       label: "City",
-      textFieldProps: {
-        placeholder: "Enter City",
-      },
       gridProps: { xs: 12, md: 4 },
       rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
@@ -229,10 +209,19 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
     },
   ];
 
-  const open = () => setIsModalOpen(true);
+  const open = () => {
+    setIsModalOpen(true);
+    setCategoryId(
+      categories?.find((category) => category.id === user?.categoryId)?.id ||
+        null,
+    );
+    setCountryCode(user?.country?.code || "");
+  };
   const onClose = () => {
     setIsModalOpen(false);
     reset();
+    setCategoryId(null);
+    setCountryCode("");
   };
 
   async function handleSuccess(newProfile: UserProfile) {
@@ -243,6 +232,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       email: newProfile.email,
     });
   }
+
   return (
     <>
       {isMe && (
@@ -261,11 +251,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         {/* Edit Button */}
         {isMe && (
           <IconButton onClick={open}>
-            <Edit />
+            <Edit className="text-white" />
           </IconButton>
         )}
         {/* Share Button */}
-        <ShareMenu path={`/me/${user.userName}`} />
+        <ShareMenu className="text-white" path={`/me/${user.userName}`} />
       </div>
     </>
   );

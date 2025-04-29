@@ -57,20 +57,24 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
   const [jobSpecialities, setJobSpecialities] = useState<Industry[]>([]);
 
   const handleIndustrySelect = async (id: string) => {
-    const response = await fetch(
-      `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${id}`,
-    );
+    const response = await fetch(`${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${id}&limit=200`);
     const data = await response.json();
     setCategories(data.data);
   };
 
   const handleCategorySelect = async (id: string) => {
-    const specialtyResponse = await fetch( API_GET_SPECIALITIES_BY_CATEGORY + id);
-    const specialtyData = await specialtyResponse.json() as PaginatedResponse<Industry>
+    const specialtyResponse = await fetch(
+      API_GET_SPECIALITIES_BY_CATEGORY + id + "&limit=200",
+    );
+    const specialtyData =
+      (await specialtyResponse.json()) as PaginatedResponse<Industry>;
     setJobSpecialities(specialtyData.data);
-    
-    const careerLevelResponse = await fetch( `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${id}`);
-    const careerLevelData = await careerLevelResponse.json() as PaginatedResponse<Industry>
+
+    const careerLevelResponse = await fetch(
+      `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${id}&limit=200`,
+    );
+    const careerLevelData =
+      (await careerLevelResponse.json()) as PaginatedResponse<Industry>;
     setJobCareerLevels(careerLevelData.data);
   };
   const fields: FieldConfig<JobData>[] = [

@@ -12,7 +12,7 @@ export function cn(...inputs: Parameters<typeof clsx>) {
 }
 
 export function generateId(): string {
-  return Math.random().toString(36).substring(2, 9)
+  return Math.random().toString(36).substring(2, 9);
 }
 
 export const formatDate = (
@@ -56,9 +56,9 @@ export const getDuration = ({
   const years = Math.floor(durationInMonths / 12);
   const months = durationInMonths % 12;
   if (years === 0) {
-    return `${months} month`;
+    return months > 0 ? `(${months} month)` : "";
   }
-  return `${years} y ${months} m`;
+  return `(${years} y ${months} m)`;
 };
 export function formatName(
   {
@@ -214,12 +214,18 @@ export const formatEducationAndSpecialty = (job: JobData): string | null => {
   switch (education.id) {
     case EducationLevel.HIGH_SCHOOL:
       return `High School Diploma in ${job.jobSpeciality}`;
+    case EducationLevel.TECH_INSTITUE:
+      return `Technical Institute Diploma in ${job.jobSpeciality}`;
     case EducationLevel.BACHELORS:
       return `Bachelor's Degree in ${job.jobSpeciality}`;
+    case EducationLevel.DIPLOMA:
+      return `Diploma in ${job.jobSpeciality}`;
     case EducationLevel.MASTERS:
       return `Master's Degree in ${job.jobSpeciality}`;
-    case EducationLevel.PHD:
-      return `PhD in ${job.jobSpeciality}`;
+    case EducationLevel.DOCTORATE:
+      return `Doctorate in ${job.jobSpeciality}`;
+    case EducationLevel.FELLOWSHIP:
+      return `Fellowship in ${job.jobSpeciality}`;
     default:
       return null;
   }

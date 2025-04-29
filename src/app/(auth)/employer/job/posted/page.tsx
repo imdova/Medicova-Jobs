@@ -12,7 +12,7 @@ const PostJobPage = async () => {
     (employmentResult.success && employmentResult.data) || [];
   return (
     <div className="w-full px-4 md:px-5">
-      <PostJobForm industries={industries} employmentTypes={employmentTypes} />;
+      <PostJobForm industries={industries} employmentTypes={employmentTypes} />
     </div>
   );
 };

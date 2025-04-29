@@ -41,13 +41,24 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
       : field.label?.replace("*", ""));
   const className = field.textFieldProps?.className || "";
   return (
-    <FormControl fullWidth error={!!error}>
+    <FormControl
+      fullWidth
+      error={!!error}
+      className={`${field.textFieldProps?.label ? "mt-2" : ""}`}
+    >
       {field.textFieldProps?.label ? (
         <InputLabel className="bg-white px-1" id={String(field.name) + "Label"}>
           {field.textFieldProps.label}
         </InputLabel>
       ) : field.label ? (
-        <label className="mb-1 font-semibold">{field.label}</label>
+        <label className="mb-1 font-semibold">
+          {field.label?.replace("*", "")}
+          {field.required ? (
+            <span className="text-red-500">*</span>
+          ) : (
+            <span className="ml-1 text-sm text-gray-400">(Optional)</span>
+          )}
+        </label>
       ) : null}
       <Tooltip
         title={

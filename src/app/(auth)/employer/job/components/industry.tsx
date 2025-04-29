@@ -1,9 +1,11 @@
-import { API_GET_CAREER_LEVELS_BY_CATEGORY, API_GET_CATEGORIES_BY_INDUSTRY, API_GET_INDUSTRIES, API_GET_SPECIALITIES_BY_CATEGORY } from "@/api/admin";
-import useFetch from "@/hooks/useFetch";
 import {
-  Industry,
-  JobData,
-} from "@/types";
+  API_GET_CAREER_LEVELS_BY_CATEGORY,
+  API_GET_CATEGORIES_BY_INDUSTRY,
+  API_GET_INDUSTRIES,
+  API_GET_SPECIALITIES_BY_CATEGORY,
+} from "@/api/admin";
+import useFetch from "@/hooks/useFetch";
+import { Industry, JobData } from "@/types";
 import { FormControl, MenuItem, Select, Tooltip } from "@mui/material";
 import {
   Control,
@@ -18,9 +20,9 @@ interface IndustryFormProps {
   errors: FieldErrors<JobData>;
   watch: UseFormWatch<JobData>;
   setValue: UseFormSetValue<JobData>;
-  industries: Industry[]
-
+  industries: Industry[];
 }
+// TODO: enhancements, create a usable component  
 const IndustryForm: React.FC<IndustryFormProps> = ({
   control,
   errors,
@@ -31,20 +33,36 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
   const selectedJobIndustryId = watch("jobIndustryId");
   const selectedJobCategoryId = watch("jobCategoryId");
 
-
-  const { loading: categoriesLoading, data: categories } = useFetch<PaginatedResponse<Industry>>(selectedJobIndustryId && `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${selectedJobIndustryId}`, {
-    fetchOnce: false,
-    fetchOnUrlChange: true,
-  });
-  const { loading: careerLevelsLoading, data: jobCareerLevels } = useFetch<PaginatedResponse<Industry>>(selectedJobCategoryId && `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${selectedJobCategoryId}`, {
-    fetchOnce: false,
-    fetchOnUrlChange: true,
-  });
-  const { loading: specialtyLoading, data: jobSpecialities } = useFetch<PaginatedResponse<Industry>>(selectedJobCategoryId && API_GET_SPECIALITIES_BY_CATEGORY + selectedJobCategoryId, {
-    fetchOnce: false,
-    fetchOnUrlChange: true,
-  });
-
+  const { loading: categoriesLoading, data: categories } = useFetch<
+    PaginatedResponse<Industry>
+  >(
+    selectedJobIndustryId &&
+      `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${selectedJobIndustryId}&limit=200`,
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
+  );
+  const { loading: careerLevelsLoading, data: jobCareerLevels } = useFetch<
+    PaginatedResponse<Industry>
+  >(
+    selectedJobCategoryId &&
+      `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${selectedJobCategoryId}&limit=200`,
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
+  );
+  const { loading: specialtyLoading, data: jobSpecialities } = useFetch<
+    PaginatedResponse<Industry>
+  >(
+    selectedJobCategoryId &&
+      API_GET_SPECIALITIES_BY_CATEGORY + selectedJobCategoryId + "&limit=200",
+    {
+      fetchOnce: false,
+      fetchOnUrlChange: true,
+    },
+  );
 
   return (
     <div>
@@ -114,7 +132,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const category = categories?.data?.find((x) => x.id === id);
+                      const category = categories?.data?.find(
+                        (x) => x.id === id,
+                      );
                       setValue("jobSpecialityId", null);
                       setValue("jobCareerLevelId", null);
                       setValue("jobCategory", category?.name || "");
@@ -180,7 +200,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const specialty = jobSpecialities?.data?.find((x) => x.id === id);
+                      const specialty = jobSpecialities?.data?.find(
+                        (x) => x.id === id,
+                      );
                       setValue("jobSpeciality", specialty?.name || "");
                     }}
                     MenuProps={{
@@ -245,7 +267,9 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
                     onChange={(e) => {
                       const id = e.target.value;
                       field.onChange(id);
-                      const career = jobCareerLevels?.data?.find((x) => x.id === id);
+                      const career = jobCareerLevels?.data?.find(
+                        (x) => x.id === id,
+                      );
                       setValue("jobCareerLevel", career?.name || "");
                     }}
                     MenuProps={{

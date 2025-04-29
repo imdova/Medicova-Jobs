@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { Edit } from "@mui/icons-material";
 import OpenModalButton from "@/components/form/FormModal/buttons/openModalButton";
-import education from "@/components/icons/education.png";
 import CourseModal from "./Modals/course-modal";
 import { formatDate } from "@/util";
 
@@ -13,11 +12,11 @@ const CourseItem: React.FC<{ item: CertificationData; isMe: boolean }> = ({
   return (
     <div className="flex items-start gap-3 rounded-base border p-2">
       <Image
-        src={education}
+        src={"/images/certificate.svg"}
         alt="Experience"
-        width={70}
-        height={70}
-        className=""
+        width={60}
+        height={60}
+        className="rounded-full"
       />
       <div className="flex-1">
         <h6 className="text-lg font-semibold text-main">{item.title}</h6>
@@ -26,10 +25,10 @@ const CourseItem: React.FC<{ item: CertificationData; isMe: boolean }> = ({
         <p className="text-sm text-secondary">
           {formatDate(item.issueDate)} - {formatDate(item.completionDate)}{" "}
         </p>
-      </div>
       {item.description && (
-        <p className="mt-2 text-sm text-secondary">{item.description}</p>
+        <p className="mt-2 text-sm text-secondary"> <strong className="text-main text-sm">Description:- </strong> {item.description}</p>
       )}
+      </div>
       {isMe && (
         <OpenModalButton
           ModalComponent={CourseModal}

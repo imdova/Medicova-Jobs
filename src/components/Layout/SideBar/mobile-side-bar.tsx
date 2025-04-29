@@ -48,11 +48,11 @@ const SideBarDrawer: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
         onClose={onClose}
         sx={{
           "& .MuiDrawer-paper": {
-            borderRadius: "16px",
+            // borderRadius: "16px",
             padding: "1rem",
-            maxHeight: "calc(100dvh - 70px)",
+            // maxHeight: "calc(100dvh - 70px)",
             minWidth: "250px",
-            marginTop:"70px"
+            // marginTop:"70px"
           },
         }}
       >

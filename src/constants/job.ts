@@ -16,9 +16,12 @@ export const genderOptions = [
 ];
 export const educationOptions = [
   { id: EducationLevel.HIGH_SCHOOL, label: "High School" },
-  { id: EducationLevel.BACHELORS, label: "bachelors" },
+  { id: EducationLevel.TECH_INSTITUE, label: "Technical Institute" },
+  { id: EducationLevel.BACHELORS, label: "Bachelor's" },
+  { id: EducationLevel.DIPLOMA, label: "Diploma" },
   { id: EducationLevel.MASTERS, label: "Master's" },
-  { id: EducationLevel.PHD, label: "PHD" },
+  { id: EducationLevel.DOCTORATE, label: "Doctorate" },
+  { id: EducationLevel.FELLOWSHIP, label: "Fellowship" },
 ];
 
 export const currencyOptions = [

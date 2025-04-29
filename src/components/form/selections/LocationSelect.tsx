@@ -1,23 +1,32 @@
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { useLocationData } from "@/hooks/useLocationData";
-import { FieldConfig } from "@/types";
+import { Country, FieldConfig, State } from "@/types";
 import { Grid } from "@mui/material";
-import { UseFormReturn } from "react-hook-form";
+import { Path, PathValue, UseFormReturn } from "react-hook-form";
 
-interface LocationSectionProps {
-  formMethods: UseFormReturn<Partial<UserProfile>>;
+interface LocationItems {
+  country: LocationItem | null;
+  state: LocationItem | null;
+  city: string | null;
 }
-const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
+
+interface LocationSectionProps<T extends Partial<LocationItems>> {
+  formMethods: UseFormReturn<T>;
+}
+
+function LocationSelect<T extends Partial<LocationItems>>({
+  formMethods,
+}: LocationSectionProps<T>) {
   const { control, getValues, setValue, watch } = formMethods;
-  const country = watch("country");
+  const country = getValues("country" as Path<T>) as unknown as LocationItem | null;
   const { countries, states } = useLocationData(country?.code);
 
-  const locationFields: FieldConfig<UserProfile>[] = [
+  const locationFields: FieldConfig<T>[] = [
     {
-      name: "country.code",
+      name: "country.code" as Path<T>,
       type: "search-select",
       label: "Country",
-      resetFields: ["state.code", "city"],
+      resetFields: ["state.code", "city"] as Path<T>[],
       textFieldProps: {
         placeholder: "Select country",
       },
@@ -27,23 +36,23 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       })),
       onChange: (value) =>
         setValue(
-          "country.name",
-          countries.find((country) => country.isoCode === value)?.name || "",
+          "country.name" as Path<T>,
+          (countries.find((c) => c.isoCode === value)?.name || "") as any,
         ),
       gridProps: { xs: 6, md: 4 },
     },
     {
-      name: "state.code",
+      name: "state.code" as Path<T>,
       type: "search-select",
       label: "State",
-      dependsOn: "country.code",
+      dependsOn: "country.code" as Path<T>,
       textFieldProps: {
         placeholder: "Select state",
       },
       onChange: (value) =>
         setValue(
-          "state.name",
-          states.find((state) => state.isoCode === value)?.name || "",
+          "state.name" as Path<T>,
+          (states.find((s) => s.isoCode === value)?.name || "") as any,
         ),
       options: states.map((state) => ({
         value: state.isoCode,
@@ -52,7 +61,7 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       gridProps: { xs: 6, md: 4 },
     },
     {
-      name: "city",
+      name: "city" as Path<T>,
       type: "text",
       label: "City",
       textFieldProps: {
@@ -69,11 +78,11 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
     fieldNames.forEach((name) => {
       const field = locationFields.find((f) => f.name === name);
       if (field) {
-        const defaultValue = field.type === "checkbox" ? false : "";
-        setValue(field.name, defaultValue, { shouldDirty: true });
+        setValue(field.name, "" as PathValue<T, Path<T>>, { shouldDirty: true });
       }
     });
   };
+
   return (
     <div className="w-full">
       <Grid container spacing={1}>
@@ -89,12 +98,9 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
               field={field}
               control={control}
               formValues={getValues()}
-              // hidden={hiddenFields.includes(String(field.name))}
-              // onCheckboxChange={onCheckboxChange(field)}
               dependsOnField={locationFields.find(
                 (f) => f.name === field.dependsOn,
               )}
-              // removeField={removeField}
               resetValues={resetValues}
             />
           </Grid>
@@ -102,6 +108,6 @@ const LocationSelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
       </Grid>
     </div>
   );
-};
+}
 
 export default LocationSelect;

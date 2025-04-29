@@ -156,7 +156,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({
           handleUserDecision(false);
         }}
       />
-      <div className="rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+      <div className="rounded-base border border-gray-200 bg-white p-4 shadow-soft">
         <h1 className="text-center text-xl font-semibold tracking-tight text-main focus:outline-none md:text-2xl">
           Post Job Now
         </h1>

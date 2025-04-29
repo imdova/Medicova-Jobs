@@ -12,7 +12,7 @@ import {
 import TextEditor from "@/components/editor/editor";
 import { EmploymentType, Industry, JobData } from "@/types";
 import { Controller, useForm } from "react-hook-form";
-import { Add, Remove } from "@mui/icons-material";
+import { Add, Female, Male, Remove } from "@mui/icons-material";
 import IndustryForm from "../industry";
 import MultiTextInput from "@/components/form/MultiTextInput";
 import {
@@ -27,6 +27,17 @@ import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import JobLocationSelection from "@/components/pages/post-job/locationSelection";
+import { Gender } from "@/constants/enums/gender.enum";
+
+const genderIcons: Record<keyof typeof Gender, React.ReactNode> = {
+  MALE: (
+    <Male className="h-7 w-7 text-blue-500 group-aria-selected:text-white" />
+  ),
+  FEMALE: (
+    <Female className="h-7 w-7 text-pink-500 group-aria-selected:text-white" />
+  ),
+  ANY: null,
+};
 
 interface JobDetailProps {
   jobData: JobData;
@@ -48,6 +59,10 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
   initialJobData,
   isDirty: initialIsDirty,
 }) => {
+  const formMethods = useForm({
+    values: jobData,
+    defaultValues: initialJobData,
+  });
   const {
     control,
     handleSubmit,
@@ -55,10 +70,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
     watch,
     setValue,
     reset,
-  } = useForm({
-    values: jobData,
-    defaultValues: initialJobData,
-  });
+  } = formMethods;
 
   const { isLeaving, handleUserDecision } = useIsLeaving({
     preventDefault: isDirty,
@@ -102,7 +114,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         onKeyDown={disableEnterKey}
         noValidate
       >
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+        <div className="mb-4 rounded-base border border-gray-200 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Job Details
           </h5>
@@ -332,7 +344,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                 name="jobWorkPlace"
                 control={control}
                 defaultValue={null}
-                rules={{ required: "industry is required" }}
+                rules={{ required: "Work Place is required" }}
                 render={({ field }) => (
                   <FormControl
                     component="fieldset"
@@ -363,11 +375,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             </div>
           </div>
           <div className="flex flex-wrap gap-2 md:flex-nowrap">
-            <JobLocationSelection
-              control={control}
-              setValue={setValue}
-              watch={watch}
-            />
+            <JobLocationSelection formMethods={formMethods} />
             <div className="mb-6 md:w-1/2 md:pr-3">
               <label className="mb-1 text-lg font-semibold text-main">
                 Gender *
@@ -391,6 +399,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                           onClick={() => field.onChange(item.id)}
                           className={`h-[42px] rounded-base border px-2 font-normal focus:outline-offset-2 focus:outline-light-primary ${errors?.gender ? "border-red-500 !text-red-500" : "border-neutral-300"} ${field.value === item.id ? "bg-primary text-white" : "text-neutral-500 hover:border-black hover:text-secondary"} `}
                         >
+                          {genderIcons[item.id as keyof typeof Gender]}
                           {item.label}
                         </button>
                       ))}
@@ -409,7 +418,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         </div>
 
         {/* Job Details */}
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+        <div className="mb-4 rounded-base border border-gray-200 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Experience & Salary Details
           </h5>
@@ -686,7 +695,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
               <Controller
                 name="availableVacancies"
                 control={control}
-                defaultValue={0}
+                defaultValue={1}
                 rules={{
                   required: "Vacancy is required",
                   min: {
@@ -705,7 +714,9 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                         variant="outlined"
                         className="h-[42px] w-[42px]"
                         color={errors?.availableVacancies ? "error" : "primary"}
-                        onClick={() => field.onChange((field.value || 0) - 1)}
+                        onClick={() =>
+                          field.onChange((Number(field.value) || 2) - 1)
+                        }
                         disabled={!field.value || field.value <= 1} // Disable the minus button when count is 1
                       >
                         <Remove />
@@ -713,7 +724,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                       <TextField
                         {...field}
                         name="Number of Vacancies"
-                        className="h-14 w-16"
+                        className="h-14 w-20"
                         type="number"
                         placeholder="Num of Vacancies"
                         error={!!errors?.availableVacancies?.message}
@@ -723,7 +734,9 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
                         variant="outlined"
                         className="h-[42px] w-[42px]"
                         color={errors?.availableVacancies ? "error" : "primary"}
-                        onClick={() => field.onChange((field.value || 0) + 1)}
+                        onClick={() =>
+                          field.onChange((Number(field.value) || 0) + 1)
+                        }
                       >
                         <Add />
                       </Button>
@@ -777,7 +790,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             </div>
           </div>
         </div>
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+        <div className="mb-4 rounded-base border border-gray-200 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             About The Job
           </h5>
@@ -806,7 +819,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             />
           </div>
         </div>
-        <div className="mb-4 rounded-base border border-gray-100 bg-white p-4 shadow-soft">
+        <div className="mb-4 rounded-base border border-gray-200 bg-white p-4 shadow-soft">
           <h5 className="mb-12 mt-4 text-center text-3xl font-bold text-main">
             Skills & Keywords
           </h5>
@@ -847,7 +860,7 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
         </div>
 
         {/* Navigation Buttons */}
-        <div className="space-between flex gap-2 rounded-base border border-gray-100 bg-white p-4 shadow-soft md:justify-end">
+        <div className="space-between flex gap-2 rounded-base border border-gray-200 bg-white p-4 shadow-soft md:justify-end">
           {/* <Button variant="outlined" >Back</Button> */}
           <Button
             onClick={() => onDraftSubmit()}
@@ -860,7 +873,6 @@ const JobDetailsStep: React.FC<JobDetailProps> = ({
             next
           </Button>
         </div>
-        {/* //////////////////////// */}
       </form>
     </>
   );

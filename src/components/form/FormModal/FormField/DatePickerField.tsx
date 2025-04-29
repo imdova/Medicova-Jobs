@@ -39,10 +39,17 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
+    <div
+      className={`${field.textFieldProps?.label ? "mt-2" : ""} flex flex-col`}
+    >
       {field.label && (
         <label htmlFor={String(field.name)} className="mb-1 font-semibold">
-          {field.label}
+          {field.label?.replace("*", "")}
+          {field.required ? (
+            <span className="text-red-500">*</span>
+          ) : (
+            <span className="text-gray-400 text-sm ml-1">(Optional)</span>
+          )}
         </label>
       )}
       <LocalizationProvider dateAdapter={AdapterDayjs}>

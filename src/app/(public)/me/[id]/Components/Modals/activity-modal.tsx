@@ -40,7 +40,7 @@ const ActivityModal = ({
     {
       name: "title",
       type: "text",
-      label: "Activity Title*",
+      label: "Activity Title",
       textFieldProps: {
         placeholder: "Enter the title of the course",
       },
@@ -49,7 +49,7 @@ const ActivityModal = ({
     {
       name: "provider",
       type: "text",
-      label: "Provider*",
+      label: "Provider",
       textFieldProps: {
         placeholder: "Enter the name of the provider",
       },
@@ -59,7 +59,7 @@ const ActivityModal = ({
     {
       name: "issueDate",
       type: "date",
-      label: "Issue Date*",
+      label: "Issue Date",
       gridProps: { xs: 12, sm: 6 },
       textFieldProps: {
         placeholder: "Select the issue date",
@@ -69,10 +69,18 @@ const ActivityModal = ({
     {
       name: "completionDate",
       type: "date",
-      label: "Completion Date*",
+      label: "Completion Date",
       gridProps: { xs: 12, sm: 6 },
       textFieldProps: {
         placeholder: "Select the completion date",
+      },
+      rules: {
+        validate: (value, allValues) =>
+          !value ||
+          !allValues?.issueDate ||
+          new Date(value) > new Date(allValues.issueDate)
+            ? true
+            : "Completion date must be after issue date",
       },
       required: true,
     },
