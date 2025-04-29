@@ -9,11 +9,12 @@ import Link from "next/link";
 import { jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
 import Avatar from "./Avatar";
-interface JobCardProps {
-  job: JobData;
+
+interface Props {
+  item: JobData;
   className?: string;
 }
-const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
+const MinJobCard: React.FC<Props> = ({ item: job, className }) => {
   const workPlace =
     jobWorkPlaceOptions.find((x) => x.id === job?.jobWorkPlace)?.label || "";
   const education = formatEducationAndSpecialty(job);
@@ -25,13 +26,15 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
       <div className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm">
         <Link
           href={`/job/${job.id}`}
-          className="my-1 mb-2 text-left text-sm font-semibold text-main md:text-sm hover:underline">
+          className="my-1 mb-2 text-left text-sm font-semibold text-main hover:underline md:text-sm"
+        >
           {job.title}{" "}
         </Link>
         {job.draft ? (
           <Link
             href={`/employer/job/posted/${job.id}`}
-            className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black hover:underline">
+            className="rounded-2xl bg-orange-300 px-2 py-1 text-xs text-black hover:underline"
+          >
             Draft
           </Link>
         ) : (
@@ -45,7 +48,7 @@ const MinJobCard: React.FC<JobCardProps> = ({ job, className }) => {
             alt={job.title}
             size={45}
             shape="square"
-            className="border border-transparent hover:border-primary "
+            className="border border-transparent hover:border-primary"
           />
         </Link>
         <div className="flex flex-wrap gap-2 text-secondary">

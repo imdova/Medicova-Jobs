@@ -45,7 +45,7 @@ const HeaderSection: React.FC<{
   const age = user.birthDate ? calculateAge(new Date(user.birthDate)) : "";
   const nationality = getOptionLabel(nationalitiesOptions, user.nationality);
   return (
-    <div className="overflow-hidden rounded-base border border-gray-100 bg-[url('/images/search-background.jpg')] bg-cover bg-center">
+    <div className="overflow-hidden rounded-[12px] bg-[url('/images/search-background.jpg')] bg-cover bg-center">
       <div className="flex h-fit min-h-[160px] w-full flex-col items-center gap-8 bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-5 shadow-soft lg:flex-row">
         {isMe ? (
           <ProfileImage

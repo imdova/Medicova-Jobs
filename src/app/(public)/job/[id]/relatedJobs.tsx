@@ -25,7 +25,7 @@ const RelatedJobs: React.FC<{ job: JobData }> = ({ job }) => {
           <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
             {/* card  */}
             {filteredJobs(jobs?.data || [], "active").map((job, i) => (
-              <MinJobCard job={job} key={i} />
+              <MinJobCard item={job} key={i} />
             ))}
           </div>
           <div className="mt-8 flex justify-center">

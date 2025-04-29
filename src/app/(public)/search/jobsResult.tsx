@@ -69,7 +69,7 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
       ) : (
         <div className="mb-8 grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-3">
           {jobs.map((job) => (
-            <MinJobCard key={job.id} job={job} />
+            <MinJobCard key={job.id} item={job} />
           ))}
         </div>
       )}

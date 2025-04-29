@@ -1,14 +1,10 @@
-import MinJobCard from "@/components/UI/job-card-min";
-import { Button } from "@mui/material";
 import { Company } from "@/types";
 import { filteredJobs } from "@/lib/auth/utils";
 import { getJobsByCompanyId } from "@/lib/actions/job.actions";
 import AddNewJobButton from "./Modals/addNewJobButton";
-import Link from "next/link";
 import React from "react";
 import { Add } from "@mui/icons-material";
-
-const INITIAL_VISIBLE_ITEMS = 4;
+import JobView from "./JobView";
 
 interface CompanyJobsProps {
   company: Company;
@@ -23,16 +19,14 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
     return null;
   }
 
-  const filJobs = filteredJobs(jobs, isEmployee ? "all" : "active");
-  const showMore = filJobs.length > INITIAL_VISIBLE_ITEMS;
-  const remainingJobs = filJobs.length - INITIAL_VISIBLE_ITEMS;
   return (
-    <React.Fragment >
+    <React.Fragment>
       {/* Title */}
       <div className="flex items-center justify-between rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
         <h3 className="text-xl font-semibold text-main">Latest jobs:</h3>
         {isEmployee && (
-          <AddNewJobButton company={company}
+          <AddNewJobButton
+            company={company}
             className="rounded border border-solid border-gray-200 p-2"
             title="Create Job Now"
           >
@@ -41,35 +35,11 @@ const CompanyJobs = async ({ company, isEmployee }: CompanyJobsProps) => {
         )}
       </div>
       {/* Loop through MinJobCard 8 times */}
-      {filJobs.length > 0 ? (
-        <div
-          className={` grid ${filJobs.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}
-        >
-          {/* card  */}
-          {filJobs.slice(0, INITIAL_VISIBLE_ITEMS).map((job, i) => (
-            <MinJobCard key={i} job={job} />
-          ))}
-        </div>
-      ) : isEmployee ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-base border border-gray-200 bg-white p-5 shadow-lg">
-          <h6 className="text-2xl font-semibold text-secondary">
-            You haven&apos;t posted any jobs yet.
-          </h6>
-          <AddNewJobButton company={company}
-            variant="contained"
-            btnVariant="button"
-          >
-            Post Job Now
-          </AddNewJobButton>
-        </div>
-      ) : null}
-      {showMore && (
-        <div className="flex items-center justify-center rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-          <Button LinkComponent={Link} href="/employer/job/manage-jobs" className="mt-2 p-0" variant="text">
-            Show {remainingJobs} more Jobs
-          </Button>
-        </div>
-      )}
+      <JobView
+        company={company}
+        isEmployee={isEmployee}
+        jobs={filteredJobs(jobs, isEmployee ? "all" : "active")}
+      />
     </React.Fragment>
   );
 };
