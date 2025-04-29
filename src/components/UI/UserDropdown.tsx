@@ -17,7 +17,6 @@ import {
   SettingsOutlined,
   PersonOutlined,
 } from "@mui/icons-material";
-import Image from "next/image";
 import Avatar from "./Avatar";
 import { User } from "next-auth";
 

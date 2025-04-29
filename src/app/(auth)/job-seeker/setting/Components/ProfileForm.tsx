@@ -6,7 +6,6 @@ import { FieldConfig, Option } from "@/types";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
 import { Female, Male } from "@mui/icons-material";
-import LocationSelect from "./LocationSelect";
 import CategorySelect from "./CategorySelect";
 import {
   gendersOptions,
@@ -14,6 +13,7 @@ import {
   nationalitiesOptions,
 } from "@/constants";
 import { Gender } from "@/constants/enums/gender.enum";
+import LocationSelect from "@/components/form/selections/LocationSelect";
 
 interface ProfileFormProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;

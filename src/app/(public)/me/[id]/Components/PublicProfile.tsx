@@ -87,9 +87,7 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
       </h3>
 
       <div className="flex items-center justify-between">
-        <label className=" font-semibold text-main">
-          Public Profile
-        </label>
+        <label className="font-semibold text-main">Public Profile</label>
         <Switch
           color="primary"
           checked={user.isPublic}
@@ -104,7 +102,8 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
           <div>
             <p className="text-sm text-secondary">Public profile link:</p>
             <Link
-              href={`${domain}/me/${user.userName}`}
+              target="_blank"
+              href={`https://www.medicova.net/me/${user.userName}?public=true`}
               className="text-sm text-primary underline"
             >
               me/{user.userName}
@@ -119,9 +118,7 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
         </div>
       )}
       <div className="flex items-center justify-between">
-        <label className=" font-semibold text-main">
-          Profile Visibility
-        </label>
+        <label className="font-semibold text-main">Profile Visibility</label>
         <Switch
           color="primary"
           // checked={user.isVisible ?? false}

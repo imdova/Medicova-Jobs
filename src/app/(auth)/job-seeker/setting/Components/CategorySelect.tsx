@@ -18,7 +18,7 @@ const CategorySelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
   const { data: categoriesData } =
     useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
   const { data: specialitiesData } = useFetch<PaginatedResponse<Industry>>(
-    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId : null,
+    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId +"&limit=200" : null,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,

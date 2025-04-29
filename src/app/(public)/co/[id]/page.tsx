@@ -11,12 +11,19 @@ import PostYourFirstJob from "./Components/postFirstJob";
 import EmployerSocialMedia from "./Components/EmployerSocialMedia";
 import EmployerComplete from "./Components/EmployerComplete";
 
-const Page = async ({ params: { id } }: { params: { id: string } }) => {
+const Page = async ({
+  params: { id },
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) => {
+  const isPublic = searchParams?.public;
   const data = await getServerSession(authOptions);
   const { success, data: company } = await getCompanyByUserName(id);
   if (!success || !company) return notFound();
   const user = data?.user;
-  const isEmployee = company.id === user?.companyId;
+  const isEmployee = isPublic ? false : company.id === user?.companyId;
   return (
     <div className="w-full px-4 md:px-5">
       <div className="flex gap-5">

@@ -17,8 +17,8 @@ const ExperienceItem: React.FC<{ item: ExperienceData; isMe: boolean }> = ({
     endDate: item.isPresent ? undefined : item.endDate,
   });
   return (
-    <div className="flex items-start gap-3 rounded-base border-gray-200 border p-2">
-      <Image src={experiencesImage} alt="Experience" width={50} height={50} />
+    <div className="flex items-start gap-3 rounded-base border border-gray-200 p-2">
+      <Image src={experiencesImage} alt="Experience" width={60} height={60} />
       <div className="flex-1">
         <div className="flex items-center justify-between">
           <h6 className="font-semibold leading-tight text-main">{item.name}</h6>
@@ -47,7 +47,7 @@ const ExperienceItem: React.FC<{ item: ExperienceData; isMe: boolean }> = ({
                 month: true,
                 day: false,
               })}{" "}
-          ({duration})
+          {duration}
         </p>
         <div className="flex text-sm text-secondary">
           <LocationOnOutlined className="-ml-1 text-base" />

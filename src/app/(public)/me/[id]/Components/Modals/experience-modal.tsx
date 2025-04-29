@@ -97,7 +97,7 @@ const ExperienceModal = ({
     {
       name: "title",
       type: "text",
-      label: "Job Title*",
+      label: "Job Title",
       textFieldProps: { placeholder: "Enter Job Title" },
       required: true,
     },
@@ -105,14 +105,14 @@ const ExperienceModal = ({
       name: "name",
       type: "text",
       required: true,
-      label: "Company | Organization*",
+      label: "Company | Organization",
       textFieldProps: { placeholder: "Enter Company" },
     },
     {
       name: "startYear",
       type: "search-select",
-      label: "Start Year*",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Start Year",
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "Start Year" },
       options: years.map((year) => ({
         value: year.toString(),
@@ -122,39 +122,59 @@ const ExperienceModal = ({
     },
     {
       name: "startMonth",
-      label: "Start Month*",
+      label: "Start Month",
       type: "search-select",
-      gridProps: { xs: 12, sm: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "Start Month" },
       options: months.map((month) => ({
         value: month.number,
         label: month.full,
       })),
+
       required: true,
     },
     {
       // TODO: add Validations for the year and month
       name: "endYear",
-      label: "End Year*",
+      label: "End Year",
       type: "search-select",
-      gridProps: { xs: 12, sm: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "End Year" },
       options: years.map((year) => ({
         value: year.toString(),
         label: year.toString(),
       })),
-      required: true,
+      rules: {
+        validate: (value, formValues) => {
+          const allValues = formValues as OptExperienceData;
+          return !value ||
+            !allValues?.startYear ||
+            Number(value) >= Number(allValues.startYear)
+            ? true
+            : "End Year must be after start year";
+        },
+      },
     },
     {
       name: "endMonth",
-      label: "End Month*",
+      label: "End Month",
       type: "search-select",
-      gridProps: { xs: 12, sm: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "End Month" },
       options: months.map((month) => ({
         value: month.number,
         label: month.full,
       })),
+      // rules: {
+      //   validate: (value, formValues) => {
+      //     const allValues = formValues as OptExperienceData;
+      //     return allValues.startYear === allValues.startYear
+      //       ? Number(value) > Number(allValues.startMonth)
+      //         ? true
+      //         : "End Month must be after start Month"
+      //       : true;
+      //   },
+      // },
       required: true,
     },
     {
@@ -167,7 +187,7 @@ const ExperienceModal = ({
     {
       name: "country.code",
       type: "search-select",
-      label: "Country*",
+      label: "Country",
       required: true,
       resetFields: ["state.code"],
       textFieldProps: {
@@ -183,7 +203,7 @@ const ExperienceModal = ({
     {
       name: "state.code",
       type: "search-select",
-      label: "State*",
+      label: "State",
       required: true,
       dependsOn: "country.code",
       textFieldProps: {
@@ -198,7 +218,7 @@ const ExperienceModal = ({
     {
       name: "city",
       type: "text",
-      label: "City*",
+      label: "City",
       required: true,
       textFieldProps: {
         placeholder: "Enter City",

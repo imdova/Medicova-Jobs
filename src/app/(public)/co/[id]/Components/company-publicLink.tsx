@@ -104,7 +104,8 @@ const CompanyPublicLink: React.FC<{ company: Company }> = ({ company }) => {
             Your company&apos;s public profile URL:
           </p>
           <Link
-            href={`https://www.medicova.net/co/${company.username}`}
+            target="_blank"
+            href={`https://www.medicova.net/co/${company.username}?public=true`}
             className="text-sm text-primary underline"
           >
             co/{company.username}

@@ -43,7 +43,7 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
   const { className, ...labelProps } =
     field.textFieldProps?.InputLabelProps || {};
   return (
-    <div>
+    <div className={field.textFieldProps?.label ? "mt-2" : ""}>
       {field.label && (
         <div className="mb-1">
           <label
@@ -51,7 +51,12 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
             className={`font-semibold ${className}`}
             {...labelProps}
           >
-            {field.label}
+            {field.label?.replace("*", "")}
+            {field.required ? (
+              <span className="text-red-500">*</span>
+            ) : (
+              <span className="ml-1 text-sm text-gray-400">(Optional)</span>
+            )}
           </label>
         </div>
       )}

@@ -15,10 +15,13 @@ export const genderOptions = [
   { id: Gender.MALE, label: "Male" },
 ];
 export const educationOptions = [
-  { id: EducationLevel.HIGH_SCHOOL, label: "High School" },
-  { id: EducationLevel.BACHELORS, label: "bachelors" },
-  { id: EducationLevel.MASTERS, label: "Master's" },
-  { id: EducationLevel.PHD, label: "PHD" },
+  { id: EducationLevel.HIGH_SCHOOL, label: "High School Diploma" },
+  { id: EducationLevel.TECH_INSTITUE, label: "Technical Institute Certification" },
+  { id: EducationLevel.BACHELORS, label: "Bachelor's Degree" },
+  { id: EducationLevel.DIPLOMA, label: "Diploma Certification" },
+  { id: EducationLevel.MASTERS, label: "Master's Degree" },
+  { id: EducationLevel.DOCTORATE, label: "Doctorate Degree (PhD)" },
+  { id: EducationLevel.FELLOWSHIP, label: "Fellowship Program" },
 ];
 
 export const currencyOptions = [

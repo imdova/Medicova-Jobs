@@ -19,12 +19,19 @@ import { Suspense } from "react";
 import ExperienceSkeleton from "@/components/loading/skeleton-experince";
 import SeekerComplete from "./Components/seekerComplete";
 
-const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
+const ProfilePage = async ({
+  params: { id },
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) => {
+  const isPublic = searchParams?.public;
   const data = await getServerSession(authOptions);
   const { success, data: user } = await getUser(id);
   if (!success || !user) return notFound();
   const sessionUser = data?.user;
-  const isMe = sessionUser?.id === user.id;
+  const isMe = isPublic ? false : sessionUser?.id === user.id;
   let isLocked = !isMe;
   if (!isMe && sessionUser?.type === "employer" && sessionUser?.companyId) {
     const { data } = await checkIsUnlocked(user.id, sessionUser?.companyId);
@@ -43,7 +50,7 @@ const ProfilePage = async ({ params: { id } }: { params: { id: string } }) => {
           <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}
           <AboutSeeker user={user} isMe={isMe} />
-          {/* Experience Section */} 
+          {/* Experience Section */}
           <Suspense fallback={<ExperienceSkeleton />}>
             <ExperienceSection user={user} isMe={isMe} />
           </Suspense>

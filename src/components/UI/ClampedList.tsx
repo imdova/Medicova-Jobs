@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/util";
 import { Button, Collapse } from "@mui/material";
 import { useState } from "react";
 interface ClampedListProps<T, P> extends React.HTMLAttributes<HTMLDivElement> {
@@ -6,14 +7,16 @@ interface ClampedListProps<T, P> extends React.HTMLAttributes<HTMLDivElement> {
   componentProps: P;
   initialVisibleItems: number;
   type: string;
+  buttonClassName?: string;
   Component: React.FC<P & { item: T }>;
 }
 
-function ClampedList<T extends { id: string }, P>({
+function ClampedList<T extends { id?: string }, P>({
   data,
   initialVisibleItems,
   Component,
   componentProps,
+  buttonClassName,
   type,
   ...props
 }: ClampedListProps<T, P>) {
@@ -37,8 +40,10 @@ function ClampedList<T extends { id: string }, P>({
       </Collapse>
       {/* Show more/less button */}
       {data.length > initialVisibleItems ? (
-        <div className="flex items-center justify-center">
-          <Button className="mt-4 p-0" variant="text" onClick={toggle}>
+        <div
+          className={cn("flex mt-4 items-center justify-center", buttonClassName)}
+        >
+          <Button className=" p-0" variant="text" onClick={toggle}>
             {isExpanded
               ? `Show less ${type} ${remainingItems > 1 ? "s" : ""}`
               : `Show ${remainingItems} more ${type} ${remainingItems > 1 ? "s" : ""}`}

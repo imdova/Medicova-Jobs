@@ -8,14 +8,13 @@ import { API_UPDATE_COMPANY } from "@/api/employer";
 import FormModal from "@/components/form/FormModal/FormModal";
 import ShareMenu from "@/components/UI/ShareMenu";
 import useFetch from "@/hooks/useFetch";
+import { useLocationData } from "@/hooks/useLocationData";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
 import { Company, FieldConfig, Sector } from "@/types";
 import { Edit } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface EmployerHeaderSectionProps {
   isEmployee: boolean;
@@ -56,21 +55,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
 
   // location selection
   const [countryCode, setCountryCode] = useState(company?.country?.code || "");
-
-  const { countries, states } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      dispatch(fetchCountries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-  useEffect(() => {
-    if (countryCode) {
-      dispatch(fetchStates(countryCode));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countryCode]);
+  const { countries, states } = useLocationData(countryCode);
 
   const handleUpdate = async (formData: Partial<Company>) => {
     const {
@@ -86,10 +71,10 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
       sectors.find((sector) => sector.id === companySectorId) || null;
     const type = types.find((type) => type.id === companyTypeId) || null;
     const country =
-      countries.data.find((country) => country.isoCode === formCountry?.code) ||
+      countries.find((country) => country.isoCode === formCountry?.code) ||
       null;
     const state =
-      states.data.find((state) => state.isoCode === formState?.code) || null;
+      states.find((state) => state.isoCode === formState?.code) || null;
     const body = {
       id: company?.id,
       companySectorId: sector?.id,
@@ -182,7 +167,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
       textFieldProps: {
         placeholder: "Select country",
       },
-      options: countries.data.map((country) => ({
+      options: countries.map((country) => ({
         value: country.isoCode,
         label: country.name,
       })),
@@ -197,7 +182,7 @@ const EditCompanySection: React.FC<EmployerHeaderSectionProps> = ({
       textFieldProps: {
         placeholder: "Select state",
       },
-      options: states.data.map((state) => ({
+      options: states.map((state) => ({
         value: state.isoCode,
         label: state.name,
       })),

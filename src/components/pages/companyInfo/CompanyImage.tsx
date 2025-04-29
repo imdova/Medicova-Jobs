@@ -1,5 +1,6 @@
 import { TAGS } from "@/api";
 import { API_UPDATE_COMPANY } from "@/api/employer";
+import { API_DELETE_FILE } from "@/api/general";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import useFileUploader from "@/hooks/useFileUploader";
 import useIsLeaving from "@/hooks/useIsLeaving";
@@ -71,8 +72,9 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
           uploaded: false,
         }),
       );
-
-      setSelectedFiles((prev) => [...prev, ...filesWithPreview]);
+      const newSelectedFiles = [...selectedFiles, ...filesWithPreview];
+      handleUpload(newSelectedFiles);
+      setSelectedFiles(newSelectedFiles);
     },
     accept: ACCEPTED_IMAGE_TYPES.reduce(
       (acc, curr) => ({ ...acc, [curr]: [] }),
@@ -84,6 +86,8 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
 
   // Handle file removal
   const handleRemoveFile = (fileToRemove: FileWithPreview) => {
+    const parts = fileToRemove.preview.split("/");
+    const fileId = parts[parts.length - 1];
     const newFiles = selectedFiles.filter((file) => file !== fileToRemove);
     const [banner1, banner2, banner3] = newFiles
       .filter((file) => file.uploaded)
@@ -102,6 +106,9 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
       },
       TAGS.company,
     );
+    fetch(API_DELETE_FILE + fileId, {
+      method: "DELETE",
+    });
   };
 
   // Handle successful update
@@ -110,7 +117,7 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
   }
 
   // Handle file upload
-  const handleUpload = async () => {
+  const handleUpload = async (selectedFiles: FileWithPreview[]) => {
     if (selectedFiles.length === 0) return;
 
     setIsUploading(true);
@@ -229,20 +236,20 @@ const CompanyImage: React.FC<CompanyImageProps> = ({ company }) => {
           </p>
         </div>
       )}
-      {isDirty && selectedFiles.length > 0 && (
+      {/* {isDirty && selectedFiles.length > 0 && (
         <Button
           variant="contained"
           color="primary"
           startIcon={
             isUploading ? <CircularProgress size={20} /> : <CloudUpload />
           }
-          onClick={handleUpload}
+          onClick={() => handleUpload()}
           disabled={isUploading}
           className="mt-4"
         >
           {isUploading ? "Uploading" : "Upload"}
         </Button>
-      )}
+      )} */}
     </div>
   );
 };

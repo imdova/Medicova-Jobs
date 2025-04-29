@@ -46,7 +46,7 @@ const CourseModal = ({
     {
       name: "title",
       type: "text",
-      label: "Course Title*",
+      label: "Course Title",
       textFieldProps: {
         placeholder: "Enter the title of the course",
       },
@@ -55,8 +55,8 @@ const CourseModal = ({
     {
       name: "provider",
       type: "text",
-      label: "Provider*",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Provider",
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "Enter the name of the provider",
       },
@@ -65,8 +65,8 @@ const CourseModal = ({
     {
       name: "speciality",
       type: "text",
-      label: "Speciality*",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Speciality",
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "Enter the speciality",
       },
@@ -75,8 +75,8 @@ const CourseModal = ({
     {
       name: "issueDate",
       type: "date",
-      label: "Issue Date*",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Issue Date",
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "Select the issue date",
       },
@@ -85,17 +85,25 @@ const CourseModal = ({
     {
       name: "completionDate",
       type: "date",
-      label: "Completion Date*",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Completion Date",
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "Select the completion date",
+      },
+      rules: {
+        validate: (value, allValues) =>
+          !value ||
+          !allValues?.issueDate ||
+          new Date(value) > new Date(allValues.issueDate)
+            ? true
+            : "Completion date must be after issue date",
       },
       required: true,
     },
     {
       name: "description",
       type: "text",
-      label: "Course description (Optional)",
+      label: "Course description",
       textFieldProps: {
         placeholder: "Enter a description of the course",
         sx: {

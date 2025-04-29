@@ -52,7 +52,7 @@ const EducationModal = ({
     {
       name: "inistitute",
       type: "text",
-      label: "Institute Name*",
+      label: "Institute Name",
       textFieldProps: {
         placeholder: "Enter The name of your College or University ",
       },
@@ -61,9 +61,10 @@ const EducationModal = ({
     {
       name: "degree",
       type: "select",
-      label: "Degree*",
+      label: "Degree",
       textFieldProps: { placeholder: "Select degree" },
       gridProps: { xs: 8, sm: 9 },
+      required: true,
       options: educationOptions.map((x) => ({
         label: x.label,
         value: x.id,
@@ -71,16 +72,17 @@ const EducationModal = ({
     },
     {
       name: "grade",
-      label: "Grade*",
+      label: "Grade",
+      required: true,
       type: "text",
       textFieldProps: { placeholder: "grade" },
       gridProps: { xs: 4, sm: 3 },
     },
     {
       name: "startYear",
-      label: "Start Year*",
+      label: "Start Year",
       type: "search-select",
-      gridProps: { xs: 12, sm: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "Start Year" },
       options: years.map((year) => ({
         value: year.toString(),
@@ -90,20 +92,30 @@ const EducationModal = ({
     },
     {
       name: "endYear",
-      label: "End Year*",
+      label: "End Year",
       type: "search-select",
-      gridProps: { xs: 12, sm: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: { placeholder: "End Year" },
       options: years.map((year) => ({
         value: year.toString(),
         label: year.toString(),
       })),
+      rules: {
+        validate: (value, formValues) => {
+          const allValues = formValues as EducationData;
+          return !value ||
+            !allValues?.startYear ||
+            Number(value) >= Number(allValues.startYear)
+            ? true
+            : "End Year must be after start year";
+        },
+      },
       required: true,
     },
     {
       name: "countryCode",
       type: "search-select",
-      label: "Country*",
+      label: "Country",
       required: true,
       textFieldProps: {
         placeholder: "Select country",
@@ -112,7 +124,6 @@ const EducationModal = ({
         value: country.isoCode,
         label: country.name,
       })),
-      gridProps: { xs: 6, md: 4 },
     },
   ];
 
