@@ -19,6 +19,9 @@ import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 
 const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
   const { update: updateSession } = useSession();
+  const formMethods = useForm({
+    defaultValues: company,
+  });
   const {
     control,
     handleSubmit,
@@ -26,9 +29,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
     watch,
     setValue,
     reset,
-  } = useForm({
-    defaultValues: company,
-  });
+  } = formMethods;
 
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
     preventDefault: isDirty,
@@ -37,19 +38,23 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
   const { isLoading, error, update } = useUpdateApi<Company>(handleSuccess);
 
   const handleUpdate = async (formData: Partial<Company>) => {
-    await update(API_UPDATE_COMPANY, {
-      body: formData,
-    },TAGS.company);
+    await update(
+      API_UPDATE_COMPANY,
+      {
+        body: formData,
+      },
+      TAGS.company,
+    );
     // reset the form
-    reset(formData); 
+    reset(formData);
   };
 
   async function handleSuccess(updatedCompany: Company) {
     await updateSession({
       companyName: updatedCompany.name,
       companyEmail: updatedCompany.email,
+      companyPhoto: updatedCompany.avatar,
     });
-    // window.location.reload();
   }
 
   return (
@@ -67,15 +72,15 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
       <form onSubmit={handleSubmit(handleUpdate)} noValidate>
         <div className="mb-8 flex flex-col gap-4 px-2 md:flex-row md:px-0">
           <div className="flex-1">
-            <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
-              <MainInformation control={control} errors={errors} />
+            <div className="mb-4 rounded-base border-gray-200 bg-white p-3 md:border md:p-5 md:shadow-soft">
+              <MainInformation formMethods={formMethods} />
               <SectorSelection
                 control={control}
                 watch={watch}
                 setValue={setValue}
               />
             </div>
-            <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
+            <div className="rounded-base border-gray-200 bg-white p-3 md:border md:p-5 md:shadow-soft">
               <CompanyOwnership control={control} errors={errors} />
               <CompanyContactInputs control={control} errors={errors} />
             </div>
@@ -83,13 +88,13 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
 
           {/* Right Column */}
           <div className="md:w-80">
-            <div className="mb-4 rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
+            <div className="mb-4 rounded-base border-gray-200 bg-white p-3 md:border md:p-5 md:shadow-soft">
               <h5 className="text-2xl font-semibold text-main md:mt-4">
                 Company Images
               </h5>
               <CompanyImage company={company} />
             </div>
-            <div className="rounded-base border-gray-100 bg-white p-3 md:border md:p-5 md:shadow-soft">
+            <div className="rounded-base border-gray-200 bg-white p-3 md:border md:p-5 md:shadow-soft">
               <h5 className="mb-8 text-2xl font-semibold text-main md:mt-4">
                 Company Location
               </h5>
@@ -110,7 +115,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
         )}
 
         {(!company.name || isDirty || isLoading) && (
-          <div className="sticky bottom-2 z-30 flex justify-end rounded-base border border-gray-100 bg-white p-3 shadow-soft md:static md:justify-start md:p-5">
+          <div className="sticky bottom-2 z-30 flex justify-end rounded-base border border-gray-200 bg-white p-3 shadow-soft md:static md:justify-start md:p-5">
             <Button
               type="submit"
               variant="contained"

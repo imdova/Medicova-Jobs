@@ -24,6 +24,7 @@ const fields: FieldConfig<Folder>[] = [
     name: "name",
     type: "text",
     label: "Folder Name",
+    required: true,
     textFieldProps: {
       placeholder: "Enter Folder Name",
       InputProps: {
@@ -195,7 +196,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
               }}
             />
           </div>
-          <div className="max-w-[calc(100vw-1rem)]">
+          <div className="body-container">
             <DataTable
               data={folders.slice(RECENT_FOLDERS) || []}
               total={total - RECENT_FOLDERS || 0}
@@ -218,7 +219,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
                       />
                       <Link
                         className="line-clamp-1 max-w-full hover:underline"
-                        href={`/folder/${folder.id}`}
+                        href={`/employer/search/saved-search/${folder.id}`}
                       >
                         <span>{folder.name}</span>
                         <span className="ml-2 text-xs text-secondary">

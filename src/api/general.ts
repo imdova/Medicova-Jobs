@@ -11,5 +11,5 @@ export const API_GET_CITIES = LOCATION + "/cities"; // GET ?countryCode=US&state
 // File
 export const FILE = API_BASE + "/files";
 export const API_UPLOAD_FILE = FILE; // POST
-export const API_GET_FILE = FILE + "/{fileId}"; // GET
-export const API_DELETE_FILE = FILE + "/{fileId}"; // DELETE
+export const API_GET_FILE = FILE + "/"; // GET
+export const API_DELETE_FILE = FILE + "/"; // DELETE

@@ -105,6 +105,7 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
       type: "select",
       dependsOn: "jobIndustryId",
       required: true,
+      resetFields: ["jobSpecialityId", "jobCareerLevelId"],
       label: "Job Category*",
       onChange: handleCategorySelect,
       options: categories.map((type) => ({
