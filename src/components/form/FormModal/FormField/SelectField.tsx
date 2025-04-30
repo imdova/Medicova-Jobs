@@ -40,13 +40,11 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     !getNestedValue(formValues, field.dependsOn)
       ? { name: field.dependsOn, ...dependsOnField }
       : null;
-  const placeholder =
-    "Select " +
-    (field.textFieldProps?.label
-      ? String(field.textFieldProps?.label).replace("*", "")
-      : field.label
-        ? field.label.replace("*", "")
-        : field.name);
+  const placeholder = field.textFieldProps?.label
+    ? String(field.textFieldProps?.label).replace("*", "")
+    : field.label
+      ? "Select " + field.label.replace("*", "")
+      : "Select " + field.name;
   const className = field.textFieldProps?.className || "";
   return (
     <FormControl

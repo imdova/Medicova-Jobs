@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import Avatar from "./Avatar";
 import { User } from "next-auth";
+// import UserSwitcher from "../auth/UsersSwitcher";
 
 interface UserDropdownProps {
   user: User;
@@ -83,6 +84,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user: initialUser }) => {
         }}
         disableScrollLock
       >
+        {/* <UserSwitcher /> */}
         {/* User Info Header */}
         <Box sx={{ px: 2, py: 1 }}>
           <Typography variant="subtitle2" noWrap>
