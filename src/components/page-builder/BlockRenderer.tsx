@@ -1,13 +1,10 @@
 // components/page-builder/BlockRenderer.tsx
 import { Divider, TextareaAutosize } from "@mui/material";
-import Image from "next/image";
 import { BlockTextEditor } from "@/components/editor/editor";
-import Resize from "@/components/UI/Resize";
 import { Block } from "@/types/blog";
 import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
 import { updateItem } from "@/util/blog";
-import { ResizableBox } from "react-resizable";
 import ImageResizer from "./ImageResizer";
 import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
@@ -49,7 +46,10 @@ export function BlockRenderer({
     );
   };
 
-  const { width, height, ...styles } = block.styles;
+  const styles = block.styles || {
+    width: "auto",
+    height: "auto",
+  };
 
   // Render different block types
   switch (block.type) {
@@ -62,7 +62,7 @@ export function BlockRenderer({
           style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="w-full resize-none text-3xl font-bold tracking-tight focus:outline-none md:text-4xl"
+          className="focus:outline-none "
         />
       );
 
