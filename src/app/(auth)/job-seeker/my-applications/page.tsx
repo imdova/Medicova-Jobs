@@ -48,18 +48,18 @@ const tabs: {
     type: ApplicationStatus.SHORTLISTED,
     icon: <Star className="h-5 w-5 text-yellow-500" />,
   },
-  {
-    type: ApplicationStatus.INTERVIEWED,
-    icon: <User className="h-5 w-5 text-purple-500" />,
-  },
-  {
-    type: ApplicationStatus.ACCEPTED,
-    icon: <ThumbsUp className="h-5 w-5 text-green-600" />,
-  },
-  {
-    type: ApplicationStatus.REJECTED,
-    icon: <ThumbsDown className="h-5 w-5 text-red-600" />,
-  },
+  // {
+  //   type: ApplicationStatus.INTERVIEWED,
+  //   icon: <User className="h-5 w-5 text-purple-500" />,
+  // },
+  // {
+  //   type: ApplicationStatus.ACCEPTED,
+  //   icon: <ThumbsUp className="h-5 w-5 text-green-600" />,
+  // },
+  // {
+  //   type: ApplicationStatus.REJECTED,
+  //   icon: <ThumbsDown className="h-5 w-5 text-red-600" />,
+  // },
 ];
 
 const page = async ({

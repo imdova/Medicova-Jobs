@@ -16,88 +16,21 @@ import {
   YouTube,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { FieldConfig, Option } from "@/types";
+import { Company, FieldConfig } from "@/types";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
 import FormModal from "@/components/form/FormModal/FormModal";
+import { socialMediaOptions } from "@/constants/general";
+import { User } from "next-auth";
+import { API_UPDATE_COMPANY } from "@/api/employer";
 
 type SocialMediaSectionProps = {
-  user: UserProfile;
+  user: UserProfile | Company;
   isMe: boolean;
-  isLocked: boolean;
+  isLocked?: boolean;
+  type: User["type"];
 };
-
-interface SocialMediaLinks {
-  website?: string;
-  facebook?: string;
-  twitter?: string;
-  instagram?: string;
-  linkedin?: string;
-  youtube?: string;
-  tiktok?: string;
-  snapchat?: string;
-  pinterest?: string;
-  reddit?: string;
-  discord?: string;
-  telegram?: string;
-  whatsapp?: string;
-}
-
-const socialMediaOptions: Option<SocialMediaLinks>[] = [
-  {
-    value: "instagram",
-    label: "Instagram",
-  },
-  {
-    value: "twitter",
-    label: "Twitter",
-  },
-  {
-    value: "linkedin",
-    label: "LinkedIn",
-  },
-  {
-    value: "website",
-    label: "Website",
-  },
-  {
-    value: "facebook",
-    label: "Facebook",
-  },
-  {
-    value: "youtube",
-    label: "YouTube",
-  },
-  {
-    value: "tiktok",
-    label: "TikTok",
-  },
-  {
-    value: "snapchat",
-    label: "Snapchat",
-  },
-  {
-    value: "pinterest",
-    label: "Pinterest",
-  },
-  {
-    value: "reddit",
-    label: "Reddit",
-  },
-  {
-    value: "discord",
-    label: "Discord",
-  },
-  {
-    value: "telegram",
-    label: "Telegram",
-  },
-  {
-    value: "whatsapp",
-    label: "WhatsApp",
-  },
-];
 
 const socialMediaIcons: { [K in keyof SocialMediaLinks]: JSX.Element } = {
   instagram: <Instagram sx={{ color: "rgba(241, 9, 234, 1)" }} />,
@@ -162,6 +95,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
   user,
   isMe,
   isLocked,
+  type,
 }) => {
   const socialLinks = user?.socialLinks as SocialMediaLinks;
   const initialFields: FieldConfig[] = Object.entries(socialLinks || {})
@@ -197,11 +131,11 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
     reset();
   };
 
-  const handleUpdate = async (formData: Partial<UserProfile>) => {
+  const handleUpdate = async (formData: Partial<UserProfile | Company>) => {
     await update(
-      API_UPDATE_SEEKER,
+      type === "seeker" ? API_UPDATE_SEEKER : API_UPDATE_COMPANY,
       { body: { id: user?.id, socialLinks: formData } },
-      TAGS.profile,
+      type === "seeker" ? TAGS.profile : TAGS.company,
     );
   };
 

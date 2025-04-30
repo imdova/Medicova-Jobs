@@ -59,9 +59,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       ),
   );
   const { data: specialitiesData } = useFetch<PaginatedResponse<Industry>>(
-    categoryId
-      ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId + "&limit=200"
-      : null,
+    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId : null,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,

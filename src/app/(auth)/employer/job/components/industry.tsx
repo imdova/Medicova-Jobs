@@ -22,7 +22,7 @@ interface IndustryFormProps {
   setValue: UseFormSetValue<JobData>;
   industries: Industry[];
 }
-// TODO: enhancements, create a usable component  
+// TODO: enhancements, create a usable component
 const IndustryForm: React.FC<IndustryFormProps> = ({
   control,
   errors,
@@ -37,7 +37,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
     PaginatedResponse<Industry>
   >(
     selectedJobIndustryId &&
-      `${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${selectedJobIndustryId}&limit=200`,
+      API_GET_CATEGORIES_BY_INDUSTRY + selectedJobIndustryId,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,
@@ -57,7 +57,7 @@ const IndustryForm: React.FC<IndustryFormProps> = ({
     PaginatedResponse<Industry>
   >(
     selectedJobCategoryId &&
-      API_GET_SPECIALITIES_BY_CATEGORY + selectedJobCategoryId + "&limit=200",
+      API_GET_SPECIALITIES_BY_CATEGORY + selectedJobCategoryId,
     {
       fetchOnce: false,
       fetchOnUrlChange: true,

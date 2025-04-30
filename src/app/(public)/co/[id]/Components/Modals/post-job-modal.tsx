@@ -57,14 +57,14 @@ const PostJobModal = ({ isOpen, onClose, company }: PostJobModalProps) => {
   const [jobSpecialities, setJobSpecialities] = useState<Industry[]>([]);
 
   const handleIndustrySelect = async (id: string) => {
-    const response = await fetch(`${API_GET_CATEGORIES_BY_INDUSTRY}?ids=${id}&limit=200`);
+    const response = await fetch(API_GET_CATEGORIES_BY_INDUSTRY + id);
     const data = await response.json();
     setCategories(data.data);
   };
 
   const handleCategorySelect = async (id: string) => {
     const specialtyResponse = await fetch(
-      API_GET_SPECIALITIES_BY_CATEGORY + id + "&limit=200",
+      API_GET_SPECIALITIES_BY_CATEGORY + id,
     );
     const specialtyData =
       (await specialtyResponse.json()) as PaginatedResponse<Industry>;

@@ -23,6 +23,22 @@ type NotificationSettings = {
   reciveJobs: boolean;
   reciveRecommendations: boolean;
 };
+interface SocialMediaLinks {
+  website?: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  linkedin?: string;
+  youtube?: string;
+  tiktok?: string;
+  snapchat?: string;
+  pinterest?: string;
+  reddit?: string;
+  discord?: string;
+  telegram?: string;
+  whatsapp?: string;
+}
+
 type UserProfile = {
   id: string;
   userName: string;
@@ -38,7 +54,7 @@ type UserProfile = {
   title: string | null;
   languages: LanguageProficiency[] | null;
   resume: string | null;
-  socialLinks: Record<string, string> | null;
+  socialLinks: SocialMediaLinks | null;
   whatsapp: string | null;
   nationality: string | null;
   maritalStatus: MaritalStatus | null;
@@ -60,9 +76,9 @@ type UserProfile = {
 
   /// TODO: need to add
   // isVerified: boolean;
-  
+
   // isEmailVerified: boolean;
-  
+
   // isImmediate: boolean;
   isLocked: boolean;
 
@@ -82,7 +98,6 @@ enum LanguageProficiencyLevel {
   Intermediate = "Intermediate",
   Beginner = "Beginner",
 }
-
 
 type LanguageProficiency = {
   name: LanguageName;

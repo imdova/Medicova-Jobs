@@ -48,7 +48,7 @@ const ApplicationsResult: React.FC<ApplicationsResultProps> = ({
     },
   ];
   return (
-    <div className="max-w-[calc(100vw-1rem)]">
+    <div className="body-container">
       <DataTable
         data={applications}
         total={0}

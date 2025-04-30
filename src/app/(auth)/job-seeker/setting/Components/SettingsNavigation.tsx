@@ -19,7 +19,7 @@ const SettingsNavTabs = () => {
     tabs.find((tab) => isCurrentPage(pathname, tab.value)) || tabs[0];
 
   return (
-    <div className="rounded-base border border-gray-200 bg-white overflow-hidden shadow-soft">
+    <div className="rounded-base border body-container border-gray-200 bg-white overflow-hidden shadow-soft">
       <Tabs value={activeTab.value} variant="scrollable" scrollButtons={false}>
         {tabs.map((tab, index) => (
           <Tab

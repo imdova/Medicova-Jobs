@@ -1,17 +1,7 @@
 "use client";
 import React, { useState, useMemo } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
-  IconButton,
-  Button,
-} from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Checkbox, IconButton, Button } from "@mui/material"; // replace with your custom components
+import { Pencil, Trash2 } from "lucide-react";
 import CustomPagination from "@/components/UI/CustomPagination";
 import CellOptions from "./CellOptions";
 import Link from "next/link";
@@ -40,18 +30,6 @@ interface DataTableProps<T> {
   noDataMessage?: NoDataMessage;
   hideTableHeader?: boolean;
 }
-
-// const getSizeClasses = (size?: Sizes) => {
-//   switch (size) {
-//     case "small":
-//       return "p-2 text-xs";
-//     case "medium":
-//       return "p-3 text-sm";
-//     case "large":
-//     default:
-//       return "p-4 text-base";
-//   }
-// };
 
 function DataTable<T extends { id: number | string }>({
   data,
@@ -142,18 +120,18 @@ function DataTable<T extends { id: number | string }>({
 
   return (
     <div className="w-full text-[10px]">
-      <TableContainer
+      <div
         className={cn(
-          "scroll-bar-minimal rounded-base border border-gray-200 bg-white shadow-soft",
+          "scroll-bar-minimal overflow-x-auto rounded-base border border-gray-200 bg-white shadow-soft",
           className,
         )}
       >
-        <Table className="min-w-full">
+        <table className="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-700">
           {hideTableHeader ? null : (
-            <TableHead className={`bg-gray-50`}>
-              <TableRow>
+            <thead className={`bg-gray-50`}>
+              <tr>
                 {isSelectable ? (
-                  <TableCell className="p-1 text-[0.75em]" padding="checkbox">
+                  <th className="p-1 text-[0.75em]">
                     <Checkbox
                       indeterminate={
                         selected.length > 0 &&
@@ -162,12 +140,12 @@ function DataTable<T extends { id: number | string }>({
                       checked={selected.length === sortedData.length}
                       onChange={handleSelectAll}
                     />
-                  </TableCell>
+                  </th>
                 ) : null}
                 {columns.map((col, index) => (
-                  <TableCell
+                  <th
                     key={index}
-                    className={`relative font-semibold ${cellClassName}`}
+                    className={cn("relative font-semibold", cellClassName)}
                     style={{ width: col.width }}
                   >
                     {col.sortable && col.key ? (
@@ -194,45 +172,44 @@ function DataTable<T extends { id: number | string }>({
                         {col.header}
                       </span>
                     )}
-                  </TableCell>
+                  </th>
                 ))}
                 {onEdit || onDelete || (options && options.length > 0) ? (
-                  <TableCell className={`p-2 font-semibold ${cellClassName}`}>
+                  <th className={`p-2 font-semibold ${cellClassName}`}>
                     Actions
-                  </TableCell>
+                  </th>
                 ) : null}
-              </TableRow>
-            </TableHead>
+              </tr>
+            </thead>
           )}
-          <TableBody>
+          <tbody>
             {sortedData.map((item, index) => {
               const id = item.id;
               const isItemSelected = isSelected(id);
               return (
-                <TableRow
+                <tr
                   key={id}
-                  hover
-                  className="hover:bg-gray-50"
-                  selected={isItemSelected}
+                  aria-selected={isItemSelected}
+                  className="border-b border-gray-200 hover:bg-gray-50 aria-selected:bg-gray-100"
                   onClick={onClick ? () => onClick(item) : undefined}
                 >
                   {isSelectable && (
-                    <TableCell className="p-1 text-[0.75em]" padding="checkbox">
+                    <td className="p-1 text-[0.75em]">
                       <Checkbox
                         checked={isItemSelected}
                         onChange={() => handleSelect(id)}
                       />
-                    </TableCell>
+                    </td>
                   )}
                   {columns.map((col, index) => (
-                    <TableCell key={index} className={cellClassName}>
+                    <td key={index} className={cellClassName}>
                       {col.render
                         ? col.render(item)
                         : col.key && getNestedValue(item, col.key)}
-                    </TableCell>
+                    </td>
                   ))}
                   {(onEdit || onDelete) && (
-                    <TableCell className={cellClassName}>
+                    <td className={cellClassName}>
                       <div className="flex space-x-2">
                         {onEdit && (
                           <IconButton
@@ -241,7 +218,7 @@ function DataTable<T extends { id: number | string }>({
                             className="hover:bg-green-200 hover:text-green-600"
                             onClick={() => onEdit(item)}
                           >
-                            <Edit />
+                            <Pencil className="h-4 w-4" />
                           </IconButton>
                         )}
                         {onDelete && (
@@ -251,22 +228,22 @@ function DataTable<T extends { id: number | string }>({
                             className="hover:bg-red-200 hover:text-red-600"
                             onClick={() => onDelete(item)}
                           >
-                            <Delete />
+                            <Trash2 className="h-4 w-4" />
                           </IconButton>
                         )}
                       </div>
-                    </TableCell>
+                    </td>
                   )}
                   {options && options.length > 0 && (
-                    <TableCell className={cellClassName}>
+                    <th className={cellClassName}>
                       <CellOptions options={options} item={item} />
-                    </TableCell>
+                    </th>
                   )}
-                </TableRow>
+                </tr>
               );
             })}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
         {data.length === 0 && noDataMessage && (
           <div className="flex min-h-64 w-full flex-col items-center justify-center gap-2 p-5">
             <h3 className="text-center text-xl font-semibold text-secondary">
@@ -284,7 +261,7 @@ function DataTable<T extends { id: number | string }>({
             </Button>
           </div>
         )}
-      </TableContainer>
+      </div>
       {total ? (
         <CustomPagination
           fixedNumberPerPage={fixedNumberPerPage}

@@ -119,6 +119,8 @@ type CountryInData = {
   name: string;
   code: string;
 };
+
+
 export interface Company {
   id: string;
   name: string;
@@ -138,7 +140,7 @@ export interface Company {
   email?: string;
   yearFounded?: number | string;
   avatar?: string;
-  socialLinks?: Record<string, string>;
+  socialLinks?: SocialMediaLinks | null;
   visible?: boolean;
   profileUrl?: string;
   companyTypeId?: string | null;
