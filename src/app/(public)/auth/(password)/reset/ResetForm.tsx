@@ -57,9 +57,13 @@ const ResetForm: React.FC = () => {
     }
   };
 
-  if (!email) {
-    router.replace(`/auth/forget`);
-  }
+  React.useEffect(() => {
+    if (!email) {
+      router.replace(`/auth/forget`);
+    }
+  }, [email, router]);
+
+  
   return (
     <div>
       <p className="mb-4 text-center text-secondary">

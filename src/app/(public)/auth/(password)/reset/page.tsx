@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import React from "react";
 import ResetForm from "./ResetForm";
 
-const Set = () => {
+const resetPage = () => {
   return (
-    <React.Fragment>
+    <>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
       {/* Main Content */}
       <div className="m-auto flex h-screen flex-col items-center justify-center p-4">
@@ -44,8 +43,8 @@ const Set = () => {
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 };
 
-export default Set;
+export default resetPage;
