@@ -11,7 +11,8 @@ const ImageResizer = ({
   src: string;
   styles: Block["styles"];
 }) => {
-  const { width: initialWidth = 200, height: initialHeight = 200 } = styles;
+  const { width: initialWidth = 200, height: initialHeight = 200 } =
+    styles || {};
   const [dimensions, setDimensions] = useState({
     width: 0,
     height: initialHeight,
@@ -59,7 +60,7 @@ const ImageResizer = ({
           alt="Content"
           width={300}
           height={300}
-          style={styles}
+          style={styles || {}}
           className="h-full w-full object-cover"
         />
       </ResizableBox>

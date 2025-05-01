@@ -304,16 +304,13 @@ export const getCategoryFromIndustryId = async (
   }>
 > => {
   try {
-    const response = await fetch(
-      `${API_GET_CATEGORIES_BY_INDUSTRY}?industryIds=${industryId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
+    const response = await fetch(API_GET_CATEGORIES_BY_INDUSTRY + industryId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
       },
-    );
+    });
     if (response.ok) {
       const data: { total: number; data: JobCategory[] } =
         await response.json();

@@ -11,6 +11,7 @@ import { generateId } from "@/util";
 import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useState } from "react";
+import { HEADER_1_STYLES } from "./constants/blocks.styles";
 
 const BlocksPanel: React.FC<TabProps> = ({
   selectedBlock,
@@ -45,7 +46,7 @@ const BlocksPanel: React.FC<TabProps> = ({
       level: 1,
       blocks: [],
       content: "",
-      styles: {},
+      styles: type === "h1" ? HEADER_1_STYLES : null,
       ...blockProps,
     };
     const blockFormData = blocksForm.find((form) => form.type.includes(type));

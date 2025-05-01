@@ -1,7 +1,6 @@
 import JobsResult from "./jobsResult";
-import { getJobFilters, getJobsByFilters } from "@/lib/actions/job.actions";
+import { getJobFilters, searchJobs } from "@/lib/actions/job.actions";
 import CustomPagination from "@/components/UI/CustomPagination";
-import { filteredJobs } from "@/lib/auth/utils";
 import JobFilter from "./components/JobFilter";
 
 const SearchPage: React.FC = async ({
@@ -29,9 +28,9 @@ const SearchPage: React.FC = async ({
     [key: string]: any;
   };
 
-  const [salaryFrom, salaryTo] = sal?.split("_") || [];
-  const [ageFrom, ageTo] = age?.split("_") || [];
-  const result = await getJobsByFilters({
+  const [salaryFrom, salaryTo] = sal?.split("-") || [];
+  const [ageFrom, ageTo] = age?.split("-") || [];
+  const result = await searchJobs({
     q,
     industryId: ind?.split(","),
     specialityId: sp?.split(","),

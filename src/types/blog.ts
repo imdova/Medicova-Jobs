@@ -24,7 +24,7 @@ export interface Block {
   videoUrl?: string;
   videoThumbnail?: string;
   linkUrl?: string;
-  styles: React.CSSProperties;
+  styles: React.CSSProperties | null;
   blocks: Block[];
   level: number;
   allowNesting?: boolean;

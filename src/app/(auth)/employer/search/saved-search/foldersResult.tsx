@@ -179,8 +179,8 @@ const FolderResults: React.FC<FolderResultsProps> = ({
         </div>
       )}
       {folders.length && folders.length > RECENT_FOLDERS ? (
-        <div className="p-2">
-          <div className="mb-4 flex flex-col justify-between md:flex-row md:items-center">
+        <div>
+          <div className="mb-4 flex flex-col justify-between px-2 md:flex-row md:items-center">
             <h2 className="text-2xl font-semibold">All folders</h2>
             <TextField
               value={query}
@@ -196,7 +196,7 @@ const FolderResults: React.FC<FolderResultsProps> = ({
               }}
             />
           </div>
-          <div className="body-container">
+          <div className="body-container px-2">
             <DataTable
               data={folders.slice(RECENT_FOLDERS) || []}
               total={total - RECENT_FOLDERS || 0}

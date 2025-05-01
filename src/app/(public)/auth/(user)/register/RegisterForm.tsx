@@ -71,7 +71,9 @@ const RegisterForm: React.FC = () => {
         if (signinResult?.error) {
           setError("Sorry we are having a problem try again later");
         } else {
-          if (window?.location) window.location.href = "/me";
+          if (typeof window !== "undefined") {
+            window.location.replace("/me");
+          }
         }
       } catch (error) {
         if (error instanceof Error) {

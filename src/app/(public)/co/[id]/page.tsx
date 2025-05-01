@@ -8,8 +8,8 @@ import CompanyJobs from "./Components/CompanyJobs";
 import CompanyPublicLink from "./Components/company-publicLink";
 import { Suspense } from "react";
 import PostYourFirstJob from "./Components/postFirstJob";
-import EmployerSocialMedia from "./Components/EmployerSocialMedia";
 import EmployerComplete from "./Components/EmployerComplete";
+import SocialMediaSection from "../../me/[id]/Components/SocialMediaSection";
 
 const Page = async ({
   params: { id },
@@ -46,7 +46,11 @@ const Page = async ({
           )}
           {isEmployee && <CompanyPublicLink company={company} />}
           {isEmployee && <PostYourFirstJob company={company} />}
-          <EmployerSocialMedia data={company} isEmployee={isEmployee} />
+          <SocialMediaSection
+            user={company}
+            isMe={isEmployee}
+            type="employer"
+          />
           {/* Complete Profile Section */}
           {/* Public Profile Section */}
           {/* <PublicProfile /> */}

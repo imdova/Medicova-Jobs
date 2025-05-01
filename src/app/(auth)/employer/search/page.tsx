@@ -32,8 +32,8 @@ const page = async ({
   } = searchParams as {
     [key: string]: any;
   };
-  const [expFrom, expTo] = exp?.split("_") || [];
-  const [ageFrom, ageTo] = age?.split("_") || [];
+  const [expFrom, expTo] = exp?.split("-") || [];
+  const [ageFrom, ageTo] = age?.split("-") || [];
 
   const data = await getServerSession(authOptions);
   const user = data?.user;

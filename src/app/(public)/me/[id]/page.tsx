@@ -89,7 +89,12 @@ const ProfilePage = async ({
             isLocked={isLocked}
           />
           {/* Socialmedia Section */}
-          <SocialMediaSection isMe={isMe} user={user} isLocked={isLocked} />
+          <SocialMediaSection
+            isMe={isMe}
+            user={user}
+            isLocked={isLocked}
+            type="seeker"
+          />
           {/* Language Section */}
           <LanguageSection isMe={isMe} user={user} />
         </div>
