@@ -295,31 +295,19 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
     </>
   );
 };
-
-const CareerPreferencePage = () => {
-  const { data: session, status } = useSession();
-  const sessionUser = session?.user;
+export const CareerPreferenceTab: React.FC<{
+  user: UserProfile;
+}> = ({ user }) => {
   const { data: careerPreference, loading } = useFetch<CareerPreference>(
-    sessionUser?.id
-      ? API_GET_CAREER_PREFERENCES_BY_SEEKER_ID + sessionUser.id
-      : null,
+    user?.id ? API_GET_CAREER_PREFERENCES_BY_SEEKER_ID + user.id : null,
     {
       defaultLoading: true,
     },
   );
 
-  if (status === "loading" || loading)
-    return (
-      <div className="flex h-full min-h-[70vh] items-center justify-center">
-        <CircularProgress />
-        <h6 className="ml-4">Loading...</h6>
-      </div>
-    );
-  if (status === "unauthenticated") return notFound();
-
   const defaultValues: Partial<CareerPreference> = {
     id: careerPreference?.id,
-    seekerId: sessionUser?.id || null,
+    seekerId: user?.id || null,
     jobEmploymentTypesIds: careerPreference?.jobEmploymentTypesIds || [],
     industriesIds: careerPreference?.industriesIds || [],
     availableForHiringDate: careerPreference?.availableForHiringDate || "",
@@ -332,4 +320,4 @@ const CareerPreferencePage = () => {
   return <CareerPreferenceForm defaultValues={defaultValues} />;
 };
 
-export default CareerPreferencePage;
+export default CareerPreferenceTab;

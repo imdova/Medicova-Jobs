@@ -7,6 +7,7 @@ interface ApplicationsFilter {
   startDate?: string | null;
   status?: ApplicationStatus;
 }
+type ProfileTabs = "personal-info" | "professional" | "career-preference";
 enum MaritalStatus {
   Single = "Single",
   Married = "Married",
