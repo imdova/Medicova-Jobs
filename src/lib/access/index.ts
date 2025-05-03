@@ -103,6 +103,7 @@ export const serverSignIn = async ({
     };
   }
 };
+
 export const register = async (data: registerData): Promise<Result> => {
   try {
     const response = await fetch(API_REGISTER_USER, {
