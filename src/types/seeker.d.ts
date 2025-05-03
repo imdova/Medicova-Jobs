@@ -228,8 +228,8 @@ type EducationData = {
   id: string;
   inistitute: string;
   degree: string;
-  // country: LocationItem;
-  countryCode: string;
+  program: string;
+  country: LocationItem;
   startYear: number;
   endYear: number;
   grade: string;
@@ -238,9 +238,7 @@ type CertificationData = {
   id: string;
   title: string;
   provider: string;
-  speciality: string;
   issueDate: string;
-  completionDate: string;
   description: string;
 };
 

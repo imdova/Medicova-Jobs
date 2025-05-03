@@ -20,14 +20,14 @@ const CourseItem: React.FC<{ item: CertificationData; isMe: boolean }> = ({
       />
       <div className="flex-1">
         <h6 className="text-lg font-semibold text-main">{item.title}</h6>
-        <p className="text-sm text-secondary">{item.provider}</p>
-        <p className="text-sm font-medium text-secondary">{item.speciality}</p>
-        <p className="text-sm text-secondary">
-          {formatDate(item.issueDate)} - {formatDate(item.completionDate)}{" "}
-        </p>
-      {item.description && (
-        <p className="mt-2 text-sm text-secondary"> <strong className="text-main text-sm">Description:- </strong> {item.description}</p>
-      )}
+        <p className="text-sm text-secondary">{item.provider} - {formatDate(item.issueDate)}</p>
+        {item.description && (
+          <p className="mt-2 text-sm text-secondary">
+            {" "}
+            <strong className="text-sm text-main">Description:- </strong>{" "}
+            {item.description}
+          </p>
+        )}
       </div>
       {isMe && (
         <OpenModalButton
