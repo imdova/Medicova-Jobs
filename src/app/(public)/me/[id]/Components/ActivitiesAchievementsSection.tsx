@@ -23,7 +23,7 @@ const ActivitySection = async ({ user, isMe }: ActivitySectionProps) => {
   return (
     <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-main">Activity</h3>
+        <h3 className="text-xl font-semibold text-main">Activity & Achievements</h3>
         {isMe && (
           <OpenModalButton
             componentProps={{

@@ -246,10 +246,7 @@ type ActivityData = {
   id: string;
   title: string;
   provider: string;
-  issueDate: string;
-  completionDate: string;
-  description: string;
-  isPresent: boolean;
+  date: string;
 };
 
 type SkillData = {

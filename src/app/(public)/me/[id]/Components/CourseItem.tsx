@@ -20,7 +20,8 @@ const CourseItem: React.FC<{ item: CertificationData; isMe: boolean }> = ({
       />
       <div className="flex-1">
         <h6 className="text-lg font-semibold text-main">{item.title}</h6>
-        <p className="text-sm text-secondary">{item.provider} - {formatDate(item.issueDate)}</p>
+        <p className="text-sm text-secondary">{item.provider} </p>
+        <p className="text-sm text-secondary">{formatDate(item.issueDate)}</p>
         {item.description && (
           <p className="mt-2 text-sm text-secondary">
             {" "}
