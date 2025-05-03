@@ -16,12 +16,12 @@ const getDefaultUserData = (user: UserProfile) => {
     avatar: user?.avatar || "",
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
-    phone: user?.phone || "",
-    whatsapp: user?.whatsapp || "",
-    birthDate: user?.birthDate || "",
-    gender: user?.gender || "",
-    nationality: user?.nationality || "",
-    maritalStatus: user?.maritalStatus || "",
+    phone: user?.phone || null,
+    whatsapp: user?.whatsapp || null,
+    birthDate: user?.birthDate || null,
+    gender: user?.gender || null,
+    nationality: user?.nationality || null,
+    maritalStatus: user?.maritalStatus || null,
     hasDrivingLicence: user?.hasDrivingLicence || false,
     country: user?.country || {
       code: "",
@@ -60,7 +60,6 @@ export const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user }) => {
     handleSubmit,
     formState: { isDirty, isValid },
     reset,
-    watch,
   } = formMethods;
 
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
@@ -105,7 +104,7 @@ export const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user }) => {
             <Button
               type="submit"
               variant="contained"
-              disabled={isLoading || !isValid}
+              disabled={isLoading}
               size="large"
               startIcon={isLoading ? <CircularProgress size={20} /> : null}
             >

@@ -46,7 +46,7 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
     if (!country) return;
 
     const phoneNumberObj = parsePhoneNumberFromString(
-      input,
+      String(input || ""),
       country.isoCode as CountryCode,
     );
     if (props.onChange) {
@@ -96,7 +96,7 @@ const PhoneNumberInput: React.FC<TextFieldProps> = (props) => {
         }}
         defaultValue={
           phoneNumber || props.value
-            ? getOnlyPhoneNumber(props.value as string)
+            ? getOnlyPhoneNumber(String(props.value || ""))
             : ""
         }
         value={phoneNumber ? phoneNumber : undefined}

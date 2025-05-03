@@ -1,14 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
 import { Alert, Button, CircularProgress, Snackbar } from "@mui/material";
-import { useSession } from "next-auth/react";
 import useFetch from "@/hooks/useFetch";
 import {
   API_CREATE_CAREER_PREFERENCE,
   API_GET_CAREER_PREFERENCES_BY_SEEKER_ID,
   API_UPDATE_CAREER_PREFERENCE,
 } from "@/api/seeker";
-import { CareerPreference, FieldConfig, Industry } from "@/types";
+import { CareerPreference, FieldConfig, Industry, Option } from "@/types";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { useForm } from "react-hook-form";
@@ -16,12 +14,12 @@ import useIsLeaving from "@/hooks/useIsLeaving";
 import { API_GET_EMPLOYMENT_TYPES, API_GET_INDUSTRIES } from "@/api/admin";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { jobWorkPlaceOptions } from "@/constants/job";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
-import { notFound } from "next/navigation";
+import { useLocationData } from "@/hooks/useLocationData";
 
 interface CareerPreferenceFormProps {
-  defaultValues: Partial<CareerPreference>;
+  defaultValues: Omit<Partial<CareerPreference>, "country"> & {
+    country: string[];
+  };
 }
 
 const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
@@ -44,17 +42,31 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
     handleSubmit,
     formState: { isDirty, isValid },
     reset,
-    watch,
-    setValue,
   } = formMethods;
 
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
     preventDefault: isDirty,
   });
 
-  const submit = (formData: Partial<CareerPreference>) => {
+  const { countries } = useLocationData();
+
+  const { data: industries } =
+    useFetch<PaginatedResponse<Industry>>(API_GET_INDUSTRIES);
+  const { data: employmentTypes } = useFetch<PaginatedResponse<Industry>>(
+    API_GET_EMPLOYMENT_TYPES,
+  );
+
+  const submit = (formData: CareerPreferenceFormProps["defaultValues"]) => {
+    const countriesArray: LocationItem[] = formData.country
+      ?.map((x) => {
+        const country = countries.find((c) => c.isoCode === x);
+        return { code: country?.isoCode || "", name: country?.name || "" };
+      })
+      .filter((x) => Boolean(x));
+
     const body: Partial<CareerPreference> = {
       ...formData,
+      country: countriesArray,
       availableForHiringDate: formData.availableForHiringDate
         ? new Date().toISOString()
         : null,
@@ -65,29 +77,6 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
       update(API_CREATE_CAREER_PREFERENCE, { method: "POST", body });
     }
   };
-
-  const { data: industries } =
-    useFetch<PaginatedResponse<Industry>>(API_GET_INDUSTRIES);
-  const { data: employmentTypes } = useFetch<PaginatedResponse<Industry>>(
-    API_GET_EMPLOYMENT_TYPES,
-  );
-
-  const country = watch("country");
-
-  const { countries, states } = useAppSelector((state) => state.location);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (countries.data.length === 0) {
-      dispatch(fetchCountries());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-  useEffect(() => {
-    if (country?.code) {
-      dispatch(fetchStates(country?.code));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [country?.code]);
 
   return (
     <>
@@ -188,6 +177,7 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
                     name: "jobWorkPlace",
                     type: "radio",
                     label: "Work Place",
+                    multiple: true,
                     options: jobWorkPlaceOptions.map((item) => ({
                       label: item.label,
                       value: item.id,
@@ -203,51 +193,18 @@ const CareerPreferenceForm: React.FC<CareerPreferenceFormProps> = ({
               <FormField
                 field={
                   {
-                    name: "country.code",
+                    name: "country",
                     type: "search-select",
+                    multiple: true,
+                    returnOption: true,
                     label: "Country",
-                    resetFields: ["state.code", "city"],
                     textFieldProps: {
                       placeholder: "Select country",
                     },
-                    options: countries.data.map((country) => ({
+                    options: countries.map((country) => ({
                       value: country.isoCode,
                       label: country.name,
                     })),
-                    onChange: (value) =>
-                      setValue(
-                        "country.name",
-                        countries.data.find(
-                          (country) => country.isoCode === value,
-                        )?.name || "",
-                      ),
-                  } as FieldConfig<CareerPreference>
-                }
-                control={control}
-              />
-            </div>
-            <div className="w-full">
-              <FormField
-                field={
-                  {
-                    name: "state.code",
-                    type: "search-select",
-                    label: "State",
-                    dependsOn: "country.code",
-                    textFieldProps: {
-                      placeholder: "Select state",
-                    },
-                    onChange: (value) =>
-                      setValue(
-                        "state.name",
-                        states.data.find((state) => state.isoCode === value)
-                          ?.name || "",
-                      ),
-                    options: states.data.map((state) => ({
-                      value: state.isoCode,
-                      label: state.name,
-                    })),
-                    gridProps: { xs: 6, md: 4 },
                   } as FieldConfig<CareerPreference>
                 }
                 control={control}
@@ -304,8 +261,10 @@ export const CareerPreferenceTab: React.FC<{
       defaultLoading: true,
     },
   );
-
-  const defaultValues: Partial<CareerPreference> = {
+  if (loading) return null;
+  const defaultValues: Omit<Partial<CareerPreference>, "country"> & {
+    country: string[];
+  } = {
     id: careerPreference?.id,
     seekerId: user?.id || null,
     jobEmploymentTypesIds: careerPreference?.jobEmploymentTypesIds || [],
@@ -313,8 +272,7 @@ export const CareerPreferenceTab: React.FC<{
     availableForHiringDate: careerPreference?.availableForHiringDate || "",
     relocation: careerPreference?.relocation || false,
     jobWorkPlace: careerPreference?.jobWorkPlace || null,
-    country: careerPreference?.country || { code: "", name: "" },
-    state: careerPreference?.state || { code: "", name: "" },
+    country: careerPreference?.country?.map((x) => x.code) || [],
   };
 
   return <CareerPreferenceForm defaultValues={defaultValues} />;

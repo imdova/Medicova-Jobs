@@ -14,6 +14,7 @@ import {
 } from "@/constants";
 import { Gender } from "@/constants/enums/gender.enum";
 import LocationSelect from "@/components/form/selections/LocationSelect";
+import { isValidPhoneNumber } from "@/util/forms";
 
 interface ProfileFormProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;
@@ -51,6 +52,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
               label: "Phone Number*",
               name: "phone",
               type: "phone",
+              rules: {
+                validate: (value) =>
+                  isValidPhoneNumber(value || "") ||
+                  "Please enter a valid phone number",
+              },
             }}
             control={control}
           />
@@ -63,6 +69,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
                   label: "WhatsApp Number",
                   name: "whatsapp",
                   type: "phone",
+                  rules: {
+                    validate: (value) =>
+                      isValidPhoneNumber(value || "") ||
+                      "Please enter a valid phone number",
+                  },
                 } as FieldConfig<UserProfile>
               }
               control={control}
