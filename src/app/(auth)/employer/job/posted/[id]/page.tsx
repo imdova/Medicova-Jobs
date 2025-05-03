@@ -26,11 +26,11 @@ const page = async ({
   if (user?.companyId !== job.company?.id) return notFound();
 
   job.country = job.country || { code: "", name: "" };
+  job.state = job.state || { code: "", name: "" };
   job.skills = job.skills || [];
   job.keywords = job.keywords || [];
   job.description = job.description || "<p></p>";
   job.requirements = job.requirements || "<p></p>";
-  // job.state = job.state || { code: "", name: "" };
 
   const industriesResult = await getIndustries();
   const industries = (industriesResult.success && industriesResult.data) || [];
