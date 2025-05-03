@@ -59,11 +59,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
       ) : field.label ? (
         <label className="mb-1 font-semibold">
           {field.label?.replace("*", "")}
-          {field.required ? (
-            <span className="text-red-500">*</span>
-          ) : (
-            <span className="ml-1 text-sm text-gray-400">(Optional)</span>
-          )}
+          {field.required ? <span className="text-red-500">*</span> : null}
         </label>
       ) : null}
       <Tooltip

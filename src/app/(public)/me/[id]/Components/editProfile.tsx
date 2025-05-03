@@ -13,6 +13,7 @@ import useFetch from "@/hooks/useFetch";
 import { useLocationData } from "@/hooks/useLocationData";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { FieldConfig, Industry } from "@/types";
+import { getExperienceDetail } from "@/util/general";
 import { Edit } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useSession } from "next-auth/react";
@@ -242,7 +243,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
           onSubmit={handleUpdate}
           fields={fields}
           title="Personal Information"
-          initialValues={initialValues(user)}
+          initialValues={initialValues({
+            ...user,
+            title: getExperienceDetail(user.title || ""),
+          })}
         />
       )}
       <div className="flex h-full flex-col items-center justify-center gap-2 sm:items-end">

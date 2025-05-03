@@ -25,9 +25,11 @@ const ExperienceSection = async ({ user, isMe }: ExperienceSectionProps) => {
           <OpenModalButton
             componentProps={{
               seekerId: user.id,
+              seekerTitle: user.title,
               initialValues: {
                 country: user.country || { code: "", name: "" },
                 state: user.state || { code: "", name: "" },
+                isPresent: true,
                 city: user.city || "",
               },
             }}
@@ -42,9 +44,14 @@ const ExperienceSection = async ({ user, isMe }: ExperienceSectionProps) => {
 
       {experiences.length > 0 ? (
         <ClampedList
-          className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2"
+          className={`mt-2 grid grid-cols-1 gap-2 md:grid-cols-2`}
           Component={ExperienceItem}
-          componentProps={{ isMe }}
+          componentProps={{
+            isMe,
+            length: experiences.length,
+            title: user.title,
+            seekerId: user.id,
+          }}
           data={experiences}
           type="Experience"
           initialVisibleItems={INITIAL_VISIBLE_ITEMS}
@@ -79,6 +86,7 @@ const ExperienceEmptyCard: React.FC<ExperienceSectionProps> = ({ user }) => {
             country: user.country || { code: "", name: "" },
             state: user.state || { code: "", name: "" },
             city: user.city || "",
+            isPresent: true,
           },
         }}
         ModalComponent={ExperienceModal}

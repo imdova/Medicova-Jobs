@@ -10,6 +10,7 @@ import { fetchCountries, fetchStates } from "@/store/slices/locationSlice";
 import {
   API_CREATE_SEEKER_EXPERIENCE,
   API_DELETE_SEEKER_EXPERIENCE,
+  API_UPDATE_SEEKER,
   API_UPDATE_SEEKER_EXPERIENCE,
 } from "@/api/seeker";
 
@@ -18,6 +19,7 @@ type PostJobModalProps = {
   onClose: () => void;
   initialValues?: Partial<ExperienceData>;
   seekerId?: string;
+  seekerTitle?: string | null;
 };
 
 type OptExperienceData = ExperienceData & {
@@ -50,6 +52,7 @@ const ExperienceModal = ({
   onClose,
   initialValues: values,
   seekerId,
+  seekerTitle,
 }: PostJobModalProps) => {
   const initialValues: Partial<OptExperienceData> = values
     ? {
@@ -154,6 +157,7 @@ const ExperienceModal = ({
             : "End Year must be after start year";
         },
       },
+      required: true,
     },
     {
       name: "endMonth",
@@ -252,13 +256,40 @@ const ExperienceModal = ({
       endDate,
     };
     if (body.id) {
+      const isTitleExperience =
+        seekerTitle === `EXPERIENCE: ${values?.title} at ${values?.name}`;
+      const title = seekerTitle
+        ? isTitleExperience
+          ? `EXPERIENCE: ${body.title} at ${body.name}`
+          : null
+        : `EXPERIENCE: ${body.title} at ${body.name}`;
+
       await update(API_UPDATE_SEEKER_EXPERIENCE, { body }, TAGS.experience);
+      if (title) {
+        update(
+          API_UPDATE_SEEKER,
+          { body: { id: seekerId, title } },
+          TAGS.profile,
+        );
+      }
     } else {
       await update(
         API_CREATE_SEEKER_EXPERIENCE,
         { method: "POST", body },
         TAGS.experience,
       );
+      const title = seekerTitle
+        ? seekerTitle.includes("EXPERIENCE:")
+          ? `EXPERIENCE: ${body.title} at ${body.name}`
+          : null
+        : `EXPERIENCE: ${body.title} at ${body.name}`;
+      if (title) {
+        update(
+          API_UPDATE_SEEKER,
+          { body: { id: seekerId, title } },
+          TAGS.profile,
+        );
+      }
     }
   };
 

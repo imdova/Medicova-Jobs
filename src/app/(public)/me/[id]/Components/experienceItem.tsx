@@ -7,17 +7,27 @@ import ExperienceModal from "./Modals/experience-modal";
 import { formatLocation } from "@/util/general";
 import { formatDate, getDuration } from "@/util";
 
-const ExperienceItem: React.FC<{ item: ExperienceData; isMe: boolean }> = ({
-  item,
-  isMe,
-}) => {
+const ExperienceItem: React.FC<{
+  item: ExperienceData;
+  isMe: boolean;
+  index: number;
+  seekerId: string;
+  title?: string | null;
+  length: number;
+}> = ({ item, isMe, index, title, seekerId, length }) => {
+  const isLastItem = index === length - 1;
+  const isOddLength = length % 2 !== 0;
+  const spanTwoCols = isOddLength && isLastItem;
+
   const location = formatLocation(item);
   const duration = getDuration({
     startDate: item.startDate,
     endDate: item.isPresent ? undefined : item.endDate,
   });
   return (
-    <div className="flex items-start gap-3 rounded-base border border-gray-200 p-2">
+    <div
+      className={`${spanTwoCols ? "col-span-2" : "col-span-1"} flex items-start gap-3 rounded-base border border-gray-200 p-2`}
+    >
       <Image src={experiencesImage} alt="Experience" width={60} height={60} />
       <div className="flex-1">
         <div className="flex items-center justify-between">
@@ -26,6 +36,8 @@ const ExperienceItem: React.FC<{ item: ExperienceData; isMe: boolean }> = ({
             <OpenModalButton
               ModalComponent={ExperienceModal}
               componentProps={{
+                seekerId: seekerId,
+                seekerTitle: title,
                 initialValues: item,
               }}
               size="small"
