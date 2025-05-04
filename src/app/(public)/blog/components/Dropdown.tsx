@@ -28,7 +28,7 @@ const Dropdown = ({
       controllerField={{
         name: name,
         value,
-        onChange: (e) => onChange(e.target.value),
+        onChange: (e) => onChange(e?.target?.value || e),
       }}
     />
   );

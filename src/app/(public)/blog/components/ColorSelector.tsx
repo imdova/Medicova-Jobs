@@ -63,7 +63,7 @@ const ColorSelector = ({
           </div>
 
           <div className="flex items-center space-x-2">
-            <TextField
+            <input
               type="color"
               value={value}
               onChange={(e) => onChange(e.target.value)}

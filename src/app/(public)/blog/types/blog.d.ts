@@ -1,6 +1,7 @@
 export interface StyleState {
   fontFamily?: string;
   fontSize?: number;
+  lineHeight?: number;
   fontWeight?: string;
   textAlign?: string;
   color?: string;
@@ -25,4 +26,5 @@ export interface StyleState {
   opacity?: number;
   width?: string;
   height?: string;
+  letterSpacing?: number;
 }
