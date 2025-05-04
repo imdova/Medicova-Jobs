@@ -265,9 +265,12 @@ const UsersTable: React.FC<{
                 <div className="flex items-center gap-2">
                   <Avatar src={item.avatar} />
                   <div>
-                    <h6 className="line-clamp-1 text-sm">
+                    <Link
+                      href={`/admin/users/${item.id}`}
+                      className="line-clamp-1 text-sm"
+                    >
                       {formatName(item, true)}
-                    </h6>
+                    </Link>
                     <Link
                       href={`mailto:${item.email}`}
                       className="line-clamp-1 break-all text-xs underline hover:no-underline"

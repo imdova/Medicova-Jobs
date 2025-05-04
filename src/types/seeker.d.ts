@@ -128,15 +128,15 @@ interface ApplicationsType {
   job: {
     id: string;
     title: string;
-    // jobSpeciality?: string | null; // add this please
-    // jobCategory?: string | null; // add this please
-    // jobCareerLevel?: string | null; // add this please
-    // jobEmploymentType?: string | null; // add this please
+    jobSpeciality?: string | null; // add this please
+    jobCategory?: string | null; // add this please
+    jobCareerLevel?: string | null; // add this please
+    jobEmploymentType?: string | null; // add this please
     company: {
       id: string;
-      // name: string; // add this please
-      // username: string; // add this please
-      // avatar: string; // add this please
+      name: string; // add this please
+      username: string; // add this please
+      avatar: string; // add this please
     };
   };
   applicant: {
