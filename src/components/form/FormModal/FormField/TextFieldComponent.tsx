@@ -52,11 +52,7 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
             {...labelProps}
           >
             {field.label?.replace("*", "")}
-            {field.required ? (
-              <span className="text-red-500">*</span>
-            ) : (
-              <span className="ml-1 text-sm text-gray-400">(Optional)</span>
-            )}
+            {field.required ? <span className="text-red-500">*</span> : null}
           </label>
         </div>
       )}

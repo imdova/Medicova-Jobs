@@ -281,10 +281,8 @@ export type CareerPreference = {
   industriesIds: string[];
   availableForHiringDate: string | null;
   relocation: boolean;
-  jobWorkPlace: JobWorkPlace | null;
-  country: LocationItem | null;
-  state: LocationItem | null;
-
+  jobWorkPlace: JobWorkPlace[] | null;
+  country: LocationItem[] | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -444,6 +442,7 @@ export interface FieldConfig<T = any> {
     md?: number;
   };
   multiple?: boolean;
+  returnOption?: boolean;
   resetFields?: FieldConfig<T>["name"][]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
   dateFieldProps?: Partial<DatePickerProps<Dayjs, boolean>>;

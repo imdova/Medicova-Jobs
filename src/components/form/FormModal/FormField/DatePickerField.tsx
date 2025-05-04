@@ -45,11 +45,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
       {field.label && (
         <label htmlFor={String(field.name)} className="mb-1 font-semibold">
           {field.label?.replace("*", "")}
-          {field.required ? (
-            <span className="text-red-500">*</span>
-          ) : (
-            <span className="text-gray-400 text-sm ml-1">(Optional)</span>
-          )}
+          {field.required ? <span className="text-red-500">*</span> : null}
         </label>
       )}
       <LocalizationProvider dateAdapter={AdapterDayjs}>

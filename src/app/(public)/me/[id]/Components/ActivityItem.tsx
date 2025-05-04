@@ -22,13 +22,9 @@ const ActivityItem: React.FC<{ item: ActivityData; isMe: boolean }> = ({
       <div className="flex-1">
         <h6 className="text-lg font-semibold text-main">{item.title}</h6>
         <p className="text-sm text-secondary">{item.provider}</p>
-        <p className="text-sm text-secondary">
-          {formatDate(item.issueDate)} - {formatDate(item.completionDate)}{" "}
-        </p>
+        <p className="text-sm text-secondary">{formatDate(item.date)}</p>
       </div>
-      {item.description && (
-        <p className="mt-2 text-sm text-secondary">{item.description}</p>
-      )}
+
       {isMe && (
         <OpenModalButton
           ModalComponent={ActivityModal}

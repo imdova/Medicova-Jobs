@@ -8,7 +8,11 @@ import { API_UPDATE_SEEKER } from "@/api/seeker";
 import { TAGS } from "@/api";
 import uploadFiles from "@/lib/files/imageUploader";
 import Avatar from "@/components/UI/Avatar";
-import { calculateAge, getOptionLabel } from "@/util/general";
+import {
+  calculateAge,
+  getExperienceDetail,
+  getOptionLabel,
+} from "@/util/general";
 import EditProfile from "./editProfile";
 import { formatName } from "@/util";
 import { nationalitiesOptions } from "@/constants";
@@ -36,14 +40,13 @@ const HeaderSection: React.FC<{
 
   const updateImage = async (file: File) => {
     const [avatar] = await uploadFiles([file]);
-    // TODO: update profile
-    console.log("🚀 ~ updateImage ~ avatar:", avatar);
     handleUpdateProfile({ avatar });
     setImage(file);
   };
 
   const age = user.birthDate ? calculateAge(new Date(user.birthDate)) : "";
   const nationality = getOptionLabel(nationalitiesOptions, user.nationality);
+  const title = getExperienceDetail(user.title || "");
   return (
     <div className="overflow-hidden rounded-[12px] bg-[url('/images/search-background.jpg')] bg-cover bg-center">
       <div className="flex h-fit min-h-[160px] w-full flex-col items-center gap-8 bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-5 shadow-soft lg:flex-row">
@@ -68,12 +71,13 @@ const HeaderSection: React.FC<{
         <div className="flex w-full">
           <div className="mr-5 flex-1">
             <h5 className="text-xl font-bold text-white">
-              {formatName(user, true)} {/* TODO: add it  */}
+              {formatName(user, true)}
+              {/* TODO: add it  */}
               {/* {user.isVerified && (
               <Verified color="primary" className="ml-1 h-6 w-6" />
               )} */}
             </h5>
-            <p className="text-sm text-white">{user.title}</p>
+            <p className="text-sm text-white">{title}</p>
             <div>
               <p className="text-sm text-gray-100">
                 {age ? `${age} years old` : ""}{" "}

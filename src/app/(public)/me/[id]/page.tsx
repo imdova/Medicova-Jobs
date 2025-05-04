@@ -18,6 +18,9 @@ import { checkIsUnlocked } from "@/lib/actions/employer.actions";
 import { Suspense } from "react";
 import ExperienceSkeleton from "@/components/loading/skeleton-experince";
 import SeekerComplete from "./Components/seekerComplete";
+import ProfileNavigation from "./Components/ProfileNavigation";
+import { ProfileInfoForm } from "./Components/ProfileInfoForm";
+import CareerPreferenceTab from "./Components/CareerPreferenceTab";
 
 const ProfilePage = async ({
   params: { id },
@@ -32,6 +35,9 @@ const ProfilePage = async ({
   if (!success || !user) return notFound();
   const sessionUser = data?.user;
   const isMe = isPublic ? false : sessionUser?.id === user.id;
+  const tab = isMe
+    ? (searchParams?.tab as ProfileTabs) || "personal-info"
+    : "professional";
   let isLocked = !isMe;
   if (!isMe && sessionUser?.type === "employer" && sessionUser?.companyId) {
     const { data } = await checkIsUnlocked(user.id, sessionUser?.companyId);
@@ -49,25 +55,14 @@ const ProfilePage = async ({
           {/* Header Section */}
           <HeaderSection user={user} isMe={isMe} />
           {/* About Section */}
-          <AboutSeeker user={user} isMe={isMe} />
-          {/* Experience Section */}
-          <Suspense fallback={<ExperienceSkeleton />}>
-            <ExperienceSection user={user} isMe={isMe} />
-          </Suspense>
-          {/* Education Section */}
-          <Suspense fallback={null}>
-            <EducationsSection user={user} isMe={isMe} />
-          </Suspense>
-          {/* Courses Section */}
-          <Suspense fallback={null}>
-            <CoursesSection user={user} isMe={isMe} />
-          </Suspense>
-          {/* Skills Section */}
-          <Suspense fallback={null}>
-            <SkillsSection user={user} isMe={isMe} />
-          </Suspense>
-          {/* Activities / Achievements Section */}
-          <ActivitiesAchievementsSection user={user} isMe={isMe} />
+          {isMe && <ProfileNavigation tab={tab} />}
+          {tab === "professional" && (
+            <ProfessionalInfo user={user} isMe={isMe} />
+          )}
+          {isMe && tab === "personal-info" && <ProfileInfoForm user={user} />}
+          {isMe && tab === "career-preference" && (
+            <CareerPreferenceTab user={user} />
+          )}
         </div>
         {/* Right Sections */}
         <div className="hidden min-w-80 max-w-80 space-y-2 md:block">
@@ -104,3 +99,25 @@ const ProfilePage = async ({
 };
 
 export default ProfilePage;
+
+const ProfessionalInfo: React.FC<{
+  user: UserProfile;
+  isMe: boolean;
+}> = ({ user, isMe }) => (
+  <>
+    <AboutSeeker user={user} isMe={isMe} />
+    <Suspense fallback={<ExperienceSkeleton />}>
+      <ExperienceSection user={user} isMe={isMe} />
+    </Suspense>
+    <Suspense fallback={null}>
+      <EducationsSection user={user} isMe={isMe} />
+    </Suspense>
+    <Suspense fallback={null}>
+      <CoursesSection user={user} isMe={isMe} />
+    </Suspense>
+    <Suspense fallback={null}>
+      <SkillsSection user={user} isMe={isMe} />
+    </Suspense>
+    <ActivitiesAchievementsSection user={user} isMe={isMe} />
+  </>
+);

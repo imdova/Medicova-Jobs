@@ -1,534 +1,170 @@
 "use client";
 import React, { useState } from "react";
+import dayjs from "dayjs";
+import { UseFormReturn } from "react-hook-form";
+import { FieldConfig, Option } from "@/types";
+import { FormField } from "@/components/form/FormModal/FormField/FormField";
+import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
+import { Female, Male } from "@mui/icons-material";
+import CategorySelect from "./CategorySelect";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+  gendersOptions,
+  maritalStatusOptions,
+  nationalitiesOptions,
+} from "@/constants";
+import { Gender } from "@/constants/enums/gender.enum";
+import LocationSelect from "@/components/form/selections/LocationSelect";
+import { isValidPhoneNumber } from "@/util/forms";
 
-const ProfileForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    phone: "",
-  });
+interface ProfileFormProps {
+  formMethods: UseFormReturn<Partial<UserProfile>>;
+}
 
-  const [errors, setErrors] = useState({
-    email: "",
-    phone: "",
-  });
+const genderIcons: Record<keyof typeof Gender, React.ReactNode> = {
+  MALE: (
+    <Male className="h-7 w-7 text-blue-500 group-aria-selected:text-white" />
+  ),
+  FEMALE: (
+    <Female className="h-7 w-7 text-pink-500 group-aria-selected:text-white" />
+  ),
+  ANY: null,
+};
 
-  const [year, setYear] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [phone, setPhone] = useState<string | undefined>("");
+const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
+  const { control } = formMethods;
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputYear = parseInt(e.target.value, 10);
-    const currentYear = new Date().getFullYear();
+  const [isMyWhatsApp, setIsMyWhatsApp] = useState(true);
 
-    if (inputYear < 1970) {
-      setError("Year must be 1970 or later.");
-    } else if (inputYear > currentYear) {
-      setError(`Year cannot exceed ${currentYear}.`);
-    } else {
-      setError(null);
-    }
-
-    setYear(e.target.value);
+  const onCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked;
+    setIsMyWhatsApp(isChecked);
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value ?? checked,
-    });
-  };
-
-  const validateForm = () => {
-    const newErrors: any = {};
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Enter a valid email address";
-    }
-
-    if (!phone) {
-      newErrors.phone = "Phone number is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted:", formData);
-    }
-  };
-
-  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
-
   return (
-    <Grid item xs={12}>
-      <Card>
-        <CardContent>
-          <Typography
-            sx={{
-              marginBottom: 2,
-              color: "rgba(24, 93, 67, 1)",
-              fontWeight: "500",
-              fontSize: { xs: "20px", md: "20px" },
+    <div className="w-full space-y-3 rounded-base border border-gray-200 bg-white p-5 shadow-soft">
+      <h5 className="text-xl font-semibold text-main md:mt-4">
+        Your Personal Info
+      </h5>
+      <div className="flex w-full gap-4">
+        {/* Phone Number */}
+        <div className="flex-1">
+          <FormField
+            field={{
+              label: "Phone Number*",
+              name: "phone",
+              type: "phone",
+              rules: {
+                validate: (value) =>
+                  isValidPhoneNumber(value || "") ||
+                  "Please enter a valid phone number",
+              },
             }}
-          >
-            Your Personal Info
-          </Typography>
-          <form onSubmit={handleSubmit} noValidate>
-            {/* personal info */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", md: "nowrap" },
-                gap: 4,
-                marginY: 2,
-              }}
-            >
-              {/* First Name */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  First Name *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  placeholder="Enter your First Name"
-                />
-              </Box>
-
-              {/* Last Name */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Last Name *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  placeholder="Enter your Last Name"
-                />
-              </Box>
-            </Box>
-
-            {/* personal info */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", md: "nowrap" },
-                marginY: 2,
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Birthdate *
-                </InputLabel>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    value={selectedDate}
-                    onChange={(newValue) => setSelectedDate(newValue)}
-                    slots={{
-                      textField: TextField,
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        sx: {
-                          height: "40px",
-                          "& .MuiInputBase-root": {
-                            height: "40px",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-            </Box>
-
-            {/* Radio Group Section */}
-            <Box sx={{ marginY: 2 }}>
-              {/* Title for the Radio Group */}
-              <Typography
-                variant="h6"
-                sx={{
-                  marginTop: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Gender *
-              </Typography>
-
-              <FormControl component="fieldset" fullWidth>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* First Radio Group */}
-                  <RadioGroup row defaultValue="male">
-                    <FormControlLabel
-                      value="male"
-                      sx={{ fontSize: "14px" }}
-                      control={
-                        <Radio
-                          sx={{
-                            "&.Mui-checked": { color: "#2EAE7D" },
-                            fontSize: "14px",
-                          }}
-                        />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Male</span>}
-                    />
-                    <FormControlLabel
-                      value="female"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Female</span>}
-                    />
-                  </RadioGroup>
-                </Box>
-              </FormControl>
-            </Box>
-            {/* Nationality  */}
-            <Box sx={{ marginY: 2 }}>
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Nationality *
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select
-                    sx={{
-                      backgroundColor: "rgba(214, 221, 235, 0.18)",
-                      height: "40px",
-                      fontSize: "14px",
-                    }}
-                    defaultValue="egyptian"
-                  >
-                    <MenuItem value="egyptian">Egyptian</MenuItem>
-                    <MenuItem value="egyptian">Egyptian</MenuItem>
-                    <MenuItem value="egyptian">Egyptian</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
-            {/* Marital Status */}
-            <Box sx={{ marginY: 2 }}>
-              {/* Title for the Radio Group */}
-              <Typography
-                variant="h6"
-                sx={{
-                  marginTop: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Marital Status
-              </Typography>
-
-              <FormControl component="fieldset" fullWidth>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* First Radio Group */}
-                  <RadioGroup row defaultValue="single">
-                    <FormControlLabel
-                      value="single"
-                      sx={{ fontSize: "14px" }}
-                      control={
-                        <Radio
-                          sx={{
-                            "&.Mui-checked": { color: "#2EAE7D" },
-                            fontSize: "14px",
-                          }}
-                        />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Single</span>}
-                    />
-                    <FormControlLabel
-                      value="married"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Married</span>}
-                    />
-                    <FormControlLabel
-                      value="widow"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Widow</span>}
-                    />
-                    <FormControlLabel
-                      value="divorced"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={
-                        <span style={{ fontWeight: "600" }}>Divorced</span>
-                      }
-                    />
-                  </RadioGroup>
-                </Box>
-              </FormControl>
-            </Box>
-            {/* Driver License */}
-            <Box sx={{ marginY: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  marginTop: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Do you have a driving license?
-              </Typography>
-
-              <FormControl component="fieldset" fullWidth>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* First Radio Group */}
-                  <RadioGroup row defaultValue="yes">
-                    <FormControlLabel
-                      value="yes"
-                      sx={{ fontSize: "14px" }}
-                      control={
-                        <Radio
-                          sx={{
-                            "&.Mui-checked": { color: "#2EAE7D" },
-                            fontSize: "14px",
-                          }}
-                        />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Yes</span>}
-                    />
-                    <FormControlLabel
-                      value="no"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>No</span>}
-                    />
-                  </RadioGroup>
-                </Box>
-              </FormControl>
-            </Box>
-            {/* Location */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", md: "nowrap" },
-                gap: 4,
-                marginY: 2,
-              }}
-            >
-              {/* First Name */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  Country *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  defaultValue="Egypt"
-                />
-              </Box>
-
-              {/* Last Name */}
-              <Box sx={{ width: "100%" }}>
-                <InputLabel
-                  sx={{
-                    marginBottom: 1,
-                    fontWeight: 600,
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  City *
-                </InputLabel>
-                <TextField
-                  sx={{
-                    backgroundColor: "rgba(214, 221, 235, 0.18)",
-                    "& .MuiOutlinedInput-root": {
-                      height: "40px",
-                      fontSize: "14px",
-                    },
-                  }}
-                  fullWidth
-                  defaultValue="Cairo"
-                />
-              </Box>
-            </Box>
-            {/* Driver License */}
-            <Box sx={{ marginY: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  marginTop: 1,
-                  fontWeight: 600,
-                  color: "#000",
-                  fontSize: "14px",
-                }}
-              >
-                Would you be willing to relocate to another city or country if
-                you find the right opportunity?
-              </Typography>
-
-              <FormControl component="fieldset" fullWidth>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 2,
-                  }}
-                >
-                  {/* First Radio Group */}
-                  <RadioGroup row defaultValue="yes">
-                    <FormControlLabel
-                      value="yes"
-                      sx={{ fontSize: "14px" }}
-                      control={
-                        <Radio
-                          sx={{
-                            "&.Mui-checked": { color: "#2EAE7D" },
-                            fontSize: "14px",
-                          }}
-                        />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>Yes</span>}
-                    />
-                    <FormControlLabel
-                      value="no"
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "#2EAE7D" } }} />
-                      }
-                      label={<span style={{ fontWeight: "600" }}>No</span>}
-                    />
-                  </RadioGroup>
-                </Box>
-              </FormControl>
-            </Box>
-            {/* Centered Save Button */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 4,
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  width: "204.16px",
-                  height: "46px",
-                  borderRadius: "3px",
-                  textTransform: "capitalize",
-                  fontWeight: "600",
-                }}
-              >
-                Save
-              </Button>
-            </Box>
-          </form>
-        </CardContent>
-      </Card>
-    </Grid>
+            control={control}
+          />
+        </div>
+        <div className="flex-1">
+          {!isMyWhatsApp && (
+            <FormField
+              field={
+                {
+                  label: "WhatsApp Number",
+                  name: "whatsapp",
+                  type: "phone",
+                  rules: {
+                    validate: (value) =>
+                      isValidPhoneNumber(value || "") ||
+                      "Please enter a valid phone number",
+                  },
+                } as FieldConfig<UserProfile>
+              }
+              control={control}
+            />
+          )}
+        </div>
+      </div>
+      <CheckboxField
+        field={{
+          name: "any",
+          label: "My Phone Number is my whats app number",
+          type: "checkbox",
+        }}
+        controllerField={{
+          value: isMyWhatsApp,
+          onChange: onCheckboxChange,
+        }}
+      />
+      <div className="md:w-1/2">
+        <FormField
+          field={
+            {
+              name: "birthDate",
+              type: "date",
+              label: "Date of Birth*",
+              dateFieldProps: {
+                maxDate: dayjs().subtract(16, "years"),
+              },
+            } as FieldConfig<UserProfile>
+          }
+          control={control}
+        />
+      </div>
+      <div className="md:w-1/2">
+        <FormField
+          field={{
+            name: "gender",
+            type: "radio",
+            label: "Gender",
+            options: gendersOptions.map((x) => ({
+              ...x,
+              icon: genderIcons[x.value as keyof typeof Gender],
+            })),
+          }}
+          control={control}
+        />
+      </div>
+      <div className="md:w-1/2">
+        <FormField
+          field={{
+            name: "nationality",
+            type: "search-select",
+            label: "Nationality",
+            options: nationalitiesOptions,
+          }}
+          control={control}
+        />
+      </div>
+      <div className="md:w-1/2">
+        <FormField
+          field={
+            {
+              name: "maritalStatus",
+              type: "radio",
+              label: "Marital Status",
+              options: maritalStatusOptions,
+            } as FieldConfig<UserProfile>
+          }
+          control={control}
+        />
+      </div>
+      <div className="md:w-1/2">
+        <FormField
+          field={
+            {
+              name: "hasDrivingLicence",
+              type: "radio",
+              label: "Do you have a driving license?",
+              options: [
+                { label: "yes", value: true },
+                { label: "no", value: false },
+              ] as Option<Record<any, any>>[],
+            } as FieldConfig<UserProfile>
+          }
+          control={control}
+        />
+      </div>
+      {/* Location */}
+      <LocationSelect formMethods={formMethods} />
+      <CategorySelect formMethods={formMethods} />
+    </div>
   );
 };
 

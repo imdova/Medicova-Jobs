@@ -13,12 +13,12 @@ declare module "next-auth" {
     // isVerified: boolean;
     photo: string | null;
     phone: string | null;
-    companyId: string | null;
-    companyName: string | null;
-    companyUserName: string | null;
-    companyEmail: string | null;
-    companyPhoto: string | null;
-    permissions: Permission[];
+    companyId?: string | null;
+    companyName?: string | null;
+    companyUserName?: string | null;
+    companyEmail?: string | null;
+    companyPhoto?: string | null;
+    permissions?: Permission[];
   }
 
   interface Session {

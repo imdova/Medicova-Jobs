@@ -18,17 +18,19 @@ function LocationSelect<T extends Partial<LocationItems>>({
   formMethods,
 }: LocationSectionProps<T>) {
   const { control, getValues, setValue, watch } = formMethods;
-  const country = getValues("country" as Path<T>) as unknown as LocationItem | null;
+  const country = getValues(
+    "country" as Path<T>,
+  ) as unknown as LocationItem | null;
   const { countries, states } = useLocationData(country?.code);
 
   const locationFields: FieldConfig<T>[] = [
     {
       name: "country.code" as Path<T>,
       type: "search-select",
-      label: "Country",
+      label: "Address",
       resetFields: ["state.code", "city"] as Path<T>[],
       textFieldProps: {
-        placeholder: "Select country",
+        placeholder: "Select your country (e.g., Egypt)",
       },
       options: countries.map((country) => ({
         value: country.isoCode,
@@ -44,10 +46,10 @@ function LocationSelect<T extends Partial<LocationItems>>({
     {
       name: "state.code" as Path<T>,
       type: "search-select",
-      label: "State",
+      label: "State/Province",
       dependsOn: "country.code" as Path<T>,
       textFieldProps: {
-        placeholder: "Select state",
+        placeholder: "Select your governorate (e.g., Cairo, Alexandria)",
       },
       onChange: (value) =>
         setValue(
@@ -65,7 +67,7 @@ function LocationSelect<T extends Partial<LocationItems>>({
       type: "text",
       label: "City",
       textFieldProps: {
-        placeholder: "Enter City",
+        placeholder: "e.g., Cairo, Giza",
       },
       gridProps: { xs: 12, md: 4 },
       rules: {
@@ -78,7 +80,9 @@ function LocationSelect<T extends Partial<LocationItems>>({
     fieldNames.forEach((name) => {
       const field = locationFields.find((f) => f.name === name);
       if (field) {
-        setValue(field.name, "" as PathValue<T, Path<T>>, { shouldDirty: true });
+        setValue(field.name, "" as PathValue<T, Path<T>>, {
+          shouldDirty: true,
+        });
       }
     });
   };

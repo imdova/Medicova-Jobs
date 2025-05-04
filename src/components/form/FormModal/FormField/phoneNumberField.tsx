@@ -26,11 +26,7 @@ export const PhoneNumberField: React.FC<PhoneFieldProps> = ({
         <div className="mb-1">
           <label htmlFor={String(field.name)} className="font-semibold">
             {field.label?.replace("*", "")}
-            {field.required ? (
-              <span className="text-red-500">*</span>
-            ) : (
-              <span className="text-gray-400 text-sm ml-1">(Optional)</span>
-            )}
+            {field.required ? <span className="text-red-500">*</span> : null}
           </label>
         </div>
       )}
