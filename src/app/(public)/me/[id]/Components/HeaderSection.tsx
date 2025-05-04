@@ -32,7 +32,6 @@ const HeaderSection: React.FC<{
       { body: { id: user.id, ...formData } },
       TAGS.profile,
     );
-    console.log("🚀 ~ handleUpdateProfile ~ newProfile:", newProfile);
     await updateSession({
       photo: newProfile.avatar,
     });
