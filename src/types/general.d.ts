@@ -19,7 +19,7 @@ interface LocationType {
 
 interface ActionOption<T> {
   label: string;
-  action: (item: T) => void;
+  action: (item?: T) => void;
   icon?: React.ReactNode;
 }
 

@@ -160,14 +160,22 @@ function DataTable<T extends { id: number | string }>({
                         className={headerClassName}
                       >
                         <span
-                          className={`line-clamp-1 text-nowrap ${cellClassName}`}
+                          className={cn(
+                            "line-clamp-1 text-nowrap",
+                            cellClassName,
+                            "p-0",
+                          )}
                         >
                           {col.header}
                         </span>
                       </SortableHeader>
                     ) : (
                       <span
-                        className={`line-clamp-1 text-nowrap ${cellClassName}`}
+                        className={cn(
+                          "line-clamp-1 text-nowrap",
+                          cellClassName,
+                          "p-0",
+                        )}
                       >
                         {col.header}
                       </span>
