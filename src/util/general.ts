@@ -295,3 +295,15 @@ export function getExperienceDetail(text: string) {
     return text?.split("EXPERIENCE:")[1].trim();
   return text;
 }
+
+export function mergeData<T>(
+  currentData: T[] | undefined,
+  initialData: T[] | undefined,
+  key: keyof T,
+): T[] {
+  const dataArray = Array.isArray(currentData) ? currentData : [];
+  const existingKeys = new Set(dataArray.map((item) => item[key]));
+  const newItems =
+    initialData?.filter((item) => !existingKeys.has(item[key])) || [];
+  return [...dataArray, ...newItems];
+}

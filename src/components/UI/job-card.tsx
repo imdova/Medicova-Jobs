@@ -192,7 +192,8 @@ const JobCard: React.FC<JobCardProps> = ({
           <div className="mt-3 flex flex-wrap">
             {job.jobIndustry && (
               <Link
-                href={`/search?q=${job.jobIndustry}`}
+                scroll={false}
+                href={`/a/${job.jobIndustry}-Jobs-in-${job?.country?.name?.replaceAll(" ", "-") || "Egypt"}?ind=${job.jobIndustryId}&country=${job.country?.code}`}
                 className="mr-2 text-sm text-primary underline hover:no-underline"
               >
                 #{job.jobIndustry}
@@ -200,7 +201,8 @@ const JobCard: React.FC<JobCardProps> = ({
             )}
             {job.jobCategory && (
               <Link
-                href={`/search?q=${job.jobCategory}`}
+                scroll={false}
+                href={`/a/${job.jobCategory}-Jobs-in-${job?.country?.name?.replaceAll(" ", "-") || "Egypt"}?ctg=${job.jobCategoryId}&country=${job.country?.code}`}
                 className="mr-2 text-sm text-primary underline hover:no-underline"
               >
                 #{job.jobCategory}
@@ -208,7 +210,8 @@ const JobCard: React.FC<JobCardProps> = ({
             )}
             {job.country && (
               <Link
-                href={`/search?country=${job.country.name}&cCd=${job.country.code}`}
+                href={`/a/Jobs-in-${job?.country?.name?.replaceAll(" ", "-") || "Egypt"}?country=${job.country?.code}`}
+                scroll={false}
                 className="mr-2 text-sm text-primary underline hover:no-underline"
               >
                 #{job.country.name}

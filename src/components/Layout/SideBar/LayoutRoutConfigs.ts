@@ -19,6 +19,7 @@ export const routeConfigs: RouteConfig[] = [
   // { pattern: "/search", sideBarType: "none", linksType: "userType" },
 
   { pattern: "/chat", sideBarType: "minimal", linksType: "userType" },
+  { pattern: "/a/[slug]", sideBarType: "minimal", linksType: "userType" },
   { pattern: "/notifications", sideBarType: "full", linksType: "userType" },
 
   { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },

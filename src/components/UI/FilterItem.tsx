@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   FormControlLabel,
@@ -110,10 +110,17 @@ const FilterItem: React.FC<FilterItemProps> = ({
     handleCheckChange(params);
   };
 
+  useEffect(() => {
+    setIsExpanded(
+      isAnySelected ? isAnySelected : index ? index === 0 || index === 1 : true,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnySelected]);
+
   return (
     <div className="border-b pb-4 last:border-b-0">
       <div
-        className="mb-3 flex cursor-pointer items-center justify-between"
+        className="flex cursor-pointer items-center justify-between"
         onClick={toggleExpand}
       >
         <h6 className="font-bold text-[#25324B]">{name}</h6>
@@ -129,8 +136,18 @@ const FilterItem: React.FC<FilterItemProps> = ({
             value={query || ""}
             onChange={searchHandler}
             sx={{
+              height: "32px",
+              "& .MuiInputBase-root": {
+                padding: "6px", // Reduce input padding
+                height: "32px",
+              },
+              "& .MuiOutlinedInput-input": {
+                padding: 0, // Reduce input padding
+                height: "14px", // Adjust input element height
+              },
               "& .MuiInputBase-input": {
                 padding: "8px 8px",
+                height: "32px",
                 paddingLeft: 0,
               },
             }}
@@ -147,7 +164,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
         <FormControl component="fieldset">
           {/* All Checkbox */}
 
-          <div className="grid grid-cols-1 gap-1 px-1">
+          <div className="mt-2 grid grid-cols-1 gap-1 px-1">
             {multiple && (
               <FormControlLabel
                 control={
@@ -166,7 +183,10 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     sx={{ padding: 0, px: 1 }}
                   />
                 }
-                label={`All (${getTotalCount(items)})`}
+                // label={`All (${getTotalCount(items)})`}
+                label={
+                  <span className="text-sm">All ({getTotalCount(items)})</span>
+                }
                 className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
               />
             )}
@@ -188,7 +208,11 @@ const FilterItem: React.FC<FilterItemProps> = ({
                     sx={{ padding: 0, px: 1 }}
                   />
                 }
-                label={`${option.label} ${option.count ? `(${option.count})` : ""}`}
+                label={
+                  <span className="text-sm">
+                    {option.icon} {option.label} ({option.count})
+                  </span>
+                }
                 className="rounded-md text-[#515B6F] transition-colors hover:bg-gray-50"
               />
             ))}
