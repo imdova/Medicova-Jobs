@@ -60,14 +60,14 @@ export function calculateAge(birthDate: Date): number {
 export function formatLocation(location: LocationType): string | null {
   const parts: string[] = [];
 
-  if (location.country?.name) {
-    parts.push(location.country.name);
+  if (location.city) {
+    parts.push(location.city);
   }
   if (location.state?.name) {
     parts.push(location.state.name);
   }
-  if (location.city) {
-    parts.push(location.city);
+  if (location.country?.name) {
+    parts.push(location.country.name);
   }
 
   return parts.join(", ") || null;
@@ -288,4 +288,10 @@ export function updateItemInArray<T extends { id: string }>(
 ): T[] {
   const newArray = structuredClone(array); // Deep clone to avoid mutating original
   return newArray.map((item) => (item.id === newItem.id ? newItem : item));
+}
+
+export function getExperienceDetail(text: string) {
+  if (text?.includes("EXPERIENCE:"))
+    return text?.split("EXPERIENCE:")[1].trim();
+  return text;
 }

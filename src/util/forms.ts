@@ -8,7 +8,7 @@ export const isValidEgyptianPhoneNumber = (phone: string): boolean => {
 };
 
 export const isValidPhoneNumber = (phoneNumber: string): boolean => {
-  const phoneNumberObj = parsePhoneNumberFromString(phoneNumber);
+  const phoneNumberObj = parsePhoneNumberFromString(phoneNumber || "");
   if (!phoneNumberObj || !phoneNumberObj.isValid()) {
     return false;
   }
@@ -32,10 +32,7 @@ export const getDefaultValues = (
   ...initialValues,
 });
 
-export function getNestedValue<T>(
-  formValues: T,
-  path: Path<T>,
-): any {
+export function getNestedValue<T>(formValues: T, path: Path<T>): any {
   const keys = path.split(".") as (keyof T)[];
   const value = keys.reduce((current: any, key: keyof T) => {
     return current && current[key] !== undefined ? current[key] : undefined;
@@ -43,13 +40,15 @@ export function getNestedValue<T>(
   return value;
 }
 
-export function getDependsOnLabel(dependsOn: FieldConfig | null | undefined): string | undefined {
+export function getDependsOnLabel(
+  dependsOn: FieldConfig | null | undefined,
+): string | undefined {
   if (!dependsOn) {
     return undefined;
   }
 
   if (dependsOn.textFieldProps?.label) {
-    return typeof dependsOn.textFieldProps.label === 'string'
+    return typeof dependsOn.textFieldProps.label === "string"
       ? dependsOn.textFieldProps.label.replace("*", "")
       : undefined;
   }

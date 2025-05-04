@@ -117,7 +117,7 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
           </IconButton>
         </div>
       )}
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <label className="font-semibold text-main">Profile Visibility</label>
         <Switch
           color="primary"
@@ -127,7 +127,7 @@ const PublicProfile: React.FC<{ user: UserProfile }> = ({ user }) => {
           //   handleUpdate({ isVisible: isChecked });
           // }}
         />
-      </div>
+      </div> */}
       <div className="flex items-center justify-between">
         <label className="font-semibold text-main">
           Available for immediate start

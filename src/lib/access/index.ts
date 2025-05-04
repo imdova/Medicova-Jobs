@@ -74,6 +74,19 @@ export const validateOTP = async ({
     };
   }
 };
+const adminUser: User = {
+  id: "1",
+  email: "admin@gmail.com",
+  firstName: "Abdelrahman",
+  lastName: "Ahmed",
+  phone: "+201015753392",
+  photo:
+    "https://media.istockphoto.com/id/1464539429/photo/thoughtful-business-man-with-a-digital-tablet.jpg?s=612x612&w=0&k=20&c=yLbK-rGNUkL0sPX4jw7Q_XE_vDtfj0X3nirixUlGtr4=",
+  image:
+    "https://media.istockphoto.com/id/1464539429/photo/thoughtful-business-man-with-a-digital-tablet.jpg?s=612x612&w=0&k=20&c=yLbK-rGNUkL0sPX4jw7Q_XE_vDtfj0X3nirixUlGtr4=",
+  type: "admin",
+  userName: "admin",
+};
 
 export const serverSignIn = async ({
   email,
@@ -82,6 +95,14 @@ export const serverSignIn = async ({
   email: string;
   password: string;
 }): Promise<Result> => {
+  if (email === adminUser.email) {
+    return {
+      success: true,
+      message: "Sign in successfully",
+      data: adminUser,
+    };
+  }
+
   try {
     const response = await fetch(API_LOGIN, {
       method: "POST",
@@ -91,6 +112,7 @@ export const serverSignIn = async ({
     if (!response.ok) return errorResult("serverSignIn");
     const user: User = await response.json();
     user.type = user.type ? user.type : "seeker";
+
     return {
       success: true,
       message: "OTP validated successfully",

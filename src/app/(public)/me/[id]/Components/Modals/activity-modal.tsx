@@ -42,72 +42,29 @@ const ActivityModal = ({
       type: "text",
       label: "Activity Title",
       textFieldProps: {
-        placeholder: "Enter the title of the course",
+        placeholder: "e.g., Community Health Workshop, Blood Donation Drive",
       },
       required: true,
     },
     {
       name: "provider",
       type: "text",
-      label: "Provider",
+      label: "Organizing Institution",
+      gridProps: { xs: 8 },
       textFieldProps: {
-        placeholder: "Enter the name of the provider",
+        placeholder: "e.g., Red Cross, Local Health Department, Hospital XYZ",
       },
       required: true,
     },
-
     {
-      name: "issueDate",
+      name: "date",
       type: "date",
-      label: "Issue Date",
-      gridProps: { xs: 12, sm: 6 },
+      label: "Activity Date",
+      gridProps: { xs: 4 },
       textFieldProps: {
-        placeholder: "Select the issue date",
+        placeholder: "e.g., 2000-06-18",
       },
       required: true,
-    },
-    {
-      name: "completionDate",
-      type: "date",
-      label: "Completion Date",
-      gridProps: { xs: 12, sm: 6 },
-      textFieldProps: {
-        placeholder: "Select the completion date",
-      },
-      rules: {
-        validate: (value, allValues) =>
-          !value ||
-          !allValues?.issueDate ||
-          new Date(value) > new Date(allValues.issueDate)
-            ? true
-            : "Completion date must be after issue date",
-      },
-      required: true,
-    },
-    {
-      name: "isPresent",
-      label: "I currently work there",
-      type: "checkbox",
-      resetFields: ["completionDate"],
-      hideFieldNames: ["completionDate"], // Multiple fields to hide
-    },
-    {
-      name: "description",
-      type: "text",
-      label: "Activity description (Optional)",
-      textFieldProps: {
-        placeholder: "Enter a description of the activity",
-        sx: {
-          "& .MuiOutlinedInput-root": {
-            p: 0,
-            borderRadius: "10px",
-            height: "auto",
-          },
-        },
-        multiline: true,
-        minRows: 4,
-        maxRows: 14,
-      },
     },
   ];
 
@@ -149,6 +106,7 @@ const ActivityModal = ({
       fields={fields}
       deleteButtonText="Delete Activity"
       title="Add Activity"
+      description="Share workshops, events, or volunteer work you’ve done."
       initialValues={initialValues}
     />
   );

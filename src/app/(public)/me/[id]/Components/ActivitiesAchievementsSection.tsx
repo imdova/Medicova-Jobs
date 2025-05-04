@@ -15,15 +15,15 @@ const INITIAL_VISIBLE_ITEMS = 2;
 const ActivitySection = async ({ user, isMe }: ActivitySectionProps) => {
   const result = await getActivity(user.id);
 
-  if (!result.success || !result.data) {
-    return <ActivityEmptyCard user={user} isMe={isMe} />;
+  if (!(result.success && result.data && result.data.length > 0)) {
+    if (!isMe) return null;
   }
-  const activities = result.data;
+  const activities = result.data || [];
 
   return (
     <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-main">Activity</h3>
+        <h3 className="text-xl font-semibold text-main">Activity & Achievements</h3>
         {isMe && (
           <OpenModalButton
             componentProps={{

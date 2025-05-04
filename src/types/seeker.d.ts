@@ -7,6 +7,7 @@ interface ApplicationsFilter {
   startDate?: string | null;
   status?: ApplicationStatus;
 }
+type ProfileTabs = "personal-info" | "professional" | "career-preference";
 enum MaritalStatus {
   Single = "Single",
   Married = "Married",
@@ -228,8 +229,8 @@ type EducationData = {
   id: string;
   inistitute: string;
   degree: string;
-  // country: LocationItem;
-  countryCode: string;
+  program: string;
+  country: LocationItem;
   startYear: number;
   endYear: number;
   grade: string;
@@ -238,9 +239,7 @@ type CertificationData = {
   id: string;
   title: string;
   provider: string;
-  speciality: string;
   issueDate: string;
-  completionDate: string;
   description: string;
 };
 
@@ -248,10 +247,7 @@ type ActivityData = {
   id: string;
   title: string;
   provider: string;
-  issueDate: string;
-  completionDate: string;
-  description: string;
-  isPresent: boolean;
+  date: string;
 };
 
 type SkillData = {

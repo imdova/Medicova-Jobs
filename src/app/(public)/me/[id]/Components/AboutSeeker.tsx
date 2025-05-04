@@ -29,9 +29,8 @@ const AboutSeeker: React.FC<{
     reset();
   };
 
-  if (!isMe && user.about?.length === 0) {
-    return null;
-  }
+  if (!user.about && !isMe) return null;
+  
   const handleUpdate = async (formData: Partial<UserProfile>) => {
     const body = { id: user.id, ...formData };
     await update(API_UPDATE_SEEKER, { body }, TAGS.profile);

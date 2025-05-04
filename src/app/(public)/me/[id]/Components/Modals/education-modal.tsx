@@ -52,18 +52,30 @@ const EducationModal = ({
     {
       name: "inistitute",
       type: "text",
-      label: "Institute Name",
+      label: "Educational Institute",
       textFieldProps: {
-        placeholder: "Enter The name of your College or University ",
+        placeholder: "e.g., University of Oxford, MIT, Delhi University",
+      },
+      required: true,
+    },
+    {
+      name: "program",
+      type: "text",
+      label: "Program Name",
+      textFieldProps: {
+        placeholder:
+          "e.g., Nursing, Radiologic Technology, Health Information Management",
       },
       required: true,
     },
     {
       name: "degree",
       type: "select",
-      label: "Degree",
-      textFieldProps: { placeholder: "Select degree" },
-      gridProps: { xs: 8, sm: 9 },
+      label: "Degree Awarded",
+      textFieldProps: {
+        placeholder: "e.g., Bachelor's, Master's, PhD",
+      },
+      gridProps: { xs: 8 },
       required: true,
       options: educationOptions.map((x) => ({
         label: x.label,
@@ -72,18 +84,22 @@ const EducationModal = ({
     },
     {
       name: "grade",
-      label: "Grade",
+      label: "Final Grade or GPA",
       required: true,
       type: "text",
-      textFieldProps: { placeholder: "grade" },
-      gridProps: { xs: 4, sm: 3 },
+      textFieldProps: {
+        placeholder: "e.g., 3.8 GPA, First Class Honours, A+",
+      },
+      gridProps: { xs: 4 },
     },
     {
       name: "startYear",
-      label: "Start Year",
+      label: "Year of Admission",
       type: "search-select",
       gridProps: { xs: 6 },
-      textFieldProps: { placeholder: "Start Year" },
+      textFieldProps: {
+        placeholder: "e.g., 2019",
+      },
       options: years.map((year) => ({
         value: year.toString(),
         label: year.toString(),
@@ -92,10 +108,12 @@ const EducationModal = ({
     },
     {
       name: "endYear",
-      label: "End Year",
+      label: "Year of Graduation",
       type: "search-select",
       gridProps: { xs: 6 },
-      textFieldProps: { placeholder: "End Year" },
+      textFieldProps: {
+        placeholder: "e.g., 2023",
+      },
       options: years.map((year) => ({
         value: year.toString(),
         label: year.toString(),
@@ -107,18 +125,18 @@ const EducationModal = ({
             !allValues?.startYear ||
             Number(value) >= Number(allValues.startYear)
             ? true
-            : "End Year must be after start year";
+            : "End Year must be after Start Year";
         },
       },
       required: true,
     },
     {
-      name: "countryCode",
+      name: "country.code",
       type: "search-select",
-      label: "Country",
+      label: "Country of Institute",
       required: true,
       textFieldProps: {
-        placeholder: "Select country",
+        placeholder: "e.g., United States, India, United Kingdom",
       },
       options: countries.data.map((country) => ({
         value: country.isoCode,
@@ -128,8 +146,13 @@ const EducationModal = ({
   ];
 
   const onSubmit = async (formData: Partial<EducationData>) => {
+    const country =
+      countries.data.find(
+        (country) => country.isoCode === formData?.country?.code,
+      ) || null;
     const body = {
       ...formData,
+      country: { code: country?.isoCode, name: country?.name },
       seekerId: seekerId,
     };
     if (body.id) {

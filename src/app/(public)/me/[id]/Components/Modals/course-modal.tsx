@@ -48,27 +48,18 @@ const CourseModal = ({
       type: "text",
       label: "Course Title",
       textFieldProps: {
-        placeholder: "Enter the title of the course",
+        placeholder:
+          "e.g., Advanced Cardiac Life Support (ACLS), Medical Terminology",
       },
       required: true,
     },
     {
       name: "provider",
       type: "text",
-      label: "Provider",
+      label: "Course Provider",
       gridProps: { xs: 6 },
       textFieldProps: {
-        placeholder: "Enter the name of the provider",
-      },
-      required: true,
-    },
-    {
-      name: "speciality",
-      type: "text",
-      label: "Speciality",
-      gridProps: { xs: 6 },
-      textFieldProps: {
-        placeholder: "Enter the speciality",
+        placeholder: "e.g., American Heart Association, Coursera, WHO",
       },
       required: true,
     },
@@ -78,34 +69,17 @@ const CourseModal = ({
       label: "Issue Date",
       gridProps: { xs: 6 },
       textFieldProps: {
-        placeholder: "Select the issue date",
-      },
-      required: true,
-    },
-    {
-      name: "completionDate",
-      type: "date",
-      label: "Completion Date",
-      gridProps: { xs: 6 },
-      textFieldProps: {
-        placeholder: "Select the completion date",
-      },
-      rules: {
-        validate: (value, allValues) =>
-          !value ||
-          !allValues?.issueDate ||
-          new Date(value) > new Date(allValues.issueDate)
-            ? true
-            : "Completion date must be after issue date",
+        placeholder: "e.g., 2000-06-18",
       },
       required: true,
     },
     {
       name: "description",
       type: "text",
-      label: "Course description",
+      label: "Course Description",
       textFieldProps: {
-        placeholder: "Enter a description of the course",
+        placeholder:
+          "Briefly describe what the course covered, e.g., emergency procedures, patient care, healthcare technology.",
         sx: {
           "& .MuiOutlinedInput-root": {
             p: 0,

@@ -14,10 +14,11 @@ const INITIAL_VISIBLE_ITEMS = 2;
 const CoursesSection = async ({ user, isMe }: CoursesSectionProps) => {
   const result = await getCourses(user.id);
 
-  if (!result.success || !result.data) {
-    return <CourseEmptyCard user={user} isMe={isMe} />;
+  if (!(result.success && result.data && result.data.length > 0)) {
+    if (!isMe) return null;
   }
-  const courses = result.data;
+  const courses = result.data || [];
+
 
   return (
     <div className="mt-5 rounded-base border border-gray-200 bg-white p-3 shadow-soft md:p-5">
