@@ -73,6 +73,7 @@ type UserProfile = {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  total_years_experience: number | null;
   _version: number;
 
   /// TODO: need to add

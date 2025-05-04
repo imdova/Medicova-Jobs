@@ -21,6 +21,7 @@ import {
   getApplicationStatusCount,
 } from "@/lib/actions/applications.actions";
 import { notFound } from "next/navigation";
+import { KeyboardReturn } from "@mui/icons-material";
 
 enum ApplicationStatus {
   REVIEW = "Review",
@@ -38,19 +39,23 @@ const tabs: {
 }[] = [
   {
     type: ApplicationStatus.REVIEW,
-    icon: <Eye className="h-5 w-5 text-blue-500" />,
+    icon: <Eye className="h-4 w-4 text-blue-500" />,
   },
   {
     type: ApplicationStatus.VIEWED,
-    icon: <CheckCircle className="h-5 w-5 text-indigo-500" />,
+    icon: <CheckCircle className="h-4 w-4 text-indigo-500" />,
   },
   {
     type: ApplicationStatus.SHORTLISTED,
-    icon: <Star className="h-5 w-5 text-yellow-500" />,
+    icon: <Star className="h-4 w-4 text-yellow-500" />,
+  },
+  {
+    type: ApplicationStatus.WITHDRAWN,
+    icon: <KeyboardReturn className="h-4 w-4 text-amber-600" />,
   },
   // {
   //   type: ApplicationStatus.INTERVIEWED,
-  //   icon: <User className="h-5 w-5 text-purple-500" />,
+  //   icon: <User className="h-4 w-4 text-purple-500" />,
   // },
   // {
   //   type: ApplicationStatus.ACCEPTED,
@@ -97,7 +102,9 @@ const page = async ({
     return Object.values(statusCounter).reduce((sum, count) => sum + count, 0);
   };
 
-  const allApplications = sumApplicationStatus(applicationStatusCounter?.data || {});
+  const allApplications = sumApplicationStatus(
+    applicationStatusCounter?.data || {},
+  );
 
   return (
     <div className="space-y-4 px-4 md:px-5">
@@ -132,7 +139,7 @@ const page = async ({
             value={"all"}
             label={
               <div className="flex items-center gap-2">
-                <span>all ({allApplications})</span>
+                <span className="text-sm">all ({allApplications})</span>
               </div>
             }
           />
@@ -145,7 +152,7 @@ const page = async ({
               label={
                 <div className="flex items-center gap-2">
                   <span>{tab.icon}</span>
-                  <span>
+                  <span className="text-sm">
                     {tab.type} ({applicationStatusCounter?.data?.[tab.type]})
                   </span>
                 </div>

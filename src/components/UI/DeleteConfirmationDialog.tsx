@@ -15,6 +15,8 @@ interface DeleteConfirmationDialogProps {
   onDelete: () => void;
   onClose: () => void;
   loading?: boolean;
+  color?: "error" | "success" | "warning";
+  buttonText?: string;
 }
 
 const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
@@ -24,7 +26,15 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   onDelete,
   onClose,
   loading,
+  color = "error",
+  buttonText = "Yes Delete",
 }) => {
+  const colors: Record<"error" | "success" | "warning", string> = {
+    success: "text-green-600",
+    warning: "text-amber-600",
+    error: "text-red-600",
+  };
+
   return (
     <Dialog
       open={open}
@@ -35,7 +45,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         },
       }}
     >
-      <DialogTitle className="text-red-600">{title}</DialogTitle>
+      <DialogTitle className={colors[color]}>{title}</DialogTitle>
       <DialogContent>
         <p className="text-secondary">{message}</p>
       </DialogContent>
@@ -43,8 +53,8 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         <Button onClick={onClose} color="secondary" variant="outlined">
           No
         </Button>
-        <Button onClick={onDelete} color="error" variant="contained">
-        {loading ? "loading..." : "Yes Delete"}
+        <Button onClick={onDelete} color={color} variant="contained">
+          {loading ? "loading..." : buttonText}
         </Button>
       </DialogActions>
     </Dialog>

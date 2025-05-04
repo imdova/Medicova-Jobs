@@ -7,6 +7,8 @@ export const generateCSSProperties = (
   return {
     fontFamily: styles.fontFamily,
     fontSize: styles.fontSize + "px",
+    lineHeight: styles.lineHeight + "px",
+    letterSpacing: styles.letterSpacing + "px",
     fontWeight: styles.fontWeight,
     textAlign: styles.textAlign as any,
     color: styles.color,
@@ -51,40 +53,58 @@ export const extractBackgroundImageUrl = (value?: string): string => {
   return match ? match[2] : "";
 };
 
-export const reverseCSSProperties = (css: React.CSSProperties): Partial<StyleState> => {
-    const styleState: Partial<StyleState> = {};
-    
-    if (css.color) styleState.color = css.color as string;
-    if (css.backgroundColor) styleState.backgroundColor = css.backgroundColor as string;
-    if (css.width) styleState.width = css.width as string;
-    if (css.height) styleState.height = css.height as string;
-    if (css.fontFamily) styleState.fontFamily = css.fontFamily as string;
-    if (css.fontSize) styleState.fontSize = parsePixelValue(css.fontSize);
-    if (css.fontWeight) styleState.fontWeight = String(css.fontWeight);
-    if (css.textAlign) styleState.textAlign = css.textAlign as string;
-    if (css.backgroundImage) styleState.backgroundImageUrl = extractBackgroundImageUrl(css.backgroundImage);
-    if (css.backgroundSize) styleState.backgroundSize = css.backgroundSize as string;
-    if (css.backgroundRepeat) styleState.backgroundRepeat = css.backgroundRepeat as string;
-    if (css.padding) styleState.padding = parsePixelValue(css.padding);
-    if (css.paddingTop) styleState.paddingTop = parsePixelValue(css.paddingTop);
-    if (css.paddingRight) styleState.paddingRight = parsePixelValue(css.paddingRight);
-    if (css.paddingBottom) styleState.paddingBottom = parsePixelValue(css.paddingBottom);
-    if (css.paddingLeft) styleState.paddingLeft = parsePixelValue(css.paddingLeft);
-    if (css.margin) styleState.margin = parsePixelValue(css.margin);
-    if (css.marginTop) styleState.marginTop = parsePixelValue(css.marginTop);
-    if (css.marginRight) styleState.marginRight = parsePixelValue(css.marginRight);
-    if (css.marginBottom) styleState.marginBottom = parsePixelValue(css.marginBottom);
-    if (css.marginLeft) styleState.marginLeft = parsePixelValue(css.marginLeft);
-    if (css.borderRadius) styleState.borderRadius = parsePixelValue(css.borderRadius);
-    if (css.borderWidth) styleState.borderWidth = parsePixelValue(css.borderWidth);
-    if (css.borderStyle) styleState.borderStyle = css.borderStyle as string;
-    if (css.boxShadow) {
-        styleState.boxShadow = Object.keys(boxShadowValues).find(
-            (key) =>
-                boxShadowValues[key as keyof typeof boxShadowValues] === css.boxShadow,
-        ) as keyof typeof boxShadowValues;
-    }
-    if (css.opacity !== undefined) styleState.opacity = css.opacity as number;
+export const reverseCSSProperties = (
+  css: React.CSSProperties,
+): Partial<StyleState> => {
+  const styleState: Partial<StyleState> = {};
 
-    return styleState;
+  if (css.color) styleState.color = css.color as string;
+  if (css.backgroundColor)
+    styleState.backgroundColor = css.backgroundColor as string;
+  if (css.width) styleState.width = css.width as string;
+  if (css.height) styleState.height = css.height as string;
+  if (css.fontFamily) styleState.fontFamily = css.fontFamily as string;
+  if (css.fontSize) styleState.fontSize = parsePixelValue(css.fontSize);
+  if (css.lineHeight) styleState.lineHeight = parsePixelValue(css.lineHeight);
+  if (css.letterSpacing)
+    styleState.letterSpacing = parsePixelValue(css.letterSpacing);
+  if (css.fontWeight) styleState.fontWeight = String(css.fontWeight);
+  if (css.textAlign) styleState.textAlign = css.textAlign as string;
+  if (css.backgroundImage)
+    styleState.backgroundImageUrl = extractBackgroundImageUrl(
+      css.backgroundImage,
+    );
+  if (css.backgroundSize)
+    styleState.backgroundSize = css.backgroundSize as string;
+  if (css.backgroundRepeat)
+    styleState.backgroundRepeat = css.backgroundRepeat as string;
+  if (css.padding) styleState.padding = parsePixelValue(css.padding);
+  if (css.paddingTop) styleState.paddingTop = parsePixelValue(css.paddingTop);
+  if (css.paddingRight)
+    styleState.paddingRight = parsePixelValue(css.paddingRight);
+  if (css.paddingBottom)
+    styleState.paddingBottom = parsePixelValue(css.paddingBottom);
+  if (css.paddingLeft)
+    styleState.paddingLeft = parsePixelValue(css.paddingLeft);
+  if (css.margin) styleState.margin = parsePixelValue(css.margin);
+  if (css.marginTop) styleState.marginTop = parsePixelValue(css.marginTop);
+  if (css.marginRight)
+    styleState.marginRight = parsePixelValue(css.marginRight);
+  if (css.marginBottom)
+    styleState.marginBottom = parsePixelValue(css.marginBottom);
+  if (css.marginLeft) styleState.marginLeft = parsePixelValue(css.marginLeft);
+  if (css.borderRadius)
+    styleState.borderRadius = parsePixelValue(css.borderRadius);
+  if (css.borderWidth)
+    styleState.borderWidth = parsePixelValue(css.borderWidth);
+  if (css.borderStyle) styleState.borderStyle = css.borderStyle as string;
+  if (css.boxShadow) {
+    styleState.boxShadow = Object.keys(boxShadowValues).find(
+      (key) =>
+        boxShadowValues[key as keyof typeof boxShadowValues] === css.boxShadow,
+    ) as keyof typeof boxShadowValues;
+  }
+  if (css.opacity !== undefined) styleState.opacity = css.opacity as number;
+
+  return styleState;
 };

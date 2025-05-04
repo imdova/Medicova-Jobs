@@ -27,6 +27,7 @@ export const API_DELETE_JOB = JOBS + "/"; // DELETE + [jobID]
 export const JOB_APPLICATIONS = API_EMPLOYER_BASE + "/applications";
 export const API_CREATE_JOB_APPLICATION = JOB_APPLICATIONS; // POST
 export const API_UPDATE_JOB_APPLICATION = JOB_APPLICATIONS; // PATCH + [jobApplicationID]
+export const API_DELETE_JOB_APPLICATION = JOB_APPLICATIONS + "/"; // DELETE + id
 export const API_GET_JOB_APPLICATIONS = JOB_APPLICATIONS; // GET ?page=1&limit=10&jobId={id}&seekerId={id}&companyId={id}&startDate={date}
 export const API_GET_JOB_APPLICATION_BY_ID = JOB_APPLICATIONS + "/"; // GET + [jobApplicationID]
 export const API_GET_JOB_APPLICATION_STATUS_COUNT_FOR_SEEKER =

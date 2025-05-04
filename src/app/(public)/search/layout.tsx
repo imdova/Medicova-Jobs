@@ -1,11 +1,8 @@
 import SearchForm from "@/components/UI/search-form";
 import { Suspense } from "react";
-import { searchJopFilters } from "@/constants";
 import CountrySearchResult, {
   CountryHeading,
 } from "@/components/UI/CountrySearchResult";
-import Filter from "@/components/Layout/filter/filter";
-import JobFilter from "./components/JobFilter";
 
 const layout: React.FC<{
   children: React.ReactNode;
@@ -39,12 +36,8 @@ const layout: React.FC<{
         </div>
       </div>
       {/* Main Layout */}
-      
-      {children}
 
-      <Suspense>
-        <CountrySearchResult />
-      </Suspense>
+      {children}
     </div>
   );
 };

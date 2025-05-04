@@ -3,6 +3,7 @@ import { StyleState } from "../types/blog";
 export const initialStyles: StyleState = {
   fontFamily: "Arial",
   fontSize: 16,
+  lineHeight: 20,
   fontWeight: "400",
   textAlign: "left",
   color: "#000000",
@@ -15,12 +16,12 @@ export const initialStyles: StyleState = {
   opacity: 1,
   width: "auto",
   height: "auto",
+  letterSpacing: 1,
 };
 export const HEADER_1_STYLES: React.CSSProperties = {
   width: "100%",
   resize: "none",
   fontSize: "24px",
-  lineHeight: "26px",
   fontWeight: 700,
-  letterSpacing: "-4px"
+  lineHeight:"26px"
 };

@@ -23,12 +23,13 @@ import Image from "next/image";
 import { Add, BookmarkBorderOutlined, KeyOutlined } from "@mui/icons-material";
 import { formatName } from "@/util";
 import Link from "next/link";
-import { formatLocation, toggleId } from "@/util/general";
+import { formatLocation, getExperienceDetail, toggleId } from "@/util/general";
 import Avatar from "./Avatar";
 import CopyButton from "../form/CopyButton";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { UNLOCKED_SEEKERS } from "@/api/employer";
 import { TAGS } from "@/api";
+import { educationOptions } from "@/constants/job";
 
 interface SeekerCardProps {
   seeker: UserProfile;
@@ -73,6 +74,8 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
     setSaveAnchorEl(null);
   };
 
+  const title = getExperienceDetail(seeker.title || "");
+
   return (
     <div className="flex flex-col md:flex-row">
       <button
@@ -103,20 +106,12 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                     <LockIcon className="h-5 w-5 text-red-500" />
                   )}
                 </div>
-                {seeker.title && (
-                  <p className="text-secondary">{seeker.title}</p>
-                )}
+                <p className="text-secondary">{title}</p>
                 {/* // TODO: lastEducation */}
                 {/* {seeker.lastEducation && (
                   <div className="flex items-center gap-2 rounded-base text-secondary">
                     <SchoolIcon className="h-4 w-4 text-light-primary md:h-5 md:w-5" />
-                    <p className="text-xs md:text-base">
-                      {`${seeker.lastEducation.degree} in ${seeker.specialty}`}
-                      <span className="mx-1 text-sm">
-                        ({seeker.lastEducation.startYear} -{" "}
-                        {seeker.lastEducation.endYear})
-                      </span>
-                    </p>
+                    <p className="text-xs md:text-base">{degree}</p>
                   </div>
                 )} */}
               </div>
@@ -231,7 +226,8 @@ const SeekerCard: React.FC<SeekerCardProps> = ({
                 <div className="flex items-center gap-2 rounded-base text-secondary">
                   <WorkspacePremiumIcon className="h-4 w-4 md:h-5 md:w-5" />
                   <p className="text-xs md:text-base">
-                    {/* TODO: {seeker.yearsOfExperience} years Experience */}
+                    {Number(seeker.total_years_experience).toFixed(0)} years
+                    Experience
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base text-secondary">
