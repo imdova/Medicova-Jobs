@@ -79,6 +79,18 @@ const LoginForm: React.FC = () => {
           Medicova
         </span>
       </h4>
+      <Button
+        className="mb-4 h-[42px] w-full"
+        variant="outlined"
+        onClick={() =>
+          onSubmit({
+            email: "Admin@gmail.com",
+            password: "data.password",
+          } as FormData)
+        }
+      >
+        Login As Admin
+      </Button>
       <div className="flex w-full flex-col justify-center gap-2 md:flex-row">
         <NextAuthProvider>
           <GoogleButton>Login with Google</GoogleButton>
