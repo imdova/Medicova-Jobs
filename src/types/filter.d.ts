@@ -1,6 +1,7 @@
 type FilterItem = {
   label: string;
   count?: number;
+  icon?: React.ReactNode;
   value: string;
 };
 
@@ -39,15 +40,15 @@ type Aggregations = {
   age: { from: number; to: number; count: number }[];
 };
 type JobsAggregations = {
-  industry: { id: string; count: number }[];
-  speciality: { id: string; count: number }[];
-  category: { id: string; count: number }[];
-  careerLevel: { id: string; count: number }[];
-  employmentType: { id: string; count: number }[];
-  workPlace: { name: string; count: number }[];
+  industry: { id: string; name?: string; count: number }[];
+  speciality: { id: string; name?: string; count: number }[];
+  category: { id: string; name?: string; count: number }[];
+  careerLevel: { id: string; name?: string; count: number }[];
+  employmentType: { id: string; name?: string; count: number }[];
+  workPlace: { name: string; name?: string; count: number }[];
   gender: { name: string; count: number }[];
   educationLevel: { name: string; count: number }[];
-  country: { code: string; count: number }[];
+  country: { code: string; name?: string; count: number }[];
   state: { code: string; count: number }[];
   ageRange: { from: number; to: number; count: number }[];
   salaryRange: { from: number; to: number; count: number }[];

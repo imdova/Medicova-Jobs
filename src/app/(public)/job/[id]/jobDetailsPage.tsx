@@ -13,7 +13,7 @@ import { Alert, Button, IconButton, Snackbar } from "@mui/material";
 import ShareMenu from "@/components/UI/ShareMenu";
 import { formatEducationAndSpecialty, getFullLastEdit } from "@/util";
 import { useSession } from "next-auth/react";
-import { JobData } from "@/types";
+import { FieldConfig, JobData } from "@/types";
 import { notFound } from "next/navigation";
 import Loading from "@/components/loading/loading";
 import RelatedJobs from "./relatedJobs";
@@ -23,6 +23,9 @@ import {
 } from "@/api/employer";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import useFetch from "@/hooks/useFetch";
+import { useState } from "react";
+import FormModal from "@/components/form/FormModal/FormModal";
+import { TAGS } from "@/api";
 
 const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const { data: session, status } = useSession();
@@ -31,8 +34,16 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const isEmployer = user?.type === "employer";
   const education = formatEducationAndSpecialty(job);
   const isOwner = job.company?.id === companyId;
+  const hasQuestions = job.questions && job.questions.length > 0;
 
-  const { isLoading, error, isSuccess, reset, update } = useUpdateApi();
+  const [isAnswering, setIsAnswering] = useState(false);
+
+  const [success, setSuccess] = useState(false);
+  const onSuccess = () => setSuccess(true);
+  const closeSuccess = () => setSuccess(false);
+
+  const { isLoading, error, isSuccess, reset, update } =
+    useUpdateApi(onSuccess);
   const { data: applications, loading } = useFetch<
     PaginatedResponse<JobApplicationData>
   >(
@@ -42,10 +53,28 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
   const isApplied = applications?.total && applications.total > 0;
 
   const applyJob = async () => {
-    await update(API_CREATE_JOB_APPLICATION, {
-      method: "POST",
-      body: { jobId: job.id, seekerId: user?.id },
-    });
+    if (hasQuestions) {
+      return setIsAnswering(true);
+    }
+    await update(
+      API_CREATE_JOB_APPLICATION,
+      {
+        method: "POST",
+        body: { jobId: job.id, seekerId: user?.id },
+      },
+      TAGS.applicants,
+    );
+  };
+  const onSubmit = async (formData: Record<string, string>) => {
+    await update(
+      API_CREATE_JOB_APPLICATION,
+      {
+        method: "POST",
+        body: { jobId: job.id, seekerId: user?.id },
+      },
+      TAGS.applicants,
+    );
+    setIsAnswering(false);
   };
 
   if (status === "loading") {
@@ -56,9 +85,53 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
     return notFound();
   }
 
+  const questionsFields: FieldConfig[] = job.questions
+    ? job.questions.map((q, index) => ({
+        name: `Question (${index + 1})`,
+        label: `Question ${index + 1} : ${q}`,
+        type: "text",
+        textFieldProps: {
+          placeholder: "Enter Your Answer her ",
+          sx: {
+            "& .MuiOutlinedInput-root": {
+              p: 0,
+              borderRadius: "10px",
+              height: "auto",
+            },
+          },
+          multiline: true,
+          minRows: 4,
+          maxRows: 14,
+        },
+        required: true,
+      }))
+    : [];
+
   return (
     <div className="px-4 md:pr-8">
       {/* Applicant Cards */}
+      <FormModal
+        open={isAnswering}
+        onClose={() => setIsAnswering(false)}
+        onSubmit={onSubmit}
+        error={error?.message}
+        loading={isLoading}
+        fields={questionsFields}
+        title="Answer This Questions"
+        initialValues={{}}
+        submitButtonText="Apply"
+      />
+      <Snackbar
+        open={success}
+        autoHideDuration={3000}
+        onClose={closeSuccess}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={closeSuccess} severity="success" sx={{ width: "100%" }}>
+          Your Application Applied successfully!
+        </Alert>
+      </Snackbar>
+
       <div className="mb-6 flex justify-between">
         <div className="flex flex-col justify-between">
           <span className="mb-2 w-fit rounded-md bg-[#82c341]/40 px-2 py-1 text-xs font-semibold text-primary">
@@ -126,7 +199,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           {/* Job Description */}
           {job.description && (
             <div className="max-w-[800px] overflow-hidden">
-              <h3 className="text-xl font-semibold text-main">Job Description</h3>
+              <h3 className="text-xl font-semibold text-main">
+                Job Description
+              </h3>
               <div
                 className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl mt-2 max-w-[800px] text-wrap text-secondary"
                 dangerouslySetInnerHTML={{ __html: job.description }}
@@ -177,7 +252,9 @@ const JobDetailPage: React.FC<{ job: JobData }> = ({ job }) => {
           </div>
 
           {/* Related Search */}
-          <h3 className="mt-8 text-xl font-semibold text-main">Related Search</h3>
+          <h3 className="mt-8 text-xl font-semibold text-main">
+            Related Search
+          </h3>
           <div className="mt-2 flex flex-wrap">
             {job.keywords?.map((keyWord, i) => (
               <button

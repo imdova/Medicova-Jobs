@@ -33,7 +33,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
   onDraft,
   onSubmit,
   draftLoading,
-  isDirty
+  isDirty,
 }) => {
   const [questions, setQuestions] = useState<string[]>(jobData.questions || []);
   const [showCompany, setShowCompany] = useState(true);
@@ -98,7 +98,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         predefinedKey &&
         !updatedQuestions.includes(
           predefinedQuestions[
-          predefinedKey as keyof typeof predefinedQuestions
+            predefinedKey as keyof typeof predefinedQuestions
           ],
         )
       ) {
@@ -203,6 +203,12 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
       }
     }
   };
+  const handleQuestionKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && email.trim()) {
+      e.preventDefault();
+      handleAddOrEditQuestion();
+    }
+  };
 
   return (
     <form
@@ -233,6 +239,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
               fullWidth
               placeholder="Write a new question here"
               value={newQuestion}
+              onKeyDown={handleQuestionKeyDown}
               onChange={(e) => setNewQuestion(e.target.value)}
             />
           </div>
@@ -268,7 +275,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
               <TextareaAutosize
                 minRows={1}
                 maxRows={10}
-                placeholder="Heading 1"
+                placeholder={`Question ${index+1}`}
                 value={question}
                 onChange={(e) =>
                   setQuestions((pv) =>
@@ -387,7 +394,7 @@ const ScreeningQuestionsStep: React.FC<ScreenQuestionsProps> = ({
         <Button
           onClick={handleDraft}
           disabled={draftLoading || !isDirty}
-            className="bg-[#FFAE35] disabled:opacity-50 text-[#464748] hover:enabled:bg-[#e19e39]"
+          className="bg-[#FFAE35] text-[#464748] hover:enabled:bg-[#e19e39] disabled:opacity-50"
         >
           {draftLoading ? "Loading... " : "Save and Publish Later"}
         </Button>

@@ -20,13 +20,19 @@ import {
   WhatsApp,
   WorkspacePremium,
 } from "@mui/icons-material";
-import { formatLocation, toggleId, whatsAppLink } from "@/util/general";
+import {
+  formatLocation,
+  getExperienceDetail,
+  toggleId,
+  whatsAppLink,
+} from "@/util/general";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_JOB_APPLICATION, UNLOCKED_SEEKERS } from "@/api/employer";
 import { TAGS } from "@/api";
 import CopyButton from "../form/CopyButton";
 import Link from "next/link";
 import Avatar from "./Avatar";
+import { educationOptions } from "@/constants/job";
 
 interface ApplicationCardProps {
   application: ApplicationsType;
@@ -75,7 +81,10 @@ const ApplicantCard: React.FC<ApplicationCardProps> = ({
       },
       TAGS.applicants,
     );
-
+  const title = getExperienceDetail(application.applicant.title || "");
+  const degree =
+    educationOptions.find((x) => x.id === applicant.lastEducation?.degree)
+      ?.label || "";
   return (
     <div className="flex flex-col md:flex-row">
       <button
@@ -110,7 +119,7 @@ const ApplicantCard: React.FC<ApplicationCardProps> = ({
                     {getFullLastEdit(application.created_at)}
                   </p>
                 </div>
-                <p className="text-secondary">{applicant.title}</p>
+                <p className="text-secondary">{title}</p>
               </div>
             </div>
           </div>
@@ -173,9 +182,7 @@ const ApplicantCard: React.FC<ApplicationCardProps> = ({
                 </div>
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <School className="h-4 w-4 md:h-5 md:w-5" />
-                  <p className="text-xs md:text-base">
-                    {applicant.lastEducation?.degree} Degree
-                  </p>
+                  <p className="text-xs md:text-base">{degree}</p>
                 </div>
                 <div className="flex items-center gap-2 rounded-base bg-primary-100 px-2 py-1 text-secondary">
                   <Person className="h-4 w-4 md:h-5 md:w-5" />

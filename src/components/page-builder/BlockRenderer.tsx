@@ -62,7 +62,7 @@ export function BlockRenderer({
           style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="focus:outline-none "
+          className="focus:outline-none"
         />
       );
 

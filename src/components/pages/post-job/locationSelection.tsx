@@ -11,12 +11,12 @@ interface LocationSectionProps {
 const JobLocationSelection: React.FC<LocationSectionProps> = ({
   formMethods,
 }) => {
-  const { control, getValues, setValue } = formMethods;
-  const country = getValues("country");
-  const { countries, states } = useLocationData(country?.code);
+  const { control, watch, setValue } = formMethods;
+  const countryCode = watch("country.code");
+  const { countries, states } = useLocationData(countryCode);
 
   return (
-    <div className="flex min-w-[300px]  flex-1 flex-wrap gap-2 md:flex-nowrap">
+    <div className="flex min-w-[300px] flex-1 flex-wrap gap-2 ">
       <div className="min-w-[150px] flex-1">
         <label className="mb-2 text-lg font-semibold text-main">
           Job Location *
@@ -39,6 +39,8 @@ const JobLocationSelection: React.FC<LocationSectionProps> = ({
                   );
                   field.onChange(e.target.value);
                   setValue("country.code", country?.isoCode || "");
+                  setValue("state.name", "");
+                  setValue("state", null);
                 }}
                 displayEmpty
                 renderValue={(selected) => {

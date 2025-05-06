@@ -5,13 +5,13 @@ import { MouseEvent, useState } from "react";
 
 interface ActionOption<T> {
   label: string;
-  action: (item: T) => void;
+  action: (item?: T) => void;
   icon?: React.ReactNode;
 }
 
 type CellOptionsProps<T> = {
   options: ActionOption<T>[];
-  item: T;
+  item?: T;
 };
 
 export default function CellOptions<T>({ item, options }: CellOptionsProps<T>) {

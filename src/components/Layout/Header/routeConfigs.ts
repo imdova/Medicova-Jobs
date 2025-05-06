@@ -21,6 +21,7 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/", headerType: "transparent", linksType: "default" },
   { pattern: "/blog", headerType: "none", linksType: "default" },
   { pattern: "/search", headerType: "transparent", linksType: "userType" },
+  { pattern: "/a/[slug]", headerType: "full", linksType: "userType" },
   { pattern: "/me/[id]", headerType: "full", linksType: "userType" },
   { pattern: "/co/[id]", headerType: "full", linksType: "userType" },
   { pattern: "/job/[slug]", headerType: "full", linksType: "userType" },
