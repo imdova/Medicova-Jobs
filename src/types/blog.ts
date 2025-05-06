@@ -17,7 +17,7 @@ export type BlockType =
   | "video"; // need to be added
 export interface Block {
   id: string;
-  parentId?: string;
+  parentId?: string | null;
   type: BlockType;
   content: string;
   imageUrl?: string;
@@ -54,4 +54,7 @@ export interface TabProps {
   selectedBlock?: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
+  setSelectedTab: React.Dispatch<
+    React.SetStateAction<"blocks" | "styles" | "settings">
+  >;
 }

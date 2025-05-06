@@ -1,6 +1,6 @@
 import { Block, BlogSettings } from "@/types/blog";
 import { Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StylePanel from "./stylePanel";
 import BlocksPanel from "./blocksPanel";
 import SettingsPanel from "./SettingsPanel";
@@ -13,6 +13,7 @@ interface ToolBarProps {
   selectedBlock?: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
 }
+
 const ToolBar: React.FC<ToolBarProps> = ({
   settings,
   updateSettings,
@@ -20,7 +21,19 @@ const ToolBar: React.FC<ToolBarProps> = ({
   selectedBlock,
   setSelectedBlock,
 }) => {
-  const [selectedTab, setSelectedTab] = useState("blocks");
+  const [selectedTab, setSelectedTab] = useState<
+    "blocks" | "styles" | "settings"
+  >("blocks");
+
+  useEffect(() => {
+    if (selectedBlock) {
+      if (selectedBlock && selectedBlock.allowNesting) return;
+      setSelectedTab("styles");
+    } else {
+      setSelectedTab("blocks");
+    }
+  }, [selectedBlock]);
+
   return (
     <aside className="bg-muted/30 w-96 border-l">
       <div>
@@ -45,6 +58,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
               selectedBlock={selectedBlock}
               setBlocks={setBlocks}
               setSelectedBlock={setSelectedBlock}
+              setSelectedTab={setSelectedTab}
             />
           )}
           {selectedTab === "styles" && (
@@ -52,6 +66,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
               selectedBlock={selectedBlock}
               setBlocks={setBlocks}
               setSelectedBlock={setSelectedBlock}
+              setSelectedTab={setSelectedTab}
             />
           )}
           {selectedTab === "settings" && (

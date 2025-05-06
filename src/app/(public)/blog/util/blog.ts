@@ -38,6 +38,14 @@ export const generateCSSProperties = (
     opacity: styles.opacity,
     width: styles.width,
     height: styles.height,
+
+    display: styles.display,
+    gridTemplateColumns: styles.gridTemplateColumns,
+    gridTemplateRows: styles.gridTemplateRows,
+    flexWrap: styles.flexWrap,
+    justifyContent: styles.justifyContent,
+    alignItems: styles.alignItems,
+    gap: styles.gap ? `${styles.gap}px` : undefined,
   };
 };
 export const parsePixelValue = (value?: string | number): number => {
@@ -105,6 +113,18 @@ export const reverseCSSProperties = (
     ) as keyof typeof boxShadowValues;
   }
   if (css.opacity !== undefined) styleState.opacity = css.opacity as number;
+
+  if (css.display) styleState.display = css.display as string;
+  if (css.gridTemplateColumns)
+    styleState.gridTemplateColumns = css.gridTemplateColumns as string;
+  if (css.gridTemplateRows)
+    styleState.gridTemplateRows = css.gridTemplateRows as string;
+  if (css.flexWrap)
+    styleState.flexWrap = css.flexWrap as StyleState["flexWrap"];
+  if (css.justifyContent)
+    styleState.justifyContent = css.justifyContent as string;
+  if (css.alignItems) styleState.alignItems = css.alignItems as string;
+  if (css.gap) styleState.gap = parsePixelValue(css.gap);
 
   return styleState;
 };

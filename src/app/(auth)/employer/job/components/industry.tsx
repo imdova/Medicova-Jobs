@@ -1,6 +1,5 @@
 import { useIndustriesData } from "@/hooks/useIndustriesData";
 import { Industry, JobData } from "@/types";
-import { IndustriesSliceDataType } from "@/types/employer";
 import { FormControl, MenuItem, Select, Tooltip } from "@mui/material";
 import {
   Control,

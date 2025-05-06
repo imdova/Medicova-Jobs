@@ -27,4 +27,12 @@ export interface StyleState {
   width?: string;
   height?: string;
   letterSpacing?: number;
+
+  display?: string;
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
+  flexWrap?: FlexWrap;
+  justifyContent?: string;
+  alignItems?: string;
+  gap?: number;
 }

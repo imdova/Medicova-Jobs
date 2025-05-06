@@ -4,7 +4,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { extensions } from "./extensions";
 import { BlockEditorToolbar, EditorToolbar } from "./editor-toolbar";
 import { EditorContentWrapper } from "./editor-content";
-import { useEffect } from "react";
+import { CSSProperties, useEffect } from "react";
 import { Box, TextFieldProps } from "@mui/material";
 
 const TextEditor: React.FC<TextFieldProps> = ({ value, onChange }) => {
@@ -41,7 +41,8 @@ export const BlockTextEditor: React.FC<{
   value: string;
   onChange: (e: string) => void;
   isSelected: Boolean;
-}> = ({ value, onChange, isSelected }) => {
+  style: CSSProperties;
+}> = ({ value, onChange, style, isSelected }) => {
   const editor = useEditor({
     extensions,
     content: value,
@@ -65,7 +66,7 @@ export const BlockTextEditor: React.FC<{
   }
 
   return (
-    <div className="mt-2 w-full">
+    <div style={style} className="mt-2 w-full">
       <div className={isSelected ? "block" : "hidden group-hover/block:block"}>
         <BlockEditorToolbar editor={editor} />
       </div>

@@ -62,7 +62,7 @@ export function BlockRenderer({
           style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="focus:outline-none"
+          className="resize-none focus:outline-none"
         />
       );
 
@@ -75,7 +75,7 @@ export function BlockRenderer({
           placeholder="Heading 2"
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="w-full resize-none text-2xl font-semibold tracking-tight focus:outline-none md:text-3xl"
+          className="resize-none focus:outline-none"
         />
       );
 
@@ -88,7 +88,7 @@ export function BlockRenderer({
           style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="w-full resize-none text-xl font-semibold tracking-tight focus:outline-none md:text-2xl"
+          className="resize-none focus:outline-none"
         />
       );
     case "text":
@@ -109,11 +109,12 @@ export function BlockRenderer({
         <BlockTextEditor
           isSelected={isSelected}
           value={block.content || "<p> This Is My Paragraph </p>"}
+          style={styles}
           onChange={(content) => updateBlock(block, { content })}
         />
       );
     case "divider":
-      return <Divider sx={styles} />;
+      return <Divider style={styles} />;
 
     case "image":
       return (
@@ -148,45 +149,54 @@ export function BlockRenderer({
       );
     case "container":
       return (
-        <div>
-          <Droppable droppableId={"drop-" + block.id}>
-            {(provided) => (
-              <div
-                {...provided.droppableProps}
-                className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
-                ref={provided.innerRef}
-              >
-                {block.blocks?.length === 0 && (
-                  <div className="flex items-center justify-center p-5">
-                    <span className="max-w-44 text-center text-2xl font-semibold text-gray-300">
-                      Add block to container
-                    </span>
-                  </div>
-                )}
-                {block.blocks?.map((block, index) => (
-                  <DraggableBlock
-                    key={block.id}
-                    block={block}
-                    index={index}
-                    selectedBlock={selectedBlock}
-                    onSelect={onSelect}
-                    setBlocks={setBlocks}
-                  />
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </div>
+        <Droppable
+          droppableId={"drop-" + block.id}
+          type={"BLOCK"} // Use the same type for all droppables
+          isCombineEnabled={false} // Disable combining items
+        >
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
+              ref={provided.innerRef}
+              style={styles}
+            >
+              {block.blocks?.length === 0 && (
+                <div className="flex items-center justify-center p-5">
+                  <span className="max-w-44 text-center text-2xl font-semibold text-gray-300">
+                    Add block to container
+                  </span>
+                </div>
+              )}
+              {block.blocks?.map((block, index) => (
+                <DraggableBlock
+                  key={block.id}
+                  block={block}
+                  index={index}
+                  selectedBlock={selectedBlock}
+                  onSelect={onSelect}
+                  setBlocks={setBlocks}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       );
     case "flex-row":
       return (
-        <Droppable droppableId={block.id} direction="horizontal">
+        <Droppable
+          droppableId={"drop-" + block.id}
+          type="BLOCK"
+          isCombineEnabled={false}
+          direction="horizontal"
+        >
           {(provided) => (
             <div
               {...provided.droppableProps}
               className="flex flex-col flex-wrap gap-3 md:flex-row"
               ref={provided.innerRef}
+              style={styles}
             >
               {block.blocks?.map((block, index) => (
                 <div key={block.id} className="h-full w-full flex-1">
@@ -241,7 +251,10 @@ export function BlockRenderer({
 
     case "video":
       return (
-        <div className="aspect-video h-auto max-h-[400px] w-full overflow-hidden">
+        <div
+          style={styles}
+          className="aspect-video h-auto max-h-[400px] w-full overflow-hidden"
+        >
           {block.videoUrl ? (
             <YouTubePlayer
               videoUrl={block.videoUrl}
