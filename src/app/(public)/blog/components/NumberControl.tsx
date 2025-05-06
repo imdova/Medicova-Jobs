@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const NumberControl = ({
@@ -26,29 +27,48 @@ const NumberControl = ({
   return (
     <div className="flex items-center space-x-2">
       {label && <span className="w-16 text-xs text-gray-400">{label}</span>}
-      <div className="relative h-1 flex-1 rounded-full bg-gray-700">
-        <div
-          className="absolute h-1 rounded-full bg-blue-500"
-          style={{
-            width: `${((value - min) / (max - min)) * 100}%`,
-          }}
-        />
-      </div>
-      <div className="flex items-center rounded-lg bg-gray-800 p-1">
+      <TextField
+        type="number"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        placeholder="Image URL"
+        sx={{
+          height: "30px",
+          "& .MuiOutlinedInput-input": {
+            padding: "5px", // Reduce input padding
+            height: "18px", // Adjust input element height
+          },
+        }}
+        className="w-8 flex-1 rounded-lg text-sm"
+      />
+      {/* <div className="flex items-center rounded-lg p-1">
         <button
           onClick={decrement}
           className="p-1 text-gray-400 hover:text-white"
         >
           <ChevronLeft size={14} />
         </button>
-        <span className="w-8 text-center text-xs">{value}</span>
+        <TextField
+          type="number"
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          placeholder="Image URL"
+          sx={{
+            height: "30px",
+            "& .MuiOutlinedInput-input": {
+              padding: "0px", // Reduce input padding
+              height: "18px", // Adjust input element height
+            },
+          }}
+          className="w-8 flex-1 rounded-lg text-sm"
+        />
         <button
           onClick={increment}
           className="p-1 text-gray-400 hover:text-white"
         >
           <ChevronRight size={14} />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

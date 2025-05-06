@@ -11,12 +11,13 @@ import { generateId } from "@/util";
 import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useState } from "react";
-import { HEADER_1_STYLES } from "./constants/blocks.styles";
+import { blockStyles } from "./constants/blocks.styles";
 
 const BlocksPanel: React.FC<TabProps> = ({
   selectedBlock,
   setBlocks,
   setSelectedBlock,
+  setSelectedTab,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [onHoldBlock, setOnHoldBlock] = useState({} as Block);
@@ -46,7 +47,7 @@ const BlocksPanel: React.FC<TabProps> = ({
       level: 1,
       blocks: [],
       content: "",
-      styles: type === "h1" ? HEADER_1_STYLES : null,
+      styles: blockStyles[type],
       ...blockProps,
     };
     const blockFormData = blocksForm.find((form) => form.type.includes(type));
@@ -56,15 +57,26 @@ const BlocksPanel: React.FC<TabProps> = ({
       setOnHoldBlock(newBlock);
       return;
     }
-
-    if (selectedBlock && selectedBlock.allowNesting) {
+    const allowNesting =
+      selectedBlock && (selectedBlock?.allowNesting || selectedBlock?.parentId);
+    if (allowNesting) {
       setBlocks((blocks) => {
         const newBlocks = structuredClone(blocks);
         newBlock.level = selectedBlock.level + 1;
-        addItem(newBlocks, newBlock, selectedBlock.id);
+        newBlock.parentId = selectedBlock?.allowNesting
+          ? selectedBlock?.id
+          : selectedBlock?.parentId;
+        addItem(
+          newBlocks,
+          newBlock,
+          selectedBlock?.allowNesting
+            ? selectedBlock.id
+            : selectedBlock.parentId,
+        );
         return newBlocks;
       });
     } else {
+      setSelectedTab("styles");
       setBlocks((pv) => [...pv, newBlock]);
     }
     setSelectedBlock((pv) => (pv?.allowNesting ? pv : newBlock));

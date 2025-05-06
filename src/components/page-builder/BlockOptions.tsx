@@ -22,7 +22,6 @@ const BlockOptions: React.FC<BlockOptionsProps> = ({
   block,
 }) => {
   const isSelected = selectedBlock?.id === block.id;
-  console.log("🚀 ~ isSelected:", isSelected)
 
   const onAction = (block: Block, action: BlockAction) => {
     switch (action) {

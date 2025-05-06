@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import ToolBar from "./toolbar";
@@ -31,6 +31,10 @@ const initialSetting: BlogSettings = {
   author: "1",
 };
 
+
+
+
+
 export default function PageBuilder() {
   // State management
   const [settings, setSettings] = useState<BlogSettings>(initialSetting);
@@ -39,34 +43,36 @@ export default function PageBuilder() {
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
 
   const onDragEnd = (result: any) => {
-    const { source, draggableId, destination, type } = result;
-
-    if (!destination) return;
-
-    destination.droppableId = destination.droppableId.replace("drop-", "");
-    source.droppableId = source.droppableId.replace("drop-", "");
-
-    if (type === "GROUP") {
-      const newBlocks = [...blocks];
-      const [movedBlock] = newBlocks.splice(source.index, 1);
-      newBlocks.splice(destination.index, 0, movedBlock);
-      setBlocks(newBlocks);
-      return;
-    }
-    const newBlocks = onDragEndHandler(
-      blocks,
-      draggableId,
-      source,
-      destination,
-    );
+    const newBlocks = onDragEndHandler(blocks, result);
     setBlocks(newBlocks);
+    // const { source, draggableId, destination, type } = result;
+
+    // if (!destination) return;
+
+    // destination.droppableId = destination.droppableId.replace("drop-", "");
+    // source.droppableId = source.droppableId.replace("drop-", "");
+
+    // if (type === "ROOT") {
+    //   const newBlocks = [...blocks];
+    //   const [movedBlock] = newBlocks.splice(source.index, 1);
+    //   newBlocks.splice(destination.index, 0, movedBlock);
+    //   setBlocks(newBlocks);
+    //   return;
+    // }
+    // const newBlocks = onDragEndHandler(
+    //   blocks,
+    //   draggableId,
+    //   source,
+    //   destination,
+    // );
+    // setBlocks(newBlocks);
   };
 
   return (
     <div>
-      <EditorHeader />
+      <EditorHeader blocks={blocks} />
       <div className="flex bg-background">
-        <main className="flex-1 max-w-full overflow-hidden">
+        <main className="max-w-full flex-1 overflow-hidden">
           <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
             <ViewModeSelector
               viewMode={viewMode}
@@ -86,8 +92,8 @@ export default function PageBuilder() {
               className={`mx-auto min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
               {/* <BlogHeader /> */}
-              <DragDropContext onDragEnd={onDragEnd}  >
-                <Droppable droppableId="blocks" type="GROUP">
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="root" type="BLOCK">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {blocks.map((block, index) => (

@@ -6,18 +6,20 @@ const SectionCollapse = ({
   title,
   icon,
   children,
+  defaultValue = false,
 }: {
   title: string;
+  defaultValue?: boolean;
   icon: React.ReactNode;
   children: React.ReactNode;
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(defaultValue);
   const toggle = () => setIsExpanded((pv) => !pv);
 
   return (
     <div>
       <div
-        className={`flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-base bg-gray-100 px-2 text-secondary transition-all duration-300 ease-in-out`}
+        className={`flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-base border border-gray-300 bg-gray-200 px-2 text-secondary transition-all duration-300 ease-in-out`}
         onClick={toggle}
       >
         <div className="flex w-full flex-row items-center justify-between gap-2">

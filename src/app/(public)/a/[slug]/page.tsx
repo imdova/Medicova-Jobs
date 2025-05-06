@@ -2,6 +2,8 @@ import { getJobFilters, searchJobs } from "@/lib/actions/job.actions";
 import JobFilter from "../../search/components/JobFilter";
 import JobsResult from "../../search/jobsResult";
 import CustomPagination from "@/components/UI/CustomPagination";
+import { Suspense } from "react";
+import CountrySearchResult from "@/components/UI/CountrySearchResult";
 
 const page = async ({
   params: { slug },
@@ -60,6 +62,9 @@ const page = async ({
         {total > 0 && total > jobs.length && (
           <CustomPagination totalItems={total} />
         )}
+        <Suspense>
+          <CountrySearchResult />
+        </Suspense>
       </div>
     </main>
   );

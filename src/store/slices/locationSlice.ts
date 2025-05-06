@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Country, State } from "@/types";
-import { API_GET_COUNTRIES, API_GET_STATES } from "@/api/general";
+import { API_GET_CITIES_BY_COUNTRIES, API_GET_COUNTRIES, API_GET_STATES } from "@/api/general";
+import { toQueryString } from "@/util/general";
 
 interface LocationState {
   countries: {
@@ -82,6 +83,38 @@ export const fetchStates = createAsyncThunk(
   },
 );
 
+interface StatesByCountriesResponse {
+  countryCode: string;
+  states: State[];
+}
+export const fetchStatesByCountries = createAsyncThunk(
+  "location/fetchStatesByCountries",
+  async (countryCodes: string[], { rejectWithValue }) => {
+    try {
+      const queryParams = toQueryString({ countryCodes });
+      const response = await fetch(API_GET_CITIES_BY_COUNTRIES + queryParams, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data: StatesByCountriesResponse[] = await response.json();
+        const states = data.map((x) => x.states).flat();
+        return states;
+      }
+
+      return rejectWithValue("Failed to fetch states");
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch states",
+      );
+    }
+  },
+);
+
 const locationSlice = createSlice({
   name: "location",
   initialState,
@@ -122,6 +155,20 @@ const locationSlice = createSlice({
         state.states.error = null;
       })
       .addCase(fetchStates.rejected, (state, action) => {
+        state.states.loading = false;
+        state.states.error = action.payload as string;
+      })
+      // States reducers
+      .addCase(fetchStatesByCountries.pending, (state) => {
+        state.states.loading = true;
+        state.states.error = null;
+      })
+      .addCase(fetchStatesByCountries.fulfilled, (state, action) => {
+        state.states.loading = false;
+        state.states.data = action.payload;
+        state.states.error = null;
+      })
+      .addCase(fetchStatesByCountries.rejected, (state, action) => {
         state.states.loading = false;
         state.states.error = action.payload as string;
       });

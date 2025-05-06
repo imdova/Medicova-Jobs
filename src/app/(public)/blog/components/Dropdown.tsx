@@ -1,5 +1,9 @@
 import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 
+type Option = {
+  value: string;
+  label: string;
+};
 const Dropdown = ({
   name,
   value,
@@ -9,7 +13,7 @@ const Dropdown = ({
 }: {
   name: string;
   value: string;
-  options: string[];
+  options: string[] | Option[];
   onChange: (val: string) => void;
   icon?: React.ReactNode;
 }) => {
@@ -17,7 +21,10 @@ const Dropdown = ({
     <SelectField
       field={{
         name,
-        options: options.map((x) => ({ value: x, label: x })),
+        options: options.map((x) => ({
+          value: typeof x === "object" && "value" in x ? x.value : x,
+          label: typeof x === "object" && "label" in x ? x.label : x,
+        })),
         textFieldProps: {
           label: name,
           InputProps: {
