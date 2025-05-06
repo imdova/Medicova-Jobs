@@ -29,6 +29,7 @@ import {
   GraduationCap,
   Clock,
   Trash,
+  Search,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,6 +40,64 @@ interface SingleUserProps {
     slug: string;
   };
 }
+interface Activity {
+  date: string;
+  time: string;
+  actions: {
+    description: string;
+    ipAddress: string;
+  }[];
+}
+
+// Dummy data
+const activities: Activity[] = [
+  {
+    date: "February 24, 2025",
+    time: "8:08 PM",
+    actions: [
+      {
+        description: "Ahmed Habib logged in on www.facebook.com.",
+        ipAddress: "197.133.11.163",
+      },
+    ],
+  },
+  {
+    date: "February 16, 2025",
+    time: "8:54 PM",
+    actions: [
+      {
+        description:
+          "Ahmed Habib applied to ( Paediatric Consultant - Saudi Arabia ) Job",
+        ipAddress: "197.134.184.179",
+      },
+      {
+        description: "Ahmed Habib logged in on www.facebook.com.",
+        ipAddress: "197.134.184.179",
+      },
+    ],
+  },
+  {
+    date: "December 24, 2024",
+    time: "3:03 PM",
+    actions: [
+      {
+        description:
+          "Ahmed Habib withdrawal application from ( Paediatric Consultant - Saudi Arabia ) Job",
+        ipAddress: "196.129.111.129",
+      },
+    ],
+  },
+  {
+    date: "November 16, 2024",
+    time: "11:09 PM",
+    actions: [
+      {
+        description: "Ahmed Habib logged out of www.facebook.com.",
+        ipAddress: "197.134.188.61",
+      },
+    ],
+  },
+];
 
 const cvFile = {
   name: "CVjake Medical.pdf",
@@ -76,10 +135,15 @@ const menuItems = [
 // data jobs columns
 const columns = [
   {
+    key: "orderNum",
+    header: "#",
+    render: (_job: ApplicationsType, index: number) => <span>{index + 1}</span>,
+  },
+  {
     key: "name",
     header: "Company Name",
     render: (job: ApplicationsType) => (
-      <Link href={``} className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Image
           className="h-8 w-8 rounded-full object-cover"
           src={job.job.company.avatar}
@@ -88,9 +152,11 @@ const columns = [
           alt={job.job.company.name}
         />
         <div>
-          <h2 className="text-sm">{job.job.company.name}</h2>
+          <Link href={``}>
+            <h2 className="text-sm hover:underline">{job.job.company.name}</h2>
+          </Link>
         </div>
-      </Link>
+      </div>
     ),
   },
   {
@@ -180,6 +246,21 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
   const [cvModalOpen, setCvModalOpen] = useState(false);
   const [showProfileLink, setShowProfileLink] = useState(false);
   const [availability, setAvailability] = useState(true);
+  const [selectedTab, setSelectedTab] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  //handel filters
+  const filteredJobs = jobs?.data?.filter((job) => {
+    const matchesTab =
+      selectedTab === "All" ||
+      job.status?.toLowerCase() === selectedTab.toLowerCase();
+
+    const matchesSearch =
+      job.job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.job.company.name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesTab && matchesSearch;
+  });
 
   const profileLink = "modicean.net/mail/blog/LTPSBacios";
 
@@ -200,7 +281,6 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   if (!Seeker) return <NotFoundPage />;
   return (
     <div className="p-4">
@@ -296,14 +376,14 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                   </span>
                 </div>
               )}
-              {Seeker.birthDate && (
-                <div className="flex flex-col text-center md:text-start">
-                  <span className="text-sm text-secondary">Age</span>
-                  <span className="text-sm font-semibold text-main">
-                    {Seeker.birthDate} Years
-                  </span>
-                </div>
-              )}
+
+              <div className="flex flex-col text-center md:text-start">
+                <span className="text-sm text-secondary">Age</span>
+                <span className="text-sm font-semibold text-main">
+                  30 Years
+                </span>
+              </div>
+
               <div className="flex flex-col text-center md:text-start">
                 <span className="text-sm text-secondary">Education</span>
                 <span className="text-sm font-semibold text-main">
@@ -314,7 +394,11 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                 <div className="flex flex-col text-center md:text-start">
                   <span className="text-sm text-secondary">Join Date</span>
                   <span className="text-sm font-semibold text-main">
-                    {Seeker.created_at}
+                    {new Date(Seeker.created_at).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </span>
                 </div>
               )}
@@ -362,6 +446,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
         <div className="lg:col-span-5">
+          {/* Seeker overview Panel */}
           {activeTab === "seeker-overview" && (
             <div className="rounded-xl border p-4 shadow-sm">
               <div className="mb-4 flex flex-col justify-between gap-2 md:flex-row md:items-center">
@@ -380,8 +465,8 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                 </div>
               </div>
               <div className="relative grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {jobs?.data.map((app) => {
-                  return (
+                {jobs?.data && jobs.data.length > 0 ? (
+                  jobs.data.map((app) => (
                     <div
                       className="rounded-xl border p-3 shadow-sm"
                       key={app.id}
@@ -389,6 +474,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                       <h2 className="mb-3 text-lg font-semibold">
                         {app.job.title}
                       </h2>
+
                       <div className="mb-4 flex gap-3">
                         <Image
                           className="h-14 w-14 rounded-lg"
@@ -421,54 +507,61 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                       </div>
                       <div className="mb-4 flex items-center justify-between gap-2">
                         <div className="flex items-center gap-1 text-xs text-red-600">
-                          <span>&#9679;</span>{" "}
+                          <span>&#9679;</span>
                           <span className="rounded-full bg-red-100 px-2 py-1 text-xs text-red-600">
-                            Urgently hirining
+                            Urgently hiring
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-secondary">
                           <Clock className="text-light-primary" size={15} /> 2 h
                         </div>
                       </div>
+
                       <div className="mb-2 flex flex-wrap items-center gap-3">
                         <Link
                           className="text-xs text-light-primary underline"
-                          href={"#"}
+                          href="#"
                         >
                           #Healthcare
                         </Link>
                         <Link
                           className="text-xs text-light-primary underline"
-                          href={"#"}
+                          href="#"
                         >
                           #Healthcare
                         </Link>
                         <Link
                           className="text-xs text-light-primary underline"
-                          href={"#"}
+                          href="#"
                         >
                           #Healthcare
                         </Link>
                       </div>
+
                       <div className="flex justify-end">
                         <Link
-                          href={``}
+                          href="#"
                           className="rounded-full bg-primary px-3 py-1 text-sm text-white transition hover:bg-green-700"
                         >
                           Details
                         </Link>
                       </div>
                     </div>
-                  );
-                })}
+                  ))
+                ) : (
+                  <div className="col-span-1 rounded-xl border bg-white p-6 text-center text-gray-500 md:col-span-2 lg:col-span-3">
+                    No job applications found.
+                  </div>
+                )}
               </div>
             </div>
           )}
+          {/* Job applications Panel */}
           {activeTab === "job-applications" && (
             <div className="rounded-xl border bg-white p-4 shadow-sm">
-              <div className="mb-4 flex flex-col justify-between gap-2 md:flex-row md:items-center">
+              <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
                 <h2 className="text-xl font-semibold">
-                  Recent Jobs Applications
+                  Recent Job Applications
                 </h2>
                 <div className="flex items-center gap-3">
                   <button className="flex items-center gap-1 rounded-xl border border-primary px-4 py-2 text-sm text-primary transition hover:bg-primary hover:text-white">
@@ -481,20 +574,92 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                   </button>
                 </div>
               </div>
+
+              {/* Filter tabs and search */}
+              <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div className="flex gap-2">
+                  {["All", "Review", "Shortlisted"].map((tab) => (
+                    <button
+                      key={tab}
+                      className={`rounded-full border px-4 py-1 text-sm font-medium ${
+                        selectedTab === tab
+                          ? "border-primary bg-primary text-white"
+                          : "border-gray-300 bg-white text-gray-700"
+                      }`}
+                      onClick={() => setSelectedTab(tab)}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search applications..."
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 pl-8 text-sm outline-none md:w-64"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <Search
+                    className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
+                    size={14}
+                  />
+                </div>
+              </div>
               {loading ? (
                 <p>Loading...</p>
               ) : (
                 <DynamicTable<ApplicationsType>
                   columns={columns}
-                  data={jobs?.data || []}
+                  data={filteredJobs || []}
                   minWidth={500}
+                  selectable
                 />
               )}
             </div>
           )}
-          {activeTab === "user-activity" && ""}
-        </div>
 
+          {/* Activity Panel */}
+          {activeTab === "user-activity" && (
+            <div className="rounded-lg border bg-white p-6 shadow-sm">
+              <h1 className="mb-6 text-xl font-bold text-gray-800">
+                Recent User Activities
+              </h1>
+
+              <div className="space-y-8">
+                {activities.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="relative border-l-2 border-gray-200 pl-6"
+                  >
+                    {/* Date */}
+                    <div className="absolute -left-2 top-0 h-4 w-4 rounded-full bg-green-500"></div>
+                    <h2 className="font-semibold text-gray-700">
+                      {activity.date}
+                    </h2>
+
+                    {/* Activities */}
+                    <div className="mt-2 space-y-4">
+                      {activity.actions.map((action, actionIndex) => (
+                        <div key={actionIndex} className="ml-4">
+                          <p className="text-gray-600">{action.description}</p>
+                          <p className="mt-1 text-sm text-gray-500">
+                            IP address {action.ipAddress}
+                          </p>
+                          {actionIndex === activity.actions.length - 1 && (
+                            <p className="mt-2 text-sm text-gray-400">
+                              {activity.time}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         <div className="space-y-4 lg:col-span-2">
           <div>
             {" "}

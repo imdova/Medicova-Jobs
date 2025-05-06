@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 type ColumnDefinition<T> = {
   key: string;
   header: string;
-  render?: (item: T) => React.ReactNode;
+  render?: (item: T, index: number) => React.ReactNode | void;
   width?: string;
   align?: string;
   sortable?: boolean;
@@ -257,7 +257,8 @@ const DynamicTable = <T extends object>({
                       }`}
                     >
                       {column.render
-                        ? column.render(item)
+                        ? column.render(item, rowIndex) ||
+                          String(item[column.key as keyof T])
                         : String(item[column.key as keyof T])}
                     </td>
                   ))}
