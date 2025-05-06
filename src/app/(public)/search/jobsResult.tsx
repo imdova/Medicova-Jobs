@@ -77,9 +77,6 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
           </div>
         )}
       </div>
-      <Suspense>
-        <CountrySearchResult />
-      </Suspense>
     </>
   );
 };

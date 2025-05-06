@@ -7,6 +7,7 @@ export const LOCATION = API_BASE + "/location";
 export const API_GET_COUNTRIES = LOCATION + "/countries"; // GET
 export const API_GET_STATES = LOCATION + "/states"; // GET ?countryCode=AF (requires country code)
 export const API_GET_CITIES = LOCATION + "/cities"; // GET ?countryCode=US&stateCode=CA (requires state and country code)
+export const API_GET_CITIES_BY_COUNTRIES = LOCATION + "/states-by-countries"; // GET ?countryCodes=
 
 // File
 export const FILE = API_BASE + "/files";
