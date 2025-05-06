@@ -122,6 +122,7 @@ type TapType = "all" | "locked" | "unlocked" | "shortListed";
 // Represents the data structure for job applicants. This type is used to store and display
 // information about individuals who have applied for a specific job posting.
 interface ApplicationsType {
+  location: any;
   id: string;
   seekerId: string;
   status: ApplicationStatus;
@@ -141,6 +142,7 @@ interface ApplicationsType {
     };
   };
   applicant: {
+    [x: string]: any;
     id: string;
     avatar: string;
     userName: string;
