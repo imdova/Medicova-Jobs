@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import React, { useState, useMemo } from "react";
 
 type ColumnDefinition<T> = {
@@ -200,12 +201,42 @@ const DynamicTable = <T extends object>({
             <tr>
               {selectable && (
                 <th scope="col" className={`${cellClassName} w-10 text-center`}>
-                  <input
-                    type="checkbox"
-                    checked={allSelectedOnPage && displayedData.length > 0}
-                    onChange={toggleSelectAll}
-                    className="h-4 w-4 cursor-pointer rounded border-gray-300 accent-green-600"
-                  />
+                  <label
+                    htmlFor="all"
+                    className="relative inline-flex h-5 w-5 cursor-pointer items-center justify-center"
+                  >
+                    <input
+                      id="all"
+                      type="checkbox"
+                      checked={allSelectedOnPage && displayedData.length > 0}
+                      onChange={toggleSelectAll}
+                      className="absolute h-full w-full opacity-0"
+                    />
+                    <div
+                      className={`h-5 w-5 rounded border transition-all duration-150 ease-in-out ${
+                        allSelectedOnPage && displayedData.length > 0
+                          ? "border-white bg-green-500 hover:bg-green-600"
+                          : "border-gray-300 bg-white hover:border-gray-400"
+                      } focus:ring-2 focus:ring-green-200`}
+                    >
+                      {/* Checkmark */}
+                      <svg
+                        className={`absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white transition-all duration-200 ease-out ${
+                          allSelectedOnPage && displayedData.length > 0
+                            ? "scale-100 opacity-100"
+                            : "scale-50 opacity-0"
+                        }`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                    </div>
+                  </label>
                 </th>
               )}
               {columns.map((column) => (
@@ -241,12 +272,42 @@ const DynamicTable = <T extends object>({
                 <tr key={rowIndex} className={rowClassName}>
                   {selectable && (
                     <td className={`${cellClassName} text-center`}>
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.has(item[rowIdKey])}
-                        onChange={() => toggleRowSelection(item[rowIdKey])}
-                        className="h-4 w-4 cursor-pointer rounded border-gray-300 accent-green-600"
-                      />
+                      <label
+                        htmlFor={`row-${rowIndex}`}
+                        className="relative inline-flex h-5 w-5 cursor-pointer items-center justify-center"
+                      >
+                        <input
+                          id={`row-${rowIndex}`}
+                          type="checkbox"
+                          checked={selectedRows.has(item[rowIdKey])}
+                          onChange={() => toggleRowSelection(item[rowIdKey])}
+                          className="absolute h-full w-full opacity-0"
+                        />
+                        <div
+                          className={`h-5 w-5 rounded border transition-all duration-150 ease-in-out ${
+                            selectedRows.has(item[rowIdKey])
+                              ? "border-white bg-green-500 hover:bg-green-600"
+                              : "border-gray-300 bg-white hover:border-gray-400"
+                          } focus:ring-2 focus:ring-green-200`}
+                        >
+                          {/* Checkmark */}
+                          <svg
+                            className={`absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white transition-all duration-200 ease-out ${
+                              selectedRows.has(item[rowIdKey])
+                                ? "scale-100 opacity-100"
+                                : "scale-50 opacity-0"
+                            }`}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                        </div>
+                      </label>
                     </td>
                   )}
                   {columns.map((column) => (

@@ -39,7 +39,7 @@ const DefaultFlag = ({ countryCode }: { countryCode: string }) => (
 );
 
 // Predefined flag components (could be moved to a separate file)
-const FLAG_COMPONENTS: Record<string, React.FC> = {
+const FLAG_COMPONENTS: Record<string, React.FC<{ countryCode?: string }>> = {
   eg: () => (
     <svg viewBox="0 0 36 24" className="mr-2 h-6 w-6">
       <rect width="36" height="24" fill="#CE1126" />
@@ -89,13 +89,13 @@ const getCountryFlag = (countryCode: string, showFlags: boolean) => {
   if (!showFlags) return null;
   const FlagComponent =
     FLAG_COMPONENTS[countryCode.toLowerCase()] || DefaultFlag;
-  return <FlagComponent />;
+  return <FlagComponent countryCode={countryCode} />;
 };
 
 const DynamicCountriesTable = ({
   data = [],
   columns = [],
-  defaultSort,
+  defaultSort = { key: "country", direction: "asc" },
   showFlags = true,
   className = "",
   rowClassName = "",
@@ -104,18 +104,18 @@ const DynamicCountriesTable = ({
 }: CountriesTableProps) => {
   const [sortConfig, setSortConfig] = useState(defaultSort);
 
-  const sortedData = [...data];
-  if (sortConfig) {
-    sortedData.sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-  }
+  const sortedData = [...data].sort((a, b) => {
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+
+    if (aValue < bValue) {
+      return sortConfig.direction === "asc" ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
 
   const requestSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
