@@ -33,6 +33,7 @@ export const generateCSSProperties = (
     borderRadius: styles.borderRadius ? `${styles.borderRadius}px` : undefined,
     borderWidth: styles.borderWidth ? `${styles.borderWidth}px` : undefined,
     borderStyle: styles.borderStyle,
+    borderColor: styles.borderColor,
     boxShadow:
       boxShadowValues[styles.boxShadow as keyof typeof boxShadowValues],
     opacity: styles.opacity,
@@ -106,6 +107,7 @@ export const reverseCSSProperties = (
   if (css.borderWidth)
     styleState.borderWidth = parsePixelValue(css.borderWidth);
   if (css.borderStyle) styleState.borderStyle = css.borderStyle as string;
+  if (css.borderColor) styleState.borderColor = css.borderColor as string;
   if (css.boxShadow) {
     styleState.boxShadow = Object.keys(boxShadowValues).find(
       (key) =>

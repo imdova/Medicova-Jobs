@@ -1,0 +1,782 @@
+[
+  {
+    "title": "PHOTOGRAPHING ADVENTURES IN Zion & Southern Utah",
+    "image": "https://static.wixstatic.com/media/9e18ff_880a072ecbbd43efbe03328cf06a5608~mv2.jpg/v1/crop/x_668,y_9,w_3856,h_3626/fill/w_582,h_546,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/me-2.jpg",
+    "blocks": [
+      {
+        "id": "mgq1s3a",
+        "type": "flex-row",
+        "level": 1,
+        "blocks": [
+          {
+            "id": "0kf20oa1",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "ou8sze5",
+                "type": "image",
+                "level": 1,
+                "blocks": [],
+                "content": "",
+                "styles": {
+                  "width": "100%",
+                  "height": "440px"
+                },
+                "imageUrl": "https://static.wixstatic.com/media/9e18ff_880a072ecbbd43efbe03328cf06a5608~mv2.jpg/v1/crop/x_668,y_9,w_3856,h_3626/fill/w_582,h_546,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/me-2.jpg"
+              }
+            ]
+          },
+          {
+            "id": "0kf20oa2",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "6wf75u2",
+                "type": "h3",
+                "level": 3,
+                "blocks": [],
+                "content": "WE ARE A TEAM OF",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "20px",
+                  "fontWeight": "700",
+                  "lineHeight": "24px",
+                  "color": "rgb(179, 99, 7)",
+                  "paddingTop": "7px"
+                },
+                "parentId": "0kf20oa2"
+              },
+              {
+                "id": "nqjra89",
+                "type": "h1",
+                "level": 3,
+                "blocks": [],
+                "content": "local photogs",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "64px",
+                  "fontWeight": "700",
+                  "lineHeight": "64px",
+                  "color": "rgb(179, 99, 7)"
+                },
+                "parentId": "0kf20oa2"
+              },
+              {
+                "id": "88gcpu0",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "dedicated to capturing the majesty of Zion National Park and celebrating relationships through dynamic and adventure-driven images.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "18px",
+                  "color": "rgb(179, 99, 7)"
+                },
+                "parentId": "0kf20oa2"
+              },
+              {
+                "id": "6bibssr",
+                "type": "paragraph",
+                "level": 3,
+                "blocks": [],
+                "content": "<p>Our process is <strong><em>simple, straight-forward, and all about authenticity</em></strong> — ensuring you actually get to experience your memories as they happen, rather than stressing about the finer details.&nbsp;</p><p></p>",
+                "styles": {
+                  "color": "rgb(179, 99, 7)"
+                },
+                "parentId": "0kf20oa2"
+              },
+              {
+                "id": "0z6c4k8",
+                "type": "button",
+                "level": 1,
+                "blocks": [],
+                "content": "MEET THE TEAM",
+                "styles": {
+                  "display": "block",
+                  "width": "fit-content",
+                  "fontSize": "16px",
+                  "fontWeight": "700",
+                  "lineHeight": "18px",
+                  "borderRadius": "12px",
+                  "backgroundColor": "#fff",
+                  "padding": "16px",
+                  "color": "rgb(179, 99, 7)",
+                  "paddingRight": "40px",
+                  "paddingLeft": "40px",
+                  "borderWidth": "3px",
+                  "borderColor": "rgb(179, 99, 7)"
+                },
+                "linkUrl": "https://www.zionadventurephotog.com/"
+              }
+            ]
+          }
+        ],
+        "content": "",
+        "styles": {
+          "display": "flex",
+          "flexDirection": "row",
+          "flexWrap": "wrap",
+          "gap": "12px"
+        }
+      },
+      {
+        "id": "53urdtl",
+        "type": "h2",
+        "level": 1,
+        "blocks": [],
+        "content": "Easy as...",
+        "styles": {
+          "width": "100%",
+          "resize": "none",
+          "fontSize": "45px",
+          "fontWeight": "700",
+          "lineHeight": "50px",
+          "color": "rgb(212, 164, 6)",
+          "paddingTop": "22px",
+          "marginBottom": "-37px",
+          "height": "87px"
+        }
+      },
+      {
+        "id": "rr6fy5h",
+        "type": "flex-row",
+        "level": 1,
+        "blocks": [
+          {
+            "id": "1cu6f6l",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {
+              "backgroundColor": "rgb(179, 99, 7)",
+              "padding": "12px",
+              "opacity": 1
+            },
+            "blocks": [
+              {
+                "id": "pdimiy6",
+                "type": "h1",
+                "level": 3,
+                "blocks": [],
+                "content": "1.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "47px",
+                  "fontWeight": "700",
+                  "lineHeight": "45px",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "44px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "1jvbt5p",
+                "type": "h2",
+                "level": 3,
+                "blocks": [],
+                "content": "CHOOSE A PRICING PACKAGE",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "24px",
+                  "fontWeight": "700",
+                  "lineHeight": "26px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "60px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "hptyhm7",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "We have you covered - from capturing your family vacation memories or planning a romantic proposal to documenting a full Zion adventure.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "18px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent"
+                },
+                "parentId": "b1tialb1"
+              }
+            ]
+          },
+          {
+            "id": "86avarm",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {
+              "backgroundColor": "rgb(179, 99, 7)",
+              "padding": "12px",
+              "opacity": 1
+            },
+            "blocks": [
+              {
+                "id": "zzlsxgr",
+                "type": "h1",
+                "level": 3,
+                "blocks": [],
+                "content": "2.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "47px",
+                  "fontWeight": "700",
+                  "lineHeight": "45px",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "44px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "9cd9sa8",
+                "type": "h2",
+                "level": 3,
+                "blocks": [],
+                "content": "CHOOSE A PRICING PACKAGE",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "24px",
+                  "fontWeight": "700",
+                  "lineHeight": "26px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "60px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "y9m1o0w",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "We have you covered - from capturing your family vacation memories or planning a romantic proposal to documenting a full Zion adventure.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "18px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent"
+                },
+                "parentId": "b1tialb1"
+              }
+            ]
+          },
+          {
+            "id": "c3zlqod",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {
+              "fontSize": "NaNpx",
+              "lineHeight": "NaNpx",
+              "letterSpacing": "NaNpx",
+              "backgroundColor": "rgb(179, 99, 7)",
+              "padding": "12px",
+              "opacity": 1
+            },
+            "blocks": [
+              {
+                "id": "r2ifwws",
+                "type": "h1",
+                "level": 3,
+                "blocks": [],
+                "content": "3.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "47px",
+                  "fontWeight": "700",
+                  "lineHeight": "45px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "44px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "bdla9l3",
+                "type": "h2",
+                "level": 3,
+                "blocks": [],
+                "content": "CHOOSE A PRICING PACKAGE",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "24px",
+                  "fontWeight": "700",
+                  "lineHeight": "26px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent",
+                  "height": "60px"
+                },
+                "parentId": "b1tialb1"
+              },
+              {
+                "id": "19zq5c8",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "We have you covered - from capturing your family vacation memories or planning a romantic proposal to documenting a full Zion adventure.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "18px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#fff",
+                  "backgroundColor": "transparent"
+                },
+                "parentId": "b1tialb1"
+              }
+            ]
+          }
+        ],
+        "content": "",
+        "styles": {
+          "display": "flex",
+          "flexDirection": "row",
+          "flexWrap": "wrap",
+          "gap": "12px"
+        },
+        "allowNesting": true
+      },
+      {
+        "id": "8bhg5kk",
+        "type": "divider",
+        "level": 1,
+        "blocks": [],
+        "content": "",
+        "styles": {
+          "fontSize": "NaNpx",
+          "lineHeight": "NaNpx",
+          "letterSpacing": "NaNpx",
+          "marginTop": "40px",
+          "marginBottom": "40px"
+        }
+      },
+      {
+        "id": "cac6l5g",
+        "type": "h1",
+        "level": 1,
+        "blocks": [],
+        "content": "CLICK ONE AND GET STARTED!",
+        "styles": {
+          "width": "100%",
+          "resize": "none",
+          "fontSize": "32px",
+          "fontWeight": "700",
+          "backgroundColor": "transparent",
+          "lineHeight": "32px",
+          "letterSpacing": "NaNpx",
+          "textAlign": "center",
+          "color": "rgb(179, 99, 7)",
+          "height": "30px"
+        }
+      },
+      {
+        "id": "fab09k9",
+        "type": "flex-row",
+        "level": 1,
+        "blocks": [
+          {
+            "id": "6k12n36",
+            "type": "container",
+            "level": 2,
+            "blocks": [
+              {
+                "id": "aa9s5i3",
+                "type": "button",
+                "level": 1,
+                "blocks": [],
+                "content": "FAMILY VACATIONS",
+                "styles": {
+                  "fontSize": "16px",
+                  "lineHeight": "18px",
+                  "borderRadius": "10px",
+                  "backgroundColor": "transparent",
+                  "padding": "16px",
+                  "color": "#b36307",
+                  "letterSpacing": "NaNpx"
+                },
+                "linkUrl": "https://www.zionadventurephotog.com/families"
+              }
+            ],
+            "content": "",
+            "styles": {},
+            "allowNesting": true,
+            "parentId": "fab09k9"
+          },
+          {
+            "id": "g583fle",
+            "type": "container",
+            "level": 2,
+            "blocks": [
+              {
+                "id": "3thiogn",
+                "type": "button",
+                "level": 1,
+                "blocks": [],
+                "content": "FAMILY VACATIONS",
+                "styles": {
+                  "fontSize": "16px",
+                  "lineHeight": "18px",
+                  "borderRadius": "10px",
+                  "backgroundColor": "transparent",
+                  "padding": "16px",
+                  "color": "#b36307",
+                  "letterSpacing": "NaNpx"
+                },
+                "linkUrl": "https://www.zionadventurephotog.com/families"
+              }
+            ],
+            "content": "",
+            "styles": {},
+            "allowNesting": true,
+            "parentId": "fab09k9"
+          },
+          {
+            "id": "wl65ddh",
+            "type": "container",
+            "level": 2,
+            "blocks": [
+              {
+                "id": "bpu2uf9",
+                "type": "button",
+                "level": 1,
+                "blocks": [],
+                "content": "FAMILY VACATIONS",
+                "styles": {
+                  "fontSize": "16px",
+                  "lineHeight": "18px",
+                  "borderRadius": "10px",
+                  "backgroundColor": "transparent",
+                  "padding": "16px",
+                  "color": "#b36307",
+                  "letterSpacing": "NaNpx"
+                },
+                "linkUrl": "https://www.zionadventurephotog.com/families"
+              }
+            ],
+            "content": "",
+            "styles": {},
+            "allowNesting": true,
+            "parentId": "fab09k9"
+          },
+          {
+            "id": "xoq0y0x",
+            "type": "container",
+            "level": 2,
+            "blocks": [
+              {
+                "id": "w6fw5ct",
+                "type": "button",
+                "level": 1,
+                "blocks": [],
+                "content": "FAMILY VACATIONS",
+                "styles": {
+                  "fontSize": "16px",
+                  "lineHeight": "18px",
+                  "borderRadius": "10px",
+                  "backgroundColor": "transparent",
+                  "padding": "16px",
+                  "color": "#b36307",
+                  "letterSpacing": "NaNpx"
+                },
+                "linkUrl": "https://www.zionadventurephotog.com/families"
+              }
+            ],
+            "content": "",
+            "styles": {},
+            "allowNesting": true,
+            "parentId": "fab09k9"
+          }
+        ],
+        "content": "",
+        "styles": {
+          "display": "flex",
+          "flexDirection": "row",
+          "flexWrap": "wrap",
+          "gap": "12px"
+        },
+        "allowNesting": true
+      },
+      {
+        "id": "yo3roiy",
+        "type": "image",
+        "level": 1,
+        "blocks": [],
+        "content": "",
+        "styles": { "height": "100%", "width": "100%" },
+        "imageUrl": "https://static.wixstatic.com/media/9e18ff_827f568decbb4424a4920984b3c84ca9~mv2.jpg/v1/fill/w_1031,h_685,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/9e18ff_827f568decbb4424a4920984b3c84ca9~mv2.jpg"
+      },
+      {
+        "id": "msd36cc",
+        "type": "h1",
+        "level": 1,
+        "blocks": [],
+        "content": "CAPTURING ALL OF",
+        "styles": {
+          "width": "100%",
+          "resize": "none",
+          "fontSize": "32px",
+          "fontWeight": "700",
+          "backgroundColor": "transparent",
+          "lineHeight": "26px",
+          "letterSpacing": "NaNpx",
+          "textAlign": "center",
+          "color": "rgb(179, 99, 7)",
+          "height": "auto"
+        }
+      },
+      {
+        "id": "2tez6zf",
+        "type": "h1",
+        "level": 1,
+        "blocks": [],
+        "content": "Lifes Adventures",
+        "styles": {
+          "width": "100%",
+          "resize": "none",
+          "fontSize": "72px",
+          "fontWeight": "700",
+          "backgroundColor": "transparent",
+          "lineHeight": "67px",
+          "letterSpacing": "NaNpx",
+          "textAlign": "center",
+          "color": "rgb(179, 99, 7)",
+          "height": "fit-content"
+        }
+      },
+      {
+        "id": "azwu8at",
+        "type": "text",
+        "level": 1,
+        "blocks": [],
+        "content": "Our local photographers are skilled at capturing families, family reunions, surprise proposals, elopements and\neverything in between.",
+        "styles": {
+          "width": "100%",
+          "resize": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "backgroundColor": "transparent",
+          "lineHeight": "18px",
+          "letterSpacing": "NaNpx",
+          "textAlign": "center",
+          "color": "rgb(179, 99, 7)"
+        }
+      },
+      {
+        "id": "cotovjo",
+        "type": "flex-row",
+        "level": 1,
+        "blocks": [
+          {
+            "id": "4honvts1",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "cgpmrza",
+                "type": "image",
+                "level": 1,
+                "blocks": [],
+                "content": "",
+                "styles": { "height": "100%", "width": "100%" },
+                "imageUrl": "https://static.wixstatic.com/media/3ed8f1_0bd71ac4bf72433382ef1b069e7fafb9~mv2.jpg/v1/fill/w_233,h_332,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/3ed8f1_0bd71ac4bf72433382ef1b069e7fafb9~mv2.jpg"
+              },
+              {
+                "id": "xm88q8d",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "We have you covered - from capturing your family vacation memories, family portraits, family reunion or documenting a full Zion adventure.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "12px",
+                  "fontWeight": "400",
+                  "backgroundColor": "transparent",
+                  "lineHeight": "14px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#b36307"
+                },
+                "parentId": "4honvts1"
+              }
+            ]
+          },
+          {
+            "id": "jru3262",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "5bcbvo7",
+                "type": "image",
+                "level": 1,
+                "blocks": [],
+                "content": "",
+                "styles": { "height": "100%", "width": "100%" },
+                "imageUrl": "https://static.wixstatic.com/media/3ed8f1_01c774bf155b407badecabbf4b1275a1~mv2.jpg/v1/fill/w_233,h_332,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/3ed8f1_01c774bf155b407badecabbf4b1275a1~mv2.jpg"
+              },
+              {
+                "id": "p67k0jo",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "Capture your love against the incredible red rock vistas of Zion. We are skilled at helping you feel relaxed, comfortable, and in the moment.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "12px",
+                  "fontWeight": "400",
+                  "backgroundColor": "transparent",
+                  "lineHeight": "14px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#b36307"
+                },
+                "parentId": "jru3262"
+              }
+            ]
+          },
+          {
+            "id": "y7xqume",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "unqzd4u",
+                "type": "image",
+                "level": 1,
+                "blocks": [],
+                "content": "",
+                "styles": { "height": "100%", "width": "100%" },
+                "imageUrl": "https://static.wixstatic.com/media/3ed8f1_15f950ada2284cabbeb6c6cf83c44ca3~mv2.jpg/v1/fill/w_233,h_332,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/3ed8f1_15f950ada2284cabbeb6c6cf83c44ca3~mv2.jpg"
+              },
+              {
+                "id": "8z3crx2",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "Capture your love against the incredible red rock vistas of Zion. We are skilled at helping you feel relaxed, comfortable, and in the moment.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "12px",
+                  "fontWeight": "400",
+                  "backgroundColor": "transparent",
+                  "lineHeight": "14px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#b36307"
+                },
+                "parentId": "y7xqume"
+              }
+            ]
+          },
+          {
+            "id": "k3t80d6",
+            "type": "container",
+            "allowNesting": true,
+            "level": 2,
+            "content": "",
+            "styles": {},
+            "blocks": [
+              {
+                "id": "sjatd3t",
+                "type": "image",
+                "level": 1,
+                "blocks": [],
+                "content": "",
+                "styles": { "height": "100%", "width": "100%" },
+                "imageUrl": "https://static.wixstatic.com/media/3ed8f1_3f7580f488f1443599130ff3c10f0826~mv2.jpg/v1/fill/w_233,h_332,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/3ed8f1_3f7580f488f1443599130ff3c10f0826~mv2.jpg"
+              },
+              {
+                "id": "6oii3kr",
+                "type": "text",
+                "level": 3,
+                "blocks": [],
+                "content": "Capture your love against the incredible red rock vistas of Zion. We are skilled at helping you feel relaxed, comfortable, and in the moment.",
+                "styles": {
+                  "width": "100%",
+                  "resize": "none",
+                  "fontSize": "12px",
+                  "fontWeight": "400",
+                  "backgroundColor": "transparent",
+                  "lineHeight": "14px",
+                  "letterSpacing": "NaNpx",
+                  "textAlign": "center",
+                  "color": "#b36307"
+                },
+                "parentId": "k3t80d6"
+              }
+            ]
+          }
+        ],
+        "content": "",
+        "styles": {
+          "display": "flex",
+          "flexDirection": "row",
+          "flexWrap": "wrap",
+          "gap": "12px"
+        },
+        "allowNesting": true
+      }
+    ]
+  }
+]

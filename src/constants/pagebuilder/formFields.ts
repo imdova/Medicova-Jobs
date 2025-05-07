@@ -68,8 +68,8 @@ export const buttonModal: BlockForm = {
   ],
 };
 export const htmlModal: BlockForm = {
-  title: "Add html",
   type: ["html"],
+  title: "Add html",
   description: "",
   isModal: true,
   fields: [
@@ -88,7 +88,7 @@ export const htmlModal: BlockForm = {
   ],
 };
 export const normalModal: BlockForm = {
-  type: ["h1", "h2", "h3","code","quote"],
+  type: ["h1", "h2", "h3","code", "quote", "text"],
   fields: [
     {
       name: "content",

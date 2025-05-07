@@ -20,29 +20,97 @@ export const initialStyles: StyleState = {
   letterSpacing: 1,
 };
 
-export const HEADER_1_STYLES: React.CSSProperties = {
+const HEADER_1_STYLES: React.CSSProperties = {
   width: "100%",
   resize: "none",
-  fontSize: "24px",
+  fontSize: "32px",
   fontWeight: 700,
+  backgroundColor: "transparent",
+  lineHeight: "32px",
+};
+const HEADER_2_STYLES: React.CSSProperties = {
+  ...HEADER_1_STYLES,
+  fontSize: "24px",
   lineHeight: "26px",
 };
+const HEADER_3_STYLES: React.CSSProperties = {
+  ...HEADER_1_STYLES,
+  fontSize: "20px",
+  lineHeight: "24px",
+};
+const BUTTON_STYLES: React.CSSProperties = {
+  fontSize: "16px",
+  lineHeight: "18px",
+  borderRadius: "10px",
+  backgroundColor: "#2ba149",
+  padding: "16px 8px",
+  color: "#ffffff",
+};
+const TEXT_STYLES: React.CSSProperties = {
+  ...HEADER_1_STYLES,
+  fontWeight: 400,
+  fontSize: "16px",
+  lineHeight: "18px",
+};
+const FLEX_STYLES: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: "12px", // Equivalent to gap-3 (3 * 4px)
+};
+const QUOTE_STYLES: React.CSSProperties = {
+  borderLeft: "4px solid #d1d5db", // border-l-4 border-gray-300
+  backgroundColor: "#f9fafb", // bg-gray-50
+  padding: "16px", // p-4
+  fontStyle: "italic", // italic
+  color: "#4b5563", // text-gray-600
+};
+const CODE_STYLES: React.CSSProperties = {
+  overflow: "auto",
+  borderRadius: "4px",
+  backgroundColor: "#1f2937", // bg-gray-800
+  padding: "16px", // p-4
+  fontSize: "14px", // text-sm
+  color: "#ffffff", // text-white
+};
+const VIDEO_STYLES: React.CSSProperties = {
+  aspectRatio: "16 / 9",
+  height: "auto",
+  maxHeight: "400px",
+  width: "100%",
+  overflow: "hidden",
+};
+
+const IMAGE_STYLES: React.CSSProperties = {
+  height: "100%",
+  width: "100%",
+};
+
+// const FLEX_CONTAINER_STYLES = css({
+//   display: "flex",
+//   flexDirection: "column",
+//   flexWrap: "wrap",
+//   gap: "12px", // Equivalent to gap-3 (3 * 4px)
+//   "@media (min-width: 768px)": {
+//     flexDirection: "row",
+//   },
+// });
 
 export const blockStyles: Record<Block["type"], React.CSSProperties> = {
   h1: HEADER_1_STYLES,
-  h2: HEADER_1_STYLES,
-  h3: HEADER_1_STYLES,
-  button: HEADER_1_STYLES,
-  text: HEADER_1_STYLES,
-  "flex-column": HEADER_1_STYLES,
-  "flex-row": HEADER_1_STYLES,
-  code: HEADER_1_STYLES,
-  container: HEADER_1_STYLES,
-  divider: HEADER_1_STYLES,
-  grid: HEADER_1_STYLES,
-  html: HEADER_1_STYLES,
-  image: HEADER_1_STYLES,
-  paragraph: HEADER_1_STYLES,
-  quote: HEADER_1_STYLES,
-  video: HEADER_1_STYLES,
+  h2: HEADER_2_STYLES,
+  h3: HEADER_3_STYLES,
+  button: BUTTON_STYLES,
+  text: TEXT_STYLES,
+  "flex-column": {},
+  "flex-row": FLEX_STYLES,
+  code: CODE_STYLES,
+  container: {},
+  divider: {},
+  grid: {},
+  html: {},
+  image: IMAGE_STYLES,
+  paragraph: {},
+  quote: QUOTE_STYLES,
+  video: VIDEO_STYLES,
 };

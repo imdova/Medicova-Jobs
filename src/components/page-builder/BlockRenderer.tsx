@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 // components/page-builder/BlockRenderer.tsx
 import { Divider, TextareaAutosize } from "@mui/material";
 import { BlockTextEditor } from "@/components/editor/editor";
@@ -5,9 +6,9 @@ import { Block } from "@/types/blog";
 import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
 import { updateItem } from "@/util/blog";
-import ImageResizer from "./ImageResizer";
 import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
+import Resize from "../UI/Resize";
 
 interface BlockRendererProps {
   block: Block;
@@ -32,18 +33,14 @@ export function BlockRenderer({
     });
   };
 
-  // Helper function to update block styles
-  const updateBlockStyles = (id: string, styles: Partial<Block["styles"]>) => {
-    setBlocks((pv) =>
-      pv.map((blc) =>
-        blc.id === id
-          ? {
-              ...blc,
-              styles: { ...blc.styles, ...styles } as { [key: string]: string },
-            }
-          : blc,
-      ),
-    );
+  const updateBlockStyles = (styles: Partial<Block["styles"]>) => {
+    setBlocks((bc) => {
+      const newBlocks = [...bc];
+      updateItem(newBlocks, block?.id, {
+        styles: { ...block.styles, ...styles },
+      });
+      return newBlocks;
+    });
   };
 
   const styles = block.styles || {
@@ -75,7 +72,7 @@ export function BlockRenderer({
           placeholder="Heading 2"
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
-          className="resize-none focus:outline-none"
+          className="flex resize-none items-center focus:outline-none"
         />
       );
 
@@ -118,23 +115,24 @@ export function BlockRenderer({
 
     case "image":
       return (
-        <ImageResizer
-          src={
-            block.imageUrl ||
-            "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
-          }
-          styles={styles}
-        />
+        <Resize
+          value={{ width: styles.width, height: styles.height }}
+          onChange={(styles) => updateBlockStyles(styles)}
+        >
+          <img
+            src={
+              block.imageUrl ||
+              "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
+            }
+            alt="Content"
+            style={styles}
+          />
+        </Resize>
       );
 
     case "button":
       return (
-        <a
-          href={block.linkUrl}
-          style={styles}
-          target="_blank"
-          className="rounded-base bg-primary px-4 py-2 text-primary-foreground"
-        >
+        <a href={block.linkUrl} style={styles} target="_blank">
           {block.content}
         </a>
       );
@@ -217,10 +215,7 @@ export function BlockRenderer({
 
     case "quote":
       return (
-        <blockquote
-          style={styles}
-          className="border-l-4 border-gray-300 bg-gray-50 p-4 italic text-gray-600"
-        >
+        <blockquote style={styles}>
           <TextareaAutosize
             minRows={1}
             maxRows={10}
@@ -234,10 +229,7 @@ export function BlockRenderer({
 
     case "code":
       return (
-        <pre
-          style={styles}
-          className="overflow-auto rounded bg-gray-800 p-4 text-sm text-white"
-        >
+        <pre style={styles}>
           <TextareaAutosize
             minRows={1}
             maxRows={20}
@@ -251,10 +243,7 @@ export function BlockRenderer({
 
     case "video":
       return (
-        <div
-          style={styles}
-          className="aspect-video h-auto max-h-[400px] w-full overflow-hidden"
-        >
+        <div style={styles}>
           {block.videoUrl ? (
             <YouTubePlayer
               videoUrl={block.videoUrl}

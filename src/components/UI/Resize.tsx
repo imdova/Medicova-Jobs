@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 interface ResizeProps {
   value: { width?: string | number; height?: string | number };
@@ -7,8 +7,7 @@ interface ResizeProps {
   children: React.ReactNode;
 }
 
-const Resize = ({ value, onChange, children }: ResizeProps) => {
-  const [size, setSize] = useState(value);
+const Resize = ({ value: size, onChange, children }: ResizeProps) => {
   const divRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
 
@@ -21,11 +20,8 @@ const Resize = ({ value, onChange, children }: ResizeProps) => {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing.current || !divRef.current) return;
-
     const newWidth = `${e.clientX - divRef.current.getBoundingClientRect().left}px`;
     const newHeight = `${e.clientY - divRef.current.getBoundingClientRect().top}px`;
-
-    setSize({ width: newWidth, height: newHeight });
     onChange({ width: newWidth, height: newHeight });
   };
 
@@ -38,16 +34,13 @@ const Resize = ({ value, onChange, children }: ResizeProps) => {
   return (
     <div
       ref={divRef}
-      className="relative overflow-hidden border border-dashed border-light-primary p-2"
-      style={{
-        width: size.width,
-        height: size.height,
-      }}
+      className="relative"
+      style={{ width: size.width || "100%", height: size.height || "100%" }}
     >
       {children}
       {/* Resize handle */}
       <div
-        className="absolute bottom-0 right-0 h-3 w-3 cursor-nwse-resize bg-primary"
+        className="absolute bottom-0 right-0 h-3 w-3 cursor-nwse-resize bg-white"
         onMouseDown={handleMouseDown}
       ></div>
     </div>
