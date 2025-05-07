@@ -8,13 +8,14 @@ import { Block, BlogSettings } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
 import { findItemById } from "@/util/blog";
 import { onDragEndHandler } from "./blog";
+import ArticlePreview from "./blogReview";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 
 const getViewModeWidth = (viewMode: ViewMode) => {
   switch (viewMode) {
     case "desktop":
-      return "max-w-[1200px]";
+      return "max-w-[1100px]";
     case "tablet":
       return "max-w-[768px]";
     case "mobile":
@@ -31,16 +32,14 @@ const initialSetting: BlogSettings = {
   author: "1",
 };
 
-
-
-
-
 export default function PageBuilder() {
   // State management
   const [settings, setSettings] = useState<BlogSettings>(initialSetting);
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
+
+  const [onPreview, setPreview] = useState(false);
 
   const onDragEnd = (result: any) => {
     const newBlocks = onDragEndHandler(blocks, result);
@@ -70,7 +69,11 @@ export default function PageBuilder() {
 
   return (
     <div>
-      <EditorHeader blocks={blocks} />
+      <EditorHeader
+        blocks={blocks}
+        onPreview={onPreview}
+        setPreview={setPreview}
+      />
       <div className="flex bg-background">
         <main className="max-w-full flex-1 overflow-hidden">
           <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
@@ -91,47 +94,52 @@ export default function PageBuilder() {
               }}
               className={`mx-auto min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
             >
-              {/* <BlogHeader /> */}
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="root" type="BLOCK">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {blocks.map((block, index) => (
-                        <DraggableBlock
-                          key={block.id}
-                          block={block}
-                          index={index}
-                          selectedBlock={
-                            selectedBlock?.id
-                              ? findItemById(blocks, selectedBlock?.id)
-                              : undefined
-                          }
-                          onSelect={setSelectedBlock}
-                          setBlocks={setBlocks}
-                        />
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+              {onPreview ? (
+                <ArticlePreview blocks={blocks} />
+              ) : (
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="root" type="BLOCK">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {blocks.map((block, index) => (
+                          <DraggableBlock
+                            key={block.id}
+                            block={block}
+                            index={index}
+                            selectedBlock={
+                              selectedBlock?.id
+                                ? findItemById(blocks, selectedBlock?.id)
+                                : undefined
+                            }
+                            onSelect={setSelectedBlock}
+                            setBlocks={setBlocks}
+                          />
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
             </div>
           </div>
         </main>
 
         {/* Toolbars and Menus */}
-        <ToolBar
-          blocks={blocks}
-          setBlocks={setBlocks}
-          selectedBlock={
-            selectedBlock?.id
-              ? findItemById(blocks, selectedBlock?.id)
-              : undefined
-          }
-          settings={settings}
-          updateSettings={setSettings}
-          setSelectedBlock={setSelectedBlock}
-        />
+        {!onPreview && (
+          <ToolBar
+            blocks={blocks}
+            setBlocks={setBlocks}
+            selectedBlock={
+              selectedBlock?.id
+                ? findItemById(blocks, selectedBlock?.id)
+                : undefined
+            }
+            settings={settings}
+            updateSettings={setSettings}
+            setSelectedBlock={setSelectedBlock}
+          />
+        )}
       </div>
     </div>
   );

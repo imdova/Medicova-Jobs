@@ -12,6 +12,8 @@ import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { blockStyles } from "./constants/blocks.styles";
+import templates from "./constants/templates.json";
+import Image from "next/image";
 
 const BlocksPanel: React.FC<TabProps> = ({
   selectedBlock,
@@ -93,6 +95,33 @@ const BlocksPanel: React.FC<TabProps> = ({
         />
       )}
       <div className="space-y-4">
+        <div>
+          <h3 className="mb-4 text-sm font-medium">Templates</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {templates.map((item, index) => (
+              <div key={index}>
+                <button
+                  onClick={() => setBlocks(item.blocks as Block[])}
+                  className="grid h-[100px] w-[80px] grid-cols-1 grid-rows-1 overflow-hidden rounded-base"
+                >
+                  <Image
+                    src={item.image}
+                    width={80}
+                    height={100}
+                    alt={item.title}
+                    className="col-start-1 row-start-1 h-full object-cover"
+                  />
+                  <div className="col-start-1 row-start-1 flex h-full w-full items-center justify-center bg-black/20 p-2">
+                    <p className="line-clamp-2 text-center font-bold text-white">
+                      {item.title}
+                    </p>
+                  </div>
+                </button>
+                <p className="text-nowrap w-[80px]">Template ({index + 1})</p>
+              </div>
+            ))}
+          </div>
+        </div>
         <div>
           <h3 className="mb-2 text-sm font-medium">Basic Elements</h3>
           <div className="grid grid-cols-2 gap-2">

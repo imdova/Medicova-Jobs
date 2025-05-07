@@ -33,12 +33,20 @@ import {
   FONT_WEIGHTS,
   SIZE_OPTIONS,
 } from "./constants/blog";
-import { Divider, Slider, TextField, TextFieldProps } from "@mui/material";
+import {
+  Divider,
+  Grid,
+  Slider,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
 import TextAlignSelector from "./components/TextAlignSelector";
 import ColorSelector from "./components/ColorSelector";
 import NumberControl from "./components/NumberControl";
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { cn } from "@/util";
+import { FormField } from "@/components/form/FormModal/FormField/FormField";
+import { blocksForm } from "@/constants/pagebuilder/formFields";
 
 export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
   const styles = selectedBlock?.styles
@@ -64,6 +72,9 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
         return newBlocks;
       });
   };
+  const formFields = blocksForm.find(
+    (form) => selectedBlock?.type && form.type.includes(selectedBlock?.type),
+  )?.fields;
 
   const handleStyleChange = (key: keyof StyleState, value: any) => {
     const newStyles = { ...styles, [key]: value };
@@ -81,6 +92,32 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
   return (
     <div className="w-full max-w-md">
       <div className="space-y-2">
+        <h4 className="text-xl font-semibold">
+          Content Editor ({selectedBlock.type})
+        </h4>
+        {formFields &&
+          formFields.map((field) => (
+            <Grid
+              item
+              xs={field.gridProps?.xs ?? 12}
+              sm={field.gridProps?.sm}
+              md={field.gridProps?.md}
+              key={String(field.name)}
+            >
+              <FormField
+                field={field}
+                fieldController={{
+                  onChange: (e) =>
+                    updateBlock({ [field.name]: e.target.value }),
+                  onBlur: () => {}, // Provide a no-op function or appropriate logic
+                  value: selectedBlock?.[field.name as keyof Block] ?? "", // Provide the current value
+                  name: String(field.name), // Provide the field name
+                  ref: () => {}, // Provide a no-op ref or appropriate logic
+                }}
+              />
+            </Grid>
+          ))}
+
         <SectionCollapse
           title="Typography"
           defaultValue={true}
@@ -249,6 +286,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
                   onChange={(e, value) =>
                     handleStyleChange("opacity", Number(value))
                   }
+                  defaultValue={1}
                   min={0}
                   max={1}
                   step={0.01}
@@ -403,15 +441,10 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
                 <span className="text-xs text-gray-400">Width</span>
                 <LazyTextField
                   value={parsePixelValue(styles?.width) || ""}
-                  inputProps={{
-                    startAdornment: (
-                      <ImageIcon size={16} className="text-primary" />
-                    ),
-                  }}
                   onChange={(e) =>
                     handleStyleChange("width", e.target.value + "px")
                   }
-                  placeholder="Image URL"
+                  placeholder="Width"
                   className="w-full flex-1 rounded-lg text-sm"
                 />
               </div>
@@ -421,15 +454,10 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
                 <LazyTextField
                   type="number"
                   value={parsePixelValue(styles?.height) || ""}
-                  inputProps={{
-                    startAdornment: (
-                      <ImageIcon size={16} className="text-primary" />
-                    ),
-                  }}
                   onChange={(e) =>
                     handleStyleChange("height", e.target.value + "px")
                   }
-                  placeholder="Image URL"
+                  placeholder="height"
                   className="w-full flex-1 rounded-lg text-sm"
                 />
               </div>
@@ -592,6 +620,13 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <ColorSelector
+                value={styles?.borderColor || ""}
+                onChange={(val) => handleStyleChange("borderColor", val)}
+                label="Border Color"
+              />
+            </div>
           </div>
         </SectionCollapse>
       </div>
@@ -616,6 +651,12 @@ const LazyTextField: React.FC<TextFieldProps> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (!(initialValue === value)) setValue(initialValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue]);
+
   return (
     <TextField
       {...props}

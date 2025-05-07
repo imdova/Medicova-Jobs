@@ -20,6 +20,7 @@ export interface StyleState {
   marginBottom?: number;
   marginLeft?: number;
   borderRadius?: number;
+  borderColor?: string;
   borderWidth?: number;
   borderStyle?: string;
   boxShadow?: string;
