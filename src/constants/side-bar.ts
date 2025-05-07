@@ -45,7 +45,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           id: 2,
           label: "Manage Employers",
           icon: WorkOutline,
-          path: "/admin/users/employers",
+          path: "/admin/employers",
           type: "supLink",
         },
         {
@@ -116,7 +116,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       id: 11,
       label: "Billing & Subscription",
       icon: PaidOutlined,
-      path: "/employer/subscription-plans",
+      path: "/admin/plans",
     },
     {
       id: 12,

@@ -145,7 +145,7 @@ const columns = [
         },
       );
 
-      return <span className="text-sm">{formattedDate}</span>;
+      return <span className="text-sm">{formattedDate || "-"}</span>;
     },
   },
 
@@ -153,43 +153,45 @@ const columns = [
     key: "phone",
     header: "Phone",
     render: (app: ApplicationsType) => {
-      return <span className="text-sm">{app.applicant.phone}</span>;
+      return <span className="text-sm">{app.applicant.phone || "-"}</span>;
     },
   },
   {
     key: "country",
-    header: "Location",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.country?.name}</span>;
-    },
+    header: "country",
+    render: (app: ApplicationsType) => (
+      <span className="text-sm">{app.applicant.country?.name || "-"}</span>
+    ),
   },
   {
     key: "category",
     header: "Category",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.category}</span>;
-    },
+    render: (app: ApplicationsType) => (
+      <span className="text-sm">{app.applicant.category || "-"}</span>
+    ),
   },
   {
     key: "specialty",
     header: "specialty",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.specialty}</span>;
-    },
+    render: (app: ApplicationsType) => (
+      <span className="text-sm">{app.applicant.specialty || "-"}</span>
+    ),
   },
   {
     key: "careerLevel",
     header: "Career Level",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.careerLevel}</span>;
-    },
+    render: (app: ApplicationsType) => (
+      <span className="text-sm">{app.applicant.careerLevel || "-"}</span>
+    ),
   },
   {
     key: "education",
     header: "Education",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.lastEducation?.degree}</span>;
-    },
+    render: (app: ApplicationsType) => (
+      <span className="text-sm">
+        {app.applicant.lastEducation?.degree || "-"}
+      </span>
+    ),
   },
   {
     key: "age",
@@ -198,11 +200,11 @@ const columns = [
   {
     key: "experience",
     header: "Experience",
-    render: (app: ApplicationsType) => {
+    render: (app: ApplicationsType) => (
       <span className="text-sm">
-        {app.applicant.yearsOfExperience.totalYears}
-      </span>;
-    },
+        {app.applicant.yearsOfExperience.totalYears || "-"}
+      </span>
+    ),
   },
   {
     key: "action",
@@ -519,7 +521,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                         ),
                       },
                       {
-                        key: "conversion",
+                        key: "applicants",
                         header: "applicants",
                         render: (_, row) =>
                           `${((row.applicants / row.views) * 100).toFixed(1)}%`,
