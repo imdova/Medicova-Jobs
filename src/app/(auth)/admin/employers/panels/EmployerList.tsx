@@ -34,13 +34,18 @@ const columns = [
         <div>
           <Link
             className="transition hover:text-primary hover:underline"
-            href={`/admin/employers/${employer.id}`}
+            href={`/co/${employer?.username}`}
           >
             <div className="">
               <span className="text-sm">{employer.name}</span>
             </div>
           </Link>
-          <p className="text-xs text-blue-700">{employer.email}</p>
+          <Link
+            href={`mailto:${employer.email}`}
+            className="text-xs text-blue-700"
+          >
+            {employer.email}
+          </Link>
         </div>
       </div>
     ),
@@ -161,85 +166,83 @@ const EmployerList: React.FC = () => {
   });
 
   return (
-    <>
-      <div className="box-content !p-0">
-        {/* Employers Table */}
-        <div className="rounded-xl border bg-white p-4 shadow-sm">
-          <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
-            <h2 className="text-xl font-semibold">All Employers</h2>
-          </div>
+    <div>
+      {/* Employers Table */}
+      <div className="rounded-xl border bg-white p-4 shadow-sm">
+        <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
+          <h2 className="text-xl font-semibold">All Employers</h2>
+        </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              {/* Status Tabs */}
-              <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
-                {(["all", "new", "active", "inactive"] as EmployerStatus[]).map(
-                  (tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setStatusFilter(tab)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                        statusFilter === tab
-                          ? "bg-white text-green-600 shadow-sm"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      {tab === "all" && "All Employers"}
-                      {tab === "new" && "New Employers"}
-                      {tab === "active" && "Active Employers"}
-                      {tab === "inactive" && "Inactive Employers"}
-                    </button>
-                  ),
-                )}
-              </div>
-
-              {/* Search Input */}
-              <div className="relative w-full sm:w-64">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
+        <div className="space-y-4">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            {/* Status Tabs */}
+            <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
+              {(["all", "new", "active", "inactive"] as EmployerStatus[]).map(
+                (tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setStatusFilter(tab)}
+                    className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      statusFilter === tab
+                        ? "bg-white text-green-600 shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search jobs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-green-500 focus:outline-none focus:ring-green-500"
-                />
-              </div>
+                    {tab === "all" && "All Employers"}
+                    {tab === "new" && "New Employers"}
+                    {tab === "active" && "Active Employers"}
+                    {tab === "inactive" && "Inactive Employers"}
+                  </button>
+                ),
+              )}
             </div>
 
-            {/* Table */}
-            {loading ? (
-              <div className="flex h-32 items-center justify-center">
-                <p className="text-gray-500">Loading Employers...</p>
+            {/* Search Input */}
+            <div className="relative w-full sm:w-64">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </div>
-            ) : (
-              <DynamicTable<Company>
-                columns={columns}
-                data={filteredemployers || []}
-                minWidth={950}
-                selectable={true}
-                pagination
-                headerClassName="bg-green-600 text-white"
-                cellClassName="text-sm py-3 px-2"
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-green-500 focus:outline-none focus:ring-green-500"
               />
-            )}
+            </div>
           </div>
+
+          {/* Table */}
+          {loading ? (
+            <div className="flex h-32 items-center justify-center">
+              <p className="text-gray-500">Loading Employers...</p>
+            </div>
+          ) : (
+            <DynamicTable<Company>
+              columns={columns}
+              data={filteredemployers || []}
+              minWidth={950}
+              selectable={true}
+              pagination
+              headerClassName="bg-green-600 text-white"
+              cellClassName="text-sm py-3 px-2"
+            />
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

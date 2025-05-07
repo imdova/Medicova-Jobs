@@ -20,6 +20,9 @@ import CellOptions from "@/components/UI/CellOptions";
 import { Eye, Trash } from "lucide-react";
 import DynamicTable from "@/components/tables/DTable";
 import { API_GET_COMPANIES } from "@/api/employer";
+import CompanyMiniCard, {
+  CompanyMiniCardSkeleton,
+} from "../../components/CompanyMiniCard";
 
 type CountryData = {
   country: string;
@@ -47,12 +50,6 @@ interface TopEmployer {
   country: string;
   revenue: number;
   openJobs: number;
-}
-
-interface ChartData {
-  newEmployers: number[];
-  jobApplicants: number[];
-  months: string[];
 }
 
 // Dummy data
@@ -118,13 +115,18 @@ const columns = [
         <div>
           <Link
             className="transition hover:text-primary hover:underline"
-            href={`/admin/employers/${employer.id}`}
+            href={`/co/${employer?.username}`}
           >
             <div className="">
               <span className="text-sm">{employer.name}</span>
             </div>
           </Link>
-          <p className="text-xs text-blue-700">{employer.email}</p>
+          <Link
+            href={`mailto:${employer.email}`}
+            className="text-xs text-blue-700"
+          >
+            {employer.email}
+          </Link>
         </div>
       </div>
     ),
@@ -261,13 +263,15 @@ const OverviewEmployersPage: React.FC = () => {
   // State variables
   const [employerStats, setEmployerStats] =
     useState<EmployerStats>(dummyEmployerStats);
-  const [topEmployers, setTopEmployers] =
-    useState<TopEmployer[]>(dummyTopEmployers);
   const [statusFilter, setStatusFilter] = useState<JobStatus>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: employers, loading } =
     useFetch<PaginatedResponse<Company>>(API_GET_COMPANIES);
-  console.log(employers);
+  const topCompanies = employers?.data
+    ?.sort(
+      (a, b) => Number(b.completencePercent) - Number(a.completencePercent),
+    )
+    ?.filter((x) => Boolean(x.username));
 
   const filteredemployers = employers?.data.filter((employers) => {
     // Status filter
@@ -454,49 +458,28 @@ const OverviewEmployersPage: React.FC = () => {
         </div>
         {/* Right Column */}
         <div className="col-span-1 lg:col-span-3">
-          <div className="overflow-hidden rounded-xl border bg-white p-3">
-            <div className="mb-3 flex items-center justify-between gap-8 pb-2">
-              <Typography variant="h6">
-                Performance Overview
+          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
+            <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
+              <h5 className="text-xl font-semibold text-main">
+                Total Employers
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
-              </Typography>
+              </h5>
             </div>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {topEmployers.map((employer) => (
-                <div
-                  key={employer.id}
-                  className="w-full rounded-lg border p-3 transition-shadow hover:shadow-md"
-                >
-                  <div className="flex gap-3">
-                    <Image
-                      src={employer.logo}
-                      alt={`${employer.name} logo`}
-                      width={40}
-                      height={40}
-                      className="rounded-md"
-                    />
-                    <div>
-                      <Typography variant="subtitle1" className="font-medium">
-                        {employer.name}
-                      </Typography>
-                      <p className="flex items-center text-xs text-secondary">
-                        <LocationOnOutlined className="mr-1 text-lg" />{" "}
-                        {employer.location}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <h2 className="text-xs text-secondary">
-                      <MonetizationOn className="mr-2 text-lg" />
-                      {employer.revenue}
-                    </h2>
-                    <h2 className="text-xs text-secondary">
-                      {employer.openJobs} Open Jobs
-                    </h2>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {[1, 2, 3, 4].map((item) => (
+                  <CompanyMiniCardSkeleton key={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {topCompanies
+                  ?.slice(0, 4)
+                  .map((company) => (
+                    <CompanyMiniCard key={company.id} company={company} />
+                  ))}
+              </div>
+            )}
           </div>
           {/* Top Countries */}
           <div className="mt-3 flex-1 overflow-hidden rounded-xl border bg-white">

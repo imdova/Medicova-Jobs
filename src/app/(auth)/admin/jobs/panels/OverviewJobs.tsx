@@ -14,10 +14,13 @@ import DynamicTable from "@/components/tables/DTable";
 import CellOptions from "@/components/UI/CellOptions";
 import { Eye, Trash } from "lucide-react";
 import useFetch from "@/hooks/useFetch";
-import { JobData } from "@/types";
-import { API_GET_JOBS } from "@/api/employer";
+import { Company, JobData } from "@/types";
+import { API_GET_COMPANIES, API_GET_JOBS } from "@/api/employer";
 import Link from "next/link";
 import { ToggleButton } from "@/components/UI/ToggleButton";
+import CompanyMiniCard, {
+  CompanyMiniCardSkeleton,
+} from "../../components/CompanyMiniCard";
 
 type CountryData = {
   country: string;
@@ -123,12 +126,18 @@ const columns = [
       return <span className="text-sm">{formattedDate || "-"}</span>;
     },
   },
-
   {
     key: "employer",
     header: "Employer",
     render: (job: JobData) => {
-      return <span className="text-sm">{job.company?.name || "-"}</span>;
+      return (
+        <Link
+          href={`/co/${job.company?.username}`}
+          className="text-sm transition hover:text-primary hover:underline"
+        >
+          {job.company?.name || "-"}
+        </Link>
+      );
     },
   },
   {
@@ -233,8 +242,19 @@ const OvarviewJobs: React.FC = () => {
     useState<TopEmployer[]>(dummyTopEmployers);
   const [statusFilter, setStatusFilter] = useState<JobStatus>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: jobs, loading } =
-    useFetch<PaginatedResponse<JobData>>(API_GET_JOBS); // Only one source of truth
+  const { data: jobs } = useFetch<PaginatedResponse<JobData>>(API_GET_JOBS); // Only one source of truth
+  const { data: companies, loading } = useFetch<PaginatedResponse<Company>>(
+    API_GET_COMPANIES,
+    {
+      defaultLoading: true,
+    },
+  );
+
+  const topCompanies = companies?.data
+    ?.sort(
+      (a, b) => Number(b.completencePercent) - Number(a.completencePercent),
+    )
+    ?.filter((x) => Boolean(x.username));
 
   const filteredJobs = jobs?.data.filter((job) => {
     // Status filter
@@ -419,49 +439,28 @@ const OvarviewJobs: React.FC = () => {
           </div>
         </div>
         <div className="col-span-1 lg:col-span-3">
-          <div className="overflow-hidden rounded-xl border bg-white p-3">
-            <div className="mb-3 flex items-center justify-between gap-8">
-              <Typography>
-                Top Employers
+          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
+            <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
+              <h5 className="text-xl font-semibold text-main">
+                Total Employers
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
-              </Typography>
+              </h5>
             </div>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {topEmployers.map((employer) => (
-                <div
-                  key={employer.id}
-                  className="flex w-full flex-col justify-between rounded-lg border p-3 transition-shadow hover:shadow-md"
-                >
-                  <div className="flex gap-3">
-                    <Image
-                      src={employer.logo}
-                      alt={`${employer.name} logo`}
-                      width={40}
-                      height={40}
-                      className="rounded-md"
-                    />
-                    <div>
-                      <Typography variant="subtitle1" className="font-medium">
-                        {employer.name}
-                      </Typography>
-                      <p className="flex items-center text-xs text-secondary">
-                        <LocationOnOutlined className="mr-1 text-lg" />{" "}
-                        {employer.location}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <h2 className="text-xs text-secondary">
-                      <MonetizationOn className="mr-2 text-lg" />
-                      {employer.revenue}
-                    </h2>
-                    <h2 className="text-xs text-secondary">
-                      {employer.openJobs} Open Jobs
-                    </h2>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {[1, 2, 3, 4].map((item) => (
+                  <CompanyMiniCardSkeleton key={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {topCompanies
+                  ?.slice(0, 4)
+                  .map((company) => (
+                    <CompanyMiniCard key={company.id} company={company} />
+                  ))}
+              </div>
+            )}
           </div>
           <div className="mt-3 flex-1 overflow-hidden rounded-xl border bg-white">
             <div className="mb-3 flex justify-between gap-8 p-3">

@@ -1,11 +1,17 @@
 "use client";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import OvarviewJobs from "./panels/OverviewJobs";
-import JobList from "./panels/JobList";
-import { Add } from "@mui/icons-material";
-import { LayoutDashboard, LayoutList, Settings } from "lucide-react";
-import SettingPage from "./panels/setting";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import SubscriptionPlansPage from "./panels/SubscriptionPlansPage";
+import OvarviewBilling from "./panels/OverviewBilling";
+import TranactionsPage from "./panels/TranactionsPage";
+import AddNewPlan from "./panels/AddNewPlan";
+import {
+  ArrowDownUp,
+  LayoutDashboard,
+  LayoutList,
+  Settings,
+} from "lucide-react";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,8 +42,10 @@ function aProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`, // Links the tab to its corresponding panel
   };
 }
+// end points
+const API_GET_TRANSACTION_TABLE_DATA = "/api/employers/table-data";
 
-const JobsPage: React.FC = () => {
+const BillingPage: React.FC = () => {
   const [value, setValue] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -99,17 +107,17 @@ const JobsPage: React.FC = () => {
               {/* Individual tabs */}
               <Tab
                 label={
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <LayoutDashboard size={15} /> Overview
                   </div>
                 }
                 {...aProps(0)}
-              />
+              />{" "}
               {/* Tab 1 */}
               <Tab
                 label={
-                  <div className="flex items-center gap-2">
-                    <LayoutList size={15} /> Job List
+                  <div className="flex items-center gap-1">
+                    <ArrowDownUp size={15} /> Tranactions
                   </div>
                 }
                 {...aProps(1)}
@@ -117,31 +125,53 @@ const JobsPage: React.FC = () => {
               {/* Tab 2 */}
               <Tab
                 label={
-                  <div className="flex items-center gap-2">
-                    <Settings size={15} /> Settings
+                  <div className="flex items-center gap-1">
+                    <LayoutList size={15} /> Plans
                   </div>
                 }
                 {...aProps(2)}
+              />{" "}
+              {/* Tab 2 */}
+              <Tab
+                label={
+                  <div className="flex items-center gap-1">
+                    <Settings size={15} /> Settings
+                  </div>
+                }
+                {...aProps(3)}
               />{" "}
               {/* Tab 3 */}
             </Tabs>
           </Box>
         </div>
-        <Button variant="contained" startIcon={<Add className="h-5 w-5" />}>
-          <span className="text-nowrap text-sm">New job</span>
+        <Button
+          className="flex w-full gap-2 rounded-md bg-primary p-2 sm:w-fit"
+          size="small"
+          variant="contained"
+          onClick={handleOpenModal}
+        >
+          <AddCircleOutlineIcon />
+          <span className="text-xs">New Plan</span>
         </Button>
       </div>
+      <AddNewPlan
+        isModalOpen={isModalOpen}
+        handleCloseModal={handleCloseModal}
+      />
       <CustomTabPanel value={value} index={0}>
-        <OvarviewJobs />
+        <OvarviewBilling />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <JobList />
+        <TranactionsPage />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <SettingPage />
+        <SubscriptionPlansPage />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        setting
       </CustomTabPanel>
     </div>
   );
 };
 
-export default JobsPage;
+export default BillingPage;

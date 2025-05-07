@@ -3,8 +3,9 @@ import { Box, Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { Add } from "@mui/icons-material";
 import { LayoutDashboard, LayoutList, Settings } from "lucide-react";
-import OverviewEmployersPage from "./panels/OvarviewEmployers";
+import OverviewEmployersPage from "./panels/OverviewEmployers";
 import EmployerList from "./panels/EmployerList";
+import AddNewEmployer from "./panels/add-employer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -126,9 +127,17 @@ const JobsPage: React.FC = () => {
             </Tabs>
           </Box>
         </div>
-        <Button variant="contained" startIcon={<Add className="h-5 w-5" />}>
-          <span className="text-nowrap text-sm">New job</span>
+        <Button
+          onClick={handleOpenModal}
+          variant="contained"
+          startIcon={<Add className="h-5 w-5" />}
+        >
+          <span className="text-nowrap text-sm">New Employer</span>
         </Button>
+        <AddNewEmployer
+          isModalOpen={isModalOpen}
+          handleCloseModal={handleCloseModal}
+        />
       </div>
       <CustomTabPanel value={value} index={0}>
         <OverviewEmployersPage />

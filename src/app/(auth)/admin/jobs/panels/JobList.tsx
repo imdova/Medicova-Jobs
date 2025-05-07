@@ -47,12 +47,18 @@ const columns = [
       return <span className="text-sm">{formattedDate || "-"}</span>;
     },
   },
-
   {
     key: "employer",
     header: "Employer",
     render: (job: JobData) => {
-      return <span className="text-sm">{job.company?.name || "-"}</span>;
+      return (
+        <Link
+          href={`/co/${job.company?.username}`}
+          className="text-sm transition hover:text-primary hover:underline"
+        >
+          {job.company?.name || "-"}
+        </Link>
+      );
     },
   },
   {
