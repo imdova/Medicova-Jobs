@@ -1,102 +1,137 @@
 "use client";
-import { Typography } from "@mui/material";
-import Image from "next/image";
 import {
-  LocationOnOutlined,
-  MonetizationOn,
-  North,
-  South,
-} from "@mui/icons-material";
+  Button,
+  Menu,
+  MenuItem,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
 import React, { useState } from "react";
 import GenericChart from "@/components/charts/GenericChart";
-import DynamicCountriesTable from "@/components/tables/CountiresTable";
-import DynamicTable from "@/components/tables/DTable";
-import CellOptions from "@/components/UI/CellOptions";
-import { Eye, Trash } from "lucide-react";
+import {
+  BotOff,
+  BriefcaseBusiness,
+  Download,
+  Eye,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
 import useFetch from "@/hooks/useFetch";
-import { Company, JobData } from "@/types";
+import { ColumnConfig, Company, JobData } from "@/types";
 import { API_GET_COMPANIES, API_GET_JOBS } from "@/api/employer";
 import Link from "next/link";
-import { ToggleButton } from "@/components/UI/ToggleButton";
 import CompanyMiniCard, {
   CompanyMiniCardSkeleton,
 } from "../../components/CompanyMiniCard";
+import StatusCard from "@/components/UI/StatusCard";
+import DataTable from "@/components/UI/data-table";
+import Flag from "@/components/UI/flagitem";
+import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
 
-type CountryData = {
-  country: string;
-  countryCode: string;
-  employers?: number;
-  jobs?: number;
-  revenue?: number;
-};
-// Type definitions
-interface JobStats {
-  totalJobs: number;
-  totalJobsGrowth: number;
-  activeJobs: number;
-  activeJobsGrowth: number;
-  inactiveJobs: number;
-  inactiveJobsGrowth: number;
-}
-
-interface TopEmployer {
+type TopCountry = {
   id: string;
+  code: string;
   name: string;
-  logo: string;
-  location: string;
-  country: string;
-  revenue: number;
-  openJobs: number;
-}
-
-// Dummy data
-const dummyJobstats: JobStats = {
-  totalJobs: 2420,
-  totalJobsGrowth: 20,
-  activeJobs: 1517,
-  activeJobsGrowth: 20,
-  inactiveJobs: 903,
-  inactiveJobsGrowth: -10,
+  job: number;
+  employers: number;
+  revenue: string;
 };
-type JobStatus = "all" | "new" | "active" | "inactive";
 
-const countrydata: CountryData[] = [
+const tabs = ["New Jobs", "Active Jobs", "Inactive Jobs"];
+const topCountriesData: TopCountry[] = [
   {
-    country: "Egypt",
-    countryCode: "eg",
-    employers: 3,
-    jobs: 54,
-    revenue: 543,
+    id: "1",
+    code: "EG",
+    name: "Egypt",
+    job: 18,
+    employers: 35,
+    revenue: "75k",
   },
   {
-    country: "Qatar",
-    countryCode: "qa",
-    employers: 3,
-    jobs: 135,
-    revenue: 55,
+    id: "2",
+    code: "US",
+    name: "United States",
+    job: 120,
+    employers: 250,
+    revenue: "1.2M",
   },
   {
-    country: "Oman",
-    countryCode: "om",
-    employers: 3,
-    jobs: 15,
-    revenue: 60,
+    id: "3",
+    code: "IN",
+    name: "India",
+    job: 95,
+    employers: 180,
+    revenue: "850k",
   },
   {
-    country: "Kuwait",
-    countryCode: "kw",
-    employers: 3,
-    jobs: 4,
-    revenue: 89,
+    id: "4",
+    code: "DE",
+    name: "Germany",
+    job: 45,
+    employers: 90,
+    revenue: "500k",
+  },
+  {
+    id: "5",
+    code: "JP",
+    name: "Japan",
+    job: 60,
+    employers: 110,
+    revenue: "700k",
+  },
+  {
+    id: "6",
+    code: "AU",
+    name: "Australia",
+    job: 30,
+    employers: 65,
+    revenue: "400k",
   },
 ];
-
-// data jobs columns
-const columns = [
+const statusCards: StatusCardType[] = [
   {
-    key: "orderNum",
+    title: "All Jobs",
+    value: "2,420",
+    icon: (
+      <BriefcaseBusiness className="block h-12 w-12 rounded-full bg-blue-50 p-2 text-blue-800" />
+    ),
+    trend: {
+      value: "+20",
+      description: "Since last Week",
+      trendDirection: "up",
+    },
+  },
+  {
+    title: "Active Jobs",
+    value: "1,517",
+    icon: (
+      <ShieldCheck className="block h-12 w-12 rounded-full bg-primary-100 p-2 text-primary" />
+    ),
+    trend: {
+      value: "20%",
+      trendDirection: "up",
+    },
+  },
+  {
+    title: "InActive Jobs",
+    value: "903",
+    icon: (
+      <BotOff className="block h-12 w-12 rounded-full bg-amber-50 p-2 text-amber-800" />
+    ),
+    trend: {
+      value: "20%",
+      trendDirection: "down",
+    },
+  },
+];
+// data jobs columns
+const columns: ColumnConfig<JobData>[] = [
+  {
     header: "#",
-    render: (_job: JobData, index: number) => <span>{index + 1}</span>,
+    render: (_job, index) => <span>{index + 1}</span>, // Now works
   },
   {
     key: "title",
@@ -111,10 +146,10 @@ const columns = [
     ),
   },
   {
-    key: "date",
+    key: "created_at",
     header: "Date",
     render: (job: JobData) => {
-      const formattedDate = new Date(job.updated_at).toLocaleDateString(
+      const formattedDate = new Date(job.created_at).toLocaleDateString(
         "en-US",
         {
           year: "numeric",
@@ -127,7 +162,7 @@ const columns = [
     },
   },
   {
-    key: "employer",
+    key: "company",
     header: "Employer",
     render: (job: JobData) => {
       return (
@@ -148,15 +183,29 @@ const columns = [
     },
   },
   {
-    key: "views",
     header: "views",
     render: () => <span className="text-sm">50</span>,
   },
   {
-    key: "applicants",
+    key: "applicationCount",
     header: "applicants",
     render: (job: JobData) => (
       <span className="text-sm">{job.applicationCount || "-"}</span>
+    ),
+  },
+  {
+    key: "active",
+    header: "Status",
+    render: (item) => (
+      <CheckboxField
+        field={{
+          name: "status",
+          type: "checkbox",
+        }}
+        controllerField={{
+          value: item.active,
+        }}
+      />
     ),
   },
   {
@@ -164,84 +213,26 @@ const columns = [
     header: "state",
     render: (job: JobData) => (
       <span
-        className={`rounded-xl px-3 py-1 text-sm ${job.active ? "bg-green-100 text-green-700" : "bg-red-200 text-red-700"}`}
+        className={`rounded-lg border px-3 py-1 text-xs font-semibold ${job.active ? "bg-inputDark border-green-500 bg-green-50 text-green-700 ring-green-600/20" : "bg-inputDark border-red-500 bg-red-50 text-red-700 ring-red-600/10"}`}
       >
         {job.active ? "active" : "Inactive"}
       </span>
     ),
   },
-  {
-    key: "action",
-    header: "Action",
-    render: (job: JobData) => (
-      <div className="flex items-center gap-4">
-        <ToggleButton initialValue={job.active || false} />
-        <CellOptions
-          item={undefined}
-          options={[
-            {
-              label: "View",
-              icon: <Eye className="h-4 w-4" />, // optional icon
-              action: (item) => console.log("Viewing", item),
-            },
-            {
-              label: "Delete",
-              icon: <Trash className="h-4 w-4 text-red-500" />,
-              action: (item) => console.log("Deleting", item),
-            },
-          ]}
-        />
-      </div>
-    ),
-  },
-];
-
-const dummyTopEmployers: TopEmployer[] = [
-  {
-    id: "emp-001",
-    name: "LinkedIn",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
-    location: "New York, US",
-    country: "United States",
-    revenue: 25000,
-    openJobs: 25,
-  },
-  {
-    id: "emp-002",
-    name: "Google",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
-    location: "Mountain View, US",
-    country: "United States",
-    revenue: 42000,
-    openJobs: 38,
-  },
-  {
-    id: "emp-003",
-    name: "Microsoft",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-    location: "Redmond, US",
-    country: "United States",
-    revenue: 36500,
-    openJobs: 29,
-  },
-  {
-    id: "emp-004",
-    name: "Amazon",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-    location: "Seattle, US",
-    country: "United States",
-    revenue: 31200,
-    openJobs: 41,
-  },
 ];
 
 const OvarviewJobs: React.FC = () => {
-  // State variables
-  const [JobsStats, setJobsStats] = useState<JobStats>(dummyJobstats);
-  const [topEmployers, setTopEmployers] =
-    useState<TopEmployer[]>(dummyTopEmployers);
-  const [statusFilter, setStatusFilter] = useState<JobStatus>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedItems, setSelectedItems] = useState<(number | string)[]>([]);
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+  const exportOpen = Boolean(exportAnchorEl);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [query, setQuery] = useState("");
+  const exportHandleClick = (event: any) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+  const exportHandleClose = () => {
+    setExportAnchorEl(null);
+  };
   const { data: jobs } = useFetch<PaginatedResponse<JobData>>(API_GET_JOBS); // Only one source of truth
   const { data: companies, loading } = useFetch<PaginatedResponse<Company>>(
     API_GET_COMPANIES,
@@ -249,139 +240,24 @@ const OvarviewJobs: React.FC = () => {
       defaultLoading: true,
     },
   );
-
+  console.log(jobs);
   const topCompanies = companies?.data
     ?.sort(
       (a, b) => Number(b.completencePercent) - Number(a.completencePercent),
     )
     ?.filter((x) => Boolean(x.username));
 
-  const filteredJobs = jobs?.data.filter((job) => {
-    // Status filter
-    const statusMatch =
-      statusFilter === "all" ||
-      (statusFilter === "new" && "") || // if job is new change to job.isNew
-      (statusFilter === "active" && job.active) ||
-      (statusFilter === "inactive" && !job.active);
-
-    // Search filter
-    const query = searchQuery.toLowerCase();
-    const searchMatch =
-      !query ||
-      job.title.toLowerCase().includes(query) ||
-      job.description?.toLowerCase().includes(query) ||
-      job.country?.name.toLowerCase().includes(query);
-
-    return statusMatch && searchMatch;
-  });
   return (
     <>
       {/* start Overveiw page */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-8">
         <div className="col-span-1 lg:col-span-5">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {/* Total Employers */}
-            <div className="flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Total Employers
-                </span>
-                <h2 className="mb-2 text-lg font-bold">
-                  {JobsStats.totalJobs.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    JobsStats.totalJobsGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {JobsStats.totalJobsGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(JobsStats.totalJobsGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/job-1.png"
-                  alt="Total Jobss Icon"
-                  width={48}
-                  height={48}
-                />
-              </div>
-            </div>
-
-            {/* Active Jobss */}
-            <div className="flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Active Jobss
-                </span>
-                <h2 className="text-lg font-bold">
-                  {JobsStats.activeJobs.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    JobsStats.activeJobsGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {JobsStats.activeJobsGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(JobsStats.activeJobsGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/job-2.png"
-                  alt="Active Jobss Icon"
-                  width={48}
-                  height={48}
-                />
-              </div>
-            </div>
-            {/* Inactive Jobs */}
-            <div className="flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Inactive Jobss
-                </span>
-                <h2 className="text-lg font-bold">
-                  {JobsStats.inactiveJobs.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    JobsStats.inactiveJobsGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {JobsStats.inactiveJobsGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(JobsStats.inactiveJobsGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/job-3.png"
-                  alt="Inactive Jobss Icon"
-                  width={48}
-                  height={48}
-                />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+            {statusCards.map((card) => (
+              <StatusCard key={card.title} {...card} />
+            ))}
           </div>
-          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-sm">
+          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-soft">
             <GenericChart
               chartTitle="Statistics Jobs Chart"
               data={{
@@ -438,7 +314,7 @@ const OvarviewJobs: React.FC = () => {
             />
           </div>
         </div>
-        <div className="col-span-1 lg:col-span-3">
+        <div className="col-span-1 flex flex-col lg:col-span-3">
           <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
               <h5 className="text-xl font-semibold text-main">
@@ -462,117 +338,144 @@ const OvarviewJobs: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="mt-3 flex-1 overflow-hidden rounded-xl border bg-white">
+          <div className="mt-3 flex-1 overflow-hidden rounded-xl border bg-white shadow-soft">
             <div className="mb-3 flex justify-between gap-8 p-3">
               <Typography>
                 Top Countries
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
               </Typography>
             </div>
-            <DynamicCountriesTable
-              data={countrydata}
-              columns={[
-                {
-                  key: "country",
-                  header: "country",
-                },
-                {
-                  key: "jobs",
-                  header: "jobs",
-                  render: (value) => <span>{value} Jobs</span>,
-                },
-                {
-                  key: "employers",
-                  header: "employers",
-                },
-                {
-                  key: "revenue",
-                  header: "revenue",
-                  render: (value) => (
-                    <span className="text-primary">{value}K</span>
-                  ),
-                },
-              ]}
-              defaultSort={{ key: "jobs", direction: "desc" }}
-              showFlags={true}
-              onRowClick={(row) => console.log("Row clicked:", row)}
-            />
+            <div className="max-w-[calc(100vw-1rem)]">
+              <DataTable
+                data={topCountriesData}
+                total={topCountriesData.length}
+                cellClassName="p-2 text-xs"
+                className="border-none shadow-none"
+                // searchQuery={query}
+                columns={[
+                  {
+                    key: "id",
+                    header: "Rank",
+                    sortable: true,
+                    render: (item) => (
+                      <div className="pl-2 text-xs">#{item.id}</div>
+                    ),
+                  },
+                  {
+                    key: "name",
+                    header: "Country",
+                    sortable: true,
+                    render: (item) => (
+                      <div className="flex">
+                        <Flag {...item} />{" "}
+                        <span className="ml-2 text-xs">{item.name}</span>
+                      </div>
+                    ),
+                  },
+                  {
+                    key: "employers",
+                    header: "Employers",
+                    sortable: true,
+                  },
+                  {
+                    key: "job",
+                    header: "Jobs",
+                    sortable: true,
+                  },
+                  {
+                    key: "revenue",
+                    header: "Revenue",
+                    sortable: true,
+                  },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </div>
       <div className="mt-3 !p-0">
-        {/* <OverveiwJobTable /> */}
-        <div className="rounded-xl border bg-white p-4 shadow-sm">
-          <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
-            <h2 className="text-xl font-semibold">Recent Jobs</h2>
-          </div>
-
+        <div className="rounded-xl border bg-white p-4 shadow-soft">
           <div className="space-y-4">
-            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              {/* Status Tabs */}
-              <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
-                {(["all", "new", "active", "inactive"] as JobStatus[]).map(
-                  (tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setStatusFilter(tab)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                        statusFilter === tab
-                          ? "bg-white text-green-600 shadow-sm"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      {tab === "all" && "All Jobs"}
-                      {tab === "new" && "New Jobs"}
-                      {tab === "active" && "Active Jobs"}
-                      {tab === "inactive" && "Inactive Jobs"}
-                    </button>
-                  ),
-                )}
-              </div>
-
-              {/* Search Input */}
-              <div className="relative w-full sm:w-64">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+            <div className="flex flex-col justify-between md:flex-row md:items-end">
+              <div>
+                <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
+                  <h2 className="text-xl font-semibold">Recent Jobs</h2>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search jobs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-green-500 focus:outline-none focus:ring-green-500"
+                <div className="body-container overflow-x-auto">
+                  <Tabs
+                    value={activeTab}
+                    onChange={(e, v) => setActiveTab(v)}
+                    aria-label="basic tabs example"
+                    variant="scrollable"
+                    scrollButtons={false}
+                    className="text-base"
+                  >
+                    {tabs.map((tab) => (
+                      <Tab
+                        key={tab}
+                        className="text-nowrap text-xs"
+                        label={tab}
+                        value={tab}
+                      />
+                    ))}
+                  </Tabs>
+                </div>
+              </div>
+              <div className="m-2 flex flex-wrap items-end gap-2">
+                <TextField
+                  variant="outlined"
+                  placeholder="Search For Jobs"
+                  value={query}
+                  InputProps={{
+                    startAdornment: <Search />,
+                  }}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
+                <div>
+                  <Button
+                    onClick={exportHandleClick}
+                    variant="outlined"
+                    aria-controls={exportOpen ? "export-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={exportOpen ? "true" : undefined}
+                    className="space-x-2"
+                  >
+                    <Download className="inline-block h-5 w-5" />
+                    <p className="inline-block text-sm">Export</p>
+                    <ExpandMore className="inline-block h-5 w-5" />
+                  </Button>
+                  <Menu
+                    id="export-menu"
+                    anchorEl={exportAnchorEl}
+                    open={exportOpen}
+                    onClose={exportHandleClose}
+                    className="mt-2"
+                  >
+                    <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
+                    <MenuItem className="hover:bg-gray-200">
+                      Excel (CSV)
+                    </MenuItem>
+                  </Menu>
+                </div>
               </div>
             </div>
-
-            {/* Table */}
-            {loading ? (
-              <div className="flex h-32 items-center justify-center">
-                <p className="text-gray-500">Loading jobs...</p>
-              </div>
-            ) : (
-              <DynamicTable<JobData>
+            <div>
+              <DataTable<JobData>
+                data={jobs?.data || []}
+                isSelectable
+                searchQuery={query}
                 columns={columns}
-                data={filteredJobs || []}
-                minWidth={950}
-                selectable={true}
-                headerClassName="bg-green-600 text-white"
-                cellClassName="text-sm py-3 px-2"
+                selected={selectedItems}
+                setSelected={setSelectedItems}
+                options={[
+                  {
+                    label: "View Profile",
+                    action: () => console.log("viewed profile"),
+                    icon: <Eye size={15} />,
+                  },
+                ]}
               />
-            )}
+            </div>
           </div>
         </div>
       </div>

@@ -209,7 +209,7 @@ const CategoryManagement: React.FC<{
   };
 
   return (
-    <div className="flex-1 rounded-xl border bg-white p-3">
+    <div className="flex-1 rounded-xl border bg-white p-3 shadow-soft">
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
         <h3 className="mb-3 w-full text-sm font-semibold md:text-lg">
           {industryData?.name

@@ -24,6 +24,7 @@ import { LocalActivityOutlined } from "@mui/icons-material";
 import Avatar from "@/components/UI/Avatar";
 import UsersTable from "../components/users/OverviewEmployersTable";
 import { topCountriesData } from "../constants";
+import { Typography } from "@mui/material";
 
 const statusCards: StatusCardType[] = [
   {
@@ -86,8 +87,8 @@ const UsersOverViewPanel: React.FC = () => {
   return (
     <div className="space-y-2">
       {/* Stats Section */}
-      <div className="flex flex-col gap-2 lg:flex-row">
-        <div className="flex-1 lg:w-3/5">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-10">
+        <div className="col-span-1 lg:col-span-6">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
             {statusCards.map((card) => (
               <StatusCard key={card.title} {...card} />
@@ -162,7 +163,7 @@ const UsersOverViewPanel: React.FC = () => {
           </div>
         </div>
         {/* Right Column */}
-        <div className="flex flex-col gap-3 lg:w-2/5">
+        <div className="col-span-1 flex flex-col gap-3 lg:col-span-4">
           {/* Performance Overview */}
           <div className="rounded-base border border-gray-200 bg-white shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-3 pb-2">
@@ -209,14 +210,12 @@ const UsersOverViewPanel: React.FC = () => {
             />
           </div>
           {/* Top Countries */}
-          <div className="rounded-base border border-gray-200 bg-white shadow-soft">
-            <div className="mb-2 flex items-center justify-between border-b p-3 pb-2">
-              <h5 className="text-xl font-semibold text-main">
+          <div className="h-full overflow-hidden rounded-xl border bg-white shadow-soft">
+            <div className="mb-3 flex justify-between gap-8 p-3">
+              <Typography>
                 Top Countries
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
-              </h5>
-
-              {/* <DummyActionMenu /> */}
+              </Typography>
             </div>
             <div className="max-w-[calc(100vw-1rem)]">
               <DataTable
@@ -246,8 +245,8 @@ const UsersOverViewPanel: React.FC = () => {
                     ),
                   },
                   {
-                    key: "users",
-                    header: "Users",
+                    key: "employers",
+                    header: "Employers",
                     sortable: true,
                   },
                   {
@@ -268,12 +267,7 @@ const UsersOverViewPanel: React.FC = () => {
       </div>
       {/* Employers Table */}
 
-      {topUsers && (
-        <UsersTable
-          users={users}
-          updateUsers={setData}
-        />
-      )}
+      {topUsers && <UsersTable users={users} updateUsers={setData} />}
     </div>
   );
 };

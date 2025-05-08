@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  List,
-  ListItemButton,
-  ListItemText,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { List, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Eye, Trash } from "lucide-react";
 import CellOptions from "@/components/UI/CellOptions";
 

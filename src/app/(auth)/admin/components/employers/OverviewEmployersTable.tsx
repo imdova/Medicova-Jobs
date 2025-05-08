@@ -268,7 +268,12 @@ const OverviewEmployersTable: React.FC<{
                 <div className="flex items-center gap-2">
                   <Avatar src={item.avatar} />
                   <div>
-                    <h6 className="line-clamp-1 text-sm">{item.name}</h6>
+                    <Link
+                      className="transition hover:text-primary"
+                      href={`/admin/employers/${item.id}`}
+                    >
+                      <h6 className="line-clamp-1 text-sm">{item.name}</h6>
+                    </Link>
                     <Link
                       href={`mailto:${item.email}`}
                       className="line-clamp-1 break-all text-xs underline hover:no-underline"

@@ -141,7 +141,7 @@ const IndustriesSidebar: React.FC<{
   };
 
   return (
-    <div className="rounded-xl border bg-white p-3 lg:w-[300px]">
+    <div className="rounded-xl border bg-white p-3 shadow-soft lg:w-[300px]">
       <h3 className="mb-3 text-sm font-semibold md:text-lg">Industries</h3>
       <div className="mb-3 flex gap-2">
         <TextField
