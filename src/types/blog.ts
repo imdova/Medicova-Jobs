@@ -28,11 +28,6 @@ export interface Block {
   blocks: Block[];
   level: number;
   allowNesting?: boolean;
-  gridProps?: {
-    xs?: number;
-    sm?: number;
-    md?: number;
-  };
 }
 
 export type BlogSettings = {

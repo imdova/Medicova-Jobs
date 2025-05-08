@@ -116,6 +116,9 @@ export const onDragEndHandler = (
   result: DropResult,
 ): Block[] => {
   const { source, destination, draggableId } = result;
+  console.log("🚀 ~ source:", source)
+  console.log("🚀 ~ draggableId:", draggableId)
+  console.log("🚀 ~ destination:", destination)
 
   // If there's no destination, return original blocks
   if (!destination) return blocks;
