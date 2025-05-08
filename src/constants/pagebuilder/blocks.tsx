@@ -56,6 +56,7 @@ export const getBlockProps = (
 ): Partial<Block> => {
   if (type === "flex-row") {
     return {
+      allowNesting: true,
       blocks: [
         {
           id: id + 1,
@@ -115,6 +116,11 @@ export const contentBlocks: BlockButton[] = [
     id: "code",
     icon: <Code className="mr-2 h-4 w-4" />,
     label: "Code",
+  },
+  {
+    id: "html",
+    icon: <Code className="mr-2 h-4 w-4" />,
+    label: "HTML",
   },
   {
     id: "video",

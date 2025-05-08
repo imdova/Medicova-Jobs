@@ -33,11 +33,20 @@ export const generateCSSProperties = (
     borderRadius: styles.borderRadius ? `${styles.borderRadius}px` : undefined,
     borderWidth: styles.borderWidth ? `${styles.borderWidth}px` : undefined,
     borderStyle: styles.borderStyle,
+    borderColor: styles.borderColor,
     boxShadow:
       boxShadowValues[styles.boxShadow as keyof typeof boxShadowValues],
     opacity: styles.opacity,
     width: styles.width,
     height: styles.height,
+
+    display: styles.display,
+    gridTemplateColumns: styles.gridTemplateColumns,
+    gridTemplateRows: styles.gridTemplateRows,
+    flexWrap: styles.flexWrap,
+    justifyContent: styles.justifyContent,
+    alignItems: styles.alignItems,
+    gap: styles.gap ? `${styles.gap}px` : undefined,
   };
 };
 export const parsePixelValue = (value?: string | number): number => {
@@ -98,6 +107,7 @@ export const reverseCSSProperties = (
   if (css.borderWidth)
     styleState.borderWidth = parsePixelValue(css.borderWidth);
   if (css.borderStyle) styleState.borderStyle = css.borderStyle as string;
+  if (css.borderColor) styleState.borderColor = css.borderColor as string;
   if (css.boxShadow) {
     styleState.boxShadow = Object.keys(boxShadowValues).find(
       (key) =>
@@ -105,6 +115,18 @@ export const reverseCSSProperties = (
     ) as keyof typeof boxShadowValues;
   }
   if (css.opacity !== undefined) styleState.opacity = css.opacity as number;
+
+  if (css.display) styleState.display = css.display as string;
+  if (css.gridTemplateColumns)
+    styleState.gridTemplateColumns = css.gridTemplateColumns as string;
+  if (css.gridTemplateRows)
+    styleState.gridTemplateRows = css.gridTemplateRows as string;
+  if (css.flexWrap)
+    styleState.flexWrap = css.flexWrap as StyleState["flexWrap"];
+  if (css.justifyContent)
+    styleState.justifyContent = css.justifyContent as string;
+  if (css.alignItems) styleState.alignItems = css.alignItems as string;
+  if (css.gap) styleState.gap = parsePixelValue(css.gap);
 
   return styleState;
 };

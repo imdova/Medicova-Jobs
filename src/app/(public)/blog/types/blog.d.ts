@@ -20,6 +20,7 @@ export interface StyleState {
   marginBottom?: number;
   marginLeft?: number;
   borderRadius?: number;
+  borderColor?: string;
   borderWidth?: number;
   borderStyle?: string;
   boxShadow?: string;
@@ -27,4 +28,12 @@ export interface StyleState {
   width?: string;
   height?: string;
   letterSpacing?: number;
+
+  display?: string;
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
+  flexWrap?: FlexWrap;
+  justifyContent?: string;
+  alignItems?: string;
+  gap?: number;
 }

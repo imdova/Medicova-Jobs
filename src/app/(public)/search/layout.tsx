@@ -38,6 +38,9 @@ const layout: React.FC<{
       {/* Main Layout */}
 
       {children}
+      <Suspense>
+        <CountrySearchResult />
+      </Suspense>
     </div>
   );
 };

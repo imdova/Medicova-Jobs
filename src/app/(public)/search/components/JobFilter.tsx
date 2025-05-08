@@ -1,17 +1,8 @@
 "use client";
-import {
-  API_GET_CAREER_LEVELS,
-  API_GET_CATEGORIES,
-  API_GET_EMPLOYMENT_TYPES,
-  API_GET_INDUSTRIES,
-  API_GET_SPECIALITIES,
-} from "@/api/admin";
-import { API_FILTER_SEARCH_JOBS } from "@/api/employer";
 import Filter from "@/components/Layout/filter/filter";
-import Flag from "@/components/UI/flagitem";
 import { gendersOptions } from "@/constants";
 import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
-import useFetch from "@/hooks/useFetch";
+import { useIndustriesData } from "@/hooks/useIndustriesData";
 import { useLocationData } from "@/hooks/useLocationData";
 import { Industry } from "@/types";
 import { mergeData } from "@/util/general";
@@ -32,12 +23,16 @@ const initialCountries: JobsAggregations["country"] = [
 ];
 
 const JobFilter: React.FC<{ data: JobsAggregations }> = ({ data }) => {
-  const { countries, states } = useLocationData();
-  const { data: industries } = useFetch<Result>(API_GET_INDUSTRIES);
-  const { data: categories } = useFetch<Result>(API_GET_CATEGORIES);
-  const { data: specialities } = useFetch<Result>(API_GET_SPECIALITIES);
-  const { data: careerLevels } = useFetch<Result>(API_GET_CAREER_LEVELS);
-  const { data: employmentTypes } = useFetch<Result>(API_GET_EMPLOYMENT_TYPES);
+  const countriesCodes = data.country.map((x) => x.code);
+  const { countries, states } = useLocationData(countriesCodes);
+
+  const {
+    industries: { data: industries },
+    categories: { data: categories },
+    careerLevels: { data: careerLevels },
+    specialities: { data: specialities },
+    employmentTypes: { data: employmentTypes },
+  } = useIndustriesData({ categoryId: "all", industryId: "all" });
 
   const filters: FilterType[] = [];
   data.country = mergeData(data.country, initialCountries, "code");
