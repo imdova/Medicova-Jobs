@@ -24,7 +24,7 @@ type DraggedBlock = {
   path?: string;
   type: Block["type"];
 };
-const Example: React.FC<{
+const BlogBuilder: React.FC<{
   blocks: Block[];
   selectedBlock: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
@@ -223,4 +223,4 @@ const Example: React.FC<{
     </div>
   );
 };
-export default Example;
+export default BlogBuilder;
