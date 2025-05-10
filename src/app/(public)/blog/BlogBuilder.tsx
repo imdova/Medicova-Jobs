@@ -101,6 +101,14 @@ const BlogBuilder: React.FC<{
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    const isInput =
+      target.tagName === "INPUT" ||
+      target.tagName === "TEXTAREA" ||
+      target.isContentEditable;
+
+    if (isInput) return;
+
     // Check for Ctrl+C to copy features
     if (e.ctrlKey && e.key === "c") {
       if (selectedBlock) setCopiedBlock(selectedBlock);
@@ -175,7 +183,7 @@ const BlogBuilder: React.FC<{
   }, [selectedBlock]);
 
   return (
-    <div className="flex flex-col h-full flex-grow">
+    <>
       {formData && (
         <FormModal
           open={isModalOpen}
@@ -188,13 +196,13 @@ const BlogBuilder: React.FC<{
         const currentPath = `${index}`;
         return (
           <React.Fragment key={block.id}>
-            <DropZone
+            {/* <DropZone
               data={{
                 path: currentPath,
                 childrenCount: blocks.length,
               }}
               onDrop={handleDrop}
-            />
+            /> */}
             <DraggableBlock
               key={block.id}
               block={block}
@@ -211,7 +219,7 @@ const BlogBuilder: React.FC<{
           </React.Fragment>
         );
       })}
-      <DropZone
+      {/* <DropZone
         data={{
           path: `${blocks.length}`,
           childrenCount: blocks.length,
@@ -219,8 +227,8 @@ const BlogBuilder: React.FC<{
         onDrop={handleDrop}
         isLast
         className="!h-full min-h-12 flex-grow"
-      />
-    </div>
+      /> */}
+    </>
   );
 };
 export default BlogBuilder;

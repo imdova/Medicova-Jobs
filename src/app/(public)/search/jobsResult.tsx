@@ -1,15 +1,18 @@
 "use client";
 import { FormControl, IconButton, MenuItem, Select } from "@mui/material";
 import { GridViewOutlined, List } from "@mui/icons-material";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { JobData } from "@/types";
 import JobCard from "@/components/UI/job-card";
 import MinJobCard from "@/components/UI/job-card-min";
-import CountrySearchResult from "@/components/UI/CountrySearchResult";
+import { useSession } from "next-auth/react";
 const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
   jobs,
   total,
 }) => {
+  const { data: session } = useSession();
+  const user = session?.user;
+  console.log("🚀 ~ user:", user)
   const [view, setView] = useState("list");
   return (
     <>
@@ -66,7 +69,7 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
         {view === "list" ? (
           <div className="mb-8 flex flex-col gap-4">
             {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard key={job.id} job={job} seekerId={user?.id} />
             ))}
           </div>
         ) : (

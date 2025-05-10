@@ -56,7 +56,12 @@ const FLEX_STYLES: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   flexWrap: "wrap",
-  gap: "12px", // Equivalent to gap-3 (3 * 4px)
+  // gap: "12px", // Equivalent to gap-3 (3 * 4px)
+};
+const CONTAINER_STYLES: React.CSSProperties = {
+  width: "100%",
+  flexGrow: 1,
+  flex: "1 1 0%",
 };
 const QUOTE_STYLES: React.CSSProperties = {
   borderLeft: "4px solid #d1d5db", // border-l-4 border-gray-300
@@ -105,7 +110,7 @@ export const blockStyles: Record<Block["type"], React.CSSProperties> = {
   "flex-column": {},
   "flex-row": FLEX_STYLES,
   code: CODE_STYLES,
-  container: {},
+  container: CONTAINER_STYLES,
   divider: {},
   grid: {},
   html: {},

@@ -64,8 +64,8 @@ export function DraggableBlock({
         onSelect(block);
       }}
       ref={previewRef}
-      style={{ opacity }}
-      className={`relative w-full rounded-base border p-2 ${
+      style={{ opacity, ...block.styles }}
+      className={`relative rounded-base border p-1 ${
         isSelected
           ? "border-primary"
           : "border-transparent hover:border-neutral-400"
