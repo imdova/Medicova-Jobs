@@ -5,15 +5,27 @@ import { BlockTextEditor } from "@/components/editor/editor";
 import { Block } from "@/types/blog";
 import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
-import { updateItem } from "@/util/blog";
+import { findItemById, updateItem } from "@/util/blog";
 import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
 import Resize from "../UI/Resize";
+import React, { useRef } from "react";
+import { useDrag } from "react-dnd";
+import DropZone from "@/app/(public)/blog/components/dropzone";
+
+type DropZoneData = {
+  path: string;
+  childrenCount: number;
+};
+
+type DragItem = Block & { path: string };
 
 interface BlockRendererProps {
   block: Block;
+  path: string;
   selectedBlock?: Block | null;
   onSelect: (block: Block) => void;
+  handleDrop: (data: DropZoneData, item: DragItem) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
 }
 
@@ -22,6 +34,8 @@ export function BlockRenderer({
   onSelect,
   selectedBlock,
   setBlocks,
+  handleDrop,
+  path,
 }: BlockRendererProps) {
   const isSelected = selectedBlock?.id === block.id;
 
@@ -147,70 +161,103 @@ export function BlockRenderer({
       );
     case "container":
       return (
-        <Droppable
-          droppableId={"drop-" + block.id}
-          type={"BLOCK"} // Use the same type for all droppables
-          isCombineEnabled={false} // Disable combining items
+        <div
+          className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
+          style={styles}
         >
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
-              ref={provided.innerRef}
-              style={styles}
+          {block.blocks?.length === 0 && (
+            <DropZone
+              data={{
+                path: `${path}-0`,
+                childrenCount: 1,
+              }}
+              onDrop={handleDrop}
+              //   path={currentPath}
+              className="!h-full !w-full"
             >
-              {block.blocks?.length === 0 && (
-                <div className="flex items-center justify-center p-5">
-                  <span className="max-w-44 text-center text-2xl font-semibold text-gray-300">
-                    Add block to container
-                  </span>
-                </div>
-              )}
-              {block.blocks?.map((block, index) => (
+              <div className="flex items-center justify-center p-5">
+                <span className="max-w-44 text-center text-2xl font-semibold text-gray-300">
+                  Add block to container
+                </span>
+              </div>
+            </DropZone>
+          )}
+          {block.blocks.map((block, index) => {
+            const currentPath = `${path}-${index}`;
+            return (
+              <React.Fragment key={block.id}>
+                <DropZone
+                  data={{
+                    path: currentPath,
+                    childrenCount: block.blocks.length,
+                  }}
+                  onDrop={handleDrop}
+                  //   path={currentPath}
+                />
                 <DraggableBlock
                   key={block.id}
+                  handleDrop={handleDrop}
                   block={block}
-                  index={index}
+                  path={currentPath}
                   selectedBlock={selectedBlock}
                   onSelect={onSelect}
                   setBlocks={setBlocks}
                 />
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
+              </React.Fragment>
+            );
+          })}
+          <DropZone
+            data={{
+              path: `${path}-${block.blocks.length}`,
+              childrenCount: block.blocks.length,
+            }}
+            onDrop={handleDrop}
+            isLast
+          />
+        </div>
       );
     case "flex-row":
       return (
-        <Droppable
-          droppableId={"drop-" + block.id}
-          type="BLOCK"
-          isCombineEnabled={false}
-          direction="horizontal"
+        <div
+          style={styles}
+          className="flex flex-col flex-wrap gap-3 md:flex-row"
         >
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              className="flex flex-col flex-wrap gap-3 md:flex-row"
-              ref={provided.innerRef}
-              style={styles}
-            >
-              {block.blocks?.map((block, index) => (
+          {block.blocks.map((block, index) => {
+            const currentPath = `${path}-${index}`;
+            return (
+              <React.Fragment key={block.id}>
+                <DropZone
+                  data={{
+                    path: currentPath,
+                    childrenCount: block.blocks.length,
+                  }}
+                  onDrop={handleDrop}
+                  className="horizontalDrag"
+                />
                 <div key={block.id} className="h-full w-full flex-1">
                   <DraggableBlock
+                    key={block.id}
+                    handleDrop={handleDrop}
                     block={block}
-                    index={index}
+                    path={currentPath}
                     selectedBlock={selectedBlock}
                     onSelect={onSelect}
                     setBlocks={setBlocks}
                   />
                 </div>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
+              </React.Fragment>
+            );
+          })}
+          <DropZone
+            data={{
+              path: `${path}-${block.blocks.length}`,
+              childrenCount: block.blocks.length,
+            }}
+            onDrop={handleDrop}
+            className="horizontalDrag"
+            isLast
+          />
+        </div>
       );
 
     case "quote":

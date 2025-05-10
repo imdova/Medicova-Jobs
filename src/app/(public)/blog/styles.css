@@ -1,0 +1,29 @@
+.dropZone {
+  flex: 0 0 auto;
+  height: 20px;
+  /* background: #00a2ff3d; */
+  transition: 200ms all;
+}
+
+.dropZone:nth-of-type(2n) {
+  display: none;
+}
+.dropZone.horizontalDrag {
+  width: 20px;
+  height: auto;
+}
+
+.dropZone:not(.horizontalDrag).isLast {
+  flex: 1 1 auto;
+}
+
+.dropZone:not(.horizontalDrag).active {
+  background: #8181811f;
+  transition: 100ms all;
+  height: 100px;
+}
+.dropZone.horizontalDrag.active {
+  background: #8181811f;
+  transition: 100ms all;
+  width: 100px;
+}

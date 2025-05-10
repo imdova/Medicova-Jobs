@@ -6,14 +6,15 @@ import {
   layoutBlocks,
 } from "@/constants/pagebuilder/blocks";
 import { BlockForm, blocksForm } from "@/constants/pagebuilder/formFields";
-import { Block, TabProps } from "@/types/blog";
+import { Block, BlockButton, TabProps } from "@/types/blog";
 import { generateId } from "@/util";
 import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { blockStyles } from "./constants/blocks.styles";
 import templates from "./constants/templates.json";
 import Image from "next/image";
+import { useDrag } from "react-dnd";
 
 const BlocksPanel: React.FC<TabProps> = ({
   selectedBlock,
@@ -117,7 +118,7 @@ const BlocksPanel: React.FC<TabProps> = ({
                     </p>
                   </div>
                 </button>
-                <p className="text-nowrap w-[80px]">Template ({index + 1})</p>
+                <p className="w-[80px] text-nowrap">Template ({index + 1})</p>
               </div>
             ))}
           </div>
@@ -126,16 +127,11 @@ const BlocksPanel: React.FC<TabProps> = ({
           <h3 className="mb-2 text-sm font-medium">Basic Elements</h3>
           <div className="grid grid-cols-2 gap-2">
             {basicBlocks.map((item, index) => (
-              <div key={item.id}>
-                <Button
-                  variant="outlined"
-                  className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id)}
-                >
-                  {item.icon}
-                  {item.label}
-                </Button>
-              </div>
+              <AddBlockItem
+                key={index}
+                item={item}
+                onClick={() => handleAddBlock(item.id)}
+              />
             ))}
           </div>
         </div>
@@ -144,16 +140,11 @@ const BlocksPanel: React.FC<TabProps> = ({
           <h3 className="mb-2 text-sm font-medium">Layout Structures</h3>
           <div className="grid grid-cols-2 gap-2">
             {layoutBlocks.map((item, index) => (
-              <div key={item.id}>
-                <Button
-                  variant="outlined"
-                  className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id)}
-                >
-                  {item.icon}
-                  {item.label}
-                </Button>
-              </div>
+              <AddBlockItem
+                key={index}
+                item={item}
+                onClick={() => handleAddBlock(item.id)}
+              />
             ))}
           </div>
         </div>
@@ -162,16 +153,11 @@ const BlocksPanel: React.FC<TabProps> = ({
           <h3 className="mb-2 text-sm font-medium">Content Blocks</h3>
           <div className="grid grid-cols-2 gap-2">
             {contentBlocks.map((item, index) => (
-              <div key={item.id}>
-                <Button
-                  variant="outlined"
-                  className="w-full justify-start"
-                  onClick={() => handleAddBlock(item.id)}
-                >
-                  {item.icon}
-                  {item.label}
-                </Button>
-              </div>
+              <AddBlockItem
+                key={index}
+                item={item}
+                onClick={() => handleAddBlock(item.id)}
+              />
             ))}
           </div>
         </div>
@@ -181,3 +167,37 @@ const BlocksPanel: React.FC<TabProps> = ({
 };
 
 export default BlocksPanel;
+
+const AddBlockItem: React.FC<{ item: BlockButton; onClick: () => void }> = ({
+  item,
+  onClick,
+}) => {
+  const ref = useRef(null);
+
+  const [{ isDragging }, drag] = useDrag({
+    type: item.id,
+    item: {
+      type: item.id,
+      id: item.id,
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const opacity = isDragging ? 0 : 1;
+  drag(ref);
+
+  return (
+    <div ref={ref} style={{ opacity }} key={item.id}>
+      <Button
+        variant="outlined"
+        className="w-full justify-start"
+        onClick={onClick}
+      >
+        {item.icon}
+        {item.label}
+      </Button>
+    </div>
+  );
+};
