@@ -41,7 +41,7 @@ const page = async ({
   return (
     <div className="w-full px-4 md:px-5">
       <PostJobForm
-        job={isDuplicated ? { ...job, id: undefined } : job}
+        job={isDuplicated ? { ...job, id: "" } : job}
         industries={industries}
         employmentTypes={employmentTypes}
       />

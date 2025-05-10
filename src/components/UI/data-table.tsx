@@ -29,6 +29,7 @@ interface DataTableProps<T> {
   options?: ActionOption<T>[]; // Action options for each row
   noDataMessage?: NoDataMessage;
   hideTableHeader?: boolean;
+  isSelectable?: boolean;
 }
 
 function DataTable<T extends { id: number | string }>({
@@ -40,6 +41,7 @@ function DataTable<T extends { id: number | string }>({
   onClick,
   onEdit,
   onDelete,
+  isSelectable = false,
   cellClassName = "p-3 text-sm",
   headerClassName = "text-sm",
   fixedNumberPerPage,
@@ -49,7 +51,6 @@ function DataTable<T extends { id: number | string }>({
   className,
   hideTableHeader,
 }: DataTableProps<T>) {
-  const isSelectable = Boolean(selected.length > 0);
   const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
   const handleSort = (key: Path<T>) => {
@@ -75,7 +76,6 @@ function DataTable<T extends { id: number | string }>({
       ),
     );
   }, [data, searchQuery, columns]);
-
   // Sort data based on sort config
   const sortedData = useMemo(() => {
     if (!sortConfig?.key) return filteredData;
@@ -119,7 +119,7 @@ function DataTable<T extends { id: number | string }>({
   const isSelected = (id: number | string) => selected.indexOf(id) !== -1;
 
   return (
-    <div className="w-full text-[10px]">
+    <div className="grid w-full grid-cols-1 text-[10px]">
       <div
         className={cn(
           "scroll-bar-minimal overflow-x-auto rounded-base border border-gray-200 bg-white shadow-soft",
@@ -191,7 +191,7 @@ function DataTable<T extends { id: number | string }>({
             </thead>
           )}
           <tbody>
-            {sortedData.map((item, index) => {
+            {sortedData.map((item, indexRow) => {
               const id = item.id;
               const isItemSelected = isSelected(id);
               return (
@@ -212,7 +212,7 @@ function DataTable<T extends { id: number | string }>({
                   {columns.map((col, index) => (
                     <td key={index} className={cellClassName}>
                       {col.render
-                        ? col.render(item)
+                        ? col.render(item, indexRow)
                         : col.key && getNestedValue(item, col.key)}
                     </td>
                   ))}

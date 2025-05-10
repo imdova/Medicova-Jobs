@@ -3,280 +3,366 @@
 import { API_GET_JOB_BY_ID, JOB_APPLICATIONS } from "@/api/employer";
 import NotFoundPage from "@/app/not-found";
 import GenericChart from "@/components/charts/GenericChart";
-import DynamicCountriesTable from "@/components/tables/CountiresTable";
-import DynamicTable from "@/components/tables/DTable";
-import CellOptions from "@/components/UI/CellOptions";
+import DataTable from "@/components/UI/data-table";
+import FilterDrawer from "@/components/UI/FilterDrawer";
 import useFetch from "@/hooks/useFetch";
-import { JobData } from "@/types";
+import { ColumnConfig, JobData } from "@/types";
 import {
   Eye,
   ListOrdered,
   SquarePen,
   View,
   UsersRound,
-  Trash,
+  Download,
+  Filter,
+  Search,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Menu,
+  IconButton,
+  Select,
+  Typography,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import Flag from "@/components/UI/flagitem";
 
 interface SingleUserProps {
   params: {
     slug: string;
   };
 }
-
-type CountryData = {
-  country: string;
-  countryCode: string;
-  views?: number;
-  applicants?: number;
-  views_percentage?: string;
-  applicants_percentage?: string;
+type TopCountry = {
+  id: string;
+  code: string;
+  name: string;
+  job: number;
+  employers: number;
+  revenue: string;
 };
-const countrydata: CountryData[] = [
+interface JobFilter {
+  searchQuery: string;
+  location: string;
+  category: string;
+  specialty: string;
+  educationDate: string;
+  status: string;
+}
+
+const topCountriesData: TopCountry[] = [
   {
-    country: "Egypt",
-    countryCode: "eg",
-    views: 1500,
-    applicants: 200,
-    views_percentage: "30%",
-    applicants_percentage: "25%",
+    id: "1",
+    code: "EG",
+    name: "Egypt",
+    job: 18,
+    employers: 35,
+    revenue: "75k",
   },
   {
-    country: "Qatar",
-    countryCode: "qa",
-    views: 1100,
-    applicants: 180,
-    views_percentage: "22%",
-    applicants_percentage: "21%",
+    id: "2",
+    code: "US",
+    name: "United States",
+    job: 120,
+    employers: 250,
+    revenue: "1.2M",
   },
   {
-    country: "Oman",
-    countryCode: "om",
-    views: 950,
-    applicants: 140,
-    views_percentage: "19%",
-    applicants_percentage: "17%",
+    id: "3",
+    code: "IN",
+    name: "India",
+    job: 95,
+    employers: 180,
+    revenue: "850k",
   },
   {
-    country: "Kuwait",
-    countryCode: "kw",
-    views: 1300,
-    applicants: 210,
-    views_percentage: "26%",
-    applicants_percentage: "23%",
+    id: "4",
+    code: "DE",
+    name: "Germany",
+    job: 45,
+    employers: 90,
+    revenue: "500k",
   },
   {
-    country: "Saudi Arabia",
-    countryCode: "sa",
-    views: 1700,
-    applicants: 250,
-    views_percentage: "35%",
-    applicants_percentage: "28%",
+    id: "5",
+    code: "JP",
+    name: "Japan",
+    job: 60,
+    employers: 110,
+    revenue: "700k",
   },
   {
-    country: "Bahrain",
-    countryCode: "bh",
-    views: 600,
-    applicants: 80,
-    views_percentage: "12%",
-    applicants_percentage: "10%",
-  },
-  {
-    country: "United Arab Emirates",
-    countryCode: "ae",
-    views: 1800,
-    applicants: 260,
-    views_percentage: "37%",
-    applicants_percentage: "30%",
-  },
-  {
-    country: "Jordan",
-    countryCode: "jo",
-    views: 700,
-    applicants: 90,
-    views_percentage: "14%",
-    applicants_percentage: "12%",
+    id: "6",
+    code: "AU",
+    name: "Australia",
+    job: 30,
+    employers: 65,
+    revenue: "400k",
   },
 ];
 
-// data jobs columns
-const columns = [
-  {
-    key: "orderNum",
-    header: "#",
-    render: (_job: ApplicationsType, index: number) => <span>{index + 1}</span>,
-  },
-  {
-    key: "name",
-    header: "Full Name",
-    render: (app: ApplicationsType) => (
-      <div className="flex items-center gap-2">
-        <Image
-          className="h-8 w-8 rounded-full object-cover"
-          src={app.applicant.avatar ?? "/images/avatar-placeholder.png"}
-          width={200}
-          height={200}
-          alt={app.applicant.firstName}
-        />
-        <div>
-          <Link className="hover:underline" href={``}>
-            <div className="">
-              <span className="text-sm">{app.applicant.firstName} </span>
-              <span className="text-sm">{app.applicant.lastName}</span>
-            </div>
-          </Link>
-          <p className="text-xs text-blue-700">{app.applicant.email}</p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    key: "date",
-    header: "Applied Date",
-    render: (app: ApplicationsType) => {
-      const formattedDate = new Date(app.updated_at).toLocaleDateString(
-        "en-US",
-        {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        },
-      );
-
-      return <span className="text-sm">{formattedDate}</span>;
-    },
-  },
-
-  {
-    key: "phone",
-    header: "Phone",
-    render: (app: ApplicationsType) => {
-      return <span className="text-sm">{app.applicant.phone}</span>;
-    },
-  },
-  {
-    key: "country",
-    header: "Location",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.country?.name}</span>;
-    },
-  },
-  {
-    key: "category",
-    header: "Category",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.category}</span>;
-    },
-  },
-  {
-    key: "specialty",
-    header: "specialty",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.specialty}</span>;
-    },
-  },
-  {
-    key: "careerLevel",
-    header: "Career Level",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.careerLevel}</span>;
-    },
-  },
-  {
-    key: "education",
-    header: "Education",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">{app.applicant.lastEducation?.degree}</span>;
-    },
-  },
-  {
-    key: "age",
-    header: "Age",
-  },
-  {
-    key: "experience",
-    header: "Experience",
-    render: (app: ApplicationsType) => {
-      <span className="text-sm">
-        {app.applicant.yearsOfExperience.totalYears}
-      </span>;
-    },
-  },
-  {
-    key: "action",
-    header: "Action",
-    render: () => (
-      <CellOptions
-        item={undefined}
-        options={[
-          {
-            label: "View",
-            icon: <Eye className="h-4 w-4" />, // optional icon
-            action: (item) => console.log("Viewing", item),
-          },
-          {
-            label: "Delete",
-            icon: <Trash className="h-4 w-4 text-red-500" />,
-            action: (item) => console.log("Deleting", item),
-          },
-        ]}
-      />
-    ),
-  },
-];
-
-export default function SingleStudentOverview({ params }: SingleUserProps) {
+const SingleJobOverview = ({ params }: SingleUserProps) => {
   const slug = params.slug;
   const { data: job, loading } = useFetch<JobData>(
     `${API_GET_JOB_BY_ID}${slug}`,
   );
-  const { data: applicates } = useFetch<PaginatedResponse<ApplicationsType>>(
+  const { data: applications } = useFetch<PaginatedResponse<ApplicationsType>>(
     `${JOB_APPLICATIONS}?jobId=${job?.id}`,
   );
+
+  const [selectedItems, setSelectedItems] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState("job-overview");
-  // State for filters
-  const [searchQuery, setSearchQuery] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [specialtyFilter, setSpecialtyFilter] = useState("");
-  const [educationDateFilter, setEducationDateFilter] = useState("");
-
-  // Filtered data
-  const filteredApplications = applicates?.data.filter((application) => {
-    // Search query filter
-    const matchesSearch =
-      !searchQuery ||
-      application.applicant.firstName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      application.applicant.email
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      application.job.title.toLowerCase().includes(searchQuery.toLowerCase());
-
-    // Location filter
-    const matchesLocation =
-      !locationFilter || application.location === locationFilter;
-
-    // Category filter
-    const matchesCategory =
-      !categoryFilter || application.applicant.category === categoryFilter;
-
-    // Specialty filter
-    const matchesSpecialty =
-      !specialtyFilter || application.applicant.specialty === specialtyFilter;
-
-    return (
-      matchesSearch && matchesLocation && matchesCategory && matchesSpecialty
-    );
+  const [filters, setFilters] = useState<JobFilter>({
+    searchQuery: "",
+    location: "",
+    category: "",
+    specialty: "",
+    educationDate: "",
+    status: "",
   });
+  const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
+    null,
+  );
+  const exportOpen = Boolean(exportAnchorEl);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  console.log(job);
-  console.log(applicates);
+  const openFilter = () => setIsFilterOpen(true);
+  const closeFilter = () => setIsFilterOpen(false);
+
+  const exportHandleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+
+  const exportHandleClose = () => {
+    setExportAnchorEl(null);
+  };
+  console.log(applications);
+
+  // Filter applications based on filters
+  const filteredApplications = useMemo(() => {
+    if (!applications?.data) return [];
+
+    return applications.data.filter((app) => {
+      // Search query filter
+      const matchesSearch = filters.searchQuery
+        ? app.applicant.firstName
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          app.applicant.lastName
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          app.applicant.email
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase())
+        : true;
+
+      // Location filter
+      const matchesLocation = filters.location
+        ? app.applicant.country?.name === filters.location
+        : true;
+
+      // Category filter
+      const matchesCategory = filters.category
+        ? app.applicant.category === filters.category
+        : true;
+
+      // Specialty filter
+      const matchesSpecialty = filters.specialty
+        ? app.applicant.specialty === filters.specialty
+        : true;
+
+      // Status filter (you might need to adjust based on your data structure)
+      const matchesStatus = filters.status
+        ? app.status === filters.status
+        : true;
+
+      return (
+        matchesSearch &&
+        matchesLocation &&
+        matchesCategory &&
+        matchesSpecialty &&
+        matchesStatus
+      );
+    });
+  }, [applications, filters]);
+
+  // Extract unique values for filters
+  const locations = useMemo(() => {
+    const uniqueLocations = new Set<string>();
+    applications?.data.forEach((app) => {
+      if (app.applicant.country?.name) {
+        uniqueLocations.add(app.applicant.country.name);
+      }
+    });
+    return Array.from(uniqueLocations);
+  }, [applications]);
+
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+    applications?.data.forEach((app) => {
+      if (app.applicant.category) {
+        uniqueCategories.add(app.applicant.category);
+      }
+    });
+    return Array.from(uniqueCategories);
+  }, [applications]);
+
+  const specialties = useMemo(() => {
+    const uniqueSpecialties = new Set<string>();
+    applications?.data.forEach((app) => {
+      if (app.applicant.specialty) {
+        uniqueSpecialties.add(app.applicant.specialty);
+      }
+    });
+    return Array.from(uniqueSpecialties);
+  }, [applications]);
+
+  const statuses = useMemo(() => {
+    const uniqueStatuses = new Set<string>();
+    applications?.data.forEach((app) => {
+      if (app.status) {
+        uniqueStatuses.add(app.status);
+      }
+    });
+    return Array.from(uniqueStatuses);
+  }, [applications]);
+
+  const columns: ColumnConfig<ApplicationsType>[] = [
+    {
+      header: "#",
+      render: (_job, index) => <span>{index + 1}</span>,
+    },
+    {
+      header: "Full Name",
+      render: (app) => (
+        <div className="flex items-center gap-2">
+          <Image
+            className="h-8 w-8 rounded-full object-cover"
+            src={app.applicant.avatar ?? "/images/avatar-placeholder.png"}
+            width={200}
+            height={200}
+            alt={app.applicant.firstName}
+          />
+          <div>
+            <Link
+              className="hover:underline"
+              href={`/admin/users/${app.applicant.id}`}
+            >
+              <div className="">
+                <span className="text-sm">{app.applicant.firstName} </span>
+                <span className="text-sm">{app.applicant.lastName}</span>
+              </div>
+            </Link>
+            <p className="text-xs text-blue-700">{app.applicant.email}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Applied Date",
+      render: (app) => {
+        const formattedDate = new Date(app.created_at).toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          },
+        );
+        return <span className="text-sm">{formattedDate || "-"}</span>;
+      },
+    },
+    {
+      header: "Phone",
+      render: (app) => (
+        <span className="text-sm">{app.applicant.phone || "-"}</span>
+      ),
+    },
+    {
+      header: "Country",
+      render: (app) => (
+        <span className="text-sm">{app.applicant.country?.name || "-"}</span>
+      ),
+    },
+    {
+      header: "Category",
+      render: (app) => (
+        <span className="text-sm">{app.applicant.category || "-"}</span>
+      ),
+    },
+    {
+      header: "Specialty",
+      render: (app) => (
+        <span className="text-sm">{app.applicant.specialty || "-"}</span>
+      ),
+    },
+    {
+      header: "Career Level",
+      render: (app) => (
+        <span className="text-sm">{app.applicant.careerLevel || "-"}</span>
+      ),
+    },
+    {
+      header: "Education",
+      render: (app) => (
+        <span className="text-sm">
+          {app.applicant.lastEducation?.degree || "-"}
+        </span>
+      ),
+    },
+    {
+      header: "Experience",
+      render: (app) => (
+        <span className="text-sm">
+          {app.applicant.yearsOfExperience?.totalYears || "-"}
+        </span>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (app) => {
+        const getStatusStyle = (status: string) => {
+          switch (status) {
+            case "Review":
+              return "bg-yellow-100 text-yellow-800";
+            case "Viewed":
+              return "bg-blue-100 text-blue-800";
+            case "Shortlisted":
+              return "bg-purple-100 text-purple-800";
+            case "Interviewed":
+              return "bg-indigo-100 text-indigo-800";
+            case "Accepted":
+              return "bg-green-100 text-green-800";
+            case "Rejected":
+              return "bg-red-100 text-red-800";
+            case "Withdrawn":
+              return "bg-gray-200 text-gray-700";
+            default:
+              return "bg-gray-100 text-gray-500";
+          }
+        };
+
+        const status = app.status || "-";
+        const badgeStyle = getStatusStyle(status);
+
+        return (
+          <span
+            className={`rounded-full px-2 py-1 text-xs font-medium ${badgeStyle}`}
+          >
+            {status}
+          </span>
+        );
+      },
+    },
+  ];
 
   if (!job) return <NotFoundPage />;
+
   return (
     <div className="p-4">
       {/* Tab Buttons */}
@@ -305,7 +391,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
         </button>
       </div>
 
-      <div className="mb-4 rounded-lg border bg-white p-4 shadow-sm">
+      <div className="mb-4 rounded-lg border bg-white p-4 shadow-soft">
         <h1 className="mb-4 text-2xl font-bold">{job.title}</h1>
         <div className="relative flex justify-between">
           {/* Student Details */}
@@ -405,7 +491,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
           {activeTab === "job-overview" && (
             <div>
               <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex items-center gap-4 rounded-lg border bg-white p-4 shadow-sm">
+                <div className="flex items-center gap-4 rounded-lg border bg-white p-4 shadow-soft">
                   <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#F3E8FF] text-[#AD46FF]">
                     <Eye size={20} />
                   </div>
@@ -417,7 +503,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 rounded-lg border bg-white p-4 shadow-sm">
+                <div className="flex items-center gap-4 rounded-lg border bg-white p-4 shadow-soft">
                   <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#E4F8FFE5] text-[#55BEE6]">
                     <UsersRound size={20} />
                   </div>
@@ -431,7 +517,7 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                 </div>
               </div>
               <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-10">
-                <div className="col-span-1 rounded-xl border bg-white p-4 shadow-sm lg:col-span-6">
+                <div className="col-span-1 rounded-xl border bg-white p-4 shadow-soft lg:col-span-6">
                   <GenericChart
                     chartTitle="Job Post Chart"
                     data={{
@@ -495,60 +581,73 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                     ]}
                   />
                 </div>
-                <div className="col-span-1 rounded-xl border shadow-sm lg:col-span-4">
-                  <h2 className="mb-3 p-4 text-lg font-semibold">
-                    Top Job Applicants
-                  </h2>
-                  <DynamicCountriesTable
-                    data={countrydata}
-                    columns={[
-                      {
-                        key: "country",
-                        header: "Location",
-                      },
-                      {
-                        key: "views",
-                        header: "Views",
-                        render: (value, row) => (
-                          <div className="flex items-center">
-                            {value.toLocaleString()}
-                            <span className="ml-2 text-xs text-green-500">
-                              (+{row.views_percentage})
-                            </span>
-                          </div>
-                        ),
-                      },
-                      {
-                        key: "conversion",
-                        header: "applicants",
-                        render: (_, row) =>
-                          `${((row.applicants / row.views) * 100).toFixed(1)}%`,
-                      },
-                    ]}
-                    defaultSort={{ key: "views", direction: "desc" }}
-                    showFlags={true}
-                    onRowClick={(row) => console.log("Row clicked:", row)}
-                  />
+                <div className="col-span-1 overflow-hidden rounded-xl border bg-white shadow-soft lg:col-span-4">
+                  <div className="mb-3 flex justify-between gap-8 p-3">
+                    <Typography>
+                      Top Countries
+                      <span className="ml-1 text-xs text-secondary">
+                        (Revenue)
+                      </span>
+                    </Typography>
+                  </div>
+                  <div className="max-w-[calc(100vw-1rem)]">
+                    <DataTable
+                      data={topCountriesData}
+                      total={topCountriesData.length}
+                      cellClassName="p-2 text-xs"
+                      className="border-none shadow-none"
+                      // searchQuery={query}
+                      columns={[
+                        {
+                          key: "id",
+                          header: "Rank",
+                          sortable: true,
+                          render: (item) => (
+                            <div className="pl-2 text-xs">#{item.id}</div>
+                          ),
+                        },
+                        {
+                          key: "name",
+                          header: "Country",
+                          sortable: true,
+                          render: (item) => (
+                            <div className="flex">
+                              <Flag {...item} />{" "}
+                              <span className="ml-2 text-xs">{item.name}</span>
+                            </div>
+                          ),
+                        },
+                        {
+                          key: "employers",
+                          header: "Employers",
+                          sortable: true,
+                        },
+                        {
+                          key: "job",
+                          header: "Jobs",
+                          sortable: true,
+                        },
+                        {
+                          key: "revenue",
+                          header: "Revenue",
+                          sortable: true,
+                        },
+                      ]}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="rounded-xl border bg-white p-4 shadow-sm">
-                <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
-                  <h2 className="text-xl font-semibold">
-                    Recent Job Applications
-                  </h2>
-                </div>
-
-                {loading ? (
-                  <p>Loading...</p>
-                ) : (
-                  <DynamicTable<ApplicationsType>
-                    columns={columns}
-                    data={applicates?.data || []}
-                    minWidth={1200}
-                    selectable
-                  />
-                )}
-              </div>
+              {loading ? (
+                <p>Loading...</p>
+              ) : (
+                <DataTable<ApplicationsType>
+                  data={applications?.data || []}
+                  isSelectable
+                  columns={columns}
+                  selected={selectedItems}
+                  setSelected={setSelectedItems}
+                />
+              )}
             </div>
           )}
           {/* applicant list Panel */}
@@ -559,124 +658,183 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                   Total Job Applications
                 </h2>
 
-                {/* Search Bar */}
-                <div className="relative w-full md:w-80">
-                  <input
-                    type="text"
+                <div className="flex items-center gap-2">
+                  <TextField
+                    variant="outlined"
                     placeholder="Search applications..."
-                    className="w-full rounded-md border px-4 py-2 pl-10 focus:outline-none"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={filters.searchQuery}
+                    InputProps={{
+                      startAdornment: <Search />,
+                    }}
+                    onChange={(e) =>
+                      setFilters({ ...filters, searchQuery: e.target.value })
+                    }
+                    className="w-full md:w-80"
                   />
-                  <svg
-                    className="absolute left-3 top-3 h-4 w-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
+
+                  <div className="relative">
+                    <Button
+                      onClick={exportHandleClick}
+                      variant="outlined"
+                      aria-controls={exportOpen ? "export-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={exportOpen ? "true" : undefined}
+                      className="flex items-center gap-2"
+                      endIcon={<ExpandMore className="h-5 w-5" />}
+                    >
+                      <Download className="h-5 w-5" />
+                      <span className="text-sm">Export</span>
+                    </Button>
+                    <Menu
+                      id="export-menu"
+                      anchorEl={exportAnchorEl}
+                      open={exportOpen}
+                      onClose={exportHandleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "export-button",
+                        className: "py-1 min-w-[120px]",
+                      }}
+                      PaperProps={{
+                        className: "mt-1 shadow-lg",
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          exportHandleClose();
+                        }}
+                        className="px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        PDF
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          exportHandleClose();
+                        }}
+                        className="px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Excel (CSV)
+                      </MenuItem>
+                    </Menu>
+                  </div>
                 </div>
               </div>
 
               {/* Filters Row */}
-              <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                {/* Location Filter */}
-                <div>
-                  <label
-                    htmlFor="location"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+              <div className="mb-6 flex flex-wrap items-end gap-2 overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-nowrap">
+                <div className="flex-1">
+                  <Select
+                    value={filters.location}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        location: e.target.value as string,
+                      })
+                    }
+                    displayEmpty
+                    fullWidth
+                    className="h-[42px]"
                   >
-                    Location
-                  </label>
-                  <select
-                    id="location"
-                    className="w-full rounded-md border px-3 py-2 focus:outline-none"
-                    value={locationFilter}
-                    onChange={(e) => setLocationFilter(e.target.value)}
-                  >
-                    <option value="">All Locations</option>
-
-                    <option key="egypt" value="egypt">
-                      egypt
-                    </option>
-                  </select>
+                    <MenuItem value="">All Locations</MenuItem>
+                    {locations.map((location) => (
+                      <MenuItem key={location} value={location}>
+                        {location}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
 
-                {/* Category Filter */}
-                <div>
-                  <label
-                    htmlFor="category"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                <div className="flex-1">
+                  <Select
+                    value={filters.category}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        category: e.target.value as string,
+                      })
+                    }
+                    displayEmpty
+                    fullWidth
+                    className="h-[42px]"
                   >
-                    Category
-                  </label>
-                  <select
-                    id="category"
-                    className="w-full rounded-md border px-3 py-2 focus:outline-none"
-                    value={categoryFilter}
-                    onChange={(e) => setCategoryFilter(e.target.value)}
-                  >
-                    <option value="">All Categories</option>
-                  </select>
+                    <MenuItem value="">All Categories</MenuItem>
+                    {categories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
 
-                {/* Specialty Filter */}
-                <div>
-                  <label
-                    htmlFor="specialty"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                <div className="flex-1">
+                  <Select
+                    value={filters.specialty}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        specialty: e.target.value as string,
+                      })
+                    }
+                    displayEmpty
+                    fullWidth
+                    className="h-[42px]"
                   >
-                    Specialty
-                  </label>
-                  <select
-                    id="specialty"
-                    className="w-full rounded-md border px-3 py-2 focus:outline-none"
-                    value={specialtyFilter}
-                    onChange={(e) => setSpecialtyFilter(e.target.value)}
-                  >
-                    <option value="">All Specialties</option>
-                  </select>
+                    <MenuItem value="">All Specialties</MenuItem>
+                    {specialties.map((specialty) => (
+                      <MenuItem key={specialty} value={specialty}>
+                        {specialty}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
 
-                {/* Education Date Filter */}
-                <div>
-                  <label
-                    htmlFor="educationDate"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                <div className="flex-1">
+                  <Select
+                    value={filters.status}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        status: e.target.value as string,
+                      })
+                    }
+                    displayEmpty
+                    fullWidth
+                    className="h-[42px]"
                   >
-                    Education Date
-                  </label>
-                  <select
-                    id="educationDate"
-                    className="w-full rounded-md border px-3 py-2 focus:outline-none"
-                    value={educationDateFilter}
-                    onChange={(e) => setEducationDateFilter(e.target.value)}
-                  >
-                    <option value="">All Dates</option>
-                    <option value="last-6-months">Last 6 Months</option>
-                    <option value="last-year">Last Year</option>
-                    <option value="last-2-years">Last 2 Years</option>
-                    <option value="last-5-years">Last 5 Years</option>
-                  </select>
+                    <MenuItem value="">All Statuses</MenuItem>
+                    {statuses.map((status) => (
+                      <MenuItem key={status} value={status}>
+                        {status}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
+
+                <IconButton
+                  onClick={openFilter}
+                  className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
+                >
+                  <Filter className="h-4 w-4" />
+                </IconButton>
               </div>
 
               {loading ? (
                 <p>Loading...</p>
               ) : (
-                <DynamicTable<ApplicationsType>
+                <DataTable<ApplicationsType>
+                  data={filteredApplications}
                   columns={columns}
-                  data={filteredApplications || []}
-                  minWidth={1200}
-                  pagination
-                  selectable
+                  searchQuery={filters.searchQuery}
+                  selected={selectedItems}
+                  setSelected={setSelectedItems}
+                  isSelectable
+                  noDataMessage={{
+                    title: "No applications found",
+                    description: "Try adjusting your filters",
+                    action: {
+                      label: "Clear Filters",
+                      href: "#",
+                    },
+                  }}
                 />
               )}
             </div>
@@ -685,4 +843,5 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
       </div>
     </div>
   );
-}
+};
+export default SingleJobOverview;
