@@ -8,6 +8,7 @@ import {
   API_FILTER_SEARCH_SEEKERS,
   API_GET_SEEKERS,
   API_SEARCH_SEEKERS,
+  FOLDER_FILTER,
 } from "@/api/seeker";
 import { Doctor, Result } from "@/types";
 import { JobSearchFilter, SeekerSearchFilter } from "@/types/jobs";
@@ -211,6 +212,39 @@ export const searchSeekers = async (
 export const getSeekersFilter = async (): Promise<Result<Aggregations>> => {
   try {
     const response = await fetch(API_FILTER_SEARCH_SEEKERS, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        message: "Seekers fetched successfully",
+        data: data,
+      };
+    } else {
+      const errorData = await response.json();
+      return {
+        success: false,
+        message: errorData.message || "An error occurred",
+      };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export const getFolderFilter = async (
+  id: string,
+): Promise<Result<FolderAggregations>> => {
+  try {
+    const response = await fetch(FOLDER_FILTER + id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

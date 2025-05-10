@@ -75,3 +75,6 @@ export const API_GET_FOLDER_BY_ID = FOLDERS + "/"; // GET + [id]
 export const API_DELETE_FOLDER_BY_ID = FOLDERS + "/"; // DELETE + [id]
 export const API_GET_FOLDER_BY_SEEKER_AND_COMPANY =
   FOLDERS + "/{seekerId}/company/{companyId}"; // GET
+
+export const FOLDER_FILTER = FOLDERS + "/get-folder-seeker-filters/"; // + [id]
+export const API_SEARCH_FOLDER_SEEKERS = FOLDERS + "/search-folder-seekers"; // GET

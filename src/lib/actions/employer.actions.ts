@@ -20,6 +20,7 @@ import {
   API_GET_SEEKERS,
   API_GET_FOLDER_SEEKERS,
   API_GET_FOLDERS,
+  API_SEARCH_FOLDER_SEEKERS,
 } from "@/api/seeker";
 import {
   Company,
@@ -30,6 +31,7 @@ import {
   Result,
   Sector,
 } from "@/types";
+import { FolderSearchFilter, SeekerSearchFilter } from "@/types/jobs";
 import { errorResult, toQueryString } from "@/util/general";
 import { User } from "next-auth";
 
@@ -461,22 +463,20 @@ export const getFolderById = async (
   }
 };
 export const getPaginatedCandidatesByFolderId = async (
-  jobId: string,
-  page: number = 1,
-  limit: number = 10,
+  filters: FolderSearchFilter = {},
 ): Promise<Result<PaginatedResponse<CandidateType>>> => {
   try {
-    const response = await fetch(
-      `${API_GET_FOLDER_SEEKERS}?id=${jobId}&page=${page}&limit=${limit}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        next: { tags: [TAGS.folders] },
+    
+    const queryParams = toQueryString(filters);
+    console.log("🚀 ~ API_SEARCH_FOLDER_SEEKERS + queryParams:", API_SEARCH_FOLDER_SEEKERS + queryParams)
+    const response = await fetch(API_SEARCH_FOLDER_SEEKERS + queryParams, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
       },
-    );
+      next: { tags: [TAGS.folders] },
+    });
     if (response.ok) {
       const data = await response.json();
       return {
