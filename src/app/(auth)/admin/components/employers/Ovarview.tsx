@@ -9,6 +9,7 @@ import StatusCard from "@/components/UI/StatusCard";
 import useFetch from "@/hooks/useFetch";
 import { API_GET_COMPANIES } from "@/api/employer";
 import OverviewEmployersTable from "./OverviewEmployersTable";
+import GenericChart from "@/components/charts/GenericChart";
 
 type TopCountry = {
   id: string;
@@ -107,33 +108,6 @@ const statusCards: StatusCardType[] = [
   },
 ];
 
-interface ChartData {
-  newEmployers: number[];
-  jobApplicants: number[];
-  months: string[];
-}
-
-const chartData: ChartData = {
-  newEmployers: [120, 150, 180, 220, 270, 310, 330, 290, 320, 350, 380, 400],
-  jobApplicants: [
-    1800, 2200, 2600, 3100, 3500, 3800, 4200, 3900, 4300, 4700, 5100, 5500,
-  ],
-  months: [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ],
-};
-
 const DashboardOverView: React.FC = () => {
   const {
     data: companies,
@@ -160,63 +134,60 @@ const DashboardOverView: React.FC = () => {
             ))}
           </div>
           {/* Chart Section */}
-          <div className="relative mt-3 rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-            <h5 className="p-1 text-xl font-semibold text-main">
-              Employer
-              <br />
-              <span className="text-xl font-semibold text-main">
-                & Job Application Trends
-              </span>
-            </h5>
-            <div className="mt-4 flex w-full items-center justify-between">
-              <h5 className="text-secondary">
-                Statistics
-                <br />
-                <span className="text-main">User Report</span>
-              </h5>
-              <div className="rounded-base border border-gray-200">
-                {["day", "week", "month", "3 months", "year"].map((x) => (
-                  <button
-                    key={x}
-                    className="rounded-base px-4 py-2 text-xs hover:bg-primary hover:text-white"
-                  >
-                    {x}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <LineChart
-              margin={{ top: 30, bottom: 70, left: 40, right: 10 }}
-              xAxis={[{ data: chartData.months, scaleType: "point" }]}
-              slotProps={{
-                legend: {
-                  direction: "row",
-                  position: { vertical: "bottom", horizontal: "middle" },
+          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-sm">
+            <GenericChart
+              chartTitle="Employers & Job applications Trends"
+              data={{
+                yearly: {
+                  categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                  series: [
+                    {
+                      name: "New employer",
+                      data: [100, 120, 90, 140, 110, 130],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [200, 240, 180, 280, 220, 260],
+                      color: "#0884FF",
+                    },
+                  ],
+                },
+                monthly: {
+                  categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                  series: [
+                    {
+                      name: "New employer",
+                      data: [30, 40, 35, 45],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [60, 80, 70, 90],
+                      color: "#0884FF",
+                    },
+                  ],
+                },
+                weekly: {
+                  categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                  series: [
+                    {
+                      name: "New employer",
+                      data: [10, 15, 12, 18, 14, 8, 5],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [20, 30, 25, 35, 28, 15, 10],
+                      color: "#0884FF",
+                    },
+                  ],
                 },
               }}
-              series={[
-                {
-                  curve: "linear",
-                  data: chartData.newEmployers, // Uses actual data
-                  label: "New Employers",
-                  color: "#FF8743",
-                },
-                {
-                  curve: "linear",
-                  data: chartData.jobApplicants, // Uses actual data
-                  label: "Job Applications",
-                  color: "#0884FF",
-                },
+              cards={[
+                { title: "New employer", value: "1,240", color: "#FF8743" },
+                { title: "Job applications", value: "2,480", color: "#0884FF" },
               ]}
-              height={400}
-              grid={{ horizontal: true }}
-              sx={{
-                ".MuiChartsAxis-line": { display: "none" },
-                ".MuiChartsAxis-tick": { display: "none" },
-                ".MuiChartsLegend-mark": { borderRadius: 100 },
-                ".MuiChartsAxis-tickLabel tspan": { fontSize: "10px" },
-                ".css-1u0lry5-MuiChartsLegend-root tspan": { fontSize: "10px" },
-              }}
             />
           </div>
         </div>
@@ -307,7 +278,6 @@ const DashboardOverView: React.FC = () => {
         </div>
       </div>
       {/* Employers Table */}
-
       {topCompanies && (
         <OverviewEmployersTable
           companies={{ data: topCompanies, total: topCompanies?.length }}

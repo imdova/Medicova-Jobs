@@ -52,4 +52,5 @@ export const INITIAL_JOB_DATA: JobData = {
   jobEmploymentType: null,
   created_at: "",
   updated_at: "",
+  id: "",
 };

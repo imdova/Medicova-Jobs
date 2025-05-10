@@ -120,7 +120,6 @@ type CountryInData = {
   code: string;
 };
 
-
 export interface Company {
   id: string;
   name: string;
@@ -212,7 +211,7 @@ export interface Industry {
 export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
 export interface JobData {
-  id?: string;
+  id: string;
   companyId: string | null;
   company?: Pick<
     Company,
@@ -479,7 +478,7 @@ export interface ColumnConfig<T> {
   key?: Path<T>; // Field to display
   header?: string; // Column header text
   sortable?: boolean; // Enable sorting
-  render?: (item: T) => React.ReactNode; // Custom render function
+  render?: (item: T, index: number) => React.ReactNode | void; // Add index as optional param
   width?: string | number; // Optional column width
 }
 

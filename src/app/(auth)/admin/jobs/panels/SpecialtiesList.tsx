@@ -115,7 +115,7 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
   };
 
   return (
-    <div className="h-full rounded-xl border bg-white p-4 shadow-sm">
+    <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
       <Snackbar
         open={!!error}
         autoHideDuration={6000}

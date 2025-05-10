@@ -547,7 +547,7 @@ const Categories: React.FC = () => {
         <Alert severity="error">{error}</Alert>
       </Snackbar>
 
-      <div className="col-span-4 rounded-xl border bg-white p-3 shadow-sm lg:col-span-3">
+      <div className="col-span-4 rounded-xl border bg-white p-3 shadow-soft lg:col-span-3">
         <Box sx={{ flex: 1 }}>
           <Box sx={{ mb: 2, width: "100%" }}>
             <FormControl fullWidth size="small">

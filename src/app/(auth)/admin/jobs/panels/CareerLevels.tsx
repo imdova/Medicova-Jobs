@@ -75,7 +75,7 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
 
   if (!categoryData) {
     return (
-      <div className="h-full rounded-xl border bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
         <Alert severity="warning">No category selected</Alert>
       </div>
     );
@@ -83,7 +83,7 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
   console.log(categoryData);
   console.log(checkedItems);
   return (
-    <div className="h-full rounded-xl border bg-white p-4 shadow-sm">
+    <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
       <Snackbar
         open={!!error}
         autoHideDuration={6000}

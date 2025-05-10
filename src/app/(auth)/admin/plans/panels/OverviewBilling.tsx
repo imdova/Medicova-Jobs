@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { North, South } from "@mui/icons-material";
 import useFetch from "@/hooks/useFetch";
-import { Company } from "@/types";
+import { ColumnConfig, Company } from "@/types";
 import { API_GET_COMPANIES } from "@/api/employer";
 import CompanyMiniCard, {
   CompanyMiniCardSkeleton,
@@ -12,7 +12,10 @@ import CompanyMiniCard, {
 import GenericChart from "@/components/charts/GenericChart";
 import DynamicCountriesTable from "@/components/tables/CountiresTable";
 import DynamicTable from "@/components/tables/DTable";
-import { Download, Eye } from "lucide-react";
+import { Download, Eye, ShieldCheck, UserPlus, Users } from "lucide-react";
+import StatusCard from "@/components/UI/StatusCard";
+import DataTable from "@/components/UI/data-table";
+import Flag from "@/components/UI/flagitem";
 // Type definitions
 type CountryData = {
   country: string;
@@ -43,34 +46,99 @@ interface EmployerStats {
   inactiveEmployersGrowth: number;
 }
 
-const countrydata: CountryData[] = [
+type TopCountry = {
+  id: string;
+  code: string;
+  name: string;
+  job: number;
+  employers: number;
+  revenue: string;
+};
+
+const topCountriesData: TopCountry[] = [
   {
-    country: "Egypt",
-    countryCode: "eg",
-    employers: 3,
-    jobs: 54,
-    revenue: 543,
+    id: "1",
+    code: "EG",
+    name: "Egypt",
+    job: 18,
+    employers: 35,
+    revenue: "75k",
   },
   {
-    country: "Qatar",
-    countryCode: "qa",
-    employers: 3,
-    jobs: 135,
-    revenue: 55,
+    id: "2",
+    code: "US",
+    name: "United States",
+    job: 120,
+    employers: 250,
+    revenue: "1.2M",
   },
   {
-    country: "Oman",
-    countryCode: "om",
-    employers: 3,
-    jobs: 15,
-    revenue: 60,
+    id: "3",
+    code: "IN",
+    name: "India",
+    job: 95,
+    employers: 180,
+    revenue: "850k",
   },
   {
-    country: "Kuwait",
-    countryCode: "kw",
-    employers: 3,
-    jobs: 4,
-    revenue: 89,
+    id: "4",
+    code: "DE",
+    name: "Germany",
+    job: 45,
+    employers: 90,
+    revenue: "500k",
+  },
+  {
+    id: "5",
+    code: "JP",
+    name: "Japan",
+    job: 60,
+    employers: 110,
+    revenue: "700k",
+  },
+  {
+    id: "6",
+    code: "AU",
+    name: "Australia",
+    job: 30,
+    employers: 65,
+    revenue: "400k",
+  },
+];
+const statusCards: StatusCardType[] = [
+  {
+    title: "Total Employers",
+    value: "2,420",
+    icon: (
+      <Users className="block h-12 w-12 rounded-full bg-blue-50 p-2 text-blue-800" />
+    ),
+    trend: {
+      value: "+20",
+      description: "Since last Week",
+      trendDirection: "up",
+    },
+  },
+  {
+    title: "Active Employers",
+    value: "1,517",
+    icon: (
+      <ShieldCheck className="block h-12 w-12 rounded-full bg-primary-100 p-2 text-primary" />
+    ),
+    trend: {
+      value: "20%",
+      trendDirection: "up",
+    },
+  },
+  {
+    title: "New Employers",
+    value: "903",
+    icon: (
+      <UserPlus className="block h-12 w-12 rounded-full bg-amber-50 p-2 text-amber-800" />
+    ),
+    trend: {
+      value: "20%",
+      trendDirection: "down",
+    },
   },
 ];
 
@@ -132,16 +200,14 @@ const transaction: InvoiceRecord[] = [
 ];
 
 // transactions columns
-const columns = [
+const columns: ColumnConfig<InvoiceRecord>[] = [
   {
-    key: "orderNum",
     header: "#",
     render: (_transaction: InvoiceRecord, index: number) => (
       <span>{index + 1}</span>
     ),
   },
   {
-    key: "date",
     header: "Date",
     render: (transaction: InvoiceRecord) => {
       const formattedDate = new Date(transaction.updated_at).toLocaleDateString(
@@ -164,7 +230,6 @@ const columns = [
     },
   },
   {
-    key: "employer",
     header: "employer",
     render: (transaction: InvoiceRecord) => {
       return (
@@ -182,9 +247,7 @@ const columns = [
     },
   },
   {
-    key: "payment_method",
     header: "Payment Method",
-    align: "center",
     render: (transaction: InvoiceRecord) => {
       return (
         <span className="text-center text-sm">
@@ -206,7 +269,11 @@ const columns = [
     render: (transaction: InvoiceRecord) => {
       return (
         <span
-          className={`rounded-xl px-3 py-1 text-sm ${transaction.status === "active" ? "bg-green-100 text-green-700" : "bg-red-200 text-red-700"}`}
+          className={`rounded-lg border px-3 py-1 text-xs ${
+            transaction.status.toLowerCase() === "active"
+              ? "border-green-500 bg-green-50 text-green-700 ring-green-600/20"
+              : "border-red-500 bg-red-50 text-red-700 ring-red-600/10"
+          }`}
         >
           {transaction.status}
         </span>
@@ -214,14 +281,12 @@ const columns = [
     },
   },
   {
-    key: "receipt",
     header: "Receipt",
     render: (transaction: InvoiceRecord) => {
       return <span className="text-sm">{transaction.recipt || "-"}</span>;
     },
   },
   {
-    key: "action",
     header: "Action",
     render: () => (
       <div className="flex items-center gap-4">
@@ -238,8 +303,7 @@ const columns = [
 
 const OvarviewBilling: React.FC = () => {
   // State variables
-  const [employerStats, setEmployerStats] =
-    useState<EmployerStats>(dummyEmployerStats);
+  const [selected, setSelected] = useState<(number | string)[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: employers, loading } =
     useFetch<PaginatedResponse<Company>>(API_GET_COMPANIES);
@@ -266,109 +330,13 @@ const OvarviewBilling: React.FC = () => {
       {/* start Overveiw page */}
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-8">
         <div className="col-span-1 lg:col-span-5">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {/* Total Employers */}
-            <div className="flex items-center justify-between gap-3 rounded-lg rounded-xl border bg-white p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Total Employers
-                </span>
-                <h2 className="mb-2 text-lg font-bold">
-                  {employerStats.totalEmployers.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    employerStats.totalEmployersGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {employerStats.totalEmployersGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(employerStats.totalEmployersGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/user-1.png"
-                  alt="Total Employers Icon"
-                  width={30}
-                  height={30}
-                />
-              </div>
-            </div>
-            {/* Active Employers */}
-            <div className="flex items-center justify-between gap-3 rounded-lg rounded-xl border bg-white p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Active Employers
-                </span>
-                <h2 className="text-lg font-bold">
-                  {employerStats.activeEmployers.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    employerStats.activeEmployersGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {employerStats.activeEmployersGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(employerStats.activeEmployersGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/user-2.png"
-                  alt="Active Employers Icon"
-                  width={30}
-                  height={30}
-                />
-              </div>
-            </div>
-            {/* Inactive Employers */}
-            <div className="flex items-center justify-between gap-3 rounded-xl border bg-white p-4 shadow-sm">
-              <div>
-                <span className="mb-2 block text-sm text-secondary">
-                  Inactive Employers
-                </span>
-                <h2 className="text-lg font-bold">
-                  {employerStats.inactiveEmployers.toLocaleString()}
-                </h2>
-                <span
-                  className={`flex items-center text-xs ${
-                    employerStats.inactiveEmployersGrowth >= 0
-                      ? "text-primary"
-                      : "text-[#F81D1D]"
-                  }`}
-                >
-                  {employerStats.inactiveEmployersGrowth >= 0 ? (
-                    <North className="text-xs" />
-                  ) : (
-                    <South className="text-xs" />
-                  )}
-                  {Math.abs(employerStats.inactiveEmployersGrowth)}%
-                </span>
-              </div>
-              <div>
-                <Image
-                  src="/icons/user-3.png"
-                  alt="Inactive Employers Icon"
-                  width={30}
-                  height={30}
-                />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+            {statusCards.map((card) => (
+              <StatusCard key={card.title} {...card} />
+            ))}
           </div>
           {/* Chart Section */}
-          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-sm">
+          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-soft">
             <GenericChart
               chartTitle="Statistics Jobs Chart"
               data={{
@@ -425,9 +393,9 @@ const OvarviewBilling: React.FC = () => {
             />
           </div>
         </div>
-        <div className="col-span-1 lg:col-span-3">
-          {/* Performance Overview */}
-          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-sm">
+        <div className="col-span-1 flex flex-col gap-4 lg:col-span-3">
+          {/*  Top Plans Overview */}
+          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
               <h5 className="text-xl font-semibold text-main">
                 Top Plans
@@ -450,45 +418,62 @@ const OvarviewBilling: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="mt-3 flex-1 overflow-hidden rounded-xl border bg-white">
+          <div className="grid h-full grid-cols-1 overflow-hidden rounded-xl border bg-white shadow-soft">
             <div className="mb-3 flex justify-between gap-8 p-3">
               <Typography>
                 Top Countries
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
               </Typography>
             </div>
-            <DynamicCountriesTable
-              data={countrydata}
-              columns={[
-                {
-                  key: "country",
-                  header: "country",
-                },
-                {
-                  key: "jobs",
-                  header: "jobs",
-                  render: (value) => <span>{value} Jobs</span>,
-                },
-                {
-                  key: "employers",
-                  header: "employers",
-                },
-                {
-                  key: "revenue",
-                  header: "revenue",
-                  render: (value) => (
-                    <span className="text-primary">{value}K</span>
-                  ),
-                },
-              ]}
-              defaultSort={{ key: "jobs", direction: "desc" }}
-              showFlags={true}
-              onRowClick={(row) => console.log("Row clicked:", row)}
-            />
+            <div className="max-w-[calc(100vw-1rem)]">
+              <DataTable
+                data={topCountriesData}
+                total={topCountriesData.length}
+                cellClassName="p-2 text-xs"
+                className="border-none shadow-none"
+                // searchQuery={query}
+                columns={[
+                  {
+                    key: "id",
+                    header: "Rank",
+                    sortable: true,
+                    render: (item) => (
+                      <div className="pl-2 text-xs">#{item.id}</div>
+                    ),
+                  },
+                  {
+                    key: "name",
+                    header: "Country",
+                    sortable: true,
+                    render: (item) => (
+                      <div className="flex">
+                        <Flag {...item} />{" "}
+                        <span className="ml-2 text-xs">{item.name}</span>
+                      </div>
+                    ),
+                  },
+                  {
+                    key: "employers",
+                    header: "Employers",
+                    sortable: true,
+                  },
+                  {
+                    key: "job",
+                    header: "Jobs",
+                    sortable: true,
+                  },
+                  {
+                    key: "revenue",
+                    header: "Revenue",
+                    sortable: true,
+                  },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </div>
-      <div className="space-y-4 rounded-xl border bg-white p-3 shadow-sm">
+      <div className="grid grid-cols-1 space-y-4 rounded-xl border bg-white p-3 shadow-soft">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <h2 className="text-lg font-semibold">Recent Transactions</h2>
           {/* Search Input */}
@@ -519,13 +504,13 @@ const OvarviewBilling: React.FC = () => {
         </div>
 
         {/* Table */}
-        <DynamicTable<InvoiceRecord>
+        <DataTable<InvoiceRecord>
+          data={filteredemployers}
           columns={columns}
-          data={filteredemployers || []}
-          minWidth={950}
-          selectable={true}
-          headerClassName="bg-green-600 text-white"
-          cellClassName="text-sm py-3 px-2"
+          isSelectable
+          searchQuery={searchQuery}
+          selected={selected}
+          setSelected={setSelected}
         />
       </div>
     </>

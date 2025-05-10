@@ -15,6 +15,8 @@ import {
 import { Download, Edit, Eye } from "lucide-react";
 import { ToggleButton } from "@/components/UI/ToggleButton";
 import DynamicTable from "@/components/tables/DTable";
+import DataTable from "@/components/UI/data-table";
+import { ColumnConfig } from "@/types";
 
 type Plan = {
   name: string;
@@ -187,9 +189,8 @@ const pricingRecords: PricingRecord[] = [
 ];
 
 // Plan Setting Columns
-const PlanSettingColumns = [
+const PlanSettingColumns: ColumnConfig<PricingRecord>[] = [
   {
-    key: "orderNum",
     header: "#",
     render: (_plan: PricingRecord, index: number) => <span>{index + 1}</span>,
   },
@@ -229,7 +230,6 @@ const PlanSettingColumns = [
     },
   },
   {
-    key: "action",
     header: "Action",
     render: () => (
       <div className="flex items-center gap-4">
@@ -245,9 +245,8 @@ const PlanSettingColumns = [
 ];
 
 // Order Plans Columns
-const OrderPlansColumns = [
+const OrderPlansColumns: ColumnConfig<OrderRecord>[] = [
   {
-    key: "orderNum",
     header: "#",
     render: (_plan: OrderRecord, index: number) => <span>{index + 1}</span>,
   },
@@ -266,9 +265,7 @@ const OrderPlansColumns = [
     },
   },
   {
-    key: "payment_method",
     header: "Payment Method",
-    align: "center",
     render: () => {
       return (
         <AvatarGroup
@@ -326,7 +323,6 @@ const OrderPlansColumns = [
     },
   },
   {
-    key: "action",
     header: "Action",
     render: () => (
       <div className="flex items-center gap-4">
@@ -345,6 +341,12 @@ const OrderPlansColumns = [
 const SubscriptionPlansPage: React.FC = () => {
   const [selectedAccess, setSelectedAccess] =
     useState<string>("1 Month Access");
+  const [orderRecordSelected, setOrderRecordSelected] = useState<
+    (number | string)[]
+  >([]);
+  const [PricingRecordselected, setPricingRecordSelected] = useState<
+    (number | string)[]
+  >([]);
 
   const handleAccessSelection = (access: string) => {
     setSelectedAccess(access);
@@ -387,7 +389,7 @@ const SubscriptionPlansPage: React.FC = () => {
     <Box sx={{ pt: 2 }}>
       {/* Table total Plans */}
       <div className="mb-6">{/* <TotalPlansTable endPoint={""} /> */}</div>
-      <div className="mb-6 space-y-4 rounded-xl border bg-white p-3 shadow-sm">
+      <div className="mb-6 space-y-4 rounded-xl border bg-white p-3 shadow-soft">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <h2 className="text-lg font-semibold">
             Total Plans: {Orederplans.length}
@@ -420,14 +422,13 @@ const SubscriptionPlansPage: React.FC = () => {
         </div>
 
         {/* Table */}
-        <DynamicTable<OrderRecord>
+        <DataTable<OrderRecord>
+          data={filteredPlans}
           columns={OrderPlansColumns}
-          data={filteredPlans || []}
-          minWidth={950}
-          selectable={true}
-          pagination
-          headerClassName="bg-green-600 text-white"
-          cellClassName="text-sm py-3 px-2"
+          isSelectable
+          searchQuery={searchQuery}
+          selected={orderRecordSelected}
+          setSelected={setOrderRecordSelected}
         />
       </div>
       {/* Heading */}
@@ -780,16 +781,16 @@ const SubscriptionPlansPage: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-      <div className="mt-4 rounded-xl border bg-white shadow-sm">
+      <div className="mt-4 rounded-xl border bg-white shadow-soft">
+        <h2 className="p-4 text-xl font-semibold">Plan Setting</h2>
         {/* Table */}
-        <DynamicTable<PricingRecord>
+        <DataTable<PricingRecord>
+          data={pricingRecords}
           columns={PlanSettingColumns}
-          data={pricingRecords || []}
-          minWidth={950}
-          selectable={true}
-          pagination
-          headerClassName="bg-green-600 text-white"
-          cellClassName="text-sm py-3 px-2"
+          isSelectable
+          selected={PricingRecordselected}
+          setSelected={setPricingRecordSelected}
+          className="border-none shadow-none"
         />
       </div>
     </Box>

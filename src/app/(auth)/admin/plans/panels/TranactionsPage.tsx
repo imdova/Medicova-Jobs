@@ -1,4 +1,6 @@
 import DynamicTable from "@/components/tables/DTable";
+import DataTable from "@/components/UI/data-table";
+import { ColumnConfig } from "@/types";
 import { Download, Eye } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -63,16 +65,14 @@ const transaction: InvoiceRecord[] = [
   },
 ];
 // transactions columns
-const columns = [
+const columns: ColumnConfig<InvoiceRecord>[] = [
   {
-    key: "orderNum",
     header: "#",
     render: (_transaction: InvoiceRecord, index: number) => (
       <span>{index + 1}</span>
     ),
   },
   {
-    key: "date",
     header: "Date",
     render: (transaction: InvoiceRecord) => {
       const formattedDate = new Date(transaction.updated_at).toLocaleDateString(
@@ -95,7 +95,6 @@ const columns = [
     },
   },
   {
-    key: "employer",
     header: "employer",
     render: (transaction: InvoiceRecord) => {
       return (
@@ -113,9 +112,7 @@ const columns = [
     },
   },
   {
-    key: "payment_method",
     header: "Payment Method",
-    align: "center",
     render: (transaction: InvoiceRecord) => {
       return (
         <span className="text-center text-sm">
@@ -137,7 +134,11 @@ const columns = [
     render: (transaction: InvoiceRecord) => {
       return (
         <span
-          className={`rounded-xl px-3 py-1 text-sm ${transaction.status === "active" ? "bg-green-100 text-green-700" : "bg-red-200 text-red-700"}`}
+          className={`rounded-lg border px-3 py-1 text-xs ${
+            transaction.status.toLowerCase() === "active"
+              ? "border-green-500 bg-green-50 text-green-700 ring-green-600/20"
+              : "border-red-500 bg-red-50 text-red-700 ring-red-600/10"
+          }`}
         >
           {transaction.status}
         </span>
@@ -145,14 +146,12 @@ const columns = [
     },
   },
   {
-    key: "receipt",
     header: "Receipt",
     render: (transaction: InvoiceRecord) => {
       return <span className="text-sm">{transaction.recipt || "-"}</span>;
     },
   },
   {
-    key: "action",
     header: "Action",
     render: () => (
       <div className="flex items-center gap-4">
@@ -166,8 +165,11 @@ const columns = [
     ),
   },
 ];
+
 const TranactionsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selected, setSelected] = useState<(number | string)[]>([]);
+
   const filteredemployers = transaction?.filter((transaction) => {
     // Search filter
     const query = searchQuery.toLowerCase();
@@ -180,7 +182,7 @@ const TranactionsPage: React.FC = () => {
     return searchMatch;
   });
   return (
-    <div className="space-y-4 rounded-xl border bg-white p-3 shadow-sm">
+    <div className="space-y-4 rounded-xl border bg-white p-3 shadow-soft">
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <h2 className="text-lg font-semibold">All Transactions</h2>
         {/* Search Input */}
@@ -211,14 +213,14 @@ const TranactionsPage: React.FC = () => {
       </div>
 
       {/* Table */}
-      <DynamicTable<InvoiceRecord>
+      {/* Table */}
+      <DataTable<InvoiceRecord>
+        data={filteredemployers}
         columns={columns}
-        data={filteredemployers || []}
-        minWidth={950}
-        selectable={true}
-        pagination
-        headerClassName="bg-green-600 text-white"
-        cellClassName="text-sm py-3 px-2"
+        isSelectable
+        searchQuery={searchQuery}
+        selected={selected}
+        setSelected={setSelected}
       />
     </div>
   );

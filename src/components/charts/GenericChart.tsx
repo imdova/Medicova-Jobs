@@ -154,8 +154,8 @@ const GenericChart = ({
   return (
     <div className="rounded-lg bg-white p-3 shadow-sm">
       {/* Header of Chart */}
-      <div className="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
-        <h1 className="text-2xl font-bold">{chartTitle}</h1>
+      <div className="flex flex-col items-start justify-between gap-3 md:mt-3 md:flex-row md:items-center">
+        <h1 className="max-w-[250px] text-xl font-bold">{chartTitle}</h1>
         <div className="flex w-full justify-between gap-4 md:w-fit">
           {filteredSeries.length > 0 && (
             <div className="flex items-center gap-4">
@@ -221,7 +221,7 @@ const GenericChart = ({
                 key={card.title}
                 onClick={() => setSelectedSeries(card.title)}
                 className={`flex cursor-pointer items-center gap-3 rounded-lg border p-2 shadow-sm transition ${
-                  selectedSeries === card.title ? "border-primary" : ""
+                  selectedSeries === card.title ? "border-gray-400" : ""
                 }`}
               >
                 <div
