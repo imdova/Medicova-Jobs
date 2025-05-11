@@ -13,6 +13,18 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import {
+  API_CREATE_CAREER_LEVEL,
+  API_CREATE_CATEGORY,
+  API_CREATE_SPECIALITY,
+  API_DELETE_CAREER_LEVEL,
+  API_DELETE_CATEGORY,
+  API_DELETE_SPECIALITY,
+  API_GET_CAREER_LEVELS_BY_CATEGORY,
+  API_GET_CATEGORIES,
+  API_GET_INDUSTRIES,
+  API_GET_SPECIALITIES_BY_CATEGORY,
+} from "@/api/admin";
 
 export type Specialty = {
   id: string;
@@ -30,8 +42,6 @@ export type Category = {
   specialties: Specialty[];
   careerLevels: CareerLevel[];
 };
-
-const API_BASE_URL = "http://34.70.58.31/api/v1.0.0/admin/sys-configurations";
 
 const Categories: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -82,7 +92,7 @@ const Categories: React.FC = () => {
         setIsLoading((prev) => ({ ...prev, initial: true }));
         setError(null);
 
-        const response = await fetchWithRetry(`${API_BASE_URL}/category`);
+        const response = await fetchWithRetry(API_GET_CATEGORIES);
         const categoriesData = response.data.map((category: any) => ({
           id: category.id,
           name: category.name,
@@ -113,9 +123,9 @@ const Categories: React.FC = () => {
         setError(null);
 
         const [specialtiesResponse, levelsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/speciality/category?id=${selectedCategoryId}`),
+          fetch(`${API_GET_SPECIALITIES_BY_CATEGORY}${selectedCategoryId}`),
           fetch(
-            `${API_BASE_URL}/career-level/categories?ids=${selectedCategoryId}`,
+            `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${selectedCategoryId}`,
           ),
         ]);
 
@@ -164,9 +174,7 @@ const Categories: React.FC = () => {
     };
     const fetchIndustries = async () => {
       try {
-        const response = await fetch(
-          "http://34.70.58.31/api/v1.0.0/admin/sys-configurations/industry",
-        );
+        const response = await fetch(API_GET_INDUSTRIES);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -196,7 +204,7 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/category`, {
+      const response = await fetch(API_CREATE_CATEGORY, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -248,7 +256,7 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/category?id=${id}`, {
+      const response = await fetch(`${API_DELETE_CATEGORY}?id=${id}`, {
         method: "DELETE",
       });
 
@@ -342,7 +350,7 @@ const Categories: React.FC = () => {
       setError(null);
 
       // Make the POST request
-      const response = await fetch(`${API_BASE_URL}/speciality`, {
+      const response = await fetch(API_CREATE_SPECIALITY, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -393,7 +401,7 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/career-level`, {
+      const response = await fetch(API_CREATE_CAREER_LEVEL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -444,16 +452,13 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      const response = await fetch(
-        `${API_BASE_URL}/career-level?id=${levelId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            // Authorization: `Bearer ${yourToken}`, // if required
-          },
+      const response = await fetch(`${API_DELETE_CAREER_LEVEL}?id=${levelId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${yourToken}`, // if required
         },
-      );
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -489,7 +494,7 @@ const Categories: React.FC = () => {
       setError(null);
 
       const response = await fetch(
-        `${API_BASE_URL}/speciality?id=${specialtyId}`,
+        `${API_DELETE_SPECIALITY}?id=${specialtyId}`,
         {
           method: "DELETE",
           headers: {

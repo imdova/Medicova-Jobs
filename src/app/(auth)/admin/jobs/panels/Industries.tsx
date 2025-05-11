@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import IndustriesSidebar from "./IndustriesSidebar";
 import CategoryManagement from "./CategoryManagement";
+import { API_GET_INDUSTRIES } from "@/api/admin";
 
 type DataType = {
   id: string;
@@ -23,10 +24,6 @@ const Industries: React.FC = () => {
     [key: string]: DataType[];
   }>({});
 
-  // API endpoints
-  const GIT_INDUSTRIES_DATA =
-    "http://34.70.58.31/api/v1.0.0/admin/sys-configurations/industry";
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -34,7 +31,7 @@ const Industries: React.FC = () => {
 
       try {
         // First fetch industries
-        const industriesRes = await fetch(GIT_INDUSTRIES_DATA);
+        const industriesRes = await fetch(API_GET_INDUSTRIES);
         if (!industriesRes.ok) throw new Error("Failed to fetch industries");
 
         const industriesJson = await industriesRes.json();
@@ -66,7 +63,7 @@ const Industries: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const categoriesRes = await fetch(
-          `http://34.70.58.31/api/v1.0.0/admin/sys-configurations/category/industries/${selectedIndustry}`,
+          `${API_GET_INDUSTRIES}/${selectedIndustry}`,
         );
 
         if (!categoriesRes.ok) {
