@@ -3,14 +3,12 @@
 import { Divider, TextareaAutosize } from "@mui/material";
 import { BlockTextEditor } from "@/components/editor/editor";
 import { Block } from "@/types/blog";
-import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
-import { findItemById, updateItem } from "@/util/blog";
+import { updateItem } from "@/util/blog";
 import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
 import Resize from "../UI/Resize";
-import React, { useRef } from "react";
-import { useDrag } from "react-dnd";
+import React from "react";
 import DropZone from "@/app/(public)/blog/components/dropzone";
 
 type DropZoneData = {
@@ -194,6 +192,7 @@ export function BlockRenderer({
                   onDrop={handleDrop}
                   //   path={currentPath}
                 />
+
                 <DraggableBlock
                   key={block.id}
                   handleDrop={handleDrop}
@@ -218,10 +217,7 @@ export function BlockRenderer({
       );
     case "flex-row":
       return (
-        <div
-          style={styles}
-          className="flex flex-col flex-wrap gap-3 md:flex-row"
-        >
+        <div style={styles} className="flex flex-col flex-wrap md:flex-row">
           {block.blocks.map((block, index) => {
             const currentPath = `${path}-${index}`;
             return (

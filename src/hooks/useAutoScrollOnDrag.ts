@@ -10,7 +10,7 @@ type AutoScrollOptions = {
 export function useAutoScrollOnDrag({
   isDragging,
   className,
-  padding = 50,
+  padding = 80,
   speed = 10,
 }: AutoScrollOptions) {
   const animationFrameRef = useRef<number | null>(null);

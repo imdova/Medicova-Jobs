@@ -75,3 +75,15 @@ export const API_GET_FOLDER_BY_ID = FOLDERS + "/"; // GET + [id]
 export const API_DELETE_FOLDER_BY_ID = FOLDERS + "/"; // DELETE + [id]
 export const API_GET_FOLDER_BY_SEEKER_AND_COMPANY =
   FOLDERS + "/{seekerId}/company/{companyId}"; // GET
+
+export const FOLDER_FILTER = FOLDERS + "/get-folder-seeker-filters/"; // + [id]
+export const API_SEARCH_FOLDER_SEEKERS = FOLDERS + "/search-folder-seekers"; // GET
+
+
+// Saved Jobs
+export const SAVED_JOBS = BASE + "/saved-jobs";
+export const API_CREATE_SAVED_JOB = SAVED_JOBS; // POST
+export const API_CREATE_BULK_SAVED_JOBS = SAVED_JOBS + "/bulk"; // POST
+export const API_GET_SAVED_JOBS_BY_SEEKER_ID = SAVED_JOBS + "/seeker/"; // GET + [id]
+export const API_GET_SAVED_JOB_BY_ID = SAVED_JOBS + "/"; // GET + [id]
+export const API_DELETE_SAVED_JOB_BY_ID = SAVED_JOBS + "/"; // DELETE + [id]

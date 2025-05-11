@@ -82,7 +82,7 @@ const BlocksPanel: React.FC<TabProps> = ({
       setSelectedTab("styles");
       setBlocks((pv) => [...pv, newBlock]);
     }
-    setSelectedBlock((pv) => (pv?.allowNesting ? pv : newBlock));
+    setSelectedBlock(selectedBlock?.allowNesting ? selectedBlock : newBlock);
   };
 
   return (

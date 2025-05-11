@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import ToolBar from "./toolbar";
 import { Block, BlogSettings } from "@/types/blog";
@@ -11,7 +11,7 @@ import "./styles.css";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import Example from "./example";
+import BlogBuilder from "./BlogBuilder";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 
@@ -42,7 +42,6 @@ export default function PageBuilder() {
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [onPreview, setPreview] = useState(false);
-  
 
   return (
     <div>
@@ -70,12 +69,12 @@ export default function PageBuilder() {
                 onClick={() => {
                   setSelectedBlock(null);
                 }}
-                className={`mx-auto flex flex-col min-h-full border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+                className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
               >
                 {onPreview ? (
                   <ArticlePreview blocks={blocks} />
                 ) : (
-                  <Example
+                  <BlogBuilder
                     blocks={blocks}
                     selectedBlock={selectedBlock}
                     setBlocks={setBlocks}

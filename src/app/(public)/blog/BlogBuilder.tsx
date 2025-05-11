@@ -24,7 +24,7 @@ type DraggedBlock = {
   path?: string;
   type: Block["type"];
 };
-const Example: React.FC<{
+const BlogBuilder: React.FC<{
   blocks: Block[];
   selectedBlock: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
@@ -101,6 +101,14 @@ const Example: React.FC<{
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    const isInput =
+      target.tagName === "INPUT" ||
+      target.tagName === "TEXTAREA" ||
+      target.isContentEditable;
+
+    if (isInput) return;
+
     // Check for Ctrl+C to copy features
     if (e.ctrlKey && e.key === "c") {
       if (selectedBlock) setCopiedBlock(selectedBlock);
@@ -175,7 +183,7 @@ const Example: React.FC<{
   }, [selectedBlock]);
 
   return (
-    <div className="flex flex-col h-full flex-grow">
+    <>
       {formData && (
         <FormModal
           open={isModalOpen}
@@ -188,6 +196,17 @@ const Example: React.FC<{
         const currentPath = `${index}`;
         return (
           <React.Fragment key={block.id}>
+            {/* <div className="h-0 w-full relative">
+              <div className="top-0 left-0 z-10 absolute h-20 w-full bg-red-200">
+                <DropZone
+                  data={{
+                    path: currentPath,
+                    childrenCount: blocks.length,
+                  }}
+                  onDrop={handleDrop}
+                />
+              </div>
+            </div> */}
             <DropZone
               data={{
                 path: currentPath,
@@ -220,7 +239,7 @@ const Example: React.FC<{
         isLast
         className="!h-full min-h-12 flex-grow"
       />
-    </div>
+    </>
   );
 };
-export default Example;
+export default BlogBuilder;
