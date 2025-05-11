@@ -196,6 +196,17 @@ const BlogBuilder: React.FC<{
         const currentPath = `${index}`;
         return (
           <React.Fragment key={block.id}>
+            {/* <div className="h-0 w-full relative">
+              <div className="top-0 left-0 z-10 absolute h-20 w-full bg-red-200">
+                <DropZone
+                  data={{
+                    path: currentPath,
+                    childrenCount: blocks.length,
+                  }}
+                  onDrop={handleDrop}
+                />
+              </div>
+            </div> */}
             <DropZone
               data={{
                 path: currentPath,

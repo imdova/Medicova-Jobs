@@ -1,64 +1,31 @@
 "use client";
-import DashboardOverView from "./components/employers/Ovarview";
-import { Button, Tab, Tabs } from "@mui/material";
-import { useState } from "react";
-import { LayoutDashboard, Settings, Users } from "lucide-react";
-import EmployerListPanel from "./components/employers/EmployerList";
-import { Add } from "@mui/icons-material";
+import React from "react";
+import { Clock10 } from "lucide-react"; // optional: use any icon lib like lucide
 
-type Tab = "over-view" | "employer-list" | "setting";
-
-const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
-  {
-    key: "over-view",
-    title: "Over View",
-    icon: <LayoutDashboard className="h-5 w-5" />,
-  },
-  {
-    key: "employer-list",
-    title: "Employer List",
-    icon: <Users className="h-5 w-5" />,
-  },
-  {
-    key: "setting",
-    title: "Settings",
-    icon: <Settings className="h-5 w-5" />,
-  },
-];
-const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(tabs[0].key);
-
+const DashboardHome: React.FC = () => {
   return (
-    <div className="w-full space-y-3 px-4 md:px-5">
-      <div className="flex w-full gap-3">
-        <div className="flex flex-1 flex-col items-center justify-between overflow-hidden rounded-base border border-gray-200 shadow-soft sm:flex-row md:items-center">
-          <Tabs
-            value={activeTab}
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            aria-label="responsive tabs example"
-          >
-            {tabs.map((tab) => (
-              <Tab
-                key={tab.key}
-                value={tab.key}
-                label={
-                  <span className="flex items-center gap-2 text-sm">
-                    {tab.icon}
-                    {tab.title}
-                  </span>
-                }
-              />
-            ))}
-          </Tabs>
+    <div className="flex h-[80vh] flex-col items-center justify-center px-4 text-center">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-soft">
+        <div className="mb-6 flex animate-pulse justify-center">
+          <Clock10 className="h-12 w-12 text-indigo-500" />
         </div>
-        <Button variant="contained"  startIcon={<Add className="h-5 w-5" />}>
-          <span className="text-nowrap text-sm">Add Company</span>
-        </Button>
+        <h1 className="mb-2 text-3xl font-bold text-gray-800">
+          building...
+          <br />
+          Dashboard Home
+        </h1>
+        <p className="mb-4 text-gray-600">
+          This page isn’t ready yet... but it’s on its way!
+        </p>
+        <p className="text-sm text-gray-500">
+          We’re building something awesome.
+        </p>
       </div>
-      {activeTab === "over-view" && <DashboardOverView />}
-      {activeTab === "employer-list" && <EmployerListPanel />}
+      <p className="mt-6 text-xs text-gray-400">
+        © {new Date().getFullYear()} Medicova
+      </p>
     </div>
   );
 };
 
-export default AdminPage;
+export default DashboardHome;
