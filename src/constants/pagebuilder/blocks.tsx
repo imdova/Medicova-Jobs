@@ -65,7 +65,11 @@ export const getBlockProps = (
           allowNesting: true,
           level: 2,
           content: "",
-          styles: blockStyles.container,
+          styles: {
+            width: "100%",
+            flexGrow: 1,
+            flex: "1 1 0%",
+          },
           blocks: [],
         },
         {
@@ -74,7 +78,11 @@ export const getBlockProps = (
           allowNesting: true,
           level: 2,
           content: "",
-          styles: blockStyles.container,
+          styles: {
+            width: "100%",
+            flexGrow: 1,
+            flex: "1 1 0%",
+          },
           blocks: [],
         },
       ],

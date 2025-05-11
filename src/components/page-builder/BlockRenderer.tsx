@@ -3,14 +3,12 @@
 import { Divider, TextareaAutosize } from "@mui/material";
 import { BlockTextEditor } from "@/components/editor/editor";
 import { Block } from "@/types/blog";
-import { Droppable } from "@hello-pangea/dnd";
 import { DraggableBlock } from "./DraggableBlock";
-import { findItemById, updateItem } from "@/util/blog";
+import { updateItem } from "@/util/blog";
 import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
 import Resize from "../UI/Resize";
-import React, { useRef } from "react";
-import { useDrag } from "react-dnd";
+import React from "react";
 import DropZone from "@/app/(public)/blog/components/dropzone";
 
 type DropZoneData = {
@@ -70,7 +68,7 @@ export function BlockRenderer({
           minRows={1}
           maxRows={10}
           placeholder="Heading 1"
-          // style={styles}
+          style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="resize-none focus:outline-none"
@@ -82,7 +80,7 @@ export function BlockRenderer({
         <TextareaAutosize
           minRows={1}
           maxRows={10}
-          // style={styles}
+          style={styles}
           placeholder="Heading 2"
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
@@ -96,7 +94,7 @@ export function BlockRenderer({
           minRows={1}
           maxRows={10}
           placeholder="Heading 3"
-          // style={styles}
+          style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="resize-none focus:outline-none"
@@ -108,7 +106,7 @@ export function BlockRenderer({
           minRows={1}
           maxRows={10}
           placeholder="Text"
-          // style={styles}
+          style={styles}
           value={block.content}
           onChange={(e) => updateBlock(block, { content: e.target.value })}
           className="w-full resize-none focus:outline-none"
@@ -139,18 +137,14 @@ export function BlockRenderer({
               "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
             }
             alt="Content"
-            // style={styles}
+            style={styles}
           />
         </Resize>
       );
 
     case "button":
       return (
-        <a
-          href={block.linkUrl}
-          // style={styles}
-          target="_blank"
-        >
+        <a href={block.linkUrl} style={styles} target="_blank">
           {block.content}
         </a>
       );
@@ -158,7 +152,7 @@ export function BlockRenderer({
     case "html":
       return (
         <div
-          // style={styles}
+          style={styles}
           dangerouslySetInnerHTML={{ __html: block.content }}
           className="prose max-w-none"
         />
@@ -166,10 +160,10 @@ export function BlockRenderer({
     case "container":
       return (
         <div
-          className={`${block.blocks.length === 0 ? "min-h-24" : ""} rounded-base`}
-          // style={styles}
+          className={`${block.blocks.length === 0 ? "min-h-24" : ""} h-full min-w-60 rounded-base`}
+          style={styles}
         >
-          {/* {block.blocks?.length === 0 && (
+          {block.blocks?.length === 0 && (
             <DropZone
               data={{
                 path: `${path}-0`,
@@ -185,23 +179,19 @@ export function BlockRenderer({
                 </span>
               </div>
             </DropZone>
-          )} */}
+          )}
           {block.blocks.map((block, index) => {
             const currentPath = `${path}-${index}`;
             return (
               <React.Fragment key={block.id}>
-                {/* <div className="relative h-0 w-0">
-                  <div className="absolute h-full w-10 cursor-pointer bg-blue-500 hover:bg-blue-700">
-                    <DropZone
-                      data={{
-                        path: currentPath,
-                        childrenCount: block.blocks.length,
-                      }}
-                      onDrop={handleDrop}
-                      //   path={currentPath}
-                    />
-                  </div>
-                </div> */}
+                <DropZone
+                  data={{
+                    path: currentPath,
+                    childrenCount: block.blocks.length,
+                  }}
+                  onDrop={handleDrop}
+                  //   path={currentPath}
+                />
 
                 <DraggableBlock
                   key={block.id}
@@ -215,47 +205,46 @@ export function BlockRenderer({
               </React.Fragment>
             );
           })}
-          {/* <DropZone
+          <DropZone
             data={{
               path: `${path}-${block.blocks.length}`,
               childrenCount: block.blocks.length,
             }}
             onDrop={handleDrop}
             isLast
-          /> */}
+          />
         </div>
       );
     case "flex-row":
       return (
-        <div
-          //  style={styles}
-          className="flex w-full flex-col flex-wrap md:flex-row"
-        >
+        <div style={styles} className="flex flex-col flex-wrap md:flex-row">
           {block.blocks.map((block, index) => {
             const currentPath = `${path}-${index}`;
             return (
               <React.Fragment key={block.id}>
-                {/* <DropZone
+                <DropZone
                   data={{
                     path: currentPath,
                     childrenCount: block.blocks.length,
                   }}
                   onDrop={handleDrop}
                   className="horizontalDrag"
-                /> */}
-                <DraggableBlock
-                  key={block.id}
-                  handleDrop={handleDrop}
-                  block={block}
-                  path={currentPath}
-                  selectedBlock={selectedBlock}
-                  onSelect={onSelect}
-                  setBlocks={setBlocks}
                 />
+                <div key={block.id} className="h-full w-full flex-1">
+                  <DraggableBlock
+                    key={block.id}
+                    handleDrop={handleDrop}
+                    block={block}
+                    path={currentPath}
+                    selectedBlock={selectedBlock}
+                    onSelect={onSelect}
+                    setBlocks={setBlocks}
+                  />
+                </div>
               </React.Fragment>
             );
           })}
-          {/* <DropZone
+          <DropZone
             data={{
               path: `${path}-${block.blocks.length}`,
               childrenCount: block.blocks.length,
@@ -263,15 +252,13 @@ export function BlockRenderer({
             onDrop={handleDrop}
             className="horizontalDrag"
             isLast
-          /> */}
+          />
         </div>
       );
 
     case "quote":
       return (
-        <blockquote
-        // style={styles}
-        >
+        <blockquote style={styles}>
           <TextareaAutosize
             minRows={1}
             maxRows={10}
@@ -285,9 +272,7 @@ export function BlockRenderer({
 
     case "code":
       return (
-        <pre
-        // style={styles}
-        >
+        <pre style={styles}>
           <TextareaAutosize
             minRows={1}
             maxRows={20}
@@ -301,9 +286,7 @@ export function BlockRenderer({
 
     case "video":
       return (
-        <div
-        // style={styles}
-        >
+        <div style={styles}>
           {block.videoUrl ? (
             <YouTubePlayer
               videoUrl={block.videoUrl}

@@ -1,7 +1,7 @@
 .dropZone {
   flex: 0 0 auto;
-  height: 20px;
-  background: #00a2ff3d;
+  height: 5px;
+  /* background: #00a2ff3d; */
   transition: 200ms all;
 }
 
@@ -9,7 +9,7 @@
   display: none;
 }
 .dropZone.horizontalDrag {
-  width: 20px;
+  width: 5px;
   height: auto;
 }
 

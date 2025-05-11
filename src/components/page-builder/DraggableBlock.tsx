@@ -64,7 +64,7 @@ export function DraggableBlock({
         onSelect(block);
       }}
       ref={previewRef}
-      style={{ opacity, ...block.styles }}
+      style={{ opacity }}
       className={`relative rounded-base border p-1 ${
         isSelected
           ? "border-primary"

@@ -71,16 +71,6 @@ export default function PageBuilder() {
                 }}
                 className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
               >
-                {/* <div className="flex flex-col flex-wrap md:flex-row bg-blue-100">
-                  <div
-                    className="relative h-14 rounded-base border border-transparent bg-green-300 p-1 hover:border-neutral-400"
-                    style={{ opacity: 1, width: "100%", flex: "1 1 0%" }}
-                  ></div>
-                  <div
-                    className="relative h-14 rounded-base border border-transparent p-1 bg-yellow-300 hover:border-neutral-400"
-                    style={{ opacity: 1, width: "100%", flex: "1 1 0%" }}
-                  ></div>
-                </div> */}
                 {onPreview ? (
                   <ArticlePreview blocks={blocks} />
                 ) : (

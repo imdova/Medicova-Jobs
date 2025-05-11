@@ -60,8 +60,8 @@ const FLEX_STYLES: React.CSSProperties = {
 };
 const CONTAINER_STYLES: React.CSSProperties = {
   width: "100%",
-  flexGrow: 1,
-  flex: "1 1 0%",
+  // flexGrow: 1,
+  // flex: "1 1 0%",
 };
 const QUOTE_STYLES: React.CSSProperties = {
   borderLeft: "4px solid #d1d5db", // border-l-4 border-gray-300
