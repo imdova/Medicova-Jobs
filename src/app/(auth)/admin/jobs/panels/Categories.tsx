@@ -139,7 +139,7 @@ const Categories: React.FC = () => {
           throw new Error("Invalid API response structure");
         }
 
-        // Update categories state with the new data
+        // Update categories state with  new data
         setCategories((prev) =>
           prev.map((category) =>
             category.id === selectedCategoryId
