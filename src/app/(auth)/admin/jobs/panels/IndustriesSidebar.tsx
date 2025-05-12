@@ -11,8 +11,7 @@ import {
 import { Add } from "@mui/icons-material";
 import CellOptions from "@/components/UI/CellOptions";
 import { Eye, Trash } from "lucide-react";
-const ADD_INDUSTRY_URL =
-  "http://34.70.58.31/api/v1.0.0/admin/sys-configurations/industry";
+import { API_CREATE_INDUSTRY, API_DELETE_INDUSTRY } from "@/api/admin";
 
 type DataType = {
   id: string;
@@ -55,7 +54,7 @@ const IndustriesSidebar: React.FC<{
     setError(null);
 
     try {
-      const response = await fetch(ADD_INDUSTRY_URL, {
+      const response = await fetch(API_CREATE_INDUSTRY, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +114,7 @@ const IndustriesSidebar: React.FC<{
 
     try {
       setIsLoading(true);
-      const response = await fetch(`${ADD_INDUSTRY_URL}?id=${industry.id}`, {
+      const response = await fetch(`${API_DELETE_INDUSTRY}?id=${industry.id}`, {
         method: "DELETE",
       });
 

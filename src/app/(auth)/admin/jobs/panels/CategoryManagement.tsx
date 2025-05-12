@@ -14,6 +14,7 @@ import {
 import { Add } from "@mui/icons-material";
 import CellOptions from "@/components/UI/CellOptions";
 import { Eye, Trash } from "lucide-react";
+import { API_GET_CATEGORIES_BY_INDUSTRY } from "@/api/admin";
 
 type DataType = {
   id: string;
@@ -68,7 +69,7 @@ const CategoryManagement: React.FC<{
 
       try {
         const response = await fetch(
-          `${API_BASE_URL}/category/industries?ids=${industry}`,
+          `${API_GET_CATEGORIES_BY_INDUSTRY}${industry}`,
         );
 
         if (!response.ok) {

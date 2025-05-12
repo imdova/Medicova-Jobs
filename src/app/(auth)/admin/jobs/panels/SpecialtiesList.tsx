@@ -203,7 +203,7 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
                     No specialties found
                   </Alert>
                 ) : (
-                  <List>
+                  <List className="max-h-[300px] overflow-y-auto">
                     {specialties.map((specialty) => (
                       <ListItemButton key={specialty.id} className="mb-2">
                         <ListItemIcon>
