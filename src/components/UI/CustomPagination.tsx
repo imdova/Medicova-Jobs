@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect } from "react";
+import { Suspense, useCallback, useEffect, useMemo } from "react";
 import {
   Select,
   MenuItem,
@@ -14,25 +14,35 @@ interface PaginationProps {
   fixedNumberPerPage?: number;
   initialNumberPerPage?: number;
   totalItems: number;
+  itemsPerPageOptions?: number[];
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   fixedNumberPerPage,
   initialNumberPerPage = 10,
   totalItems,
+  itemsPerPageOptions = [5, 10, 20, 50],
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
 
-  // Get current values from search params
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage =
-    fixedNumberPerPage ||
-    Number(searchParams.get("limit")) ||
-    initialNumberPerPage 
+  // Memoized calculation of current page and items per page
+  const { currentPage, itemsPerPage } = useMemo(() => {
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = fixedNumberPerPage
+      ? fixedNumberPerPage
+      : Number(searchParams.get("limit")) || initialNumberPerPage;
+    return {
+      currentPage: Math.max(1, page), // Ensure page is at least 1
+      itemsPerPage: Math.max(1, limit), // Ensure limit is at least 1
+    };
+  }, [searchParams, fixedNumberPerPage, initialNumberPerPage]);
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  // Calculate total pages safely
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  }, [totalItems, itemsPerPage]);
 
   // Create URL search params utility function
   const createQueryString = useCallback(
@@ -49,7 +59,7 @@ const Pagination: React.FC<PaginationProps> = ({
     const newLimit = event.target.value as number;
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("limit", newLimit.toString());
-    newParams.set("page", "1");
+    newParams.set("page", "1"); // Reset to first page when changing items per page
     router.push(createUrl(pathName, newParams), { scroll: false });
   };
 
@@ -60,51 +70,71 @@ const Pagination: React.FC<PaginationProps> = ({
     router.push(createUrl(pathName, newParams), { scroll: false });
   };
 
-  // Validate current page on total items change
+  // Validate current page when total items or items per page changes
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      router.push(`?${createQueryString("page", totalPages.toString())}`, {
-        scroll: false,
-      });
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.set("page", totalPages.toString());
+      router.push(createUrl(pathName, newParams), { scroll: false });
     }
-  }, [totalItems, currentPage, totalPages, router, createQueryString]);
+  }, [totalItems, currentPage, totalPages, router, pathName, searchParams]);
 
-  if (totalPages < 2 &&  itemsPerPage === initialNumberPerPage) return null;
+  // Don't render if no pagination needed
+  if (totalPages <= 1 && itemsPerPage === initialNumberPerPage) {
+    return null;
+  }
 
   return (
     <div
       className={`${fixedNumberPerPage ? "justify-center" : "justify-between"} mt-2 flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white p-2 shadow-soft`}
     >
-      {/* Select Input for Items Per Page */}
-      {fixedNumberPerPage ? null : (
+      {/* Items Per Page Selector */}
+      {!fixedNumberPerPage && (
         <div className="flex items-center gap-2 px-2 md:pl-12">
-          <span>View:</span>
           <Select
             value={itemsPerPage}
             onChange={handleItemsPerPageChange}
             size="small"
             variant="outlined"
+            sx={{
+              "& .MuiSelect-select": {
+                padding: "6px 32px 6px 12px",
+              },
+            }}
           >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
+            {itemsPerPageOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
           </Select>
         </div>
       )}
 
-      {/* Pagination Component */}
+      {/* Pagination Controls */}
       <MUIPagination
         count={totalPages}
-        page={currentPage}
+        page={Math.min(currentPage, totalPages)} // Ensure page doesn't exceed total pages
         color="primary"
         onChange={handlePageChange}
+        siblingCount={1}
+        boundaryCount={1}
         sx={{
           "& .MuiPaginationItem-root": {
             borderRadius: "4px",
+            fontSize: "0.875rem",
           },
           "& .MuiPaginationItem-root.Mui-selected": {
+            backgroundColor: "primary.main",
             color: "white",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+            },
+          },
+          "& .MuiPaginationItem-root:not(.Mui-selected)": {
+            "&:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.04)",
+            },
           },
         }}
       />
@@ -114,9 +144,10 @@ const Pagination: React.FC<PaginationProps> = ({
 
 const CustomPagination: React.FC<PaginationProps> = (props) => {
   return (
-    <Suspense>
+    <Suspense fallback={<div className="h-12 w-full" />}>
       <Pagination {...props} />
     </Suspense>
   );
 };
+
 export default CustomPagination;

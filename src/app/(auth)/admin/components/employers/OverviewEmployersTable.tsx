@@ -8,9 +8,9 @@ import {
   TextField,
 } from "@mui/material";
 import { Download, ExpandMore, Search } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useEffect, MouseEvent, SyntheticEvent } from "react";
 import DataTable from "@/components/UI/data-table";
-import { Company, FieldConfig, Sector } from "@/types";
+import { Company, FieldConfig, Result, Sector } from "@/types";
 import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
 import { formatDate } from "@/util";
@@ -31,27 +31,32 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { employerFilters } from "@/constants";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import { updateItemInArray } from "@/util/general";
+import { searchCompanies } from "@/lib/actions/employer.actions";
 
 const tabs = [
   "New Employers",
   "Top Employers",
   "Active Employers",
   "Inactive Employers",
-];
+] as const;
 
-const initialFilter = {
-  country: "",
-  sector: "",
-  companyType: "",
-  status: "",
-  date: "",
-};
 interface EmployerFilter {
   country: string;
   sector: string;
   companyType: string;
   status: string;
   date: string;
+}
+
+interface ApiFilters {
+  page: number;
+  limit: number;
+  q: string;
+  countryCode: string;
+  companyTypeId: string;
+  status: string;
+  dateFrom: string;
+  dateTo: string;
 }
 
 const OverviewEmployersTable: React.FC<{
@@ -61,36 +66,112 @@ const OverviewEmployersTable: React.FC<{
   >;
 }> = ({ companies: companiesData, updateCompanyData }) => {
   const { countries } = useLocationData();
-
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const openFilter = () => setIsFilterOpen(true);
-  const closeFilter = () => setIsFilterOpen(false);
-
-  const { isLoading, error, update } = useUpdateApi<Company>();
-
-  const { data: companies, total } = companiesData || { data: [], total: 0 };
+  const { update } = useUpdateApi<Company>();
+  const { data: companies = [], total = 0 } = companiesData || {};
   const [selected, setSelected] = useState<(number | string)[]>([]);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
-  const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
-  const [data, setData] = useState({} as EmployerFilter);
+  // State for API filters
+  const [apiFilters, setApiFilters] = useState<ApiFilters>({
+    page: 1,
+    limit: 10,
+    q: "",
+    countryCode: "",
+    companyTypeId: "",
+    status: "",
+    dateFrom: "",
+    dateTo: "",
+  });
+
+  // Local state for filter form
+  const [filterForm, setFilterForm] = useState<EmployerFilter>({
+    country: "",
+    sector: "",
+    companyType: "",
+    status: "",
+    date: "",
+  });
 
   const { data: sectors } = useFetch<PaginatedResponse<Sector>>(
     API_GET_COMPANY_SECTORS,
   );
   const { data: types } = useFetch<PaginatedResponse<Sector>>(
-    data?.sector ? API_GET_COMPANY_TYPES_BY_SECTOR + data?.sector : null,
-    {
-      fetchOnce: false,
-      fetchOnUrlChange: true,
-    },
+    filterForm?.sector
+      ? `${API_GET_COMPANY_TYPES_BY_SECTOR}${filterForm.sector}`
+      : null,
+    { fetchOnce: false, fetchOnUrlChange: true },
   );
 
-  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+  const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(
+    null,
+  );
   const exportOpen = Boolean(exportAnchorEl);
-  const exportHandleClick = (event: any) => {
+
+  // Handle tab change to filter by status
+  const handleTabChange = (e: SyntheticEvent, newValue: string) => {
+    setActiveTab(newValue);
+
+    // Map tab names to status filters
+    const statusMap: Record<string, string> = {
+      "Active Employers": "active",
+      "Inactive Employers": "inactive",
+      // Add other tabs if needed
+    };
+
+    const status = statusMap[newValue] || "";
+    setApiFilters((prev) => ({
+      ...prev,
+      status,
+      page: 1, // Reset to first page when changing tabs
+    }));
+  };
+
+  // Fetch companies when filters change
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      const result: Result<PaginatedResponse<Company>> =
+        await searchCompanies(apiFilters);
+      if (result.success && result.data) {
+        updateCompanyData?.(result.data);
+      }
+    };
+    fetchCompanies();
+  }, [apiFilters]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setApiFilters((prev) => ({ ...prev, q: e.target.value, page: 1 }));
+  };
+
+  // Update date filters when date changes in form
+  const handleFilterFormChange = (newFormData: EmployerFilter) => {
+    setFilterForm(newFormData);
+
+    // Convert date string to proper format if needed
+    const dateFrom = newFormData.date
+      ? new Date(newFormData.date).toISOString()
+      : "";
+    const dateTo = newFormData.date
+      ? new Date(
+          new Date(newFormData.date).setHours(23, 59, 59, 999),
+        ).toISOString()
+      : "";
+
+    setApiFilters((prev) => ({
+      ...prev,
+      page: 1,
+      countryCode: newFormData.country,
+      companyTypeId: newFormData.companyType,
+      status: newFormData.status?.toLowerCase(),
+      dateFrom,
+      dateTo,
+    }));
+  };
+
+  const exportHandleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setExportAnchorEl(event.currentTarget);
   };
+
   const exportHandleClose = () => {
     setExportAnchorEl(null);
   };
@@ -101,8 +182,10 @@ const OverviewEmployersTable: React.FC<{
       { body },
       TAGS.company,
     );
-    const newCompanies = updateItemInArray(companies, newCompanyData);
-    updateCompanyData?.({ data: newCompanies, total });
+    if (newCompanyData) {
+      const newCompanies = updateItemInArray(companies, newCompanyData);
+      updateCompanyData?.({ data: newCompanies, total });
+    }
   };
 
   const fields: FieldConfig<EmployerFilter>[] = [
@@ -124,10 +207,11 @@ const OverviewEmployersTable: React.FC<{
         placeholder: "Sector",
       },
       resetFields: ["companyType"],
-      options: sectors?.data.map((sector) => ({
-        value: sector.id,
-        label: sector.name,
-      })),
+      options:
+        sectors?.data.map((sector: Sector) => ({
+          value: sector.id,
+          label: sector.name,
+        })) || [],
       gridProps: { xs: 6 },
     },
     {
@@ -137,20 +221,20 @@ const OverviewEmployersTable: React.FC<{
         placeholder: "Company Type",
       },
       dependsOn: "sector",
-      options: types?.data.map((type) => ({
-        value: type.id,
-        label: type.name,
-      })),
+      options:
+        types?.data.map((type: Sector) => ({
+          value: type.id,
+          label: type.name,
+        })) || [],
       gridProps: { xs: 6 },
     },
-
     {
       name: "status",
       type: "select",
       textFieldProps: {
         placeholder: "Status",
       },
-      options: ["active", "inActive"].map((status) => ({
+      options: ["active", "inactive"].map((status) => ({
         value: status,
         label: status,
       })),
@@ -159,7 +243,13 @@ const OverviewEmployersTable: React.FC<{
       name: "date",
       type: "date",
       textFieldProps: {
-        placeholder: "date",
+        placeholder: "Registration Date",
+      },
+      onChange: (value: string) => {
+        handleFilterFormChange({
+          ...filterForm,
+          date: value,
+        });
       },
     },
   ];
@@ -171,12 +261,12 @@ const OverviewEmployersTable: React.FC<{
           <div>
             <h5 className="p-4 pb-1 text-xl font-semibold text-main">
               All Employers
-              <span className="ml-1 text-xs text-secondary">(4,050)</span>
+              <span className="ml-1 text-xs text-secondary">({total})</span>
             </h5>
             <div className="body-container overflow-x-auto">
               <Tabs
                 value={activeTab}
-                onChange={(e, v) => setActiveTab(v)}
+                onChange={handleTabChange} // Use our custom handler
                 aria-label="basic tabs example"
                 variant="scrollable"
                 scrollButtons={false}
@@ -197,11 +287,11 @@ const OverviewEmployersTable: React.FC<{
             <TextField
               variant="outlined"
               placeholder="Search For Employer"
-              value={query}
+              value={apiFilters.q}
               InputProps={{
                 startAdornment: <Search />,
               }}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleSearch}
             />
 
             <div>
@@ -234,19 +324,23 @@ const OverviewEmployersTable: React.FC<{
       <div className="body-container flex flex-wrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-nowrap">
         {fields.map((field) => (
           <div className="flex-1" key={field.name}>
-            <FormField field={field} data={data} setData={setData} />
+            <FormField
+              field={field}
+              data={filterForm}
+              setData={handleFilterFormChange}
+            />
           </div>
         ))}
 
         <IconButton
-          onClick={openFilter}
+          onClick={() => setIsFilterOpen(true)}
           className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
         >
           <Filter className="h-4 w-4" />
         </IconButton>
         <FilterDrawer
           isOpen={isFilterOpen}
-          onClose={closeFilter}
+          onClose={() => setIsFilterOpen(false)}
           sections={employerFilters}
         />
       </div>
@@ -256,7 +350,8 @@ const OverviewEmployersTable: React.FC<{
           total={total}
           selected={selected}
           setSelected={setSelected}
-          searchQuery={query}
+          searchQuery={apiFilters.q}
+          fixedNumberPerPage={apiFilters.limit}
           cellClassName="p-2 text-sm"
           headerClassName="text-sm"
           columns={[
@@ -264,7 +359,7 @@ const OverviewEmployersTable: React.FC<{
               key: "name",
               header: "Name",
               sortable: true,
-              render: (item) => (
+              render: (item: Company) => (
                 <div className="flex items-center gap-2">
                   <Avatar src={item.avatar} />
                   <div>
@@ -288,26 +383,28 @@ const OverviewEmployersTable: React.FC<{
               key: "created_at",
               header: "Reg Date",
               sortable: true,
-              render: (item) => formatDate(item.created_at),
+              render: (item: Company) => formatDate(item.created_at),
             },
             {
               key: "phone",
               header: "Phone",
               sortable: true,
+              render: (item: Company) => item.phone,
             },
             {
               key: "country.name",
               header: "Country",
               sortable: true,
+              render: (item: Company) => item.country?.name,
             },
             {
               key: "companyTypeName",
               header: "Type",
-              render: (item) => (
+              render: (item: Company) => (
                 <span className="text-sm">
                   {
                     types?.data?.find(
-                      (type) => type.id === item.companyTypeName,
+                      (type: Sector) => type.id === item.companyTypeName,
                     )?.name
                   }
                 </span>
@@ -316,11 +413,11 @@ const OverviewEmployersTable: React.FC<{
             {
               key: "companySectorName",
               header: "Sector",
-              render: (item) => (
+              render: (item: Company) => (
                 <span className="text-sm">
                   {
                     sectors?.data?.find(
-                      (sector) => sector.id === item.companySectorId,
+                      (sector: Sector) => sector.id === item.companySectorId,
                     )?.name
                   }
                 </span>
@@ -328,13 +425,13 @@ const OverviewEmployersTable: React.FC<{
             },
             {
               header: "plan",
-              render: (item) => (
+              render: (item: Company) => (
                 <SelectField
                   field={{
                     name: "plan",
                     type: "select",
                     textFieldProps: {
-                      className: "bg-transparent ",
+                      className: "bg-transparent",
                       sx: {
                         "& .MuiOutlinedInput-notchedOutline": {
                           padding: 0,
@@ -342,7 +439,6 @@ const OverviewEmployersTable: React.FC<{
                         },
                       },
                     },
-
                     options: ["silver", "gold", "diamond"].map((x) => ({
                       value: x,
                       label: x,
@@ -350,7 +446,8 @@ const OverviewEmployersTable: React.FC<{
                   }}
                   controllerField={{
                     value: "silver",
-                    onChange: (e) => console.log(e.target.value),
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      console.log(e.target.value),
                   }}
                 />
               ),
@@ -363,7 +460,7 @@ const OverviewEmployersTable: React.FC<{
             {
               key: "status",
               header: "Status",
-              render: (item) => (
+              render: (item: Company) => (
                 <CheckboxField
                   field={{
                     name: "status",
@@ -371,7 +468,7 @@ const OverviewEmployersTable: React.FC<{
                   }}
                   controllerField={{
                     value: item.status === CompanyStatus.ACTIVE,
-                    onChange: (e) =>
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                       updateCompany({
                         ...item,
                         status: e.target.checked
@@ -382,10 +479,9 @@ const OverviewEmployersTable: React.FC<{
                 />
               ),
             },
-
             {
               header: "Action",
-              render: handleStatus,
+              render: (item: Company) => handleStatus(item),
             },
           ]}
         />
@@ -394,27 +490,23 @@ const OverviewEmployersTable: React.FC<{
   );
 };
 
-export default OverviewEmployersTable;
-
 const handleStatus = (company: Company) => {
-  const stateStyles: Record<NonNullable<Company["status"]>, string> = {
+  const stateStyles: Record<string, string> = {
     active:
       "bg-green-50 text-green-700 ring-green-600/20 border-green-500 bg-inputDark text-green-500",
     inactive:
       "bg-red-50 text-red-700 ring-red-600/10 border-red-500 bg-inputDark text-red-500",
   };
 
-  return company.status ? (
+  const status = company.status || "inactive";
+
+  return (
     <span
-      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[company.status]}`}
+      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[status]}`}
     >
-      {company.status}
-    </span>
-  ) : (
-    <span
-      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles.inactive}`}
-    >
-      inactive
+      {status}
     </span>
   );
 };
+
+export default OverviewEmployersTable;

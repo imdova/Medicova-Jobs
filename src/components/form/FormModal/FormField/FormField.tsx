@@ -187,12 +187,16 @@ export const FormField: React.FC<FormFieldProps> = ({
           <div className="max-w-full flex-1">
             {renderField({
               field: {
-                value: getNestedValue(data, String(field.name)) || "",
-                name: String(field.name),
-                onChange: (e) =>
-                  setData(
-                    updateData(data, String(field.name), e.target.value || e),
-                  ),
+                value: getNestedValue(data, field.name as string) || "",
+                name: field.name as string,
+                onChange: (
+                  e:
+                    | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                    | any,
+                ) => {
+                  const value = e && e.target ? e.target.value : e;
+                  setData(updateData(data, field.name as string, value));
+                },
               },
             })}
           </div>

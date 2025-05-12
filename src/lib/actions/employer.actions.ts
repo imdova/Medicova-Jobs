@@ -110,6 +110,7 @@ export const searchCompanies = async (
     q?: string;
     countryCode?: string;
     companyTypeId?: string;
+    //TODO: add status to comanies filter
   } = {},
 ): Promise<Result<PaginatedResponse<Company>>> => {
   try {
@@ -466,9 +467,11 @@ export const getPaginatedCandidatesByFolderId = async (
   filters: FolderSearchFilter = {},
 ): Promise<Result<PaginatedResponse<CandidateType>>> => {
   try {
-    
     const queryParams = toQueryString(filters);
-    console.log("🚀 ~ API_SEARCH_FOLDER_SEEKERS + queryParams:", API_SEARCH_FOLDER_SEEKERS + queryParams)
+    console.log(
+      "🚀 ~ API_SEARCH_FOLDER_SEEKERS + queryParams:",
+      API_SEARCH_FOLDER_SEEKERS + queryParams,
+    );
     const response = await fetch(API_SEARCH_FOLDER_SEEKERS + queryParams, {
       method: "GET",
       headers: {

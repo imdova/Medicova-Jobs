@@ -1,30 +1,17 @@
 import React from "react";
 import DataTable from "@/components/UI/data-table";
 import Flag from "@/components/UI/flagitem";
-import { BotOff, MapPin, Pin, ShieldCheck, Users } from "lucide-react";
-import {
-  BarChart,
-  LineChart,
-  AxisConfig,
-  ChartsXAxisProps,
-} from "@mui/x-charts";
-
-import { Company } from "@/types";
+import { BotOff, MapPin, ShieldCheck, Users } from "lucide-react";
 import StatusCard from "@/components/UI/StatusCard";
 import useFetch from "@/hooks/useFetch";
-import { API_GET_COMPANIES } from "@/api/employer";
-import CompanyMiniCard, {
-  CompanyMiniCardSkeleton,
-} from "../components/CompanyMiniCard";
-import OverviewEmployersTable from "../components/employers/OverviewEmployersTable";
 import { API_GET_SEEKERS } from "@/api/seeker";
 import { formatName } from "@/util";
 import { formatLocation } from "@/util/general";
-import { LocalActivityOutlined } from "@mui/icons-material";
 import Avatar from "@/components/UI/Avatar";
-import UsersTable from "../components/users/OverviewEmployersTable";
 import { topCountriesData } from "../constants";
 import { Typography } from "@mui/material";
+import GenericChart from "@/components/charts/GenericChart";
+import SeekersTable from "../components/seekers/OverviewSeekersTable";
 
 const statusCards: StatusCardType[] = [
   {
@@ -75,12 +62,12 @@ const dummyChartData = {
   ],
 };
 
-const UsersOverViewPanel: React.FC = () => {
-  const { data: users, setData } =
+const OverviewSeekerPage: React.FC = () => {
+  const { data: Seeker, setData } =
     useFetch<PaginatedResponse<UserProfile>>(API_GET_SEEKERS);
 
-  const topUsers =
-    users?.data
+  const topSeeker =
+    Seeker?.data
       ?.filter((x) => Boolean(x.userName) && Boolean(x.firstName))
       .slice(0, 5) || [];
 
@@ -95,70 +82,64 @@ const UsersOverViewPanel: React.FC = () => {
             ))}
           </div>
           {/* Chart Section */}
-          <div className="relative mt-3 rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-            <h5 className="p-1 text-xl font-semibold text-main">
-              Users
-              <br />
-              <span className="text-xl font-semibold text-main">
-                & Top Categories
-              </span>
-            </h5>
-            <div className="mt-4 flex w-full items-center justify-between">
-              <h5 className="text-secondary">
-                Statistics
-                <br />
-                <span className="text-main">User Report</span>
-              </h5>
-              <div className="rounded-base border border-gray-200">
-                {["day", "week", "month", "3 months", "year"].map((x) => (
-                  <button
-                    key={x}
-                    className="rounded-base px-4 py-2 text-xs hover:bg-primary hover:text-white"
-                  >
-                    {x}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <BarChart
-              sx={{
-                ".MuiChartsAxis-line": {
-                  display: "none",
+          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-soft">
+            <GenericChart
+              chartTitle="Seekers & Job applications Trends"
+              data={{
+                yearly: {
+                  categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                  series: [
+                    {
+                      name: "New Seeker",
+                      data: [100, 120, 90, 140, 110, 130],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [200, 240, 180, 280, 220, 260],
+                      color: "#0884FF",
+                    },
+                  ],
                 },
-
-                ".MuiChartsAxis-tick": {
-                  display: "none",
+                monthly: {
+                  categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                  series: [
+                    {
+                      name: "New Seeker",
+                      data: [30, 40, 35, 45],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [60, 80, 70, 90],
+                      color: "#0884FF",
+                    },
+                  ],
                 },
-                ".MuiChartsAxis-tickLabel tspan": {
-                  fontSize: "8px",
+                weekly: {
+                  categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                  series: [
+                    {
+                      name: "New Seeker",
+                      data: [10, 15, 12, 18, 14, 8, 5],
+                      color: "#FF8743",
+                    },
+                    {
+                      name: "Job applications",
+                      data: [20, 30, 25, 35, 28, 15, 10],
+                      color: "#0884FF",
+                    },
+                  ],
                 },
               }}
-              margin={{ top: 30 }}
-              grid={{ horizontal: true }}
-              borderRadius={6} // Adds rounded corners
-              slotProps={{
-                legend: {
-                  direction: "row",
-                  position: { vertical: "bottom", horizontal: "middle" },
-                  hidden: true,
-                }, //  Positions the legend at the bottom-middle and aligns it in a row.
-              }}
-              xAxis={[
+              cards={[
+                { title: "New Seeker", value: "1,240", color: "#FF8743" },
                 {
-                  scaleType: "band",
-                  data: dummyChartData.category,
-                  barGapRatio: 0.8,
-                  categoryGapRatio: 0.6,
-                } as AxisConfig<"band", unknown, ChartsXAxisProps>,
-              ]}
-              series={[
-                {
-                  label: "labelX",
-                  data: dummyChartData.newEmployers, // Data matches each x-axis category
-                  color: "#2ba149e5",
+                  title: "Job applications",
+                  value: "2,480",
+                  color: "#0884FF",
                 },
               ]}
-              height={400}
             />
           </div>
         </div>
@@ -168,7 +149,7 @@ const UsersOverViewPanel: React.FC = () => {
           <div className="rounded-base border border-gray-200 bg-white shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b p-3 pb-2">
               <h5 className="text-xl font-semibold text-main">
-                Top Users
+                Top Seeker
                 <span className="ml-1 text-xs text-secondary">(Revenue)</span>
               </h5>
 
@@ -176,7 +157,7 @@ const UsersOverViewPanel: React.FC = () => {
             </div>
 
             <DataTable
-              data={topUsers}
+              data={topSeeker}
               cellClassName="p-2 text-xs"
               className="border-none shadow-none"
               hideTableHeader={true}
@@ -265,11 +246,10 @@ const UsersOverViewPanel: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Employers Table */}
-
-      {topUsers && <UsersTable users={users} updateUsers={setData} />}
+      {/* Seekers Table */}
+      {topSeeker && <SeekersTable seekers={Seeker} updateSeekers={setData} />}
     </div>
   );
 };
 
-export default UsersOverViewPanel;
+export default OverviewSeekerPage;

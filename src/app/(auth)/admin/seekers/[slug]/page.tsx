@@ -1,7 +1,7 @@
 "use client";
 
 import { API_GET_JOB_APPLICATIONS } from "@/api/employer";
-import { API_GET_SEEKERS } from "@/api/seeker";
+import { API_GET_SEEKER_BY_USERNAME } from "@/api/seeker";
 import NotFoundPage from "@/app/not-found";
 import DynamicTable from "@/components/tables/DTable";
 import CellOptions from "@/components/UI/CellOptions";
@@ -235,9 +235,9 @@ const columns = [
 
 export default function SingleStudentOverview({ params }: SingleUserProps) {
   const slug = params.slug;
-  const { data: users, setData } =
-    useFetch<PaginatedResponse<UserProfile>>(API_GET_SEEKERS);
-  const Seeker = users?.data.find((seeker) => seeker.id === slug);
+  const { data: Seeker } = useFetch<UserProfile>(
+    `${API_GET_SEEKER_BY_USERNAME}${slug}`,
+  );
   const { data: jobs, loading } = useFetch<PaginatedResponse<ApplicationsType>>(
     `${API_GET_JOB_APPLICATIONS}?seekerId=${Seeker?.id}`,
   );

@@ -1,12 +1,12 @@
 "use client";
 import { Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import OverviewUsers from "./OverviewUsers";
-import UserList from "./UserList";
 import { LayoutDashboard, Settings, Users } from "lucide-react";
 import { Add } from "@mui/icons-material";
+import OverviewSeekerPage from "./OverviewSeeker";
+import SeekerList from "./SeekerList";
 
-type Tab = "over-view" | "users-list" | "setting";
+type Tab = "over-view" | "seeker-list" | "setting";
 
 const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
   {
@@ -15,8 +15,8 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
     icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
-    key: "users-list",
-    title: "Users List",
+    key: "seeker-list",
+    title: "Seeker List",
     icon: <Users className="h-5 w-5" />,
   },
   {
@@ -26,7 +26,7 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
   },
 ];
 
-const UsersPage: React.FC = () => {
+const SeekersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tabs[0].key);
 
   return (
@@ -53,14 +53,14 @@ const UsersPage: React.FC = () => {
           </Tabs>
         </div>
         <Button variant="contained" startIcon={<Add className="h-5 w-5" />}>
-          <span className="text-nowrap text-sm">Add User</span>
+          <span className="text-nowrap text-sm">Add Seeker</span>
         </Button>
       </div>
 
-      {activeTab === "over-view" && <OverviewUsers />}
-      {/* {activeTab === "users-list" && <UserList />} */}
+      {activeTab === "over-view" && <OverviewSeekerPage />}
+      {activeTab === "seeker-list" && <SeekerList />}
     </div>
   );
 };
 
-export default UsersPage;
+export default SeekersPage;

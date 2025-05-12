@@ -45,7 +45,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
           id: 2,
           label: "Manage Job Seekers",
           icon: GraduationCap,
-          path: "/admin/users",
+          path: "/admin/seekers",
           type: "supLink",
         },
         {

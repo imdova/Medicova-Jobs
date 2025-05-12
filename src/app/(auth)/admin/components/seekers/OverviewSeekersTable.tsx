@@ -8,106 +8,165 @@ import {
   TextField,
 } from "@mui/material";
 import { Download, ExpandMore, Search } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useEffect, MouseEvent, SyntheticEvent } from "react";
 import DataTable from "@/components/UI/data-table";
-import { Company, FieldConfig, Sector } from "@/types";
+import { FieldConfig, JobCategory, Result, SpecialtyItem } from "@/types";
 import Avatar from "@/components/UI/Avatar";
 import Link from "next/link";
 import { formatDate, formatName } from "@/util";
 import useFetch from "@/hooks/useFetch";
-import {
-  API_GET_COMPANY_SECTORS,
-  API_GET_COMPANY_TYPES_BY_SECTOR,
-} from "@/api/admin";
 import { useLocationData } from "@/hooks/useLocationData";
-import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
-import { TAGS } from "@/api";
-import { API_UPDATE_COMPANY } from "@/api/employer";
-import useUpdateApi from "@/hooks/useUpdateApi";
-import { CompanyStatus } from "@/constants/enums/company-status.enum";
-import { Filter } from "lucide-react";
 import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
-import { employerFilters } from "@/constants";
-import FilterDrawer from "@/components/UI/FilterDrawer";
-import { updateItemInArray } from "@/util/general";
+// import FilterDrawer from "@/components/UI/FilterDrawer";
 import { API_UPDATE_SEEKER } from "@/api/seeker";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { TAGS } from "@/api";
+import { API_GET_CATEGORIES, API_GET_SPECIALITIES } from "@/api/admin";
+import { Filter } from "lucide-react";
+import { updateItemInArray } from "@/util/general";
+import { SeekerSearchFilter } from "@/types/jobs";
+import { searchSeekers } from "@/lib/actions/applications.actions";
+import FilterDrawer from "@/components/UI/FilterDrawer";
+import { searchFilters } from "@/constants";
 
 const tabs = [
-  "New Employers",
-  "Top Employers",
-  "Active Employers",
-  "Inactive Employers",
-];
+  "All Seekers",
+  "New Seekers",
+  "Active Seekers",
+  "Inactive Seekers",
+] as const;
 
-const initialFilter = {
-  country: "",
-  sector: "",
-  companyType: "",
-  status: "",
-  date: "",
-};
-interface EmployerFilter {
-  country: string;
-  sector: string;
-  companyType: string;
-  status: string;
-  date: string;
+type TabValue = (typeof tabs)[number];
+
+interface ApiFilters extends SeekerSearchFilter {
+  page: number;
+  limit: number;
+  q: string;
+  active?: boolean;
 }
 
-const UsersTable: React.FC<{
-  users: PaginatedResponse<UserProfile> | null;
-  updateUsers?: React.Dispatch<
+const SeekersTable: React.FC<{
+  seekers: PaginatedResponse<UserProfile> | null;
+  updateSeekers?: React.Dispatch<
     React.SetStateAction<PaginatedResponse<UserProfile> | null>
   >;
-}> = ({ users: usersData, updateUsers }) => {
-  const { countries } = useLocationData();
-
+}> = ({ seekers: seekersData, updateSeekers }) => {
+  const { countries, states } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const openFilter = () => setIsFilterOpen(true);
-  const closeFilter = () => setIsFilterOpen(false);
-
   const { isLoading, error, update } = useUpdateApi<UserProfile>();
-
-  const { data: users, total } = usersData || { data: [], total: 0 };
+  const { data: seekers = [], total = 0 } = seekersData || {};
   const [selected, setSelected] = useState<(number | string)[]>([]);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [activeTab, setActiveTab] = useState<TabValue>("All Seekers");
   const [query, setQuery] = useState("");
 
-  const [data, setData] = useState({} as EmployerFilter);
+  const { data: categories } =
+    useFetch<PaginatedResponse<JobCategory>>(API_GET_CATEGORIES);
+  const { data: specialities } =
+    useFetch<PaginatedResponse<SpecialtyItem>>(API_GET_SPECIALITIES);
 
-  const { data: sectors } = useFetch<PaginatedResponse<Sector>>(
-    API_GET_COMPANY_SECTORS,
-  );
-  const { data: types } = useFetch<PaginatedResponse<Sector>>(
-    data?.sector ? API_GET_COMPANY_TYPES_BY_SECTOR + data?.sector : null,
-    {
-      fetchOnce: false,
-      fetchOnUrlChange: true,
-    },
-  );
+  // State for API filters
+  const [apiFilters, setApiFilters] = useState<ApiFilters>({
+    page: 1,
+    limit: 10,
+    q: "",
+    countryCode: [],
+    educationLevel: [],
+    specialityIds: [],
+    categoryIds: [],
+  });
 
-  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+  // Local state for filter form
+  const [filterForm, setFilterForm] = useState<SeekerSearchFilter>({
+    countryCode: [],
+    educationLevel: [],
+    specialityIds: [],
+    categoryIds: [],
+  });
+
+  const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(
+    null,
+  );
   const exportOpen = Boolean(exportAnchorEl);
-  const exportHandleClick = (event: any) => {
-    setExportAnchorEl(event.currentTarget);
-  };
-  const exportHandleClose = () => {
-    setExportAnchorEl(null);
+
+  // Handle tab changes
+  const handleTabChange = (e: SyntheticEvent, newValue: TabValue) => {
+    setActiveTab(newValue);
+
+    const tabFilters: Partial<ApiFilters> = (() => {
+      switch (newValue) {
+        case "Active Seekers":
+          return { active: true };
+        case "Inactive Seekers":
+          return { active: false };
+        case "New Seekers":
+          return { isNew: true };
+        default: // "All Seekers"
+          return {};
+      }
+    })();
+
+    // setApiFilters((prev) => ({
+    //   ...prev,
+    //   ...tabFilters,
+    //   page: 1, // Reset to first page
+    // }));
   };
 
-  const updateCompany = async (body: UserProfile) => {
-    const newUserData = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
-    const newCompanies = updateItemInArray(users, newUserData);
-    updateUsers?.({ data: newCompanies, total });
+  // Handle search input
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setApiFilters((prev) => ({
+      ...prev,
+      q: e.target.value,
+      page: 1,
+    }));
   };
 
-  const fields: FieldConfig<EmployerFilter>[] = [
+  // Handle form filter changes
+  const handleFilterChange = (newFormData: SeekerSearchFilter) => {
+    setFilterForm(newFormData);
+    setApiFilters((prev) => ({
+      ...prev,
+      page: 1,
+      countryCode: newFormData.countryCode || [],
+      nationality: newFormData.nationality || [],
+      educationLevel: newFormData.educationLevel || [],
+      specialityIds: newFormData.specialityIds || [],
+      categoryIds: newFormData.categoryIds || [],
+    }));
+  };
+
+  // Fetch seekers when filters change
+  useEffect(() => {
+    const fetchSeekers = async () => {
+      const result: Result<PaginatedResponse<UserProfile>> =
+        await searchSeekers(apiFilters);
+      if (result.success && result.data) {
+        updateSeekers?.(result.data);
+      }
+    };
+    fetchSeekers();
+  }, [apiFilters]);
+
+  const updateSeeker = async (body: UserProfile) => {
+    const newSeekerData = await update(
+      API_UPDATE_SEEKER,
+      { body },
+      TAGS.profile,
+    );
+    if (newSeekerData) {
+      const newSeekers = updateItemInArray(seekers, newSeekerData);
+      updateSeekers?.({ data: newSeekers, total });
+    }
+  };
+
+  const fields: FieldConfig<SeekerSearchFilter>[] = [
     {
-      name: "country",
-      type: "search-select",
+      name: "countryCode",
+      type: "select",
       textFieldProps: {
-        placeholder: "country",
+        placeholder: "Country",
       },
       options: countries.map((country) => ({
         value: country.isoCode,
@@ -115,49 +174,41 @@ const UsersTable: React.FC<{
       })),
     },
     {
-      name: "sector",
+      name: "educationLevel",
       type: "select",
       textFieldProps: {
-        placeholder: "Sector",
+        placeholder: "Education Level",
       },
-      resetFields: ["companyType"],
-      options: sectors?.data.map((sector) => ({
-        value: sector.id,
-        label: sector.name,
-      })),
-      gridProps: { xs: 6 },
+      // options: EducationLevel
+      //   ? Object.values(EducationLevel).map((level) => ({
+      //       value: level,
+      //       label: level,
+      //     }))
+      //   : [],
     },
     {
-      name: "companyType",
+      name: "specialityIds",
       type: "select",
       textFieldProps: {
-        placeholder: "Company Type",
+        placeholder: "Specialties",
       },
-      dependsOn: "sector",
-      options: types?.data.map((type) => ({
-        value: type.id,
-        label: type.name,
-      })),
-      gridProps: { xs: 6 },
+      options:
+        specialities?.data.map((spec) => ({
+          value: spec.id,
+          label: spec.name,
+        })) || [],
     },
-
     {
-      name: "status",
+      name: "categoryIds",
       type: "select",
       textFieldProps: {
-        placeholder: "Status",
+        placeholder: "Categories",
       },
-      options: ["active", "inActive"].map((status) => ({
-        value: status,
-        label: status,
-      })),
-    },
-    {
-      name: "date",
-      type: "date",
-      textFieldProps: {
-        placeholder: "date",
-      },
+      options:
+        categories?.data.map((cat) => ({
+          value: cat.id,
+          label: cat.name,
+        })) || [],
     },
   ];
 
@@ -167,14 +218,14 @@ const UsersTable: React.FC<{
         <div className="flex flex-col justify-between md:flex-row md:items-end">
           <div>
             <h5 className="p-4 pb-1 text-xl font-semibold text-main">
-              All Employers
-              <span className="ml-1 text-xs text-secondary">(4,050)</span>
+              All Seekers
+              <span className="ml-1 text-xs text-secondary">({total})</span>
             </h5>
             <div className="body-container overflow-x-auto">
               <Tabs
                 value={activeTab}
-                onChange={(e, v) => setActiveTab(v)}
-                aria-label="basic tabs example"
+                onChange={handleTabChange}
+                aria-label="Seeker tabs"
                 variant="scrollable"
                 scrollButtons={false}
                 className="text-base"
@@ -193,17 +244,17 @@ const UsersTable: React.FC<{
           <div className="m-2 flex flex-wrap items-end gap-2">
             <TextField
               variant="outlined"
-              placeholder="Search For Employer"
+              placeholder="Search Seekers"
               value={query}
               InputProps={{
                 startAdornment: <Search />,
               }}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleSearch}
             />
 
             <div>
               <Button
-                onClick={exportHandleClick}
+                // onClick={exportHandleClick}
                 variant="outlined"
                 aria-controls={exportOpen ? "export-menu" : undefined}
                 aria-haspopup="true"
@@ -218,7 +269,7 @@ const UsersTable: React.FC<{
                 id="export-menu"
                 anchorEl={exportAnchorEl}
                 open={exportOpen}
-                onClose={exportHandleClose}
+                // onClose={exportHandleClose}
                 className="mt-2"
               >
                 <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
@@ -231,29 +282,33 @@ const UsersTable: React.FC<{
       <div className="body-container flex flex-wrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-nowrap">
         {fields.map((field) => (
           <div className="flex-1" key={field.name}>
-            <FormField field={field} data={data} setData={setData} />
+            <FormField
+              field={field}
+              data={filterForm}
+              setData={handleFilterChange}
+            />
           </div>
         ))}
 
         <IconButton
-          onClick={openFilter}
+          onClick={() => setIsFilterOpen(true)}
           className="h-[42px] w-[42px] rounded-base border border-solid border-zinc-400 p-2 text-primary hover:border-primary"
         >
           <Filter className="h-4 w-4" />
         </IconButton>
         <FilterDrawer
           isOpen={isFilterOpen}
-          onClose={closeFilter}
-          sections={employerFilters}
+          onClose={() => setIsFilterOpen(false)}
+          sections={searchFilters}
         />
       </div>
       <div className="body-container overflow-x-auto">
         <DataTable
-          data={users}
+          data={seekers}
           total={total}
           selected={selected}
           setSelected={setSelected}
-          searchQuery={query}
+          searchQuery={apiFilters.q}
           cellClassName="p-2 text-sm"
           headerClassName="text-sm"
           columns={[
@@ -266,7 +321,7 @@ const UsersTable: React.FC<{
                   <Avatar src={item.avatar} />
                   <div>
                     <Link
-                      href={`/admin/users/${item.id}`}
+                      href={`/admin/seekers/${item.userName}`}
                       className="line-clamp-1 text-sm"
                     >
                       {formatName(item, true)}
@@ -359,27 +414,4 @@ const UsersTable: React.FC<{
   );
 };
 
-export default UsersTable;
-
-// const handleStatus = (user: UserProfile) => {
-//   const stateStyles: Record<NonNullable<UserProfile["isPublic"]>, string> = {
-//     active:
-//       "bg-green-50 text-green-700 ring-green-600/20 border-green-500 bg-inputDark text-green-500",
-//     inactive:
-//       "bg-red-50 text-red-700 ring-red-600/10 border-red-500 bg-inputDark text-red-500",
-//   };
-
-//   return company.status ? (
-//     <span
-//       className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles[company.status]}`}
-//     >
-//       {company.status}
-//     </span>
-//   ) : (
-//     <span
-//       className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${stateStyles.inactive}`}
-//     >
-//       inactive
-//     </span>
-//   );
-// };
+export default SeekersTable;
