@@ -1,3 +1,4 @@
+import { blockStyles } from "@/app/(public)/blog/constants/blocks.styles";
 import { FieldConfig } from "@/types";
 import { Block, BlockButton } from "@/types/blog";
 import { generateId } from "@/util";
@@ -64,7 +65,11 @@ export const getBlockProps = (
           allowNesting: true,
           level: 2,
           content: "",
-          styles: {},
+          styles: {
+            width: "100%",
+            flexGrow: 1,
+            flex: "1 1 0%",
+          },
           blocks: [],
         },
         {
@@ -73,7 +78,11 @@ export const getBlockProps = (
           allowNesting: true,
           level: 2,
           content: "",
-          styles: {},
+          styles: {
+            width: "100%",
+            flexGrow: 1,
+            flex: "1 1 0%",
+          },
           blocks: [],
         },
       ],

@@ -57,17 +57,19 @@ const SectionHeader = ({
 
 const LinkTab = ({ item, isActive, isMinimal }: TabComponentProps) => {
   const IconComponent = item.icon;
+  const disabled = item.path === "#" || item.path === undefined;
 
   return (
     <Link
-      className={`mx-2 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 transition-all duration-300 ease-in-out ${
+      aria-disabled={disabled}
+      className={`aria-disabled: mx-2 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 transition-all duration-300 ease-in-out aria-disabled:pointer-events-none aria-disabled:opacity-40 ${
         isActive ? "bg-light-primary text-white opacity-100" : "text-secondary"
       } `}
       href={item.path || "#"}
     >
       <div className="flex w-full flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center gap-4 text-left normal-case">
-          {IconComponent && <IconComponent className="w-5 h-5 mx-1" />}
+          {IconComponent && <IconComponent className="mx-1 h-5 w-5" />}
           <span>{item.label}</span>
         </div>
         {item.notifications && (
@@ -105,7 +107,7 @@ const CollapseTab = ({
       >
         <div className="flex w-full flex-row items-center justify-between gap-2">
           <div className="flex flex-row items-center gap-4 text-left normal-case">
-            {IconComponent && <IconComponent className="w-5 h-5 mx-1" />}
+            {IconComponent && <IconComponent className="mx-1 h-5 w-5" />}
             <span>{item.label}</span>
           </div>
           <KeyboardArrowDown

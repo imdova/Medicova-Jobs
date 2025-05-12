@@ -4,7 +4,6 @@ import { JobData } from "@/types";
 import {
   AccessTimeOutlined,
   Bookmark,
-  BookmarkBorder,
   Edit,
   LocationOnOutlined,
   SchoolOutlined,
@@ -17,25 +16,35 @@ import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
 import JobSwitch from "./JobSwitch";
 import Avatar from "./Avatar";
+import useUpdateApi from "@/hooks/useUpdateApi";
+import { API_CREATE_SAVED_JOB } from "@/api/seeker";
 
 interface JobCardProps {
   job: JobData;
-  savedList?: string[];
-  setSavedList?: React.Dispatch<React.SetStateAction<string[]>>;
+  seekerId?: string | null;
   isApply?: boolean;
   isEdit?: boolean;
 }
 
 const JobCard: React.FC<JobCardProps> = ({
   job,
-  savedList,
-  setSavedList,
   isApply,
   isEdit,
+  seekerId,
 }) => {
-  const isSaved = savedList?.includes(job.id || "");
-  const toggleSave = () =>
-    setSavedList && setSavedList((pv) => toggleId(pv, job.id || ""));
+  console.log("🚀 ~ seekerId:", seekerId)
+  const { isLoading, error, update } = useUpdateApi((e) => console.log(e));
+
+  const save = () => {
+    update(API_CREATE_SAVED_JOB, {
+      method: "POST",
+      body: { seekerId: seekerId, jobId: job.id },
+    });
+  };
+
+  // const isSaved = savedList?.includes(job.id || "");
+  // const toggleSave = () =>
+  //   setSavedList && setSavedList((pv) => toggleId(pv, job.id || ""));
 
   const workPlace =
     jobWorkPlaceOptions.find((x) => x.id === job?.jobWorkPlace)?.label || "";
@@ -235,12 +244,12 @@ const JobCard: React.FC<JobCardProps> = ({
           </div>
         ) : (
           <div className="flex justify-end">
-            <IconButton onClick={toggleSave} size="medium">
-              {isSaved ? (
-                <Bookmark color="primary" className="h-8 w-8" />
-              ) : (
-                <BookmarkBorder className="h-8 w-8" />
-              )}
+            <IconButton onClick={save} size="medium">
+              {/* {isSaved ? ( */}
+              <Bookmark color="primary" className="h-8 w-8" />
+              {/* ) : ( */}
+              {/* <BookmarkBorder className="h-8 w-8" /> */}
+              {/* )} */}
             </IconButton>
             <ShareMenu
               link={`https://www.example.com/job/${job.id}`}

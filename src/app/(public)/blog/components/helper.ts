@@ -49,9 +49,9 @@ export function insertBlockToPath(
   path: string,
   blockToInsert: Block,
 ): boolean {
-  console.log("🚀 ~ blocks:", blocks)
-  console.log("🚀 ~ blockToInsert:", blockToInsert)
-  console.log("🚀 ~ path:", path)
+  console.log("🚀 ~ blocks:", blocks);
+  console.log("🚀 ~ blockToInsert:", blockToInsert);
+  console.log("🚀 ~ path:", path);
   if (!path) return false;
 
   const indices = path.split("-").map(Number);
@@ -90,24 +90,36 @@ export function moveBlockFromPathToPath(
 ): Block[] | null {
   const clonedBlocks = structuredClone(blocks);
 
-  const blockToMove = getBlockByPath(clonedBlocks, fromPath);
-  if (!blockToMove) return null;
-
-  // 🟡 Get toPath parent block and target index BEFORE deleting
+  const fromIndices = fromPath.split("-").map(Number);
   const toIndices = toPath.split("-").map(Number);
-  const insertIndex = toIndices[toIndices.length - 1];
-  const parentPath = toIndices.slice(0, -1).join("-");
-  const parentBlock = parentPath === "" ? { blocks: clonedBlocks } : getBlockByPath(clonedBlocks, parentPath);
-  if (!parentBlock || !Array.isArray(parentBlock.blocks)) return null;
+  const fromIndex = fromIndices[fromIndices.length - 1];
+  const toIndexRaw = toIndices[toIndices.length - 1];
 
-  // 🔴 Delete AFTER resolving target location
-  const deleted = deleteBlockFromPath(clonedBlocks, fromPath);
-  if (!deleted) return null;
+  const fromParentPath = fromIndices.slice(0, -1).join("-");
+  const toParentPath = toIndices.slice(0, -1).join("-");
 
-  // ✅ Now insert into pre-resolved parent block
-  parentBlock.blocks.splice(insertIndex, 0, blockToMove);
+  const fromParent =
+    fromParentPath === ""
+      ? { blocks: clonedBlocks }
+      : getBlockByPath(clonedBlocks, fromParentPath);
+  const toParent =
+    toParentPath === ""
+      ? { blocks: clonedBlocks }
+      : getBlockByPath(clonedBlocks, toParentPath);
+
+  if (!fromParent || !Array.isArray(fromParent.blocks)) return null;
+  if (!toParent || !Array.isArray(toParent.blocks)) return null;
+
+  // 🟡 Remove the block to move
+  const [movedItem] = fromParent.blocks.splice(fromIndex, 1);
+  if (!movedItem) return null;
+
+  // ✅ Adjust target index if moving forward within the same parent
+  const isSameParent = fromParent === toParent;
+  const toIndex =
+    isSameParent && fromIndex < toIndexRaw ? toIndexRaw - 1 : toIndexRaw;
+
+  toParent.blocks.splice(toIndex, 0, movedItem);
 
   return clonedBlocks;
 }
-
-

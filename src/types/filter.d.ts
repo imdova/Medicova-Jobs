@@ -53,3 +53,15 @@ type JobsAggregations = {
   ageRange: { from: number; to: number; count: number }[];
   salaryRange: { from: number; to: number; count: number }[];
 };
+type FolderAggregations = {
+  countryCodes: { value: string; count: number }[];
+  stateCodes: { value: string; count: number }[];
+  nationalities: { value: string; count: number }[];
+  educationLevels: { value: string; count: number }[];
+  genders: { value: string; count: number }[];
+  specialityIds: { value: string; count: number }[];
+  categoryIds: { value: string; count: number }[];
+  careerLevelIds: { value: string; count: number }[];
+  lockedStatuses: { value: boolean; count: number }[];
+  shortlistedStatuses: { value: boolean; count: number }[];
+};

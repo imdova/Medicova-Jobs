@@ -1,3 +1,5 @@
+import { Gender } from "@/constants/enums/gender.enum";
+
 export interface SearchBreakdown {
   industry: Record<string, number>;
   speciality: Record<string, number>;
@@ -57,4 +59,24 @@ export interface SeekerSearchFilter {
   careerLevelIds?: string[];
   page?: number;
   limit?: number;
+}
+export interface FolderSearchFilter {
+  folderId?: string; // ID of the folder
+  order?: "ASC" | "DESC"; // Sort order
+  q?: string; // Search keyword
+  countryCode?: string[]; // List of country codes
+  stateCode?: string[]; // List of state codes
+  nationality?: string[]; // List of nationalities
+  educationLevel?: EducationLevel[]; // Education levels
+  experienceFrom?: number; // Minimum experience (years)
+  experienceTo?: number; // Maximum experience (years)
+  gender?: Gender[]; // Gender filter
+  ageFrom?: number; // Minimum age
+  ageTo?: number; // Maximum age
+  specialityIds?: string[]; // Speciality IDs
+  categoryIds?: string[]; // Category IDs
+  careerLevelIds?: string[]; // Career level IDs
+  status?: string; // Seeker status filter
+  page?: number; // Page number
+  limit?: number; // Number of items per page
 }

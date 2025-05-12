@@ -380,8 +380,7 @@
         "styles": {
           "display": "flex",
           "flexDirection": "row",
-          "flexWrap": "wrap",
-          "gap": "12px"
+          "flexWrap": "wrap"
         },
         "allowNesting": true
       },
@@ -540,8 +539,7 @@
         "styles": {
           "display": "flex",
           "flexDirection": "row",
-          "flexWrap": "wrap",
-          "gap": "12px"
+          "flexWrap": "wrap"
         },
         "allowNesting": true
       },
@@ -772,8 +770,7 @@
         "styles": {
           "display": "flex",
           "flexDirection": "row",
-          "flexWrap": "wrap",
-          "gap": "12px"
+          "flexWrap": "wrap"
         },
         "allowNesting": true
       }
