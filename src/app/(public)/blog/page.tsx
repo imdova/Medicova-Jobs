@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
 import ToolBar from "./toolbar";
-import { Block, BlogSettings } from "@/types/blog";
+import { Block, BlogSettings, FormType } from "@/types/blog";
 import EditorHeader from "./EditorHeader";
 import { findItemById } from "@/util/blog";
 import ArticlePreview from "./blogReview";
@@ -12,6 +12,7 @@ import "./styles.css";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import BlogBuilder from "./BlogBuilder";
+import FormModal from "@/components/form/FormModal/FormModal";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 
@@ -35,10 +36,37 @@ const initialSetting: BlogSettings = {
   author: "1",
 };
 
+const initialForm: FormType = {
+  id: "1",
+  name: "susbscribe form",
+  title: "Subscribe to our channel",
+  submitText: "submit",
+  cancelText: "cancel",
+  description: "any thing",
+  fields: [
+    {
+      name: "name",
+      type: "text",
+    },
+    {
+      name: "email",
+      type: "email",
+    },
+  ],
+  onSubmit: {
+    method: "GET",
+    url: "https://anywhere",
+  },
+};
+
 export default function PageBuilder() {
   // State management
   const [settings, setSettings] = useState<BlogSettings>(initialSetting);
   const [blocks, setBlocks] = useState<Block[]>([]);
+  const [forms, setForms] = useState<FormType[]>([initialForm]);
+  const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  const activeForm = forms.find((x) => selectedForm === x.id);
+
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [onPreview, setPreview] = useState(false);
@@ -63,13 +91,27 @@ export default function PageBuilder() {
 
             {/* Content Area */}
             <div
-              className={`scrollable-container scroll-bar-minimal !pointer-events-auto h-[calc(100vh-132px)] !overflow-auto bg-gray-50 p-4`}
+              className={`scrollable-container scroll-bar-minimal !pointer-events-auto relative h-[calc(100vh-132px)] ${activeForm ? "overflow-hidden" : "!overflow-auto"} bg-gray-50 p-4`}
             >
+              {activeForm && (
+                <FormModal
+                  open={!!activeForm}
+                  error={""}
+                  loading={false}
+                  onClose={() => setSelectedForm(null)}
+                  onSubmit={(data) => console.log(data)}
+                  fields={activeForm.fields}
+                  title={activeForm.title}
+                  description={activeForm.description}
+                  initialValues={activeForm.initialValues}
+                  dialog={Modal}
+                />
+              )}
               <div
                 onClick={() => {
                   setSelectedBlock(null);
                 }}
-                className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+                className={`mx-auto flex min-h-full flex-col border p-2 bg-white shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
               >
                 {onPreview ? (
                   <ArticlePreview blocks={blocks} />
@@ -90,6 +132,10 @@ export default function PageBuilder() {
             <ToolBar
               blocks={blocks}
               setBlocks={setBlocks}
+              forms={forms}
+              setForms={setForms}
+              selectedForm={selectedForm}
+              setSelectedForm={setSelectedForm}
               selectedBlock={
                 selectedBlock?.id
                   ? findItemById(blocks, selectedBlock?.id)
@@ -105,3 +151,41 @@ export default function PageBuilder() {
     </div>
   );
 }
+
+import React from "react";
+
+type ModalProps = {
+  open: boolean;
+  onClose: () => void;
+  maxWidth?: string;
+  fullWidth?: boolean;
+  children: React.ReactNode;
+};
+
+const Modal: React.FC<ModalProps> = ({
+  open,
+  onClose,
+  maxWidth = "600px",
+  fullWidth = false,
+  children,
+}) => {
+  if (!open) return null;
+
+  return (
+    <div className="absolute z-50 h-full w-full max-w-full">
+      {/* Gray backdrop inside the parent */}
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+
+      {/* Modal content container */}
+      <div
+        className="absolute left-1/2 top-1/2 max-w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-base bg-white p-2 shadow-md"
+        style={{
+          width: fullWidth ? "100%" : undefined,
+          maxWidth: maxWidth,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};

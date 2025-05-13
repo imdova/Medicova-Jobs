@@ -27,6 +27,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   cancelButtonText,
   removeField,
   mode,
+  dialog,
 }) => {
   const { hiddenFields, handleCheckboxChange } = useFieldVisibility(
     fields,
@@ -61,6 +62,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     onClose();
   };
 
+  const Modal = dialog ? dialog : Dialog;
   return (
     <>
       <LeaveConfirmationModal
@@ -74,14 +76,18 @@ const FormModal: React.FC<DynamicModalProps> = ({
           handleUserDecision(false);
         }}
       />
-      <Dialog
+      <Modal
         open={open}
         onClose={handleClose}
         maxWidth="sm"
         fullWidth
         sx={{
           "& .MuiDialog-paper": { borderRadius: "10px" },
-          "& .MuiPaper-root": { overflowX: "hidden", margin: 0, width: "calc(100% - 32px)" },
+          "& .MuiPaper-root": {
+            overflowX: "hidden",
+            margin: 0,
+            width: "calc(100% - 32px)",
+          },
         }}
       >
         <ModalHeader
@@ -110,7 +116,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
             {children}
           </FormContent>
         </DialogContent>
-      </Dialog>
+      </Modal>
     </>
   );
 };

@@ -1,18 +1,25 @@
-import { Block, BlogSettings } from "@/types/blog";
+import { Block, BlogSettings, FormType, ToolBarTabs } from "@/types/blog";
 import { Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import StylePanel from "./stylePanel";
 import BlocksPanel from "./blocksPanel";
 import SettingsPanel from "./SettingsPanel";
+import FormsPanel from "./formsPanel";
 
 interface ToolBarProps {
   settings: BlogSettings;
   updateSettings: (settings: BlogSettings) => void;
   blocks: Block[];
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+  forms: FormType[];
+  setForms: React.Dispatch<React.SetStateAction<FormType[]>>;
   selectedBlock?: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
+  selectedForm?: string | null;
+  setSelectedForm: React.Dispatch<React.SetStateAction<string | null>>;
 }
+
+const tabs: ToolBarTabs[] = ["blocks", "styles", "forms", "settings"];
 
 const ToolBar: React.FC<ToolBarProps> = ({
   settings,
@@ -20,10 +27,12 @@ const ToolBar: React.FC<ToolBarProps> = ({
   setBlocks,
   selectedBlock,
   setSelectedBlock,
+  forms,
+  setForms,
+  selectedForm,
+  setSelectedForm,
 }) => {
-  const [selectedTab, setSelectedTab] = useState<
-    "blocks" | "styles" | "settings"
-  >("blocks");
+  const [selectedTab, setSelectedTab] = useState<ToolBarTabs>("blocks");
 
   useEffect(() => {
     if (selectedBlock) {
@@ -44,13 +53,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
           className="border-b border-gray-200"
           variant="fullWidth"
         >
-          <Tab label="Blocks" className="h-[50px] p-0 text-sm" value="blocks" />
-          <Tab label="Styles" className="h-[50px] p-0 text-sm" value="styles" />
-          <Tab
-            label="Settings"
-            className="h-[50px] p-0 text-sm"
-            value="settings"
-          />
+          {tabs.map((tab) => (
+            <Tab
+              key={tab}
+              label={tab}
+              className="h-[50px] p-0 text-xs min-w-3"
+              value={tab}
+            />
+          ))}
         </Tabs>
         <div className="scroll-bar-minimal max-h-[calc(100vh-146px)] space-y-6 overflow-y-auto p-4">
           {selectedTab === "blocks" && (
@@ -67,6 +77,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setBlocks={setBlocks}
               setSelectedBlock={setSelectedBlock}
               setSelectedTab={setSelectedTab}
+            />
+          )}
+          {selectedTab === "forms" && (
+            <FormsPanel
+              forms={forms}
+              setForms={setForms}
+              selectedForm={selectedForm}
+              setSelectedForm={setSelectedForm}
             />
           )}
           {selectedTab === "settings" && (

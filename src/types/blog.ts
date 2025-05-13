@@ -1,3 +1,5 @@
+import { FieldConfig } from ".";
+
 export type BlockType =
   | "h1"
   | "h2"
@@ -15,6 +17,9 @@ export type BlockType =
   | "quote" // need to be added
   | "code" // need to be added
   | "video"; // need to be added
+
+export type ToolBarTabs = "blocks" | "styles" | "forms" | "settings";
+
 export interface Block {
   id: string;
   parentId?: string | null;
@@ -28,6 +33,21 @@ export interface Block {
   blocks: Block[];
   level: number;
   allowNesting?: boolean;
+}
+
+export interface FormType {
+  id: string;
+  name: string;
+  title: string;
+  description?: string;
+  initialValues?: Record<string, any>;
+  onSubmit: {
+    method: string;
+    url: string;
+  };
+  fields: FieldConfig[];
+  submitText?: string;
+  cancelText?: string;
 }
 
 export type BlogSettings = {
@@ -50,6 +70,6 @@ export interface TabProps {
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
   setSelectedTab: React.Dispatch<
-    React.SetStateAction<"blocks" | "styles" | "settings">
+    React.SetStateAction<ToolBarTabs>
   >;
 }
