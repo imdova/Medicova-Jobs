@@ -24,7 +24,6 @@ const ACCEPTS: Block["type"][] = [
 
 type DropZoneData = {
   path: string;
-  childrenCount: number;
 };
 
 type DragItem = Block & { path: string };
@@ -89,12 +88,12 @@ const DropZone: React.FC<DropZoneProps> = ({
 
   return (
     <div
-      className={cn("dropZone", { active: isActive, isLast }, className)}
+      className={cn("dropZone peer-hover:bg-red-400", { active: isActive, isLast }, className)}
       ref={drop as any}
     >
       {children}
     </div>
   );
-};
+}; 
 
 export default DropZone;

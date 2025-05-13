@@ -1,13 +1,12 @@
 import { Block } from "@/types/blog";
 import { BlockRenderer } from "./BlockRenderer";
 import BlockOptions from "./BlockOptions";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useDrag } from "react-dnd";
 import { useAutoScrollOnDrag } from "@/hooks/useAutoScrollOnDrag";
 
 type DropZoneData = {
   path: string;
-  childrenCount: number;
 };
 
 type DragItem = Block & { path: string };
