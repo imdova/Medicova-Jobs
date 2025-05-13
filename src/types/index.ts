@@ -466,6 +466,7 @@ export interface DynamicModalProps {
   loading?: boolean;
   deleteLoading?: boolean;
   error?: string;
+  dialog?: React.ComponentType<any>;
   removeField?: (fieldName: string) => void;
   mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined;
   ///

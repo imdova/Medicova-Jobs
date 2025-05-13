@@ -1,13 +1,20 @@
 "use client";
+import { cn } from "@/util";
 import { useRef } from "react";
 
 interface ResizeProps {
   value: { width?: string | number; height?: string | number };
   onChange: (size: { width: string; height: string }) => void;
   children: React.ReactNode;
+  className?: string;
 }
 
-const Resize = ({ value: size, onChange, children }: ResizeProps) => {
+const Resize = ({
+  value: size,
+  onChange,
+  children,
+  className,
+}: ResizeProps) => {
   const divRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
 
@@ -34,7 +41,7 @@ const Resize = ({ value: size, onChange, children }: ResizeProps) => {
   return (
     <div
       ref={divRef}
-      className="relative"
+      className={cn("relative", className)}
       style={{ width: size.width || "100%", height: size.height || "100%" }}
     >
       {children}

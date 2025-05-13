@@ -16,7 +16,6 @@ import FormModal from "@/components/form/FormModal/FormModal";
 
 type DropZoneData = {
   path: string;
-  childrenCount: number;
 };
 
 type DraggedBlock = {
@@ -193,24 +192,12 @@ const BlogBuilder: React.FC<{
         />
       )}
       {blocks.map((block, index) => {
-        const currentPath = `${index}`;
+        const path = `${index}`;
         return (
           <React.Fragment key={block.id}>
-            {/* <div className="h-0 w-full relative">
-              <div className="top-0 left-0 z-10 absolute h-20 w-full bg-red-200">
-                <DropZone
-                  data={{
-                    path: currentPath,
-                    childrenCount: blocks.length,
-                  }}
-                  onDrop={handleDrop}
-                />
-              </div>
-            </div> */}
             <DropZone
               data={{
-                path: currentPath,
-                childrenCount: blocks.length,
+                path: path,
               }}
               onDrop={handleDrop}
             />
@@ -218,7 +205,7 @@ const BlogBuilder: React.FC<{
               key={block.id}
               block={block}
               handleDrop={handleDrop}
-              path={currentPath}
+              path={path}
               selectedBlock={
                 selectedBlock?.id
                   ? findItemById(blocks, selectedBlock?.id)
@@ -233,7 +220,6 @@ const BlogBuilder: React.FC<{
       <DropZone
         data={{
           path: `${blocks.length}`,
-          childrenCount: blocks.length,
         }}
         onDrop={handleDrop}
         isLast

@@ -13,7 +13,6 @@ import DropZone from "@/app/(public)/blog/components/dropzone";
 
 type DropZoneData = {
   path: string;
-  childrenCount: number;
 };
 
 type DragItem = Block & { path: string };
@@ -167,7 +166,6 @@ export function BlockRenderer({
             <DropZone
               data={{
                 path: `${path}-0`,
-                childrenCount: 1,
               }}
               onDrop={handleDrop}
               //   path={currentPath}
@@ -187,7 +185,6 @@ export function BlockRenderer({
                 <DropZone
                   data={{
                     path: currentPath,
-                    childrenCount: block.blocks.length,
                   }}
                   onDrop={handleDrop}
                   //   path={currentPath}
@@ -208,7 +205,6 @@ export function BlockRenderer({
           <DropZone
             data={{
               path: `${path}-${block.blocks.length}`,
-              childrenCount: block.blocks.length,
             }}
             onDrop={handleDrop}
             isLast
@@ -225,7 +221,6 @@ export function BlockRenderer({
                 <DropZone
                   data={{
                     path: currentPath,
-                    childrenCount: block.blocks.length,
                   }}
                   onDrop={handleDrop}
                   className="horizontalDrag"
@@ -247,7 +242,6 @@ export function BlockRenderer({
           <DropZone
             data={{
               path: `${path}-${block.blocks.length}`,
-              childrenCount: block.blocks.length,
             }}
             onDrop={handleDrop}
             className="horizontalDrag"
