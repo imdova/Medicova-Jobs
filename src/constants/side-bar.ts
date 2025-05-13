@@ -103,7 +103,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       id: 8,
       label: "Manage Applications",
       icon: HomeOutlined,
-      path: "#",
+      path: "/admin/applications",
     },
     {
       id: 11,

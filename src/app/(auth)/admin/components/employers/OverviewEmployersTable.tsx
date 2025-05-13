@@ -22,7 +22,7 @@ import {
 import { useLocationData } from "@/hooks/useLocationData";
 import { CheckboxField } from "@/components/form/FormModal/FormField/CheckboxField";
 import { TAGS } from "@/api";
-import { API_UPDATE_COMPANY } from "@/api/employer";
+import { API_GET_COMPANIES, API_UPDATE_COMPANY } from "@/api/employer";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { Filter } from "lucide-react";
@@ -32,6 +32,7 @@ import { employerFilters } from "@/constants";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import { updateItemInArray } from "@/util/general";
 import { searchCompanies } from "@/lib/actions/employer.actions";
+import { useSearchParams } from "next/navigation";
 
 const tabs = [
   "New Employers",
@@ -59,23 +60,29 @@ interface ApiFilters {
   dateTo: string;
 }
 
-const OverviewEmployersTable: React.FC<{
-  companies: PaginatedResponse<Company> | null;
-  updateCompanyData?: React.Dispatch<
-    React.SetStateAction<PaginatedResponse<Company> | null>
-  >;
-}> = ({ companies: companiesData, updateCompanyData }) => {
+const OverviewEmployersTable: React.FC = () => {
+  const {
+    data: companiesData,
+    loading,
+    setData,
+  } = useFetch<PaginatedResponse<Company>>(API_GET_COMPANIES, {
+    defaultLoading: true,
+  });
   const { countries } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { update } = useUpdateApi<Company>();
   const { data: companies = [], total = 0 } = companiesData || {};
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
+  const searchParams = useSearchParams();
+
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
 
   // State for API filters
   const [apiFilters, setApiFilters] = useState<ApiFilters>({
-    page: 1,
-    limit: 10,
+    page: page,
+    limit: limit,
     q: "",
     countryCode: "",
     companyTypeId: "",
@@ -133,11 +140,11 @@ const OverviewEmployersTable: React.FC<{
       const result: Result<PaginatedResponse<Company>> =
         await searchCompanies(apiFilters);
       if (result.success && result.data) {
-        updateCompanyData?.(result.data);
+        setData?.(result.data);
       }
     };
     fetchCompanies();
-  }, [apiFilters]);
+  }, [apiFilters, limit, page]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setApiFilters((prev) => ({ ...prev, q: e.target.value, page: 1 }));
@@ -184,7 +191,7 @@ const OverviewEmployersTable: React.FC<{
     );
     if (newCompanyData) {
       const newCompanies = updateItemInArray(companies, newCompanyData);
-      updateCompanyData?.({ data: newCompanies, total });
+      setData?.({ data: newCompanies, total });
     }
   };
 
@@ -365,7 +372,7 @@ const OverviewEmployersTable: React.FC<{
                   <div>
                     <Link
                       className="transition hover:text-primary"
-                      href={`/admin/employers/${item.id}`}
+                      href={`/admin/employers/${item.username}`}
                     >
                       <h6 className="line-clamp-1 text-sm">{item.name}</h6>
                     </Link>

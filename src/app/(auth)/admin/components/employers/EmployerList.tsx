@@ -24,12 +24,7 @@ const EmployerList: React.FC = () => {
   );
   return (
     <div className="box-content !p-0">
-      <OverviewEmployersTable
-        companies={
-          companies ? { data: companies?.data, total: companies?.total } : null
-        }
-        updateCompanyData={setData}
-      />
+      <OverviewEmployersTable />
     </div>
   );
 };

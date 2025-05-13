@@ -2,7 +2,6 @@ import React from "react";
 import DataTable from "@/components/UI/data-table";
 import Flag from "@/components/UI/flagitem";
 import { BotOff, ShieldCheck, Users } from "lucide-react";
-import { LineChart } from "@mui/x-charts";
 import { Company } from "@/types";
 import CompanyMiniCard, { CompanyMiniCardSkeleton } from "../CompanyMiniCard";
 import StatusCard from "@/components/UI/StatusCard";
@@ -278,12 +277,7 @@ const DashboardOverView: React.FC = () => {
         </div>
       </div>
       {/* Employers Table */}
-      {topCompanies && (
-        <OverviewEmployersTable
-          companies={{ data: topCompanies, total: topCompanies?.length }}
-          updateCompanyData={setData}
-        />
-      )}
+      {topCompanies && <OverviewEmployersTable />}
     </div>
   );
 };

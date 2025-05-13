@@ -19,7 +19,7 @@ import { useLocationData } from "@/hooks/useLocationData";
 import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 // import FilterDrawer from "@/components/UI/FilterDrawer";
-import { API_UPDATE_SEEKER } from "@/api/seeker";
+import { API_GET_SEEKERS, API_UPDATE_SEEKER } from "@/api/seeker";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { TAGS } from "@/api";
 import { API_GET_CATEGORIES, API_GET_SPECIALITIES } from "@/api/admin";
@@ -29,6 +29,8 @@ import { SeekerSearchFilter } from "@/types/jobs";
 import { searchSeekers } from "@/lib/actions/applications.actions";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import { searchFilters } from "@/constants";
+import { useSearchParams } from "next/navigation";
+import { EducationLevel } from "@/constants/enums/education-level.enum";
 
 const tabs = [
   "All Seekers",
@@ -46,12 +48,9 @@ interface ApiFilters extends SeekerSearchFilter {
   active?: boolean;
 }
 
-const SeekersTable: React.FC<{
-  seekers: PaginatedResponse<UserProfile> | null;
-  updateSeekers?: React.Dispatch<
-    React.SetStateAction<PaginatedResponse<UserProfile> | null>
-  >;
-}> = ({ seekers: seekersData, updateSeekers }) => {
+const SeekersTable: React.FC = () => {
+  const { data: seekersData, setData } =
+    useFetch<PaginatedResponse<UserProfile>>(API_GET_SEEKERS);
   const { countries, states } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { isLoading, error, update } = useUpdateApi<UserProfile>();
@@ -59,16 +58,20 @@ const SeekersTable: React.FC<{
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [activeTab, setActiveTab] = useState<TabValue>("All Seekers");
   const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
 
   const { data: categories } =
     useFetch<PaginatedResponse<JobCategory>>(API_GET_CATEGORIES);
   const { data: specialities } =
     useFetch<PaginatedResponse<SpecialtyItem>>(API_GET_SPECIALITIES);
 
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
+
   // State for API filters
   const [apiFilters, setApiFilters] = useState<ApiFilters>({
-    page: 1,
-    limit: 10,
+    page: page,
+    limit: limit,
     q: "",
     countryCode: [],
     educationLevel: [],
@@ -143,11 +146,11 @@ const SeekersTable: React.FC<{
       const result: Result<PaginatedResponse<UserProfile>> =
         await searchSeekers(apiFilters);
       if (result.success && result.data) {
-        updateSeekers?.(result.data);
+        setData?.(result.data);
       }
     };
     fetchSeekers();
-  }, [apiFilters]);
+  }, [apiFilters, page, limit]);
 
   const updateSeeker = async (body: UserProfile) => {
     const newSeekerData = await update(
@@ -157,7 +160,7 @@ const SeekersTable: React.FC<{
     );
     if (newSeekerData) {
       const newSeekers = updateItemInArray(seekers, newSeekerData);
-      updateSeekers?.({ data: newSeekers, total });
+      setData?.({ data: newSeekers, total });
     }
   };
 
@@ -179,12 +182,12 @@ const SeekersTable: React.FC<{
       textFieldProps: {
         placeholder: "Education Level",
       },
-      // options: EducationLevel
-      //   ? Object.values(EducationLevel).map((level) => ({
-      //       value: level,
-      //       label: level,
-      //     }))
-      //   : [],
+      options: EducationLevel
+        ? Object.values(EducationLevel).map((level) => ({
+            value: level,
+            label: level,
+          }))
+        : [],
     },
     {
       name: "specialityIds",

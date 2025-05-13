@@ -3,6 +3,7 @@
 import {
   API_GET_COMPANY_BY_ID,
   API_GET_JOBS_BY_COMPANY_ID,
+  API_UPDATE_COMPANY_USER_NAME,
 } from "@/api/employer";
 import NotFoundPage from "@/app/not-found";
 import GenericChart from "@/components/charts/GenericChart";
@@ -129,7 +130,7 @@ const countrydata: CountryData[] = [
 const SingleEmployerPage = ({ params }: SingleUserProps) => {
   const slug = params.slug;
   const { data: company } = useFetch<CompanyType>(
-    `${API_GET_COMPANY_BY_ID}${slug}`,
+    `${API_UPDATE_COMPANY_USER_NAME}/${slug}`,
   );
   const { data: jobs, loading } = useFetch<PaginatedResponse<JobData>>(
     `${API_GET_JOBS_BY_COMPANY_ID}${company?.id}`,

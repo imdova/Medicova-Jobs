@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import DataTable from "@/components/UI/data-table";
 import Flag from "@/components/UI/flagitem";
 import { BotOff, MapPin, ShieldCheck, Users } from "lucide-react";
@@ -247,7 +247,7 @@ const OverviewSeekerPage: React.FC = () => {
         </div>
       </div>
       {/* Seekers Table */}
-      {topSeeker && <SeekersTable seekers={Seeker} updateSeekers={setData} />}
+      <Suspense>{topSeeker && <SeekersTable />}</Suspense>
     </div>
   );
 };
