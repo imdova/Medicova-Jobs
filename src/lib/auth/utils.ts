@@ -1,5 +1,6 @@
 import { JobData, JobsTabs } from "@/types";
 import { forgetPassword, register, serverSignIn } from "../access";
+import { API_GET_ME_QUERY } from "@/api/users";
 
 export async function authenticateUser(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
@@ -35,6 +36,21 @@ export async function authenticateRegister(credentials: any) {
     console.error("Authentication error:", error);
     return null;
   }
+}
+export async function authenticateToken(credentials: any) {
+  const { token, callbackUrl } = credentials;
+  const data = await fetch(API_GET_ME_QUERY + token, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+  });
+  if (!data.ok) {
+    return null;
+  }
+  const session = await data.json();
+  return session;
 }
 
 export async function handleSocialLogin(user: any, account: any) {

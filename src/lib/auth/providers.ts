@@ -5,12 +5,13 @@ import {
   changePasswordWithOTP,
   authenticateRegister,
   authenticateUser,
+  authenticateToken,
 } from "./utils";
 
 export const providers = [
   GoogleProvider({
     clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "", 
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     authorization: { params: { prompt: "consent" } },
   }),
   FacebookProvider({
@@ -47,5 +48,13 @@ export const providers = [
       type: { type: "text" },
     },
     authorize: authenticateRegister,
+  }),
+  CredentialsProvider({
+    id: "token-credentials",
+    name: "credentials with token",
+    credentials: {
+      token: { type: "text" },
+    },
+    authorize: authenticateToken,
   }),
 ];

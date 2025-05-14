@@ -5,12 +5,15 @@ export async function GET(request: Request) {
     // Parse the query parameters from the URL
     const url = new URL(request.url);
     const params = Object.fromEntries(url.searchParams.entries());
-
-    return NextResponse.json({
-      message: "Google callback route reached successfully!",
-      data: params, // You can access query params like: params.code, params.state, etc.
-    });
+    if (!params.token) {
+      return NextResponse.redirect(
+        new URL("/auth/signin?error=No token", request.url),
+      );
+    }
+    return NextResponse.redirect(
+      new URL(`/google?token=${params.token}`, request.url),
+    );
   } catch (error) {
-    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
