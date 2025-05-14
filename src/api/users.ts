@@ -25,7 +25,7 @@ export const API_REGISTER_USER = USERS + "/"; // POST + [userType]
 
 // new
 export const API_REGISTER_COMPANY_USER = USERS + "/register/company-user"; // POST
-export const API_REGISTER_USER = USERS + "/register"; // POST
+// export const API_REGISTER_USER = USERS + "/register"; // POST
 export const API_VERIFY_USER = USERS + "/verify"; // GET
 export const API_LOGIN_USER = USERS + "/login"; // POST
 export const API_GOOGLE_AUTH = USERS + "/google"; // GET ?type=employer

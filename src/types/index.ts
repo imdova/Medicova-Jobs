@@ -158,6 +158,16 @@ export interface Company {
   // only for admins
   revenue?: number | null;
 }
+
+export interface SearchCompanyFilter {
+  page?: number;
+  limit?: number;
+  q?: string;
+  countryCode?: string;
+  companyTypeId?: string;
+  //TODO: add status to companies filter
+}
+
 export interface MiniCompany {
   name: string;
   industry: string;

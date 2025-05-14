@@ -150,6 +150,7 @@ const SeekersTable: React.FC = () => {
       }
     };
     fetchSeekers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiFilters, page, limit]);
 
   const updateSeeker = async (body: UserProfile) => {
@@ -184,9 +185,9 @@ const SeekersTable: React.FC = () => {
       },
       options: EducationLevel
         ? Object.values(EducationLevel).map((level) => ({
-            value: level,
-            label: level,
-          }))
+          value: level,
+          label: level,
+        }))
         : [],
     },
     {

@@ -13,8 +13,8 @@ export const API_DELETE_COMPANY_SECTOR = COMPANY_SECTORS; // DELETE
 // Company Types
 export const COMPANY_TYPES = API_ADMIN_BASE + "/company-type";
 export const API_CREATE_COMPANY_TYPE = COMPANY_TYPES; // POST
-export const API_GET_COMPANY_TYPES = COMPANY_TYPES; // GET
-export const API_GET_COMPANY_TYPES_BY_SECTOR = COMPANY_TYPES + "/sector?id="; // GET
+export const API_GET_COMPANY_TYPES = COMPANY_TYPES + "?limit=200"; // GET
+export const API_GET_COMPANY_TYPES_BY_SECTOR = COMPANY_TYPES + "/sector?limit=200&id="; // GET
 export const API_GET_COMPANY_TYPE_BY_ID = COMPANY_TYPES + "/"; // GET + [id]
 export const API_UPDATE_COMPANY_TYPE = COMPANY_TYPES; // PATCH
 export const API_DELETE_COMPANY_TYPE = COMPANY_TYPES; // DELETE

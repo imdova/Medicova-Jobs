@@ -209,13 +209,15 @@ function DataTable<T extends { id: number | string }>({
                       />
                     </td>
                   )}
-                  {columns.map((col, index) => (
-                    <td key={index} className={cellClassName}>
-                      {col.render
-                        ? col.render(item, indexRow)
-                        : col.key && getNestedValue(item, col.key)}
-                    </td>
-                  ))}
+                  {columns.map((col, index) => {
+                    const value = col.key && getNestedValue(item, col.key);
+                    const render = col.render ? col.render(item, indexRow) : value; 
+                    return (
+                      <td key={index} className={cellClassName}>
+                        {render || "-"}
+                      </td>
+                    );
+                  })}
                   {(onEdit || onDelete) && (
                     <td className={cellClassName}>
                       <div className="flex space-x-2">

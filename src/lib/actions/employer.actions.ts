@@ -29,6 +29,7 @@ import {
   Job,
   JobCategory,
   Result,
+  SearchCompanyFilter,
   Sector,
 } from "@/types";
 import { FolderSearchFilter, SeekerSearchFilter } from "@/types/jobs";
@@ -104,14 +105,7 @@ export const getCompanies = async ({
   }
 };
 export const searchCompanies = async (
-  filters: {
-    page?: number;
-    limit?: number;
-    q?: string;
-    countryCode?: string;
-    companyTypeId?: string;
-    //TODO: add status to comanies filter
-  } = {},
+  filters: SearchCompanyFilter = {},
 ): Promise<Result<PaginatedResponse<Company>>> => {
   try {
     const queryParams = toQueryString(filters);
