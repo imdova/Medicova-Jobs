@@ -34,6 +34,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import EditSeekerModal from "../../components/seekers/EditSeekerModal";
 
 interface SingleUserProps {
   params: {
@@ -248,6 +249,13 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
   const [availability, setAvailability] = useState(true);
   const [selectedTab, setSelectedTab] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //handel update Seeker
+  const handleSave = async (data: UserProfile) => {
+    // Call your API here
+    console.log("Saving seeker data:", data);
+  };
 
   //handel filters
   const filteredJobs = jobs?.data?.filter((job) => {
@@ -351,13 +359,13 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                 </div>
               </div>
               <div className="flex h-full items-start justify-end gap-3">
-                <Link
+                <button
+                  onClick={() => setIsModalOpen(true)}
                   className="flex w-fit items-center gap-1 rounded-lg border bg-white p-3 text-sm"
-                  href={"#"}
                 >
                   <SquarePen size={12} />
                   Edit
-                </Link>
+                </button>
                 <Link
                   className="flex w-fit items-center gap-1 rounded-lg border bg-white p-3 text-sm"
                   href={`/admin/students/profile/${Seeker.id}`}
@@ -365,6 +373,12 @@ export default function SingleStudentOverview({ params }: SingleUserProps) {
                   <Eye size={12} />
                   View Profile
                 </Link>
+                <EditSeekerModal
+                  open={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  seekerData={Seeker}
+                  onSave={handleSave}
+                />
               </div>
             </div>
             <div className="flex flex-col gap-5 sm:flex-row">

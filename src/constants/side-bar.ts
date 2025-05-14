@@ -139,7 +139,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       id: 16,
       label: "Settings",
       icon: SettingsOutlined,
-      path: "#",
+      path: "/admin/setting",
     },
     {
       id: 17,
