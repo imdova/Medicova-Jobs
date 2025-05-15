@@ -1,9 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    scrollRestoration: false,
-  },
-  images: { 
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
     remotePatterns: [
       {
         protocol: "https",
