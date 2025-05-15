@@ -2,6 +2,7 @@
 
 import {
   API_GET_COMPANY_BY_ID,
+  API_GET_COMPANY_BY_USER_NAME,
   API_GET_JOBS_BY_COMPANY_ID,
   API_UPDATE_COMPANY_USER_NAME,
 } from "@/api/employer";
@@ -38,6 +39,7 @@ import {
   Select,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import EditCompanyModal from "../../components/employers/EditCompanyModal";
 
 interface SingleUserProps {
   params: {
@@ -130,13 +132,41 @@ const countrydata: CountryData[] = [
 const SingleEmployerPage = ({ params }: SingleUserProps) => {
   const slug = params.slug;
   const { data: company } = useFetch<CompanyType>(
-    `${API_UPDATE_COMPANY_USER_NAME}/${slug}`,
+    `${API_GET_COMPANY_BY_USER_NAME}${slug}`,
   );
   const { data: jobs, loading } = useFetch<PaginatedResponse<JobData>>(
     `${API_GET_JOBS_BY_COMPANY_ID}${company?.id}`,
   );
 
   const [activeTab, setActiveTab] = useState("employer-overview");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSave = async (data: CompanyType) => {
+    try {
+      const response = await fetch(
+        `${API_UPDATE_COMPANY_USER_NAME}/${company?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update company");
+      }
+
+      const result = await response.json();
+      console.log("Company updated successfully:", result);
+      // Optionally: show a toast or redirect
+    } catch (error) {
+      console.error("Error updating company:", error);
+      // Optionally: show error UI
+    }
+  };
+
   const [filters, setFilters] = useState<JobFilter>({
     searchQuery: "",
     location: "",
@@ -374,13 +404,13 @@ const SingleEmployerPage = ({ params }: SingleUserProps) => {
                   </div>
                 </div>
                 <div className="flex h-full items-start justify-end gap-3">
-                  <Link
+                  <button
+                    onClick={() => setIsModalOpen(true)}
                     className="flex w-fit items-center gap-1 rounded-lg border bg-white p-3 text-sm"
-                    href={"#"}
                   >
                     <SquarePen size={12} />
                     Edit
-                  </Link>
+                  </button>
                   <Link
                     className="flex w-fit items-center gap-1 rounded-lg border bg-white p-3 text-sm"
                     href={``}
@@ -388,6 +418,12 @@ const SingleEmployerPage = ({ params }: SingleUserProps) => {
                     <Eye size={12} />
                     View Profile
                   </Link>
+                  <EditCompanyModal
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    companyData={company}
+                    onSave={handleSave}
+                  />
                 </div>
               </div>
               <div className="flex flex-col gap-5 sm:flex-row">

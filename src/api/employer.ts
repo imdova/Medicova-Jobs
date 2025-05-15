@@ -3,12 +3,13 @@ import { API_URL } from ".";
 export const API_EMPLOYER_BASE = API_URL + "/api/v1.0.0/employer";
 // Companies
 export const COMPANIES = API_EMPLOYER_BASE + "/companies";
+
 // export const API_CREATE_COMPANY = COMPANIES; // POST
 export const API_GET_COMPANIES = COMPANIES; // GET
 export const API_SEARCH_COMPANIES = COMPANIES + "/search"; //?q=Grand%20&companyTypeId=314a19ed-9ed1-4a1c-8f61-1c557352b8b1&countryCode=EG
-export const API_GET_COMPANY_BY_USER_NAME = COMPANIES + "/userName/"; // GET
+export const API_GET_COMPANY_BY_USER_NAME = COMPANIES + "/username/"; // GET
 export const API_GET_COMPANY_BY_ID = COMPANIES + "/"; // GET + [companyID]
-export const API_UPDATE_COMPANY_USER_NAME = COMPANIES + "/userName"; // PATCH
+export const API_UPDATE_COMPANY_USER_NAME = COMPANIES + "/username"; // PATCH
 export const API_UPDATE_COMPANY = COMPANIES + "/"; // PATCH + [companyID]
 // export const API_DELETE_COMPANY = COMPANIES + "/"; // DELETE + [companyID]
 

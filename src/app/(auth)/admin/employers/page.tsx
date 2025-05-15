@@ -5,6 +5,7 @@ import { LayoutDashboard, Settings, Users } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import DashboardOverView from "../components/employers/Ovarview";
 import EmployerListPanel from "../components/employers/EmployerList";
+import AddNewEmployer from "../components/employers/add-employer";
 
 type Tab = "over-view" | "employer-list" | "setting";
 
@@ -27,6 +28,7 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
 ];
 const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tabs[0].key);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className="w-full space-y-3 px-4 md:px-5">
@@ -51,9 +53,17 @@ const AdminPage: React.FC = () => {
             ))}
           </Tabs>
         </div>
-        <Button variant="contained"  startIcon={<Add className="h-5 w-5" />}>
+        <Button
+          onClick={() => setModalOpen(true)}
+          variant="contained"
+          startIcon={<Add className="h-5 w-5" />}
+        >
           <span className="text-nowrap text-sm">Add Company</span>
         </Button>
+        <AddNewEmployer
+          handleCloseModal={() => setModalOpen(false)}
+          isModalOpen={modalOpen}
+        />
       </div>
       {activeTab === "over-view" && <DashboardOverView />}
       {activeTab === "employer-list" && <EmployerListPanel />}
