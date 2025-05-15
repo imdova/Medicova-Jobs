@@ -89,27 +89,34 @@ function LocationSelect<T extends Partial<LocationItems>>({
 
   return (
     <div className="w-full">
-      <Grid container spacing={1}>
-        {locationFields.map((field) => (
-          <Grid
-            item
-            xs={field.gridProps?.xs ?? 12}
-            sm={field.gridProps?.sm}
-            md={field.gridProps?.md}
-            key={String(field.name)}
-          >
-            <FormField
-              field={field}
-              control={control}
-              formValues={getValues()}
-              dependsOnField={locationFields.find(
-                (f) => f.name === field.dependsOn,
-              )}
-              resetValues={resetValues}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      <div className="mt-1 grid grid-cols-12 gap-4">
+        {locationFields.map((field) => {
+          const gridProps = field.gridProps ?? {};
+          const xs = gridProps.xs ?? 12;
+          const sm = gridProps.sm ?? xs;
+          const md = gridProps.md ?? sm;
+          const classNames = [
+            `col-span-${xs}`,
+            sm !== xs ? `sm:col-span-${sm}` : "",
+            md !== sm ? `md:col-span-${md}` : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
+          return (
+            <div className={classNames} key={String(field.name)}>
+              <FormField
+                field={field}
+                control={control}
+                formValues={getValues()}
+                dependsOnField={locationFields.find(
+                  (f) => f.name === field.dependsOn,
+                )}
+                resetValues={resetValues}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

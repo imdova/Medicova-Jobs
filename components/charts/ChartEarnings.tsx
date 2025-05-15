@@ -25,13 +25,13 @@ const ChartEarnings: React.FC<ChartEarningsProps> = ({ labelX }) => {
         borderRadius={6} // Adds rounded corners
         slotProps={{
           legend: {
-            direction: "row",
-            position: { vertical: "bottom", horizontal: "middle" },
-            hidden: true,
-          }, //  Positions the legend at the bottom-middle and aligns it in a row.
+            direction: "horizontal",
+            position: { vertical: "bottom", horizontal: "center" },
+          },
         }}
         xAxis={[
           {
+            id: "months",
             scaleType: "band",
             data: [
               "Jan",

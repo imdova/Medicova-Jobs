@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, type ReactElement } from "react";
 import { IconButton, MenuItem, Select, Tooltip } from "@mui/material";
 import {
   Edit,
@@ -32,7 +32,7 @@ type SocialMediaSectionProps = {
   type: User["type"];
 };
 
-const socialMediaIcons: { [K in keyof SocialMediaLinks]: JSX.Element } = {
+const socialMediaIcons: { [K in keyof SocialMediaLinks]: ReactElement } = {
   instagram: <Instagram sx={{ color: "rgba(241, 9, 234, 1)" }} />,
   twitter: <Twitter sx={{ color: "rgba(91, 146, 250, 1)" }} />,
   linkedin: <LinkedIn sx={{ color: "rgba(0, 119, 181, 1)" }} />,

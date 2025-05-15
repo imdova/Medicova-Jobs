@@ -29,7 +29,7 @@ const FullHeader: React.FC<BaseHeaderProps> = ({ user, pathname }) => {
                   <Link
                     key={i}
                     href={link?.path || "#"}
-                    className={`font-medium ${isPage ? "text-primary" : "hover:text-primary"}`}
+                    className={`font-medium text-sm ${isPage ? "text-primary" : "hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>

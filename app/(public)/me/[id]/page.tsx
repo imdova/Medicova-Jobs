@@ -23,20 +23,23 @@ import { ProfileInfoForm } from "./Components/ProfileInfoForm";
 import CareerPreferenceTab from "./Components/CareerPreferenceTab";
 
 const ProfilePage = async ({
-  params: { id },
+  params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-  const isPublic = searchParams?.public;
+  const { id } = await params;
+  const searchParamsResults = await searchParams;
   const data = await getServerSession(authOptions);
   const { success, data: user } = await getUser(id);
   if (!success || !user) return notFound();
   const sessionUser = data?.user;
-  const isMe = isPublic ? false : sessionUser?.id === user.id;
+  const isMe = searchParamsResults?.public
+    ? false
+    : sessionUser?.id === user.id;
   const tab = isMe
-    ? (searchParams?.tab as ProfileTabs) || "personal-info"
+    ? (searchParamsResults?.tab as ProfileTabs) || "personal-info"
     : "professional";
   let isLocked = !isMe;
   if (!isMe && sessionUser?.type === "employer" && sessionUser?.companyId) {
@@ -65,7 +68,7 @@ const ProfilePage = async ({
           )}
         </div>
         {/* Right Sections */}
-        <div className="hidden min-w-80 max-w-80 space-y-2 md:block">
+        <div className="hidden max-w-80 min-w-80 space-y-2 md:block">
           {/* Public user Section */}
           {isMe && (
             <>

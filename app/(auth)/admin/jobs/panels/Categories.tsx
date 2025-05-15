@@ -130,6 +130,7 @@ const Categories: React.FC = () => {
     };
 
     fetchInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch specialties and career levels when category is selected
@@ -209,6 +210,7 @@ const Categories: React.FC = () => {
     };
 
     fetchCategoryDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategoryId]);
 
   const handleAddCategory = async () => {

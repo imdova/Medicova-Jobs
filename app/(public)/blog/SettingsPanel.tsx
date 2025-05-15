@@ -115,15 +115,14 @@ const SettingsPanel: React.FC<SettingsTabProps> = ({
         </div>
 
         {settingsFormFields.map((field) => (
-          <Grid
-            item
-            xs={field.gridProps?.xs ?? 12}
-            sm={field.gridProps?.sm}
-            md={field.gridProps?.md}
+          <div
+            className={`col-span-${field.gridProps?.xs ?? 12} ${
+              field.gridProps?.sm ? `sm:col-span-${field.gridProps?.sm}` : ""
+            } ${field.gridProps?.md ? `md:col-span-${field.gridProps?.md}` : ""}`}
             key={String(field.name)}
           >
             <FormField field={field} control={control} />
-          </Grid>
+          </div>
         ))}
 
         <div className="space-y-2">

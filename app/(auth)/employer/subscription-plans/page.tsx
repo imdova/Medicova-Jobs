@@ -111,21 +111,21 @@ const SubscriptionPlansPage: React.FC = () => {
       </Typography>
 
       {/* Access Buttons */}
-      <div className="mx-auto flex w-3/5 mb-4 items-center justify-center gap-2 rounded-base bg-primary-100 p-1">
+      <div className="rounded-base bg-primary-100 mx-auto mb-4 flex w-3/5 items-center justify-center gap-2 p-1">
         {PLANE_TABS.map((access) => (
           <Button
             key={access}
             onClick={() => handleAccessSelection(access)}
-            className={`${selectedAccess === access ? "bg-primary-foreground text-primary" : ""} rounded-md px-6 py-3 font-semibold hover:bg-primary hover:text-primary-foreground`}
+            className={`${selectedAccess === access ? "bg-primary-foreground text-primary" : ""} hover:bg-primary hover:text-primary-foreground rounded-md px-6 py-3 font-semibold`}
           >
             {access}
           </Button>
         ))}
       </div>
 
-      <Grid container spacing={3} justifyContent="center">
+      <div className="grid grid-cols-2 justify-center gap-3 lg:grid-cols-4">
         {plans.map((plan, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <div key={index}>
             <Card
               sx={{
                 p: 1, // Reduced padding for a smaller overall card size
@@ -409,9 +409,9 @@ const SubscriptionPlansPage: React.FC = () => {
                 </ul>
               </CardContent>
             </Card>
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </div>
 
       {/* <h4 className="mb-2 text-center text-xl font-semibold text-main">
         Try our 100% free Plan

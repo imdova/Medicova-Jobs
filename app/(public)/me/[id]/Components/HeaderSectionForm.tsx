@@ -44,7 +44,7 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-white p-5 shadow-soft lg:flex-row lg:items-start">
+    <div className="rounded-base rounded-t-base shadow-soft flex w-full flex-col items-center gap-8 overflow-hidden border border-gray-200 bg-white p-5 lg:flex-row lg:items-start">
       <div>
         <ProfileImage
           currentImageUrl={avatar || ""}
@@ -55,22 +55,29 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
         />
       </div>
       <div className="w-full">
-        <Grid container spacing={1}>
-          {fields.map((field) => (
-            <Grid
-              item
-              xs={field.gridProps?.xs ?? 12}
-              sm={field.gridProps?.sm}
-              md={field.gridProps?.md}
-              key={String(field.name)}
-            >
-              <FormField
-                field={field}
-                control={control}
-                formValues={getValues()}
-              />
-            </Grid>
-          ))}
+        <Grid className="grid grid-cols-12 gap-4">
+          {fields.map((field) => {
+            const gridProps = field.gridProps ?? {};
+            const xs = gridProps.xs ?? 12;
+            const sm = gridProps.sm ?? xs;
+            const md = gridProps.md ?? sm;
+            const classNames = [
+              `col-span-${xs}`,
+              sm !== xs ? `sm:col-span-${sm}` : "",
+              md !== sm ? `md:col-span-${md}` : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+            return (
+              <div className={classNames} key={String(field.name)}>
+                <FormField
+                  field={field}
+                  control={control}
+                  formValues={getValues()}
+                />
+              </div>
+            );
+          })}
         </Grid>
       </div>
     </div>

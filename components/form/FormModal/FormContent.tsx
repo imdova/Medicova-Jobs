@@ -24,13 +24,12 @@ interface FormContentProps {
   deleteButtonText?: string;
   cancelButtonText?: string;
   removeField?: (fieldName: string) => void;
-
 }
 
 export const FormContent: React.FC<FormContentProps> = ({
   fields,
   onSubmit,
-  formMethods, 
+  formMethods,
   hiddenFields,
   onCheckboxChange,
   children,
@@ -42,7 +41,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   submitButtonText,
   deleteButtonText,
   cancelButtonText,
-  removeField
+  removeField,
 }) => {
   const {
     control,
@@ -72,29 +71,38 @@ export const FormContent: React.FC<FormContentProps> = ({
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal max-h-[calc(100dvh-300px)] overflow-y-auto bg-background p-4">
-        <Grid container spacing={1}>
-          {fields.map((field) => (
-            <Grid
-              item
-              xs={field.gridProps?.xs ?? 12}
-              sm={field.gridProps?.sm}
-              md={field.gridProps?.md}
-              key={String(field.name)}
-            >
-              <FormField
-                field={field}
-                control={control}
-                hidden={hiddenFields.includes(String(field.name))}
-                onCheckboxChange={onCheckboxChange(field)}
-                dependsOnField={fields.find((f) => f.name === field.dependsOn)}
-                removeField={removeField}
-                formValues={getValues()}
-                resetValues={resetValues}
-              />
-            </Grid>
-          ))}
-        </Grid>
+      <div className="scroll-bar-minimal bg-background max-h-[calc(100dvh-300px)] overflow-y-auto p-4">
+        <div className="mt-1 grid grid-cols-12 gap-4">
+          {fields.map((field) => {
+            const gridProps = field.gridProps ?? {};
+            const xs = gridProps.xs ?? 12;
+            const sm = gridProps.sm ?? xs;
+            const md = gridProps.md ?? sm;
+            const classNames = [
+              `col-span-${xs}`,
+              sm !== xs ? `sm:col-span-${sm}` : "",
+              md !== sm ? `md:col-span-${md}` : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+            return (
+              <div className={classNames} key={String(field.name)}>
+                <FormField
+                  field={field}
+                  control={control}
+                  hidden={hiddenFields.includes(String(field.name))}
+                  onCheckboxChange={onCheckboxChange(field)}
+                  dependsOnField={fields.find(
+                    (f) => f.name === field.dependsOn,
+                  )}
+                  removeField={removeField}
+                  formValues={getValues()}
+                  resetValues={resetValues}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
       {children && children}
       <FormActions
