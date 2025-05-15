@@ -6,8 +6,9 @@ import JobFilter from "./components/JobFilter";
 const SearchPage: React.FC = async ({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
+  const params = await searchParams;
   const {
     q,
     country,
@@ -24,7 +25,7 @@ const SearchPage: React.FC = async ({
     edu,
     sal,
     age,
-  } = searchParams as {
+  } = params as {
     [key: string]: any;
   };
 

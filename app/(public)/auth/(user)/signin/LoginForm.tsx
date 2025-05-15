@@ -82,7 +82,7 @@ const LoginForm: React.FC = () => {
       <Button
         className="mb-4 h-[42px] w-full"
         variant="outlined"
-        onClick={() =>
+        onClick={() => 
           onSubmit({
             email: "Admin@gmail.com",
             password: "data.password",

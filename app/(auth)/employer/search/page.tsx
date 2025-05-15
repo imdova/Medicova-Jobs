@@ -13,8 +13,9 @@ import SeekerFilter from "./seeker-filter";
 const page = async ({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
+  const params = await searchParams;
   const {
     q,
     country,
@@ -29,7 +30,7 @@ const page = async ({
     edu,
     exp,
     age,
-  } = searchParams as {
+  } = params as {
     [key: string]: any;
   };
   const [expFrom, expTo] = exp?.split("-") || [];

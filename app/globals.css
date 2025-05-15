@@ -1,8 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+/* @import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap"); */
 
-@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap");
+@config "../tailwind.config.js";
 
 html {
   scroll-behavior: smooth;
@@ -23,23 +22,20 @@ html {
   --error: #ff0000;
 }
 
-/* Apply global font family */
 body,
-html,
-* {
+html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 14px;
 }
 
 @layer components {
   .btn-primary {
-    @apply rounded-[10px] px-4 py-2 text-sm font-semibold uppercase focus:ring-2 focus:ring-primary-foreground md:text-base;
+    @apply focus:ring-primary-foreground rounded-[10px] px-4 py-2 text-sm font-semibold uppercase focus:ring-2 md:text-base;
   }
 
   .btn-signup {
-    @apply text-nowrap text-inherit hover:bg-primary-foreground hover:text-primary;
+    @apply hover:bg-primary-foreground hover:text-primary text-nowrap text-inherit;
   }
 
   .btn-login {
