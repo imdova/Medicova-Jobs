@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Checkbox,
   List,
@@ -10,96 +10,155 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-  Button,
 } from "@mui/material";
-import {
-  Add,
-  ExpandLess,
-  ExpandMore,
-  Save,
-  RestartAlt,
-} from "@mui/icons-material";
+import { Add, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Eye, Trash } from "lucide-react";
 import CellOptions from "@/components/UI/CellOptions";
+import { Category } from "./Categories";
+import useFetch from "@/hooks/useFetch";
+import { SpecialtyItem } from "@/types";
 
-type Specialty = {
-  id: string;
-  name: string;
-};
+type Specialty = { id: string; name: string };
+
+type CategoryData = { id: string; name: string; specialties: Specialty[] };
 
 interface SpecialtiesListProps {
+  categoriesData: CategoryData[];
   categoryId: string;
   specialties: Specialty[];
-  checkedItems: string[];
-  onCheck: (categoryId: string, specialtyId: string) => void;
+  checkedItems: { [key: string]: Specialty[] };
+  onCheck: (categoryId: string, specialty: Specialty) => void;
   isLoading?: boolean;
   onAddSpecialty: (categoryId: string, name: string) => Promise<void>;
-  onDeleteSpecialty: (categoryId: string, specialtyId: string) => Promise<void>;
-  onSaveChanges?: () => void;
-  onResetChanges?: () => void;
+  onDeleteSpecialty: (specialtyId: string, categoryId: string) => Promise<void>;
 }
 
 const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
-  categoryId,
+  categoriesData,
   specialties,
+  categoryId,
   checkedItems,
   onCheck,
   isLoading = false,
   onAddSpecialty,
   onDeleteSpecialty,
-  onSaveChanges,
-  onResetChanges,
 }) => {
-  const [newSpecialtyName, setNewSpecialtyName] = useState("");
+  const [newSpecialties, setNewSpecialties] = useState<{
+    [key: string]: string;
+  }>({});
+  const [newSpecialtiesId, setNewSpecialtiesId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [localLoading, setLocalLoading] = useState({
-    add: false,
-    delete: false,
+    addSpecialty: false,
+    deleteSpecialty: false,
   });
+  const [expandedCategories, setExpandedCategories] = useState<{
+    [key: string]: boolean;
+  }>({});
 
-  const handleAddSpecialty = async () => {
-    const name = newSpecialtyName.trim();
-    if (!name) return;
+  const categoryData = categoriesData.find((cat) => cat.id === categoryId);
+
+  // Effect to initialize expanded state and specialty checks
+  useEffect(() => {
+    if (categoryId) {
+      // Expand the selected category
+      setExpandedCategories((prev) => ({ ...prev, [categoryId]: true }));
+      setNewSpecialtiesId(categoryId);
+
+      // Check all specialties if none are checked yet
+      if (!checkedItems[categoryId] || checkedItems[categoryId].length === 0) {
+        const category = categoriesData.find((cat) => cat.id === categoryId);
+        if (category?.specialties) {
+          category.specialties.forEach((specialty) => {
+            onCheck(categoryId, specialty);
+          });
+        }
+      }
+    }
+  }, [categoryId, categoriesData, checkedItems, onCheck]);
+
+  const handleCategoryToggle = (categoryId: string) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
+    setNewSpecialtiesId(categoryId);
+  };
+
+  const handleAddSpecialty = async (categoryId: string) => {
+    const newName = newSpecialties[categoryId]?.trim();
+    if (!newName) return;
 
     try {
-      setLocalLoading((prev) => ({ ...prev, add: true }));
-      await onAddSpecialty(categoryId, name);
-      setNewSpecialtyName("");
+      setLocalLoading((prev) => ({ ...prev, addSpecialty: true }));
+      await onAddSpecialty(categoryId, newName);
+      setNewSpecialties((prev) => ({ ...prev, [categoryId]: "" }));
       setSuccess("Specialty added successfully");
     } catch (err: any) {
       setError(err.message || "Failed to add specialty");
     } finally {
-      setLocalLoading((prev) => ({ ...prev, add: false }));
+      setLocalLoading((prev) => ({ ...prev, addSpecialty: false }));
     }
   };
 
   const handleDeleteSpecialty = async (specialtyId: string) => {
     try {
-      setLocalLoading((prev) => ({ ...prev, delete: true }));
-      await onDeleteSpecialty(categoryId, specialtyId);
+      setLocalLoading((prev) => ({ ...prev, deleteSpecialty: true }));
+      await onDeleteSpecialty(specialtyId, categoryId);
       setSuccess("Specialty deleted successfully");
     } catch (err: any) {
       setError(err.message || "Failed to delete specialty");
     } finally {
-      setLocalLoading((prev) => ({ ...prev, delete: false }));
+      setLocalLoading((prev) => ({ ...prev, deleteSpecialty: false }));
     }
   };
 
-  const handleCheckAll = () => {
-    const allChecked =
-      specialties.length > 0 && checkedItems.length === specialties.length;
+  const handleToggleAllSpecialties = (categoryId: string) => {
+    const category = categoriesData.find((cat) => cat.id === categoryId);
+    if (!category?.specialties) return;
 
-    specialties.forEach((specialty) => {
-      const isChecked = checkedItems.includes(specialty.id);
-      if ((allChecked && isChecked) || (!allChecked && !isChecked)) {
-        onCheck(categoryId, specialty.id);
+    const currentChecked = checkedItems[categoryId] || [];
+    const allChecked = currentChecked.length === category.specialties.length;
+
+    // Toggle all specialties
+    category.specialties.forEach((specialty) => {
+      const isCurrentlyChecked = currentChecked.some(
+        (s) => s.id === specialty.id,
+      );
+      if (
+        (allChecked && isCurrentlyChecked) ||
+        (!allChecked && !isCurrentlyChecked)
+      ) {
+        onCheck(categoryId, specialty);
       }
     });
   };
 
+  const isCategoryAllChecked = (categoryId: string) => {
+    const category = categoriesData.find((cat) => cat.id === categoryId);
+    if (!category?.specialties) return false;
+
+    const currentChecked = checkedItems[categoryId] || [];
+    return (
+      currentChecked.length === category.specialties.length &&
+      category.specialties.length > 0
+    );
+  };
+
+  const isCategoryIndeterminate = (Id: string) => {
+    const category = categoriesData.find((cat) => cat.id === categoryId);
+    if (!category?.specialties) return false;
+
+    const currentChecked = checkedItems[categoryId] || [];
+    return (
+      currentChecked.length > 0 &&
+      currentChecked.length < category.specialties.length
+    );
+  };
+
   return (
-    <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
+    <div className="shadow-soft h-full rounded-xl border bg-white p-4">
       <Snackbar
         open={!!error}
         autoHideDuration={6000}
@@ -115,114 +174,141 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
         <Alert severity="success">{success}</Alert>
       </Snackbar>
 
-      <h3 className="mb-4 text-lg font-semibold">Specialties</h3>
+      <div className="">
+        <h3 className="mb-3 font-semibold">
+          Manage Specialties for {categoryData?.name}
+        </h3>
 
-      {/* Add Specialty Input */}
-      <div className="mb-4 flex gap-2">
-        <TextField
-          size="small"
-          value={newSpecialtyName}
-          onChange={(e) => setNewSpecialtyName(e.target.value)}
-          placeholder="New Specialty"
-          variant="outlined"
-          fullWidth
-          disabled={isLoading || localLoading.add}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleAddSpecialty();
+        {/* Add Specialty Input */}
+        <div className="mb-3 flex gap-2">
+          <TextField
+            size="small"
+            value={newSpecialties[newSpecialtiesId] || ""}
+            onChange={(e) =>
+              setNewSpecialties((prev) => ({
+                ...prev,
+                [newSpecialtiesId]: e.target.value,
+              }))
             }
-          }}
-        />
-        <IconButton
-          className="rounded-lg bg-primary text-white hover:bg-black"
-          onClick={handleAddSpecialty}
-          disabled={isLoading || localLoading.add}
-        >
-          {localLoading.add ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            <Add />
-          )}
-        </IconButton>
-      </div>
-
-      {/* Check All button */}
-      <div className="mb-4">
-        <Button
-          variant="outlined"
-          onClick={handleCheckAll}
-          disabled={isLoading || specialties.length === 0}
-        >
-          {checkedItems.length === specialties.length && specialties.length > 0
-            ? "Uncheck All"
-            : "Check All"}
-        </Button>
-      </div>
-
-      {/* Specialties List */}
-      {specialties.length === 0 ? (
-        <Alert severity="info" className="mb-4">
-          No specialties found for this category
-        </Alert>
-      ) : (
-        <List className="max-h-[300px] overflow-y-auto rounded-md border">
-          {specialties.map((specialty) => (
-            <ListItemButton key={specialty.id} className="hover:bg-gray-50">
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={checkedItems.includes(specialty.id)}
-                  onChange={() => onCheck(categoryId, specialty.id)}
-                  disabled={isLoading || localLoading.delete}
-                />
-              </ListItemIcon>
-              <ListItemText primary={specialty.name} />
-              <CellOptions
-                item={specialty}
-                options={[
-                  {
-                    label: "View",
-                    icon: <Eye className="h-4 w-4" />,
-                    action: () => console.log("Viewing", specialty),
-                  },
-                  {
-                    label: "Delete",
-                    icon: <Trash className="h-4 w-4 text-red-500" />,
-                    action: () => handleDeleteSpecialty(specialty.id),
-                  },
-                ]}
-              />
-            </ListItemButton>
-          ))}
-        </List>
-      )}
-
-      {/* Save and Reset buttons */}
-      {(onSaveChanges || onResetChanges) && (
-        <div className="mt-4 flex justify-end gap-2">
-          {onResetChanges && (
-            <Button
-              variant="outlined"
-              startIcon={<RestartAlt />}
-              onClick={onResetChanges}
-              disabled={isLoading}
-            >
-              Reset
-            </Button>
-          )}
-          {onSaveChanges && (
-            <Button
-              variant="contained"
-              startIcon={<Save />}
-              onClick={onSaveChanges}
-              disabled={isLoading}
-            >
-              Save Changes
-            </Button>
-          )}
+            placeholder="New Specialty"
+            variant="outlined"
+            fullWidth
+            disabled={isLoading || localLoading.addSpecialty}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddSpecialty(newSpecialtiesId);
+              }
+            }}
+          />
+          <IconButton
+            className="bg-primary rounded-lg text-white hover:bg-black"
+            onClick={() => handleAddSpecialty(newSpecialtiesId)}
+            disabled={isLoading || localLoading.addSpecialty}
+          >
+            {localLoading.addSpecialty ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              <Add />
+            )}
+          </IconButton>
         </div>
-      )}
+      </div>
+
+      {categoriesData.map((category) => {
+        const { data: specialty, loading } = useFetch<
+          PaginatedResponse<SpecialtyItem>
+        >(
+          `https://medicova.site/api/v1.0.0/admin/sys-configurations/speciality/category?id=${category.id}`,
+        );
+        const isExpanded = expandedCategories[category.id];
+        const allCheckedd = isCategoryAllChecked(category.id);
+        const indeterminate = isCategoryIndeterminate(category.id);
+
+        return (
+          <div
+            key={category.id}
+            className="mb-4 rounded-md border bg-white p-2 shadow-sm"
+          >
+            {/* Category Header */}
+            <div
+              className="flex cursor-pointer items-center justify-between"
+              onClick={() => handleCategoryToggle(category.id)}
+            >
+              <div className="flex items-center">
+                <Checkbox
+                  checked={allCheckedd}
+                  indeterminate={indeterminate}
+                  onClick={(e) => e.stopPropagation()} // Prevent toggle when clicking checkbox
+                  onChange={() => handleToggleAllSpecialties(category.id)}
+                />
+                <h3 className="font-semibold">{category.name}</h3>
+              </div>
+              {isExpanded ? <ExpandLess /> : <ExpandMore />}
+            </div>
+
+            {isExpanded && (
+              <div className="mt-2">
+                {/* Specialty List */}
+                {loading ? (
+                  <div className="flex justify-center p-4">
+                    <CircularProgress size={24} />
+                  </div>
+                ) : specialty?.data.length === 0 ? (
+                  <Alert severity="info">No specialties found</Alert>
+                ) : (
+                  <List className="max-h-[300px] overflow-y-auto">
+                    {specialty?.data.map((specialty) => {
+                      const isChecked =
+                        checkedItems[category.id]?.some(
+                          (s) => s.id === specialty.id,
+                        ) || false;
+                      return (
+                        <ListItemButton
+                          key={specialty.id}
+                          className="mb-2"
+                          onClick={() => onCheck(category.id, specialty)}
+                        >
+                          <ListItemIcon>
+                            <Checkbox
+                              edge="start"
+                              checked={isChecked}
+                              tabIndex={-1}
+                              disableRipple
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={specialty.name}
+                            secondary={category.name}
+                          />
+                          <CellOptions
+                            item={specialty}
+                            options={[
+                              {
+                                label: "View",
+                                icon: <Eye className="h-4 w-4" />,
+                                action: () => console.log("Viewing", specialty),
+                              },
+                              {
+                                label: "Delete",
+                                icon: (
+                                  <Trash className="h-4 w-4 text-red-500" />
+                                ),
+                                action: () =>
+                                  handleDeleteSpecialty(specialty.id),
+                              },
+                            ]}
+                          />
+                        </ListItemButton>
+                      );
+                    })}
+                  </List>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
