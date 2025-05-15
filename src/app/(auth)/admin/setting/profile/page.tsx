@@ -160,7 +160,6 @@ const ProfileSettings = () => {
             fullWidth
             placeholder={user?.firstName || ""}
             name="name"
-            value={formData.firstName}
             onChange={handleChange}
             variant="outlined"
           />
@@ -171,7 +170,6 @@ const ProfileSettings = () => {
             fullWidth
             name="name"
             placeholder={user?.lastName || ""}
-            value={formData.LastName}
             onChange={handleChange}
             variant="outlined"
           />
@@ -182,7 +180,6 @@ const ProfileSettings = () => {
         <TextField
           fullWidth
           name="bio"
-          value={formData.phone}
           onChange={handleChange}
           variant="outlined"
           placeholder={user?.phone}

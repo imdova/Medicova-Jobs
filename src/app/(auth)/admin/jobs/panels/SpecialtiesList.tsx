@@ -9,8 +9,16 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  CircularProgress,
+  Button,
 } from "@mui/material";
-import { Add, ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  Add,
+  ExpandLess,
+  ExpandMore,
+  Save,
+  RestartAlt,
+} from "@mui/icons-material";
 import { Eye, Trash } from "lucide-react";
 import CellOptions from "@/components/UI/CellOptions";
 
@@ -19,97 +27,73 @@ type Specialty = {
   name: string;
 };
 
-type CategoryData = {
-  id: string;
-  name: string;
-  specialties: Specialty[];
-};
-
 interface SpecialtiesListProps {
-  categoriesData: CategoryData[];
   categoryId: string;
-  checkedItems: { [key: string]: Specialty[] };
-  onCheck: (categoryId: string, specialty: Specialty) => void;
+  specialties: Specialty[];
+  checkedItems: string[];
+  onCheck: (categoryId: string, specialtyId: string) => void;
   isLoading?: boolean;
   onAddSpecialty: (categoryId: string, name: string) => Promise<void>;
-  onDeleteSpecialty: (specialtyId: string, categoryId: string) => Promise<void>;
+  onDeleteSpecialty: (categoryId: string, specialtyId: string) => Promise<void>;
+  onSaveChanges?: () => void;
+  onResetChanges?: () => void;
 }
 
 const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
-  categoriesData,
   categoryId,
+  specialties,
   checkedItems,
   onCheck,
   isLoading = false,
   onAddSpecialty,
   onDeleteSpecialty,
+  onSaveChanges,
+  onResetChanges,
 }) => {
-  const [newSpecialties, setNewSpecialties] = useState<{
-    [key: string]: string;
-  }>({});
-  const [newSpecialtiesId, setnewSpecialtiesId] = useState<string>("");
+  const [newSpecialtyName, setNewSpecialtyName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [localLoading, setLocalLoading] = useState({
-    addSpecialty: false,
-    deleteSpecialty: false,
+    add: false,
+    delete: false,
   });
-  const [expandedCategories, setExpandedCategories] = useState<{
-    [key: string]: boolean;
-  }>({});
 
-  const categoryData = categoriesData.find((cat) => cat.id === categoryId);
-
-  const handleCategoryToggle = (categoryId: string) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
-    setnewSpecialtiesId(categoryId);
-  };
-
-  const handleAddSpecialty = async (categoryId: string) => {
-    const newName = newSpecialties[categoryId]?.trim();
-    if (!newName) return;
+  const handleAddSpecialty = async () => {
+    const name = newSpecialtyName.trim();
+    if (!name) return;
 
     try {
-      setLocalLoading((prev) => ({ ...prev, addSpecialty: true }));
-      await onAddSpecialty(categoryId, newName);
-      setNewSpecialties((prev) => ({ ...prev, [categoryId]: "" }));
+      setLocalLoading((prev) => ({ ...prev, add: true }));
+      await onAddSpecialty(categoryId, name);
+      setNewSpecialtyName("");
       setSuccess("Specialty added successfully");
     } catch (err: any) {
       setError(err.message || "Failed to add specialty");
     } finally {
-      setLocalLoading((prev) => ({ ...prev, addSpecialty: false }));
+      setLocalLoading((prev) => ({ ...prev, add: false }));
     }
   };
 
   const handleDeleteSpecialty = async (specialtyId: string) => {
     try {
-      setLocalLoading((prev) => ({ ...prev, deleteSpecialty: true }));
-      await onDeleteSpecialty(specialtyId, categoryId);
+      setLocalLoading((prev) => ({ ...prev, delete: true }));
+      await onDeleteSpecialty(categoryId, specialtyId);
       setSuccess("Specialty deleted successfully");
     } catch (err: any) {
       setError(err.message || "Failed to delete specialty");
     } finally {
-      setLocalLoading((prev) => ({ ...prev, deleteSpecialty: false }));
+      setLocalLoading((prev) => ({ ...prev, delete: false }));
     }
   };
 
-  const handleCheckAll = (categoryId: string, specialties: Specialty[]) => {
-    const alreadyCheckedIds = new Set(
-      checkedItems[categoryId]?.map((s) => s.id),
-    );
-    const allChecked = specialties.every((s) => alreadyCheckedIds.has(s.id));
+  const handleCheckAll = () => {
+    const allChecked =
+      specialties.length > 0 && checkedItems.length === specialties.length;
 
-    specialties.forEach((s) => {
-      const isChecked = alreadyCheckedIds.has(s.id);
-      if (allChecked && isChecked) {
-        // uncheck
-        onCheck(categoryId, s);
-      } else if (!allChecked && !isChecked) {
-        // check
-        onCheck(categoryId, s);
+    specialties.forEach((specialty) => {
+      const isChecked = checkedItems.includes(specialty.id);
+      if ((allChecked && isChecked) || (!allChecked && !isChecked)) {
+        onCheck(categoryId, specialty.id);
       }
     });
   };
@@ -130,122 +114,115 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
       >
         <Alert severity="success">{success}</Alert>
       </Snackbar>
-      <div className="">
-        <h3 className="mb-3 font-semibold">
-          Manage Specialties for {categoryData?.name}
-        </h3>
-        {/* Add Specialty Input */}
-        <div className="mb-3 flex gap-2">
-          <TextField
-            size="small"
-            value={newSpecialties[newSpecialtiesId] || ""}
-            onChange={(e) =>
-              setNewSpecialties((prev) => ({
-                ...prev,
-                [newSpecialtiesId]: e.target.value,
-              }))
+
+      <h3 className="mb-4 text-lg font-semibold">Specialties</h3>
+
+      {/* Add Specialty Input */}
+      <div className="mb-4 flex gap-2">
+        <TextField
+          size="small"
+          value={newSpecialtyName}
+          onChange={(e) => setNewSpecialtyName(e.target.value)}
+          placeholder="New Specialty"
+          variant="outlined"
+          fullWidth
+          disabled={isLoading || localLoading.add}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleAddSpecialty();
             }
-            placeholder="New Specialty"
-            variant="outlined"
-            fullWidth
-            disabled={isLoading || localLoading.addSpecialty}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleAddSpecialty(newSpecialtiesId);
-              }
-            }}
-          />
-          <IconButton
-            className="rounded-lg bg-primary text-white hover:bg-black"
-            onClick={() => handleAddSpecialty(newSpecialtiesId)}
-          >
+          }}
+        />
+        <IconButton
+          className="rounded-lg bg-primary text-white hover:bg-black"
+          onClick={handleAddSpecialty}
+          disabled={isLoading || localLoading.add}
+        >
+          {localLoading.add ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
             <Add />
-          </IconButton>
-        </div>
+          )}
+        </IconButton>
       </div>
 
-      {categoriesData.map((category) => {
-        const specialties = category.specialties || [];
-        const isExpanded = expandedCategories[category.id];
-        const checkedCount = checkedItems[category.id]?.length || 0;
-        const allChecked =
-          specialties.length > 0 && checkedCount === specialties.length;
+      {/* Check All button */}
+      <div className="mb-4">
+        <Button
+          variant="outlined"
+          onClick={handleCheckAll}
+          disabled={isLoading || specialties.length === 0}
+        >
+          {checkedItems.length === specialties.length && specialties.length > 0
+            ? "Uncheck All"
+            : "Check All"}
+        </Button>
+      </div>
 
-        return (
-          <div
-            key={category.id}
-            className="mb-4 rounded-md border bg-white p-2 shadow-sm"
-          >
-            {/* Header with toggle and "Check All" */}
-            <div
-              className="flex cursor-pointer items-center justify-between"
-              onClick={() => handleCategoryToggle(category.id)}
-            >
-              <div className="flex items-center">
+      {/* Specialties List */}
+      {specialties.length === 0 ? (
+        <Alert severity="info" className="mb-4">
+          No specialties found for this category
+        </Alert>
+      ) : (
+        <List className="max-h-[300px] overflow-y-auto rounded-md border">
+          {specialties.map((specialty) => (
+            <ListItemButton key={specialty.id} className="hover:bg-gray-50">
+              <ListItemIcon>
                 <Checkbox
-                  checked={allChecked}
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent toggle
-                    handleCheckAll(category.id, specialties);
-                  }}
+                  edge="start"
+                  checked={checkedItems.includes(specialty.id)}
+                  onChange={() => onCheck(categoryId, specialty.id)}
+                  disabled={isLoading || localLoading.delete}
                 />
-                <h3 className="font-semibold">{category.name}</h3>
-              </div>
-              {isExpanded ? <ExpandLess /> : <ExpandMore />}
-            </div>
+              </ListItemIcon>
+              <ListItemText primary={specialty.name} />
+              <CellOptions
+                item={specialty}
+                options={[
+                  {
+                    label: "View",
+                    icon: <Eye className="h-4 w-4" />,
+                    action: () => console.log("Viewing", specialty),
+                  },
+                  {
+                    label: "Delete",
+                    icon: <Trash className="h-4 w-4 text-red-500" />,
+                    action: () => handleDeleteSpecialty(specialty.id),
+                  },
+                ]}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      )}
 
-            {isExpanded && (
-              <div className="mt-2">
-                {/* Specialty List */}
-                {specialties.length === 0 ? (
-                  <Alert color="success" severity="info">
-                    No specialties found
-                  </Alert>
-                ) : (
-                  <List className="max-h-[300px] overflow-y-auto">
-                    {specialties.map((specialty) => (
-                      <ListItemButton key={specialty.id} className="mb-2">
-                        <ListItemIcon>
-                          <Checkbox
-                            edge="start"
-                            checked={
-                              checkedItems[category.id]?.some(
-                                (s) => s.id === specialty.id,
-                              ) || false
-                            }
-                            onChange={() => onCheck(category.id, specialty)}
-                            disabled={isLoading}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={specialty.name}
-                          secondary={category.name}
-                        />
-                        <CellOptions
-                          item={undefined}
-                          options={[
-                            {
-                              label: "View",
-                              icon: <Eye className="h-4 w-4" />, // optional icon
-                              action: (item) => console.log("Viewing", item),
-                            },
-                            {
-                              label: "Delete",
-                              icon: <Trash className="h-4 w-4 text-red-500" />,
-                              action: () => handleDeleteSpecialty(specialty.id),
-                            },
-                          ]}
-                        />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+      {/* Save and Reset buttons */}
+      {(onSaveChanges || onResetChanges) && (
+        <div className="mt-4 flex justify-end gap-2">
+          {onResetChanges && (
+            <Button
+              variant="outlined"
+              startIcon={<RestartAlt />}
+              onClick={onResetChanges}
+              disabled={isLoading}
+            >
+              Reset
+            </Button>
+          )}
+          {onSaveChanges && (
+            <Button
+              variant="contained"
+              startIcon={<Save />}
+              onClick={onSaveChanges}
+              disabled={isLoading}
+            >
+              Save Changes
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

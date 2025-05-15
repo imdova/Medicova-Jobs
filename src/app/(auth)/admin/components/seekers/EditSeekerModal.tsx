@@ -33,6 +33,8 @@ import {
   API_GET_CATEGORIES,
   API_GET_SPECIALITIES,
 } from "@/api/admin";
+import { MaritalStatus } from "@/constants/enums/marital-status.enum";
+import { Gender } from "@/constants/enums/gender.enum";
 
 enum LanguageName {
   Arabic = "Arabic",
@@ -60,7 +62,6 @@ interface EditSeekerModalProps {
   onSave: (data: UserProfile) => Promise<void>;
 }
 
-const maritalStatuses = ["Single", "Married", "Divorced", "Widowed"];
 const genders = ["MALE", "FEMALE", "OTHER"];
 const socialPlatforms = [
   "website",
@@ -93,7 +94,9 @@ const EditSeekerModal = ({
     watch,
     formState: { errors },
   } = useForm<UserProfile>({
-    defaultValues: seekerData,
+    defaultValues: {
+      ...seekerData,
+    },
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -111,9 +114,10 @@ const EditSeekerModal = ({
     url: "",
   });
 
-  const selectedCountry = watch("country.code");
+  const selectedCountry = watch("country");
   const { countries } = useLocationData();
-  const { states } = useLocationData(selectedCountry || "");
+  const countryCode = selectedCountry?.code;
+  const { states } = useLocationData(countryCode || "");
   const { data: categories } =
     useFetch<PaginatedResponse<JobCategory>>(API_GET_CATEGORIES);
   const { data: specialities } =
@@ -314,12 +318,16 @@ const EditSeekerModal = ({
                           (c) => c.isoCode === e.target.value,
                         );
                         if (country) {
-                          field.onChange(country);
+                          field.onChange({
+                            code: country.isoCode,
+                            name: country.name,
+                          });
                           setValue("state", { code: "", name: "" });
                         }
                       }}
                       value={field.value?.code || ""}
                       renderValue={(selected) => {
+                        if (!selected) return "";
                         const country = countries.find(
                           (c) => c.isoCode === selected,
                         );
@@ -340,7 +348,6 @@ const EditSeekerModal = ({
                   </FormControl>
                 )}
               />
-
               <Controller
                 name="state"
                 control={control}
@@ -351,24 +358,28 @@ const EditSeekerModal = ({
                     <Select
                       {...field}
                       label="State/Region"
-                      disabled={!selectedCountry}
+                      disabled={!countryCode}
                       onChange={(e) => {
                         const state = states.find(
                           (s) => s.isoCode === e.target.value,
                         );
                         if (state) {
-                          field.onChange(state);
+                          field.onChange({
+                            code: state.isoCode,
+                            name: state.name,
+                          });
                         }
                       }}
                       value={field.value?.code || ""}
                       renderValue={(selected) => {
+                        if (!selected) return "";
                         const state = states.find(
                           (s) => s.isoCode === selected,
                         );
                         return state?.name || selected;
                       }}
                     >
-                      {selectedCountry ? (
+                      {countryCode ? (
                         states.map((state) => (
                           <MenuItem key={state.isoCode} value={state.isoCode}>
                             {state.name}
@@ -401,7 +412,7 @@ const EditSeekerModal = ({
                   <FormControl fullWidth margin="normal">
                     <InputLabel>Gender</InputLabel>
                     <Select {...field} label="Gender">
-                      {genders.map((gender) => (
+                      {Object.values(Gender).map((gender) => (
                         <MenuItem key={gender} value={gender}>
                           {gender}
                         </MenuItem>
@@ -418,7 +429,7 @@ const EditSeekerModal = ({
                   <FormControl fullWidth margin="normal">
                     <InputLabel>Marital Status</InputLabel>
                     <Select {...field} label="Marital Status">
-                      {maritalStatuses.map((status) => (
+                      {Object.values(MaritalStatus).map((status) => (
                         <MenuItem key={status} value={status}>
                           {status}
                         </MenuItem>
@@ -433,7 +444,7 @@ const EditSeekerModal = ({
           <Divider sx={{ my: 2 }} />
 
           <Box mb={3}>
-            <Typography variant="subtitle1" gutterBottom>
+            <Typography className="mb-4" variant="subtitle1" gutterBottom>
               Languages
             </Typography>
             <Box display="flex" gap={2} mb={2}>

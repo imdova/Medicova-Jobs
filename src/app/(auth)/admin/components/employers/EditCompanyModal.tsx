@@ -163,9 +163,6 @@ const EditCompanyModal = ({
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">Edit Company</Typography>
-          <Button onClick={onClose} color="inherit">
-            <Close />
-          </Button>
         </Box>
       </DialogTitle>
 
@@ -331,32 +328,33 @@ const EditCompanyModal = ({
                           (s) => s.isoCode === e.target.value,
                         );
                         if (state) {
-                          field.onChange(state);
+                          field.onChange({
+                            code: state.isoCode,
+                            name: state.name,
+                          });
                         }
                       }}
                       value={field.value?.code || ""}
                       renderValue={(selected) => {
+                        if (!selected) return "";
                         const state = states.find(
                           (s) => s.isoCode === selected,
                         );
                         return state?.name || selected;
                       }}
                     >
-                      {selectedCountry ? (
+                      {watch("country.code") ? (
                         states.map((state) => (
                           <MenuItem key={state.isoCode} value={state.isoCode}>
                             {state.name}
                           </MenuItem>
                         ))
                       ) : (
-                        <MenuItem disabled>Select country first</MenuItem>
+                        <MenuItem disabled value="">
+                          Select country first
+                        </MenuItem>
                       )}
                     </Select>
-                    {errors.state && (
-                      <Typography variant="caption" color="error">
-                        {errors.state.message}
-                      </Typography>
-                    )}
                   </FormControl>
                 )}
               />
