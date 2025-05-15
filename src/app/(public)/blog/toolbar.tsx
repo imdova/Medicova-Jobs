@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import StylePanel from "./stylePanel";
 import BlocksPanel from "./blocksPanel";
 import SettingsPanel from "./SettingsPanel";
-import FormsPanel from "./formsPanel";
 
 interface ToolBarProps {
   settings: BlogSettings;
@@ -79,14 +78,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setSelectedTab={setSelectedTab}
             />
           )}
-          {selectedTab === "forms" && (
-            <FormsPanel
-              forms={forms}
-              setForms={setForms}
-              selectedForm={selectedForm}
-              setSelectedForm={setSelectedForm}
-            />
-          )}
+         {/* {selectedTab === "forms" && (
+            // <FormsPanel
+            //   forms={forms}
+            //   setForms={setForms}
+            //   selectedForm={selectedForm}
+            //   setSelectedForm={setSelectedForm}
+            // />
+          )} */}
           {selectedTab === "settings" && (
             <SettingsPanel
               settings={settings}
