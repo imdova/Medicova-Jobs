@@ -389,7 +389,7 @@ const SubscriptionPlansPage: React.FC = () => {
     <Box sx={{ pt: 2 }}>
       {/* Table total Plans */}
       <div className="mb-6">{/* <TotalPlansTable endPoint={""} /> */}</div>
-      <div className="mb-6 space-y-4 rounded-xl border bg-white p-3 shadow-soft">
+      <div className="shadow-soft mb-6 space-y-4 rounded-xl border bg-white p-3">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <h2 className="text-lg font-semibold">
             Total Plans: {Orederplans.length}
@@ -416,7 +416,7 @@ const SubscriptionPlansPage: React.FC = () => {
               placeholder="Search Plans..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-green-500 focus:outline-none focus:ring-green-500"
+              className="block w-full rounded-md border border-gray-300 py-2 pr-3 pl-10 text-sm focus:border-green-500 focus:ring-green-500 focus:outline-none"
             />
           </div>
         </div>
@@ -452,7 +452,7 @@ const SubscriptionPlansPage: React.FC = () => {
 
       {/* Access Buttons */}
       <Box
-        className="flex-col bg-primary-100 md:flex-row"
+        className="bg-primary-100 flex-col md:flex-row"
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -494,7 +494,12 @@ const SubscriptionPlansPage: React.FC = () => {
 
       <Grid container spacing={3} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
         {plansData.map((plan, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 12, sm: 6, md: 3 }}
+            key={index}
+          >
             <Card
               sx={{
                 p: 1, // Reduced padding for a smaller overall card size
@@ -781,7 +786,7 @@ const SubscriptionPlansPage: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-      <div className="mt-4 rounded-xl border bg-white shadow-soft">
+      <div className="shadow-soft mt-4 rounded-xl border bg-white">
         <h2 className="p-4 text-xl font-semibold">Plan Setting</h2>
         {/* Table */}
         <DataTable<PricingRecord>

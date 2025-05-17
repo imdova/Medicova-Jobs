@@ -11,15 +11,15 @@ import { Path } from "react-hook-form";
 import SortableHeader from "./SortableHeader";
 import { cn } from "@/util";
 
-interface DataTableProps<T> {
+interface DataTableProps<T extends { id: string | number }> {
   data: T[];
   total?: number;
   className?: string;
   cellClassName?: string;
   headerClassName?: string;
   columns: ColumnConfig<T>[]; // Column definitions
-  selected?: (number | string)[];
-  setSelected?: React.Dispatch<React.SetStateAction<(number | string)[]>>;
+  selected?: (string | number)[];
+  setSelected?: React.Dispatch<React.SetStateAction<(string | number)[]>>;
   onRowClick?: (item: T) => void; // Click handler for rows
   onClick?: (folder: T) => void;
   onEdit?: (folder: T) => void;
@@ -32,7 +32,7 @@ interface DataTableProps<T> {
   isSelectable?: boolean;
 }
 
-function DataTable<T extends { id: number | string }>({
+function DataTable<T extends { id: string | number }>({
   data,
   noDataMessage,
   columns,
@@ -102,21 +102,18 @@ function DataTable<T extends { id: number | string }>({
     }
   };
 
-  const handleSelect = (id: number | string) => {
+  const handleSelect = (id: string | number) => {
     if (!setSelected) return;
 
     const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = [...selected, id];
+      setSelected([...selected, id]);
     } else {
-      newSelected = selected.filter((item) => item !== id);
+      setSelected(selected.filter((item) => item !== id));
     }
-
-    setSelected(newSelected);
   };
 
-  const isSelected = (id: number | string) => selected.indexOf(id) !== -1;
+  const isSelected = (id: string | number) => selected.indexOf(id) !== -1;
 
   return (
     <div className="grid w-full grid-cols-1 text-[10px]">

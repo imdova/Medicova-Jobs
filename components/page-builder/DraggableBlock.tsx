@@ -30,8 +30,8 @@ export function DraggableBlock({
 }: DraggableBlockProps) {
   const isSelected = selectedBlock?.id === block.id;
 
-  const dragRef = useRef<HTMLDivElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const previewRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: block.type,

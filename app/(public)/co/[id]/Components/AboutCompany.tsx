@@ -5,7 +5,6 @@ import ClampedText from "@/components/UI/ClampedText";
 import EmptyCard from "@/components/UI/emptyCard";
 import { Company, FieldConfig } from "@/types";
 import { useState } from "react";
-import DynamicFormModal from "@/components/form/DynamicFormModal";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import { TAGS } from "@/api";

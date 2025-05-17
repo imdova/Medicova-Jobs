@@ -454,7 +454,7 @@ export interface FieldConfig<T = any> {
   returnOption?: boolean;
   resetFields?: FieldConfig<T>["name"][]; // New property for fields to reset
   textFieldProps?: Partial<TextFieldProps>;
-  dateFieldProps?: Partial<DatePickerProps<Dayjs, boolean>>;
+  dateFieldProps?: Partial<DatePickerProps>;
   selectProps?: Partial<SelectProps>;
   component?: React.ComponentType<any>;
   componentProps?: Record<string, any>;

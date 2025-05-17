@@ -63,11 +63,11 @@ const UsersTab: React.FC<{ user: User }> = ({ user }) => {
       </Box>
 
       {/* User Cards */}
-      <Grid container spacing={2}>
+      <div className="mt-1 grid grid-cols-12 gap-4">
         {Array(4)
           .fill(0)
           .map((_, index) => (
-            <Grid item xs={12} key={index}>
+            <div className="col-span-12" key={index}>
               <Card
                 variant="outlined"
                 sx={{
@@ -164,9 +164,9 @@ const UsersTab: React.FC<{ user: User }> = ({ user }) => {
                 </Box>
                 {/* Action Icons */}
               </Card>
-            </Grid>
+            </div>
           ))}
-      </Grid>
+      </div>
     </div>
   );
 };

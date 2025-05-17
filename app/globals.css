@@ -164,15 +164,15 @@ html {
     max-width: calc(100vw - 2rem); /* base */
 
     /* // side bar + scrollbar + paddings and margins */
-    @screen sm {
+    @media (min-width: 640px) {
       max-width: calc(640px - 2.5rem);
     }
     /* // side bar + scrollbar + paddings and margins */
-    @screen md {
+    @media (min-width: 768px) {
       max-width: calc(100vw - 119.5px);
     }
 
-    @screen xl {
+    @media (min-width: 1280px) {
       max-width: calc(1300px - 250px - 3.75rem);
     }
   }

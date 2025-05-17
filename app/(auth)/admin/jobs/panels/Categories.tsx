@@ -107,7 +107,6 @@ const Categories: React.FC = () => {
         setIsLoading((prev) => ({ ...prev, initial: false }));
       }
     };
-
     fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

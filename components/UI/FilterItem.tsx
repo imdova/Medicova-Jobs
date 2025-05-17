@@ -72,7 +72,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
     const newValue = isAllSelected
       ? [] // Deselect all if "All" is checked
       : items.map((option) => option.value);
-    const params = [];
+    const params: FilterParam[] = [];
     params.push({ sectionKey, value: newValue });
     if (resetSections && resetSections?.length > 0) {
       const resetParams: FilterParam[] = resetSections.map((key) => ({
@@ -94,7 +94,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
     } else {
       newValue = value.includes(optionValue) ? [] : [optionValue]; // Only one can be selected
     }
-    const params = [];
+    const params: FilterParam[] = [];
     params.push({ sectionKey, value: newValue });
     if (
       resetSections &&
@@ -176,8 +176,8 @@ const FilterItem: React.FC<FilterItemProps> = ({
                       <div className="h-5 w-5 rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2 border-primary bg-primary">
-                        <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
+                      <div className="border-primary bg-primary flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2">
+                        <CheckIcon className="text-primary-foreground m-auto h-4 w-4" />
                       </div>
                     }
                     sx={{ padding: 0, px: 1 }}
@@ -201,8 +201,8 @@ const FilterItem: React.FC<FilterItemProps> = ({
                       <div className="h-5 w-5 rounded-md rounded-tr-none border-2 border-[#D6DDEB]" />
                     }
                     checkedIcon={
-                      <div className="flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2 border-primary bg-primary">
-                        <CheckIcon className="m-auto h-4 w-4 text-primary-foreground" />
+                      <div className="border-primary bg-primary flex h-5 w-5 items-center justify-center rounded-md rounded-tr-none border-2">
+                        <CheckIcon className="text-primary-foreground m-auto h-4 w-4" />
                       </div>
                     }
                     sx={{ padding: 0, px: 1 }}

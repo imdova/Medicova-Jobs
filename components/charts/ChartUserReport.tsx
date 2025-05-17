@@ -17,7 +17,7 @@ const ChartUserReport: React.FC<ChartUserProps> = ({
     <>
       <div className="flex w-full items-center justify-between p-4">
         <div>
-          <span className="mb-2 text-secondary">Statistics</span>
+          <span className="text-secondary mb-2">Statistics</span>
           <h2>Employer Report</h2>
         </div>
         {/* <NestedMenu /> */}
@@ -40,13 +40,13 @@ const ChartUserReport: React.FC<ChartUserProps> = ({
         borderRadius={6} // Adds rounded corners
         slotProps={{
           legend: {
-            direction: "row",
-            position: { vertical: "bottom", horizontal: "middle" },
-            hidden: true,
-          }, //  Positions the legend at the bottom-middle and aligns it in a row.
+            direction: "horizontal",
+            position: { vertical: "bottom", horizontal: "center" },
+          },
         }}
         xAxis={[
           {
+            id: "months",
             scaleType: "band",
             data: category,
             barGapRatio: 0.8,
