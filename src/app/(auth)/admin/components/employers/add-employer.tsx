@@ -222,7 +222,7 @@ const AddNewEmployer: React.FC<AddNewEmployerProps> = ({
       maxWidth="sm"
     >
       <Typography
-        className="m-3 w-fit border-b-2 border-primary p-3 text-primary"
+        className="border-primary text-primary m-3 w-fit border-b-2 p-3"
         variant="h6"
         gutterBottom
       >
@@ -231,7 +231,7 @@ const AddNewEmployer: React.FC<AddNewEmployerProps> = ({
 
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="my-5 flex flex-col items-center gap-3 border-b pb-5 md:flex-row">
+          <div className="my-5 flex flex-col items-center gap-3 border-b border-gray-200 pb-5 md:flex-row">
             <div className="group w-full md:w-fit">
               {previewImage ? (
                 <div className="relative h-full w-full">
@@ -249,7 +249,7 @@ const AddNewEmployer: React.FC<AddNewEmployerProps> = ({
                       e.stopPropagation();
                       handleDeleteImage();
                     }}
-                    className="absolute right-2 top-2 hidden rounded-full bg-red-500 p-1 text-white hover:bg-red-600 group-hover:block"
+                    className="absolute top-2 right-2 hidden rounded-full bg-red-500 p-1 text-white group-hover:block hover:bg-red-600"
                   >
                     <X size={15} />
                   </button>
@@ -257,9 +257,9 @@ const AddNewEmployer: React.FC<AddNewEmployerProps> = ({
               ) : (
                 <label
                   htmlFor="dropzone-file"
-                  className="group relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-2 text-gray-400 hover:border-primary hover:text-primary md:h-52 md:w-52"
+                  className="group hover:border-primary hover:text-primary relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-2 text-gray-400 md:h-52 md:w-52"
                 >
-                  <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <svg
                       className="mb-3"
                       width="28"
@@ -763,7 +763,7 @@ const AddNewEmployer: React.FC<AddNewEmployerProps> = ({
                   variant="text"
                   size="small"
                   onClick={handleAddSocialLink}
-                  className="mt-2 text-primary"
+                  className="text-primary mt-2"
                 >
                   Add your first link
                 </Button>

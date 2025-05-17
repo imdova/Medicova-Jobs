@@ -46,14 +46,14 @@ const StatusCard: React.FC<StatusCardType> = ({
   return (
     <article
       className={clsx(
-        "rounded-base border border-gray-200 bg-white p-4 shadow-soft",
+        "rounded-base shadow-soft border border-gray-200 bg-white p-4",
         className,
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="text-2xl font-medium text-gray-900">{value}</p>
+          <p className="text-xs text-gray-500">{title}</p>
+          <p className="text-xl font-medium text-gray-900">{value}</p>
         </div>
         {icon}
       </div>
@@ -62,7 +62,7 @@ const StatusCard: React.FC<StatusCardType> = ({
           {trend.value && trendIcon}
           <p className="flex gap-2">
             {trend.value && (
-              <span className="text-xs font-medium">{trend.value}</span>
+              <span className="text-[10px] font-medium">{trend.value}</span>
             )}
             <span className="text-xs text-gray-500">{trend.description}</span>
           </p>

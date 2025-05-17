@@ -12,9 +12,8 @@ import {
   Select,
   MenuItem,
   Button,
-  CircularProgress,
 } from "@mui/material";
-import { Add, Save, RestartAlt } from "@mui/icons-material";
+import { Add, Save, Undo } from "@mui/icons-material";
 import {
   API_CREATE_CAREER_LEVEL,
   API_CREATE_CATEGORY,
@@ -28,15 +27,9 @@ import {
   API_GET_SPECIALITIES_BY_CATEGORY,
 } from "@/api/admin";
 
-export type Specialty = {
-  id: string;
-  name: string;
-};
+export type Specialty = { id: string; name: string };
 
-export type CareerLevel = {
-  id: string;
-  name: string;
-};
+export type CareerLevel = { id: string; name: string };
 
 export type Category = {
   id: string;
@@ -49,32 +42,29 @@ const Categories: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [selectedIndustryId, setSelectedIndustryId] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [specialties, setSpecialties] = useState<Specialty[]>([]);
-  const [careerLevels, setCareerLevels] = useState<CareerLevel[]>([]);
+  const [specialties, setSpecialties] = useState<Category[]>([]);
+  const [careerLevels, setCareerLevels] = useState<Category[]>([]);
   const [industries, setIndustries] = useState<{ id: string; name: string }[]>(
     [],
   );
 
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [isLoading, setIsLoading] = useState({
-    initial: true,
-    action: false,
-  });
+  const [isLoading, setIsLoading] = useState({ initial: true, action: false });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const [checkedSpecialties, setCheckedSpecialties] = useState<{
-    [key: string]: string[];
+    [key: string]: Specialty[];
   }>({});
   const [checkedLevels, setCheckedLevels] = useState<{
     [key: string]: string[];
   }>({});
 
-  // Store initial checked states for reset functionality
-  const [initialCheckedStates, setInitialCheckedStates] = useState<{
-    specialties: { [key: string]: string[] };
-    levels: { [key: string]: string[] };
-  }>({ specialties: {}, levels: {} });
+  // Store initial selections to reset to
+  const [initialSelections, setInitialSelections] = useState({
+    specialties: {} as { [key: string]: Specialty[] },
+    levels: {} as { [key: string]: string[] },
+  });
 
   // Fetch data with retry logic
   const fetchWithRetry = async (url: string, retries = 3): Promise<any> => {
@@ -93,43 +83,31 @@ const Categories: React.FC = () => {
   };
 
   // Fetch all data
+  // Fetch initial categories data
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchCategories = async () => {
       try {
         setIsLoading((prev) => ({ ...prev, initial: true }));
         setError(null);
 
-        // Fetch categories
-        const categoriesResponse = await fetchWithRetry(API_GET_CATEGORIES);
-        const categoriesData = categoriesResponse.data.map((category: any) => ({
+        const response = await fetchWithRetry(API_GET_CATEGORIES);
+        const categoriesData = response.data.map((category: any) => ({
           id: category.id,
           name: category.name,
-          specialties: [],
-          careerLevels: [],
         }));
 
         setCategories(categoriesData);
-
-        // Fetch industries
-        const industriesResponse = await fetch(API_GET_INDUSTRIES);
-        if (!industriesResponse.ok) {
-          throw new Error("Failed to fetch industries");
-        }
-        const industriesData = await industriesResponse.json();
-        setIndustries(industriesData.data);
-
         if (categoriesData.length > 0) {
           setSelectedCategoryId(categoriesData[0].id);
         }
       } catch (err: any) {
-        console.error("Error fetching initial data:", err);
-        setError(err.message || "Failed to load initial data");
+        console.error("Error fetching categories:", err);
+        setError(err.message || "Failed to load categories");
       } finally {
         setIsLoading((prev) => ({ ...prev, initial: false }));
       }
     };
-
-    fetchInitialData();
+    fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -149,58 +127,48 @@ const Categories: React.FC = () => {
           ),
         ]);
 
-        if (!specialtiesResponse.ok || !levelsResponse.ok) {
-          throw new Error("Failed to fetch category details");
-        }
-
+        // Parse JSON responses
         const specialtiesData = await specialtiesResponse.json();
         const levelsData = await levelsResponse.json();
-
         setSpecialties(specialtiesData.data);
         setCareerLevels(levelsData.data);
 
-        // Update categories state with new data
+        // Store initial selections when data is loaded
+        setInitialSelections({
+          specialties: { ...checkedSpecialties },
+          levels: { ...checkedLevels },
+        });
+
+        // Validate responses
+        if (!specialtiesData?.data || !levelsData?.data) {
+          throw new Error("Invalid API response structure");
+        }
+        // Update categories state with  new data
         setCategories((prev) =>
           prev.map((category) =>
             category.id === selectedCategoryId
               ? {
                   ...category,
-                  specialties: specialtiesData.data,
-                  careerLevels: levelsData.data,
+                  specialties: specialtiesData.data.map((spec: any) => ({
+                    id: spec.id,
+                    created_at: spec.created_at,
+                    updated_at: spec.updated_at,
+                    deleted_at: spec.deleted_at,
+                    _version: spec._version,
+                    name: spec.name,
+                  })),
+                  careerLevels: levelsData.data.map((level: any) => ({
+                    id: level.id,
+                    created_at: level.created_at,
+                    updated_at: level.updated_at,
+                    deleted_at: level.deleted_at,
+                    _version: level._version,
+                    name: level.name,
+                  })),
                 }
               : category,
           ),
         );
-
-        // Check all specialties and career levels by default when category is selected
-        const allSpecialtyIds = specialtiesData.data.map(
-          (spec: Specialty) => spec.id,
-        );
-        const allLevelIds = levelsData.data.map(
-          (level: CareerLevel) => level.id,
-        );
-
-        setCheckedSpecialties((prev) => ({
-          ...prev,
-          [selectedCategoryId]: allSpecialtyIds,
-        }));
-
-        setCheckedLevels((prev) => ({
-          ...prev,
-          [selectedCategoryId]: allLevelIds,
-        }));
-
-        // Save initial checked states for reset functionality
-        setInitialCheckedStates({
-          specialties: {
-            ...initialCheckedStates.specialties,
-            [selectedCategoryId]: allSpecialtyIds,
-          },
-          levels: {
-            ...initialCheckedStates.levels,
-            [selectedCategoryId]: allLevelIds,
-          },
-        });
       } catch (err: any) {
         console.error("Error fetching category details:", err);
         setError(err.message || "Failed to load category details");
@@ -208,10 +176,24 @@ const Categories: React.FC = () => {
         setIsLoading((prev) => ({ ...prev, action: false }));
       }
     };
+    const fetchIndustries = async () => {
+      try {
+        const response = await fetch(API_GET_INDUSTRIES);
 
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch industries");
+        }
+
+        const { data } = await response.json();
+        setIndustries(data); // Assuming API returns: { data: [{ id, name }, ...] }
+      } catch (err: any) {
+        console.error("Error fetching industries:", err);
+      }
+    };
+    fetchIndustries();
     fetchCategoryDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, checkedLevels, checkedSpecialties]);
 
   const handleAddCategory = async () => {
     const trimmedName = newCategoryName.trim();
@@ -226,9 +208,7 @@ const Categories: React.FC = () => {
 
       const response = await fetch(API_CREATE_CATEGORY, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: trimmedName,
           industries: [selectedIndustryId],
@@ -241,6 +221,9 @@ const Categories: React.FC = () => {
       }
 
       const result = await response.json();
+      console.log("New category response:", result);
+
+      // Ensure the response structure is as expected
       const newCategory = result?.data;
 
       if (!newCategory || !newCategory.id || !newCategory.name) {
@@ -257,7 +240,7 @@ const Categories: React.FC = () => {
         },
       ]);
 
-      setNewCategoryName("");
+      setNewCategoryName(""); // Clear the input field after successful addition
       setSuccess("Category added successfully");
     } catch (err: any) {
       console.error("Error adding category:", err);
@@ -295,32 +278,59 @@ const Categories: React.FC = () => {
     }
   };
 
-  const handleCheckSpecialty = (categoryId: string, specialtyId: string) => {
-    setCheckedSpecialties((prev) => {
-      const currentChecked = prev[categoryId] || [];
-      const isChecked = currentChecked.includes(specialtyId);
+  const handleCheckSpecialty = async (
+    categoryId: string,
+    specialty: Specialty,
+  ) => {
+    try {
+      setIsLoading((prev) => ({ ...prev, action: true }));
+      setError(null);
 
-      return {
-        ...prev,
-        [categoryId]: isChecked
-          ? currentChecked.filter((id) => id !== specialtyId)
-          : [...currentChecked, specialtyId],
-      };
-    });
+      // Optimistic update
+      setCheckedSpecialties((prev) => {
+        const existing = prev[categoryId] || [];
+        const isChecked = existing.some((s) => s.id === specialty.id);
+        return {
+          ...prev,
+          [categoryId]: isChecked
+            ? existing.filter((s) => s.id !== specialty.id)
+            : [...existing, specialty],
+        };
+      });
+    } catch (err: any) {
+      console.error("Error updating specialty:", err);
+      setError(err.message || "Failed to update specialty");
+      // Revert optimistic update
+      setCheckedSpecialties((prev) => prev);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, action: false }));
+    }
   };
 
-  const handleCheckLevel = (categoryId: string, levelId: string) => {
-    setCheckedLevels((prev) => {
-      const currentChecked = prev[categoryId] || [];
-      const isChecked = currentChecked.includes(levelId);
+  const handleCheckLevel = async (categoryId: string, levelId: string) => {
+    try {
+      setIsLoading((prev) => ({ ...prev, action: true }));
+      setError(null);
 
-      return {
-        ...prev,
-        [categoryId]: isChecked
-          ? currentChecked.filter((id) => id !== levelId)
-          : [...currentChecked, levelId],
-      };
-    });
+      // Optimistic update
+      setCheckedLevels((prev) => {
+        const existing = prev[categoryId] || [];
+        const isChecked = existing.includes(levelId);
+        return {
+          ...prev,
+          [categoryId]: isChecked
+            ? existing.filter((id) => id !== levelId)
+            : [...existing, levelId],
+        };
+      });
+    } catch (err: any) {
+      console.error("Error updating level:", err);
+      setError(err.message || "Failed to update level");
+      // Revert optimistic update
+      setCheckedLevels((prev) => prev);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, action: false }));
+    }
   };
 
   const handleAddSpecialty = async (categoryId: string, name: string) => {
@@ -328,11 +338,10 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
+      // Make the POST request
       const response = await fetch(API_CREATE_SPECIALITY, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ categoryId, name }),
       });
 
@@ -342,6 +351,7 @@ const Categories: React.FC = () => {
 
       const newSpecialty = await response.json();
 
+      // Update local state
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === categoryId
@@ -352,18 +362,13 @@ const Categories: React.FC = () => {
                   {
                     id: newSpecialty.id,
                     name: newSpecialty.name,
+                    subSpecialties: newSpecialty.subSpecialties || [],
                   },
                 ],
               }
             : cat,
         ),
       );
-
-      // Add the new specialty to checked items
-      setCheckedSpecialties((prev) => ({
-        ...prev,
-        [categoryId]: [...(prev[categoryId] || []), newSpecialty.id],
-      }));
 
       setSuccess("Specialty added successfully");
     } catch (err: any) {
@@ -381,11 +386,9 @@ const Categories: React.FC = () => {
 
       const response = await fetch(API_CREATE_CAREER_LEVEL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          categoriesIds: [categoryId],
+          categoriesIds: [categoryId], // must be an array
           name,
         }),
       });
@@ -406,21 +409,12 @@ const Categories: React.FC = () => {
                 ...cat,
                 careerLevels: [
                   ...cat.careerLevels,
-                  {
-                    id: newLevel.id,
-                    name: newLevel.name,
-                  },
+                  { id: newLevel.id, name: newLevel.name },
                 ],
               }
             : cat,
         ),
       );
-
-      // Add the new level to checked items
-      setCheckedLevels((prev) => ({
-        ...prev,
-        [categoryId]: [...(prev[categoryId] || []), newLevel.id],
-      }));
 
       setSuccess("Career level added successfully");
     } catch (err: any) {
@@ -438,9 +432,7 @@ const Categories: React.FC = () => {
 
       const response = await fetch(`${API_DELETE_CAREER_LEVEL}?id=${levelId}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
@@ -448,6 +440,7 @@ const Categories: React.FC = () => {
         throw new Error(errorData.message || "Failed to delete level");
       }
 
+      // Update local state
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === categoryId
@@ -458,12 +451,6 @@ const Categories: React.FC = () => {
             : cat,
         ),
       );
-
-      // Remove the deleted level from checked items
-      setCheckedLevels((prev) => ({
-        ...prev,
-        [categoryId]: (prev[categoryId] || []).filter((id) => id !== levelId),
-      }));
 
       setSuccess("Career level deleted successfully");
     } catch (err: any) {
@@ -484,12 +471,7 @@ const Categories: React.FC = () => {
 
       const response = await fetch(
         `${API_DELETE_SPECIALITY}?id=${specialtyId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
+        { method: "DELETE", headers: { "Content-Type": "application/json" } },
       );
 
       if (!response.ok) {
@@ -497,6 +479,7 @@ const Categories: React.FC = () => {
         throw new Error(errorData.message || "Failed to delete Specialty");
       }
 
+      // Update local state
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === categoryId
@@ -509,14 +492,6 @@ const Categories: React.FC = () => {
             : cat,
         ),
       );
-
-      // Remove the deleted specialty from checked items
-      setCheckedSpecialties((prev) => ({
-        ...prev,
-        [categoryId]: (prev[categoryId] || []).filter(
-          (id) => id !== specialtyId,
-        ),
-      }));
 
       setSuccess("Specialty deleted successfully");
     } catch (err: any) {
@@ -532,8 +507,18 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      // Here you would typically make API calls to save the checked states
-      // For now, we'll just show a success message
+      // Here you would typically make API calls to save the changes
+      // For example:
+      // await Promise.all([
+      //   saveCheckedSpecialties(checkedSpecialties),
+      //   saveCheckedLevels(checkedLevels)
+      // ]);
+
+      // For now, we'll just update the initial selections to the current ones
+      setInitialSelections({
+        specialties: { ...checkedSpecialties },
+        levels: { ...checkedLevels },
+      });
 
       setSuccess("Changes saved successfully");
     } catch (err: any) {
@@ -545,156 +530,145 @@ const Categories: React.FC = () => {
   };
 
   const handleResetChanges = () => {
-    if (!selectedCategoryId) return;
-
-    setCheckedSpecialties((prev) => ({
-      ...prev,
-      [selectedCategoryId]: [
-        ...(initialCheckedStates.specialties[selectedCategoryId] || []),
-      ],
-    }));
-
-    setCheckedLevels((prev) => ({
-      ...prev,
-      [selectedCategoryId]: [
-        ...(initialCheckedStates.levels[selectedCategoryId] || []),
-      ],
-    }));
-
+    setCheckedSpecialties({ ...initialSelections.specialties });
+    setCheckedLevels({ ...initialSelections.levels });
     setSuccess("Changes reset successfully");
   };
 
-  const selectedCategory = categories.find(
-    (cat) => cat.id === selectedCategoryId,
-  );
+  // Check if there are changes to save
+  const hasChanges = () => {
+    return (
+      JSON.stringify(checkedSpecialties) !==
+        JSON.stringify(initialSelections.specialties) ||
+      JSON.stringify(checkedLevels) !== JSON.stringify(initialSelections.levels)
+    );
+  };
 
   return (
-    <div className="grid grid-cols-1 gap-3 lg:grid-cols-9">
-      <Snackbar
-        open={!!success}
-        autoHideDuration={6000}
-        onClose={() => setSuccess(null)}
-      >
-        <Alert severity="success">{success}</Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={!!error}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert severity="error">{error}</Alert>
-      </Snackbar>
-
-      <div className="col-span-4 rounded-xl border bg-white p-3 shadow-soft lg:col-span-3">
-        <Box sx={{ flex: 1 }}>
-          <Box sx={{ mb: 2, width: "100%" }}>
-            <FormControl fullWidth size="small">
-              <Select
-                labelId="industry"
-                value={selectedIndustryId}
-                onChange={(e) => setSelectedIndustryId(e.target.value)}
-                displayEmpty
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Industry
-                </MenuItem>
-                {industries.map((industry) => (
-                  <MenuItem key={industry.id} value={industry.id}>
-                    {industry.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <div className="flex gap-2">
-            <TextField
-              size="small"
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-              placeholder="New Category"
-              variant="outlined"
-              className="w-full"
-              fullWidth
-              disabled={isLoading.action}
-              onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
-            />
-            <IconButton
-              className="rounded-lg bg-primary text-white hover:bg-black"
-              onClick={handleAddCategory}
-              disabled={isLoading.action}
-            >
-              {isLoading.action ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                <Add />
-              )}
-            </IconButton>
-          </div>
-
-          <CategoriesSidebar
-            categoriesData={categories}
-            selected={selectedCategoryId}
-            onSelect={setSelectedCategoryId}
-            onDeleteCategory={handleDeleteCategory}
-            isLoading={isLoading.action}
-          />
-        </Box>
+    <div>
+      <div>
+        <div className="mb-4 flex justify-end gap-2">
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<Undo />}
+            onClick={handleResetChanges}
+            disabled={!hasChanges() || isLoading.action}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Save />}
+            onClick={handleSaveChanges}
+            disabled={!hasChanges() || isLoading.action}
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-9">
+        <Snackbar
+          open={!!success}
+          autoHideDuration={6000}
+          onClose={() => setSuccess(null)}
+        >
+          <Alert severity="success">{success}</Alert>
+        </Snackbar>
 
-      {selectedCategoryId && (
-        <>
-          <div className="col-span-1 lg:col-span-3">
-            <SpecialtiesList
-              categoryId={selectedCategoryId}
-              specialties={selectedCategory?.specialties || []}
-              checkedItems={checkedSpecialties[selectedCategoryId] || []}
-              onCheck={handleCheckSpecialty}
-              isLoading={isLoading.action}
-              onAddSpecialty={handleAddSpecialty}
-              onDeleteSpecialty={handleDeleteSpecialty}
-            />
-          </div>
-          <div className="col-span-1 lg:col-span-3">
-            {/* <CareerLevels
-              categoryId={selectedCategoryId}
-              levels={selectedCategory?.careerLevels || []}
-              checkedItems={checkedLevels[selectedCategoryId] || []}
-              onCheck={handleCheckLevel}
-              onAddLevel={handleAddLevel}
-              onDeleteLevel={handleDeleteLevel}
-              isLoading={isLoading.action}
-            /> */}
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError(null)}
+        >
+          <Alert severity="error">{error}</Alert>
+        </Snackbar>
 
-            <Box
-              sx={{
-                mt: 2,
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 2,
-              }}
-            >
-              <Button
-                variant="outlined"
-                startIcon={<RestartAlt />}
-                onClick={handleResetChanges}
-                disabled={isLoading.action}
-              >
-                Reset
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Save />}
-                onClick={handleSaveChanges}
-                disabled={isLoading.action}
-              >
-                Save Changes
-              </Button>
+        <div className="shadow-soft col-span-4 rounded-xl border bg-white p-3 lg:col-span-3">
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ mb: 2, width: "100%" }}>
+              <FormControl fullWidth size="small">
+                <Select
+                  labelId="industry"
+                  value={selectedIndustryId}
+                  onChange={(e) => setSelectedIndustryId(e.target.value)}
+                  displayEmpty
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select Industry
+                  </MenuItem>
+                  {industries.map((industry) => (
+                    <MenuItem key={industry.id} value={industry.id}>
+                      {industry.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
-          </div>
-        </>
-      )}
+            <div className="flex gap-2">
+              <TextField
+                size="small"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder="New Category"
+                variant="outlined"
+                className="w-full"
+                fullWidth
+                disabled={isLoading.action}
+                onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
+              />
+              <IconButton
+                className="bg-primary rounded-lg text-white hover:bg-black"
+                onClick={handleAddCategory}
+              >
+                <Add />
+              </IconButton>
+            </div>
+
+            <CategoriesSidebar
+              categoriesData={categories}
+              selected={selectedCategoryId}
+              onSelect={setSelectedCategoryId}
+              onDeleteCategory={handleDeleteCategory}
+              isLoading={isLoading.action}
+            />
+          </Box>
+        </div>
+
+        {selectedCategoryId && (
+          <>
+            <div className="col-span-1 lg:col-span-6">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="lg:col-span-1">
+                  <SpecialtiesList
+                    categoryId={selectedCategoryId}
+                    specialties={specialties}
+                    categoriesData={categories}
+                    checkedItems={checkedSpecialties}
+                    onCheck={handleCheckSpecialty}
+                    isLoading={isLoading.action}
+                    onAddSpecialty={handleAddSpecialty}
+                    onDeleteSpecialty={handleDeleteSpecialty}
+                  />
+                </div>
+                <div className="lg:col-span-1">
+                  <CareerLevels
+                    categoryId={selectedCategoryId}
+                    categoriesData={categories}
+                    checkedItems={checkedLevels}
+                    onCheck={handleCheckLevel}
+                    onAddLevel={handleAddLevel}
+                    onDeleteLevel={handleDeleteLevel}
+                    isLoading={isLoading.action}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

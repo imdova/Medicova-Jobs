@@ -211,7 +211,7 @@ const GenericChart = ({
 
       {cards.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-6 text-sm text-secondary">
+          <h2 className="text-secondary mb-6 text-sm">
             {timePeriod} data overview
           </h2>
 
@@ -221,14 +221,16 @@ const GenericChart = ({
                 key={card.title}
                 onClick={() => setSelectedSeries(card.title)}
                 className={`flex cursor-pointer items-center gap-3 rounded-lg border p-2 shadow-sm transition ${
-                  selectedSeries === card.title ? "border-gray-400" : ""
+                  selectedSeries === card.title
+                    ? "border-gray-400"
+                    : "border-gray-100"
                 }`}
               >
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-lg ${
                     selectedSeries === card.title
                       ? "bg-primary text-white"
-                      : "bg-gray-200 text-secondary"
+                      : "text-secondary bg-gray-200"
                   }`}
                   style={{
                     backgroundColor:
@@ -238,7 +240,7 @@ const GenericChart = ({
                   {card.icon || card.title.charAt(0)}
                 </div>
                 <div>
-                  <span className="mb-2 text-xs text-secondary">
+                  <span className="text-secondary mb-2 text-xs">
                     {card.title}
                   </span>
                   <p className="font-semibold">{card.value}</p>

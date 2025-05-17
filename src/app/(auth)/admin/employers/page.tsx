@@ -3,7 +3,7 @@ import { Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { LayoutDashboard, Settings, Users } from "lucide-react";
 import { Add } from "@mui/icons-material";
-import DashboardOverView from "../components/employers/Ovarview";
+import DashboardOverView from "../components/employers/Overview";
 import EmployerListPanel from "../components/employers/EmployerList";
 import AddNewEmployer from "../components/employers/add-employer";
 
@@ -13,17 +13,17 @@ const tabs: { key: Tab; title: string; icon?: React.ReactNode }[] = [
   {
     key: "over-view",
     title: "Over View",
-    icon: <LayoutDashboard className="h-5 w-5" />,
+    icon: <LayoutDashboard className="h-4 w-4" />,
   },
   {
     key: "employer-list",
     title: "Employer List",
-    icon: <Users className="h-5 w-5" />,
+    icon: <Users className="h-4 w-4" />,
   },
   {
     key: "setting",
     title: "Settings",
-    icon: <Settings className="h-5 w-5" />,
+    icon: <Settings className="h-4 w-4" />,
   },
 ];
 const AdminPage: React.FC = () => {
@@ -32,8 +32,8 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="w-full space-y-3 px-4 md:px-5">
-      <div className="flex w-full gap-3">
-        <div className="flex flex-1 flex-col items-center justify-between overflow-hidden rounded-base border border-gray-200 shadow-soft sm:flex-row md:items-center">
+      <div className="flex w-full flex-col gap-3 md:flex-row">
+        <div className="rounded-base shadow-soft flex flex-1 flex-col items-center justify-between overflow-hidden border border-gray-200 sm:flex-row md:items-center">
           <Tabs
             value={activeTab}
             onChange={(e, newValue) => setActiveTab(newValue)}
@@ -44,7 +44,7 @@ const AdminPage: React.FC = () => {
                 key={tab.key}
                 value={tab.key}
                 label={
-                  <span className="flex items-center gap-2 text-sm">
+                  <span className="flex items-center gap-2 text-xs">
                     {tab.icon}
                     {tab.title}
                   </span>
@@ -56,9 +56,9 @@ const AdminPage: React.FC = () => {
         <Button
           onClick={() => setModalOpen(true)}
           variant="contained"
-          startIcon={<Add className="h-5 w-5" />}
+          startIcon={<Add className="h-4 w-4" />}
         >
-          <span className="text-nowrap text-sm">Add Company</span>
+          <span className="text-xs text-nowrap">Add Company</span>
         </Button>
         <AddNewEmployer
           handleCloseModal={() => setModalOpen(false)}
