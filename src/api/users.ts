@@ -5,7 +5,6 @@ export const API_USERS_BASE = API_URL + "/api/v1.0.0";
 // Users
 export const USERS = API_USERS_BASE + "/users";
 export const API_LOGIN = USERS + "/login"; // POST
-export const API_GOOGLE_LOGIN = USERS + "/google/login"; // POST
 export const API_SEND_OTP = USERS + "/send-otp"; // POST
 export const API_VALIDATE_OTP = USERS + "/validate-otp"; // POST
 export const API_GET_ME = USERS + "/me"; // GET
@@ -23,11 +22,19 @@ export const API_LOGOUT = USERS + "/logout"; // POST
 export const API_REGISTER_USER = USERS + "/"; // POST + [userType]
 
 // new
-export const API_REGISTER_COMPANY_USER = USERS + "/register/company-user"; // POST
-export const API_VERIFY_USER = USERS + "/verify"; // GET
-export const API_LOGIN_USER = USERS + "/login"; // POST
-export const API_GOOGLE_AUTH = USERS + "/google?type="; // GET + type
-export const API_GET_ME_QUERY = USERS + "/me?token="; // GET
+export const API_REGISTER_USER_WITH_EMAIL_AND_PASSWORD = USERS + "/register"; // POST
+export const API_REGISTER_COMPANY_USER_WITH_EMAIL_AND_PASSWORD = USERS + "/register/company-user"; // POST
+export const API_LOGIN_WITH_EMAIL_AND_PASSWORD = USERS + "/login"; // POST
+export const API_GOOGLE_REGISTER = USERS + "/google/register"; // POST
+export const API_GOOGLE_LOGIN = USERS + "/google/login"; // POST
+// export const API_CHANGE_PASSWORD = USERS + "/change-password"; // POST
+export const API_RESET_PASSWORD = USERS + "/reset-password"; // POST
+export const API_SEND_TOKEN_BY_EMAIL = USERS + "/send-token/"; // POST + [email]
+export const API_REQUEST_CHANGE_EMAIL = USERS + "/request-change-mail"; // POST
+export const API_CHANGE_EMAIL = USERS + "/change-mail"; // POST
+export const API_VERIFY_EMAIL = USERS + "/verify"; // GET
+export const API_GET_CURRENT_USER = USERS + "/me"; // GET
+export const API_DELETE_USER_BY_EMAIL = USERS + "/"; // DELETE + [email]
 
 
 // Roles
