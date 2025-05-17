@@ -4,6 +4,8 @@ import {
   API_FORGET_PASSWORD,
   API_GET_ME,
   API_GET_ROLE_BY_ID,
+  API_GOOGLE_LOGIN,
+  API_GOOGLE_REGISTER,
   API_LOGIN,
   API_REGISTER_USER,
   API_SEND_OTP,
@@ -11,7 +13,6 @@ import {
 } from "@/api/users";
 import { registerData, Result } from "@/types";
 import { errorResult } from "@/util/general";
-import { transformRegisterData, transLoginData } from "@/util/user";
 import { User } from "next-auth";
 
 export const sendOTP = async (email: string): Promise<Result> => {
@@ -138,6 +139,65 @@ export const register = async (data: registerData): Promise<Result> => {
     return {
       success: true,
       message: "Registered successfully",
+      data: user,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export type GoogleRegisterData = {
+  firstName: string;
+  lastName: string;
+  picture: string;
+  accessToken: string;
+  userType: User["type"];
+  email: string;
+};
+
+export const googleRegister = async (
+  data: GoogleRegisterData,
+): Promise<Result> => {
+  try {
+    const response = await fetch(API_GOOGLE_REGISTER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) return errorResult("register");
+    const user: User = await response.json();
+    return {
+      success: true,
+      message: "Registered successfully",
+      data: user,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An error occurred",
+    };
+  }
+};
+
+export type GoogleLoginData = {
+  accessToken: string;
+  email: string;
+};
+export const googleLogin = async (data: GoogleLoginData): Promise<Result> => {
+  try {
+    const response = await fetch(API_GOOGLE_LOGIN, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) return errorResult("register");
+    const user: User = await response.json();
+    return {
+      success: true,
+      message: "login successfully",
       data: user,
     };
   } catch (error: any) {
