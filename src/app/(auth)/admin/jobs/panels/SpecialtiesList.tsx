@@ -216,11 +216,14 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
       </div>
 
       {categoriesData.map((category) => {
-        const { data: specialty, loading } = useFetch<
-          PaginatedResponse<SpecialtyItem>
-        >(
-          `https://medicova.site/api/v1.0.0/admin/sys-configurations/speciality/category?id=${category.id}`,
-        );
+        // TODO: Remove you cant use useFetch here because it will cause a  error , create component for this
+        // const { data: specialty, loading } = useFetch<
+        //   PaginatedResponse<SpecialtyItem>
+        // >(
+        //   `https://medicova.site/api/v1.0.0/admin/sys-configurations/speciality/category?id=${category.id}`,
+        // );
+        const specialty = {} as PaginatedResponse<SpecialtyItem>;
+        const loading = false;
         const isExpanded = expandedCategories[category.id];
         const allCheckedd = isCategoryAllChecked(category.id);
         const indeterminate = isCategoryIndeterminate(category.id);

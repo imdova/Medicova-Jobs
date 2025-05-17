@@ -1,7 +1,8 @@
-@import "tailwindcss";
-/* @import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap"); */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@config "../tailwind.config.js";
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap");
 
 html {
   scroll-behavior: smooth;
@@ -22,20 +23,23 @@ html {
   --error: #ff0000;
 }
 
+/* Apply global font family */
 body,
-html {
+html,
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 @layer components {
   .btn-primary {
-    @apply focus:ring-primary-foreground rounded-[10px] px-4 py-2 text-sm font-semibold uppercase focus:ring-2 md:text-base;
+    @apply rounded-[10px] px-4 py-2 text-sm font-semibold uppercase focus:ring-2 focus:ring-primary-foreground md:text-base;
   }
 
   .btn-signup {
-    @apply hover:bg-primary-foreground hover:text-primary text-nowrap text-inherit;
+    @apply text-nowrap text-inherit hover:bg-primary-foreground hover:text-primary;
   }
 
   .btn-login {
@@ -164,15 +168,15 @@ html {
     max-width: calc(100vw - 2rem); /* base */
 
     /* // side bar + scrollbar + paddings and margins */
-    @media (min-width: 640px) {
+    @screen sm {
       max-width: calc(640px - 2.5rem);
     }
     /* // side bar + scrollbar + paddings and margins */
-    @media (min-width: 768px) {
+    @screen md {
       max-width: calc(100vw - 119.5px);
     }
 
-    @media (min-width: 1280px) {
+    @screen xl {
       max-width: calc(1300px - 250px - 3.75rem);
     }
   }

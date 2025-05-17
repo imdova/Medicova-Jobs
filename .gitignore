@@ -37,7 +37,5 @@ yarn-error.log*
 next-env.d.ts
 
 .vscode
-components/auth/UsersSwitcher.tsx
+src/components/auth/UsersSwitcher.tsx
 pnpm-lock.yaml
-pnpm-workspace.yaml
-package-lock.json
