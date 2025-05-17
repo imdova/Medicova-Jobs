@@ -1,6 +1,15 @@
 import { JobData, JobsTabs } from "@/types";
-import { forgetPassword, register, serverSignIn } from "../access";
-import { API_GET_ME_QUERY } from "@/api/users";
+import {
+  forgetPassword,
+  googleLogin,
+  googleRegister,
+  register,
+  serverSignIn,
+} from "../access";
+import { API_GET_CURRENT_USER } from "@/api/users";
+import { getCookies, setCookies } from "../cookies";
+import { User } from "next-auth";
+import { divideName } from "@/util";
 
 export async function authenticateUser(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
@@ -39,7 +48,7 @@ export async function authenticateRegister(credentials: any) {
 }
 export async function authenticateToken(credentials: any) {
   const { token, callbackUrl } = credentials;
-  const data = await fetch(API_GET_ME_QUERY + token, {
+  const data = await fetch(API_GET_CURRENT_USER + token, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,18 +64,30 @@ export async function authenticateToken(credentials: any) {
 
 export async function handleSocialLogin(user: any, account: any) {
   try {
-    // const response = await fetch(`${API_URL}/api/user/login`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     email: user.email,
-    //     provider: account.provider,
-    //     providerAccountId: account.providerAccountId,
-    //   }),
-    // });
-
-    // return response.ok;
-    return true; // Do different verification for other providers that don't have `email_verified`
+    const userType = (await getCookies("userType")) as User["type"];
+    const { firstName, lastName } = divideName(user?.name);
+    if (userType) {
+      const response = await googleRegister({
+        email: user.email,
+        firstName: firstName || user.name,
+        lastName: lastName || user.name,
+        picture: user.image,
+        accessToken: account?.access_token,
+        userType: userType,
+      });
+      if (!response.success) return false;
+      const userData = response.data;
+      setCookies("user", JSON.stringify(userData));
+      return true;
+    }
+    const response = await googleLogin({
+      email: user.email,
+      accessToken: account?.access_token,
+    });
+    if (!response.success) return false;
+    const userData = response.data;
+    setCookies("user", JSON.stringify(userData));
+    return true;
   } catch (error) {
     console.error("Social login error:", error);
     return false;

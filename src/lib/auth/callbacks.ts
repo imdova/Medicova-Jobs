@@ -3,16 +3,20 @@ import { Session } from "next-auth";
 import { divideName } from "@/util";
 import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
+import { handleSocialLogin } from "./utils";
+import { cookies } from "next/headers";
 
 export const callbacks = {
   jwt: async ({
     token,
     user,
+    account,
     trigger,
     session,
   }: {
     token: JWT;
     user: any;
+    account: any;
     trigger?: "update" | "signIn" | "signUp" | undefined;
     session?: any;
   }) => {
@@ -32,6 +36,16 @@ export const callbacks = {
       token.companyEmail = user.companyEmail;
       token.permissions = user.permissions;
       token.type = user.type;
+    }
+
+    if (account?.provider === "google") {
+      const cookiesStore = cookies();
+      const userData = cookiesStore.get("user")?.value;
+      if (userData) {
+        token = JSON.parse(userData);
+        cookiesStore.delete("user");
+        cookiesStore.delete("userType");
+      }
     }
     if (trigger === "update") {
       if (session?.companyId) token.companyId = session.companyId;
@@ -70,13 +84,12 @@ export const callbacks = {
     return session;
   },
 
-  // async signIn(data: any) {
-  //   console.log("🚀 ~ signIn ~ data:", data);
-  //   // if (account?.provider === "google" || account?.provider === "facebook") {
-  //   //   return handleSocialLogin(user, account);
-  //   // }
-  //   return true;
-  // },
+  async signIn({ account, user }: { account: any; user: any }) {
+    if (account?.provider === "google" || account?.provider === "facebook") {
+      return handleSocialLogin(user, account);
+    }
+    return false;
+  },
 
   // async redirect({ url, baseUrl }: { url: any; baseUrl: any }) {
   //   console.log("🚀 ~ redirect ~ baseUrl:", baseUrl);
