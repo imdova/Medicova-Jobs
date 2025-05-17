@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import IndustriesSidebar from "./IndustriesSidebar";
 import CategoryManagement from "./CategoryManagement";
 import { API_GET_INDUSTRIES } from "@/api/admin";
+import { Button } from "@mui/material";
+import { Save, Refresh } from "@mui/icons-material";
 
 type DataType = {
   id: string;
@@ -22,6 +24,10 @@ const Industries: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [allCategoriesData, setAllCategoriesData] = useState<{
     [key: string]: DataType[];
+  }>({});
+  const [hasChanges, setHasChanges] = useState(false);
+  const [initialCheckedState, setInitialCheckedState] = useState<{
+    [key: string]: string[];
   }>({});
 
   useEffect(() => {
@@ -90,12 +96,43 @@ const Industries: React.FC = () => {
     const savedChecked = localStorage.getItem("checkedCategories");
     if (savedChecked) {
       try {
-        setCheckedCategories(JSON.parse(savedChecked));
+        const parsedData = JSON.parse(savedChecked);
+        setCheckedCategories(parsedData);
+        setInitialCheckedState(parsedData);
       } catch (err) {
         console.error("Error parsing checked categories", err);
       }
     }
   }, []);
+
+  // Track changes to checked categories
+  useEffect(() => {
+    const hasChanges =
+      JSON.stringify(checkedCategories) !== JSON.stringify(initialCheckedState);
+    setHasChanges(hasChanges);
+  }, [checkedCategories, initialCheckedState]);
+
+  const handleSave = () => {
+    try {
+      localStorage.setItem(
+        "checkedCategories",
+        JSON.stringify(checkedCategories),
+      );
+      setInitialCheckedState(checkedCategories);
+      setHasChanges(false);
+      // Here you could also add API call to save to server if needed
+      setError(null);
+      // Show success message or toast
+    } catch (err) {
+      console.error("Failed to save changes", err);
+      setError("Failed to save changes");
+    }
+  };
+
+  const handleReset = () => {
+    setCheckedCategories(initialCheckedState);
+    setHasChanges(false);
+  };
 
   if (isLoading) {
     return (
@@ -124,20 +161,41 @@ const Industries: React.FC = () => {
         setAllCategories={setAllCategoriesData}
       />
 
-      {selectedIndustry ? (
-        <CategoryManagement
-          industry={selectedIndustry}
-          industriesData={industriesData}
-          setIndustries={setIndustriesData}
-          checkedCategories={checkedCategories}
-          setCheckedCategories={setCheckedCategories}
-          setAllCategories={setAllCategoriesData}
-        />
-      ) : (
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-lg font-medium">Select an industry</div>
+      <div className="flex-1">
+        <div className="mb-4 flex justify-end gap-2">
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={handleReset}
+            disabled={!hasChanges}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Save />}
+            onClick={handleSave}
+            disabled={!hasChanges}
+          >
+            Save Changes
+          </Button>
         </div>
-      )}
+
+        {selectedIndustry ? (
+          <CategoryManagement
+            industry={selectedIndustry}
+            industriesData={industriesData}
+            setIndustries={setIndustriesData}
+            checkedCategories={checkedCategories}
+            setCheckedCategories={setCheckedCategories}
+            setAllCategories={setAllCategoriesData}
+          />
+        ) : (
+          <div className="flex h-96 items-center justify-center">
+            <div className="text-lg font-medium">Select an industry</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

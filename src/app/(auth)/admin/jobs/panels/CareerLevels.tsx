@@ -16,6 +16,7 @@ import { Add } from "@mui/icons-material";
 import { Eye, Trash } from "lucide-react";
 import CellOptions from "@/components/UI/CellOptions";
 import useFetch from "@/hooks/useFetch";
+import CareerLevelFetcher from "../../components/jobs/CareerLevelFetcher";
 
 type CareerLevel = { id: string; name: string };
 
@@ -55,23 +56,8 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
     `https://medicova.site/api/v1.0.0/admin/sys-configurations/career-level/categories?ids=${categoryId}`,
   );
 
-  // Effect to check all career levels when category changes
-  useEffect(() => {
-    if (categoryId && careerLevels?.data) {
-      const currentChecked = checkedItems[categoryId] || [];
-      const allLevelsChecked = careerLevels.data.every((level) =>
-        currentChecked.includes(level.id),
-      );
-
-      if (!allLevelsChecked) {
-        careerLevels.data.forEach((level) => {
-          if (!currentChecked.includes(level.id)) {
-            onCheck(categoryId, level.id);
-          }
-        });
-      }
-    }
-  }, [categoryId, careerLevels?.data, checkedItems, onCheck]);
+  // Get current checked items for this category
+  const currentCheckedItems = checkedItems[categoryId] || [];
 
   const handleAddLevel = async () => {
     if (!newLevel.trim() || !categoryData) return;
@@ -105,32 +91,37 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
   const handleToggleAllLevels = () => {
     if (!careerLevels?.data) return;
 
-    const currentChecked = checkedItems[categoryId] || [];
-    const allChecked = careerLevels.data.every((level) =>
-      currentChecked.includes(level.id),
+    const allCurrentlyChecked = careerLevels.data.every((level) =>
+      currentCheckedItems.includes(level.id),
     );
 
-    careerLevels.data.forEach((level) => {
-      const isChecked = currentChecked.includes(level.id);
-
-      if (allChecked && isChecked) {
-        onCheck(categoryId, level.id); // Uncheck
-      } else if (!allChecked && !isChecked) {
-        onCheck(categoryId, level.id); // Check
-      }
-    });
+    if (allCurrentlyChecked) {
+      // Uncheck all
+      careerLevels.data.forEach((level) => {
+        if (currentCheckedItems.includes(level.id)) {
+          onCheck(categoryId, level.id);
+        }
+      });
+    } else {
+      // Check all
+      careerLevels.data.forEach((level) => {
+        if (!currentCheckedItems.includes(level.id)) {
+          onCheck(categoryId, level.id);
+        }
+      });
+    }
   };
 
   if (!categoryData) {
     return (
-      <div className="shadow-soft h-full rounded-xl border bg-white p-4">
+      <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
         <Alert severity="warning">No category selected</Alert>
       </div>
     );
   }
 
   return (
-    <div className="shadow-soft h-full rounded-xl border bg-white p-4">
+    <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
       <Snackbar
         open={!!error}
         autoHideDuration={6000}
@@ -167,7 +158,7 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
           }}
         />
         <IconButton
-          className="bg-primary rounded-lg text-white hover:bg-black"
+          className="rounded-lg bg-primary text-white hover:bg-black"
           onClick={handleAddLevel}
           disabled={isLoading || localLoading.add}
         >
@@ -187,54 +178,78 @@ const CareerLevels: React.FC<CareerLevelsProps> = ({
         <Alert severity="info">No career levels found</Alert>
       ) : (
         <>
-          <div className="mb-2">
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleToggleAllLevels}
-              disabled={isLoading}
-            >
-              {checkedItems[categoryId]?.length === careerLevels?.data.length
-                ? "Uncheck All"
-                : "Check All"}
-            </Button>
-          </div>
           <List>
-            {careerLevels?.data.map((level) => (
-              <ListItem
-                className="mb-2 p-0"
-                key={level.id}
-                secondaryAction={
-                  <CellOptions
-                    item={level}
-                    options={[
-                      {
-                        label: "View",
-                        icon: <Eye className="h-4 w-4" />,
-                        action: () => console.log("Viewing", level),
-                      },
-                      {
-                        label: "Delete",
-                        icon: <Trash className="h-4 w-4 text-red-500" />,
-                        action: () => handleDeleteLevel(level.id),
-                      },
-                    ]}
-                  />
+            <CareerLevelFetcher categoryId={categoryId}>
+              {({
+                data: careerLevels,
+                loading: levelsLoading,
+                error,
+                refresh,
+              }) => {
+                if (levelsLoading) {
+                  return (
+                    <div className="flex justify-center p-4">
+                      <CircularProgress size={24} />
+                    </div>
+                  );
                 }
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={
-                      checkedItems[categoryId]?.includes(level.id) || false
-                    }
-                    onChange={() => onCheck(categoryId, level.id)}
-                    disabled={isLoading || localLoading.delete}
-                  />
-                </ListItemIcon>
-                <ListItemText primary={level.name} />
-              </ListItem>
-            ))}
+
+                if (error) {
+                  return (
+                    <Alert severity="error" className="mb-2">
+                      Failed to load career levels
+                      <Button onClick={refresh} size="small" className="ml-2">
+                        Retry
+                      </Button>
+                    </Alert>
+                  );
+                }
+
+                if (!careerLevels || careerLevels.length === 0) {
+                  return <Alert severity="info">No career levels found</Alert>;
+                }
+
+                return (
+                  <List className="max-h-[300px] overflow-y-auto">
+                    {careerLevels.map((level) => (
+                      <ListItem
+                        className="mb-2 p-0"
+                        key={level.id}
+                        secondaryAction={
+                          <CellOptions
+                            item={level}
+                            options={[
+                              {
+                                label: "View",
+                                icon: <Eye className="h-4 w-4" />,
+                                action: () => console.log("Viewing", level),
+                              },
+                              {
+                                label: "Delete",
+                                icon: (
+                                  <Trash className="h-4 w-4 text-red-500" />
+                                ),
+                                action: () => handleDeleteLevel(level.id),
+                              },
+                            ]}
+                          />
+                        }
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={currentCheckedItems.includes(level.id)}
+                            onChange={() => onCheck(categoryId, level.id)}
+                            disabled={isLoading || localLoading.delete}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={level.name} />
+                      </ListItem>
+                    ))}
+                  </List>
+                );
+              }}
+            </CareerLevelFetcher>
           </List>
         </>
       )}

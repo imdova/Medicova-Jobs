@@ -10,12 +10,14 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import { Add, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Eye, Trash } from "lucide-react";
 import CellOptions from "@/components/UI/CellOptions";
 import { Category } from "./Categories";
 import useFetch from "@/hooks/useFetch";
+import SpecialtyFetcher from "../../components/jobs/SpecialtyFetcher";
 import { SpecialtyItem } from "@/types";
 
 type Specialty = { id: string; name: string };
@@ -25,7 +27,6 @@ type CategoryData = { id: string; name: string; specialties: Specialty[] };
 interface SpecialtiesListProps {
   categoriesData: CategoryData[];
   categoryId: string;
-  specialties: Specialty[];
   checkedItems: { [key: string]: Specialty[] };
   onCheck: (categoryId: string, specialty: Specialty) => void;
   isLoading?: boolean;
@@ -35,7 +36,6 @@ interface SpecialtiesListProps {
 
 const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
   categoriesData,
-  specialties,
   categoryId,
   checkedItems,
   onCheck,
@@ -59,24 +59,14 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
 
   const categoryData = categoriesData.find((cat) => cat.id === categoryId);
 
-  // Effect to initialize expanded state and specialty checks
+  // Effect to initialize expanded state
   useEffect(() => {
     if (categoryId) {
       // Expand the selected category
       setExpandedCategories((prev) => ({ ...prev, [categoryId]: true }));
       setNewSpecialtiesId(categoryId);
-
-      // Check all specialties if none are checked yet
-      if (!checkedItems[categoryId] || checkedItems[categoryId].length === 0) {
-        const category = categoriesData.find((cat) => cat.id === categoryId);
-        if (category?.specialties) {
-          category.specialties.forEach((specialty) => {
-            onCheck(categoryId, specialty);
-          });
-        }
-      }
     }
-  }, [categoryId, categoriesData, checkedItems, onCheck]);
+  }, [categoryId]);
 
   const handleCategoryToggle = (categoryId: string) => {
     setExpandedCategories((prev) => ({
@@ -114,51 +104,52 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
     }
   };
 
-  const handleToggleAllSpecialties = (categoryId: string) => {
-    const category = categoriesData.find((cat) => cat.id === categoryId);
-    if (!category?.specialties) return;
-
+  const handleToggleAllSpecialties = (
+    categoryId: string,
+    specialties: SpecialtyItem[],
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    e.stopPropagation();
     const currentChecked = checkedItems[categoryId] || [];
-    const allChecked = currentChecked.length === category.specialties.length;
+    const allChecked = currentChecked.length === specialties.length;
 
-    // Toggle all specialties
-    category.specialties.forEach((specialty) => {
-      const isCurrentlyChecked = currentChecked.some(
-        (s) => s.id === specialty.id,
-      );
-      if (
-        (allChecked && isCurrentlyChecked) ||
-        (!allChecked && !isCurrentlyChecked)
-      ) {
+    if (allChecked) {
+      // Uncheck all
+      currentChecked.forEach((specialty) => {
         onCheck(categoryId, specialty);
-      }
-    });
+      });
+    } else {
+      // Check all
+      specialties.forEach((specialty) => {
+        if (!currentChecked.some((s) => s.id === specialty.id)) {
+          onCheck(categoryId, specialty);
+        }
+      });
+    }
   };
 
-  const isCategoryAllChecked = (categoryId: string) => {
-    const category = categoriesData.find((cat) => cat.id === categoryId);
-    if (!category?.specialties) return false;
-
+  const isCategoryAllChecked = (
+    categoryId: string,
+    specialties: SpecialtyItem[],
+  ): boolean => {
+    if (!specialties || specialties.length === 0) return false;
     const currentChecked = checkedItems[categoryId] || [];
-    return (
-      currentChecked.length === category.specialties.length &&
-      category.specialties.length > 0
-    );
+    return currentChecked.length === specialties.length;
   };
 
-  const isCategoryIndeterminate = (Id: string) => {
-    const category = categoriesData.find((cat) => cat.id === categoryId);
-    if (!category?.specialties) return false;
-
+  const isCategoryIndeterminate = (
+    categoryId: string,
+    specialties: SpecialtyItem[],
+  ): boolean => {
+    if (!specialties || specialties.length === 0) return false;
     const currentChecked = checkedItems[categoryId] || [];
     return (
-      currentChecked.length > 0 &&
-      currentChecked.length < category.specialties.length
+      currentChecked.length > 0 && currentChecked.length < specialties.length
     );
   };
 
   return (
-    <div className="shadow-soft h-full rounded-xl border bg-white p-4">
+    <div className="h-full rounded-xl border bg-white p-4 shadow-soft">
       <Snackbar
         open={!!error}
         autoHideDuration={6000}
@@ -202,7 +193,7 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
             }}
           />
           <IconButton
-            className="bg-primary rounded-lg text-white hover:bg-black"
+            className="rounded-lg bg-primary text-white hover:bg-black"
             onClick={() => handleAddSpecialty(newSpecialtiesId)}
             disabled={isLoading || localLoading.addSpecialty}
           >
@@ -214,19 +205,8 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
           </IconButton>
         </div>
       </div>
-
       {categoriesData.map((category) => {
-        // TODO: Remove you cant use useFetch here because it will cause a  error , create component for this
-        // const { data: specialty, loading } = useFetch<
-        //   PaginatedResponse<SpecialtyItem>
-        // >(
-        //   `https://medicova.site/api/v1.0.0/admin/sys-configurations/speciality/category?id=${category.id}`,
-        // );
-        const specialty = {} as PaginatedResponse<SpecialtyItem>;
-        const loading = false;
         const isExpanded = expandedCategories[category.id];
-        const allCheckedd = isCategoryAllChecked(category.id);
-        const indeterminate = isCategoryIndeterminate(category.id);
 
         return (
           <div
@@ -239,12 +219,29 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
               onClick={() => handleCategoryToggle(category.id)}
             >
               <div className="flex items-center">
-                <Checkbox
-                  checked={allCheckedd}
-                  indeterminate={indeterminate}
-                  onClick={(e) => e.stopPropagation()} // Prevent toggle when clicking checkbox
-                  onChange={() => handleToggleAllSpecialties(category.id)}
-                />
+                <SpecialtyFetcher categoryId={category.id}>
+                  {({ data: specialties }) => {
+                    if (!specialties) return null;
+
+                    return (
+                      <Checkbox
+                        checked={isCategoryAllChecked(category.id, specialties)}
+                        indeterminate={isCategoryIndeterminate(
+                          category.id,
+                          specialties,
+                        )}
+                        onChange={(e) =>
+                          handleToggleAllSpecialties(
+                            category.id,
+                            specialties,
+                            e,
+                          )
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    );
+                  }}
+                </SpecialtyFetcher>
                 <h3 className="font-semibold">{category.name}</h3>
               </div>
               {isExpanded ? <ExpandLess /> : <ExpandMore />}
@@ -252,61 +249,91 @@ const SpecialtiesList: React.FC<SpecialtiesListProps> = ({
 
             {isExpanded && (
               <div className="mt-2">
-                {/* Specialty List */}
-                {loading ? (
-                  <div className="flex justify-center p-4">
-                    <CircularProgress size={24} />
-                  </div>
-                ) : specialty?.data.length === 0 ? (
-                  <Alert severity="info">No specialties found</Alert>
-                ) : (
-                  <List className="max-h-[300px] overflow-y-auto">
-                    {specialty?.data.map((specialty) => {
-                      const isChecked =
-                        checkedItems[category.id]?.some(
-                          (s) => s.id === specialty.id,
-                        ) || false;
+                <SpecialtyFetcher categoryId={category.id}>
+                  {({ data: specialties, loading, error, refresh }) => {
+                    if (loading) {
                       return (
-                        <ListItemButton
-                          key={specialty.id}
-                          className="mb-2"
-                          onClick={() => onCheck(category.id, specialty)}
-                        >
-                          <ListItemIcon>
-                            <Checkbox
-                              edge="start"
-                              checked={isChecked}
-                              tabIndex={-1}
-                              disableRipple
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={specialty.name}
-                            secondary={category.name}
-                          />
-                          <CellOptions
-                            item={specialty}
-                            options={[
-                              {
-                                label: "View",
-                                icon: <Eye className="h-4 w-4" />,
-                                action: () => console.log("Viewing", specialty),
-                              },
-                              {
-                                label: "Delete",
-                                icon: (
-                                  <Trash className="h-4 w-4 text-red-500" />
-                                ),
-                                action: () =>
-                                  handleDeleteSpecialty(specialty.id),
-                              },
-                            ]}
-                          />
-                        </ListItemButton>
+                        <div className="flex justify-center p-4">
+                          <CircularProgress size={24} />
+                        </div>
                       );
-                    })}
-                  </List>
-                )}
+                    }
+
+                    if (error) {
+                      return (
+                        <Alert severity="error" className="mb-2">
+                          Failed to load specialties
+                          <Button
+                            onClick={refresh}
+                            size="small"
+                            className="ml-2"
+                          >
+                            Retry
+                          </Button>
+                        </Alert>
+                      );
+                    }
+
+                    if (!specialties || specialties.length === 0) {
+                      return (
+                        <Alert severity="info">No specialties found</Alert>
+                      );
+                    }
+
+                    return (
+                      <>
+                        <List className="max-h-[300px] overflow-y-auto">
+                          {specialties.map((specialty) => {
+                            const isChecked =
+                              checkedItems[category.id]?.some(
+                                (s) => s.id === specialty.id,
+                              ) || false;
+                            return (
+                              <ListItemButton
+                                key={specialty.id}
+                                className="mb-2"
+                                dense
+                                onClick={() => onCheck(category.id, specialty)}
+                              >
+                                <ListItemIcon>
+                                  <Checkbox
+                                    edge="start"
+                                    checked={isChecked}
+                                    tabIndex={-1}
+                                    disableRipple
+                                  />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={specialty.name}
+                                  secondary={category.name}
+                                />
+                                <CellOptions
+                                  item={specialty}
+                                  options={[
+                                    {
+                                      label: "View",
+                                      icon: <Eye className="h-4 w-4" />,
+                                      action: () =>
+                                        console.log("Viewing", specialty),
+                                    },
+                                    {
+                                      label: "Delete",
+                                      icon: (
+                                        <Trash className="h-4 w-4 text-red-500" />
+                                      ),
+                                      action: () =>
+                                        handleDeleteSpecialty(specialty.id),
+                                    },
+                                  ]}
+                                />
+                              </ListItemButton>
+                            );
+                          })}
+                        </List>
+                      </>
+                    );
+                  }}
+                </SpecialtyFetcher>
               </div>
             )}
           </div>
