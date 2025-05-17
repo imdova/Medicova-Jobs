@@ -75,7 +75,7 @@ const statusCards: StatusCardType[] = [
     title: "Total Employers",
     value: "2,420",
     icon: (
-      <Users className="block h-12 w-12 rounded-full bg-blue-50 p-2 text-blue-800" />
+      <Users className="block h-11 w-11 rounded-full bg-blue-50 p-2 text-blue-800" />
     ),
     trend: {
       value: "+20",
@@ -87,7 +87,7 @@ const statusCards: StatusCardType[] = [
     title: "Active Employers",
     value: "1,517",
     icon: (
-      <ShieldCheck className="block h-12 w-12 rounded-full bg-primary-100 p-2 text-primary" />
+      <ShieldCheck className="bg-primary-100 text-primary block h-11 w-11 rounded-full p-2" />
     ),
     trend: {
       value: "20%",
@@ -98,7 +98,7 @@ const statusCards: StatusCardType[] = [
     title: "InActive Employers",
     value: "903",
     icon: (
-      <BotOff className="block h-12 w-12 rounded-full bg-amber-50 p-2 text-amber-800" />
+      <BotOff className="block h-11 w-11 rounded-full bg-amber-50 p-2 text-amber-800" />
     ),
     trend: {
       value: "20%",
@@ -125,15 +125,15 @@ const DashboardOverView: React.FC = () => {
   return (
     <div className="space-y-2">
       {/* Stats Section */}
-      <div className="flex flex-col gap-2 lg:flex-row">
-        <div className="flex-1 lg:w-3/5">
+      <div className="grid grid-cols-1 gap-2 lg:grid-cols-9">
+        <div className="col-span-1 lg:col-span-6">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
             {statusCards.map((card) => (
               <StatusCard key={card.title} {...card} />
             ))}
           </div>
           {/* Chart Section */}
-          <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-sm">
+          <div className="shadow-soft relative mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
             <GenericChart
               chartTitle="Employers & Job applications Trends"
               data={{
@@ -191,25 +191,25 @@ const DashboardOverView: React.FC = () => {
           </div>
         </div>
         {/* Right Column */}
-        <div className="flex flex-col gap-3 lg:w-2/5">
+        <div className="col-span-1 flex flex-col gap-3 lg:col-span-3">
           {/* Performance Overview */}
-          <div className="rounded-base border border-gray-200 bg-white p-3 shadow-soft">
-            <div className="mb-2 flex items-center justify-between border-b p-1 pb-2">
-              <h5 className="text-xl font-semibold text-main">
+          <div className="rounded-base shadow-soft border border-gray-200 bg-white">
+            <div className="mb-2 flex items-center justify-between border-b border-gray-200 p-1 pb-2">
+              <h5 className="text-main p-2 text-lg font-semibold">
                 Performance Overview
-                <span className="ml-1 text-xs text-secondary">(Revenue)</span>
+                <span className="text-secondary ml-1 text-xs">(Revenue)</span>
               </h5>
 
               {/* <DummyActionMenu /> */}
             </div>
             {loading ? (
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 p-3 md:grid-cols-2">
                 {[1, 2, 3, 4].map((item) => (
                   <CompanyMiniCardSkeleton key={item} />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 p-3 md:grid-cols-2">
                 {topCompanies
                   ?.slice(0, 4)
                   .map((company) => (
@@ -219,11 +219,11 @@ const DashboardOverView: React.FC = () => {
             )}
           </div>
           {/* Top Countries */}
-          <div className="rounded-base border border-gray-200 bg-white shadow-soft">
-            <div className="mb-2 flex items-center justify-between border-b p-3 pb-2">
-              <h5 className="text-xl font-semibold text-main">
+          <div className="rounded-base shadow-soft border border-gray-200 bg-white">
+            <div className="mb-2 flex items-center justify-between border-b border-gray-200 p-3 pb-2">
+              <h5 className="text-main text-lg font-semibold">
                 Top Countries
-                <span className="ml-1 text-xs text-secondary">(Revenue)</span>
+                <span className="text-secondary ml-1 text-xs">(Revenue)</span>
               </h5>
 
               {/* <DummyActionMenu /> */}
