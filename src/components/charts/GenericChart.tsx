@@ -37,19 +37,25 @@ interface CardData {
 
 interface Props {
   data: ChartData;
+  showCards?: boolean;
   cards?: CardData[];
   chartTitle?: string;
   defaultSelected?: string;
+  chartDisplayType?: "line" | "bar" | "both";
 }
 
 const GenericChart = ({
   data,
   chartTitle = "Data Overview",
   cards = [],
+  showCards = true,
   defaultSelected = "",
+  chartDisplayType = "both",
 }: Props) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>("Yearly");
-  const [chartType, setChartType] = useState<ChartType>("line");
+  const [chartType, setChartType] = useState<ChartType>(
+    chartDisplayType === "both" ? "line" : chartDisplayType,
+  );
   const [selectedSeries, setSelectedSeries] = useState<string>(
     defaultSelected || (cards.length > 0 ? cards[0].title : ""),
   );
@@ -60,10 +66,10 @@ const GenericChart = ({
     return periodData || { categories: [], series: [] };
   };
 
-  // Filter series based on selected card (if cards are provided)
+  // Filter series based on selected card (if cards are provided and showCards is true)
   const getFilteredSeries = () => {
     const { series } = getChartData();
-    if (!selectedSeries || !cards.length) return series;
+    if (!showCards || !selectedSeries || !cards.length) return series;
     return series.filter((s) => s.name === selectedSeries);
   };
 
@@ -82,7 +88,7 @@ const GenericChart = ({
       },
     },
     stroke: {
-      width: chartType === "line" ? [3] : [0],
+      width: chartType === "line" ? [3, 3] : [0],
       curve: "smooth",
     },
     markers: {
@@ -141,7 +147,8 @@ const GenericChart = ({
       },
     },
     legend: {
-      show: false,
+      show: !showCards && filteredSeries.length > 1,
+      position: "top",
     },
     plotOptions: {
       bar: {
@@ -159,37 +166,41 @@ const GenericChart = ({
         <div className="flex w-full justify-between gap-4 md:w-fit">
           {filteredSeries.length > 0 && (
             <div className="flex items-center gap-4">
-              <div className="flex space-x-4">
-                {filteredSeries.map((s) => (
-                  <div key={s.name} className="flex items-center">
-                    <div
-                      className="mr-2 h-4 w-4 rounded-md"
-                      style={{ backgroundColor: s.color }}
-                    ></div>
-                    <span className="text-xs">{s.name}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setChartType("line")}
-                  className={`rounded-md p-2 ${
-                    chartType === "line" ? "bg-gray-100" : "hover:bg-gray-50"
-                  }`}
-                  title="Line Chart"
-                >
-                  <LineChart size={16} />
-                </button>
-                <button
-                  onClick={() => setChartType("bar")}
-                  className={`rounded-md p-2 ${
-                    chartType === "bar" ? "bg-gray-100" : "hover:bg-gray-50"
-                  }`}
-                  title="Bar Chart"
-                >
-                  <BarChart2 size={16} />
-                </button>
-              </div>
+              {showCards && filteredSeries.length > 0 && (
+                <div className="flex space-x-4">
+                  {filteredSeries.map((s) => (
+                    <div key={s.name} className="flex items-center">
+                      <div
+                        className="mr-2 h-4 w-4 rounded-md"
+                        style={{ backgroundColor: s.color }}
+                      ></div>
+                      <span className="text-xs">{s.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {chartDisplayType === "both" && (
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setChartType("line")}
+                    className={`rounded-md p-2 ${
+                      chartType === "line" ? "bg-gray-100" : "hover:bg-gray-50"
+                    }`}
+                    title="Line Chart"
+                  >
+                    <LineChart size={16} />
+                  </button>
+                  <button
+                    onClick={() => setChartType("bar")}
+                    className={`rounded-md p-2 ${
+                      chartType === "bar" ? "bg-gray-100" : "hover:bg-gray-50"
+                    }`}
+                    title="Bar Chart"
+                  >
+                    <BarChart2 size={16} />
+                  </button>
+                </div>
+              )}
             </div>
           )}
           <div className="relative">
@@ -209,9 +220,9 @@ const GenericChart = ({
         </div>
       </div>
 
-      {cards.length > 0 && (
+      {showCards && cards.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-secondary mb-6 text-sm">
+          <h2 className="mb-6 text-sm text-secondary">
             {timePeriod} data overview
           </h2>
 
@@ -230,7 +241,7 @@ const GenericChart = ({
                   className={`flex h-10 w-10 items-center justify-center rounded-lg ${
                     selectedSeries === card.title
                       ? "bg-primary text-white"
-                      : "text-secondary bg-gray-200"
+                      : "bg-gray-200 text-secondary"
                   }`}
                   style={{
                     backgroundColor:
@@ -240,7 +251,7 @@ const GenericChart = ({
                   {card.icon || card.title.charAt(0)}
                 </div>
                 <div>
-                  <span className="text-secondary mb-2 text-xs">
+                  <span className="mb-2 text-xs text-secondary">
                     {card.title}
                   </span>
                   <p className="font-semibold">{card.value}</p>
@@ -253,7 +264,7 @@ const GenericChart = ({
 
       {/* Chart content */}
       <div className="pt-6">
-        <div className="h-72 w-full">
+        <div className={`${showCards ? "min-h-72" : "min-h-[320px]"} w-full`}>
           {filteredSeries.length > 0 ? (
             <Chart
               options={chartOptions}

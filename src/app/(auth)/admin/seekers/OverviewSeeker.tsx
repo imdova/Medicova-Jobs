@@ -85,6 +85,7 @@ const OverviewSeekerPage: React.FC = () => {
           <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-soft">
             <GenericChart
               chartTitle="Seekers & Job applications Trends"
+              chartDisplayType="line"
               data={{
                 yearly: {
                   categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],

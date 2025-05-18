@@ -260,6 +260,8 @@ const OvarviewJobs: React.FC = () => {
           <div className="relative mt-3 overflow-hidden rounded-xl border bg-white shadow-soft">
             <GenericChart
               chartTitle="Statistics Jobs Chart"
+              chartDisplayType="line"
+              showCards={false}
               data={{
                 yearly: {
                   categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
