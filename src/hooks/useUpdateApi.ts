@@ -17,7 +17,7 @@ interface UseUpdateApiResponse<T> {
     options?: Partial<FetchOptions>,
     tags?: string,
   ) => Promise<T>; // Renamed and made options optional
-  reset: () => void; // Added reset functionality
+  reset: (data?: T) => void; // Added reset functionality
 }
 
 // Generic type for initial data
@@ -87,8 +87,8 @@ function useUpdateApi<T>(
     [onSuccess],
   );
 
-  const reset = useCallback(() => {
-    setData(initialData ?? null);
+  const reset = useCallback((data?: T) => {
+    setData(data ?? initialData ?? null);
     setError(null);
     setIsLoading(false);
     setIsSuccess(false); // Reset success state

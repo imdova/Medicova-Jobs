@@ -2,12 +2,7 @@ import ProfileImage from "@/components/UI/ProfileImage";
 import uploadFiles from "@/lib/files/imageUploader";
 import { Company } from "@/types";
 import { TextField } from "@mui/material";
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  UseFormReturn,
-} from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 
 interface MainInfoProps {
   formMethods: UseFormReturn<Company>;
@@ -31,7 +26,7 @@ const MainInformation: React.FC<MainInfoProps> = ({ formMethods }) => {
       <h5 className="mb-8 text-2xl font-semibold text-main md:mt-4">
         Company Main Information
       </h5>
-      <div className="flex gap-2 items-center mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <ProfileImage
           currentImageUrl={avatar || ""}
           alt={" user image"}
@@ -45,7 +40,7 @@ const MainInformation: React.FC<MainInfoProps> = ({ formMethods }) => {
             name="name"
             control={control}
             defaultValue=""
-            rules={{ required: "Name is required" }}
+            rules={{ required: "Company Name is required" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -61,10 +56,11 @@ const MainInformation: React.FC<MainInfoProps> = ({ formMethods }) => {
         </div>
       </div>
       <div className="mb-4">
-        <label className="mb-2 text-lg font-semibold text-main">Title</label>
+        <label className="mb-2 text-lg font-semibold text-main">Title *</label>
         <Controller
           name="title"
           control={control}
+          rules={{ required: "Company Title is required" }}
           render={({ field }) => (
             <TextField
               {...field}

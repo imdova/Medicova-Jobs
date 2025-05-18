@@ -1,43 +1,34 @@
-import { API_GET_COMPANY_SECTORS, API_GET_COMPANY_TYPES_BY_SECTOR } from "@/api/admin";
-import useFetch from "@/hooks/useFetch";
-import { Company, Sector } from "@/types";
+import { useSectorData } from "@/hooks/useSectorData";
+import { Company } from "@/types";
+import { FormControl, MenuItem, Select, Tooltip } from "@mui/material";
 import {
-  FormControl,
-  MenuItem,
-  Select,
-  Tooltip,
-} from "@mui/material";
-import { Control, Controller, UseFormSetValue, FieldErrors, UseFormWatch } from "react-hook-form";
+  Control,
+  Controller,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 interface SectorSelectionProps {
-  control: Control<Company, any>
+  control: Control<Company, any>;
   watch: UseFormWatch<Company>;
-  setValue: UseFormSetValue<Company>
-
+  setValue: UseFormSetValue<Company>;
 }
 
 const SectorSelection: React.FC<SectorSelectionProps> = ({
   control,
   watch,
-  setValue
+  setValue,
 }) => {
-  const selectedCompanySectorId = watch("companySectorId");
-
-  const { data: sectorsData } = useFetch<PaginatedResponse<Sector>>(API_GET_COMPANY_SECTORS);
-  const { data: typesData } = useFetch<PaginatedResponse<Sector>>(selectedCompanySectorId ? API_GET_COMPANY_TYPES_BY_SECTOR + selectedCompanySectorId : null, {
-    fetchOnce: false,
-    fetchOnUrlChange: true,
-  });
-
-  const sectors = sectorsData?.data || []
-  const types = typesData?.data || []
-
+  const sector = watch("companySectorId");
+  const { sectors, types } = useSectorData({ sector });
 
   return (
     <div className="flex flex-wrap gap-5 md:flex-nowrap">
       {/* Company Sector Selector */}
       <div className="min-w-[200px] flex-1">
-        <label className="text-lg font-semibold text-main">Company Sector *</label>
+        <label className="text-lg font-semibold text-main">
+          Company Sector *
+        </label>
         <Controller
           name="companySectorName"
           control={control}
@@ -48,12 +39,12 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                 {...field}
                 value={field.value ?? undefined}
                 onChange={(e) => {
-                  const selectSector = e.target.value
+                  const selectSector = e.target.value;
                   field.onChange(e.target.value);
                   const sector = sectors.find(
                     (sector) => sector.name === selectSector,
                   );
-                  setValue("companySectorId", sector?.id)
+                  setValue("companySectorId", sector?.id);
                   setValue("companyTypeId", "");
                   setValue("companyTypeName", "");
                 }}
@@ -66,7 +57,9 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                 }}
                 renderValue={(selected?: string) => {
                   if (!selected) {
-                    return <em className="text-gray-400">Select Company Sector</em>;
+                    return (
+                      <em className="text-gray-400">Select Company Sector</em>
+                    );
                   }
                   return <span>{selected}</span>;
                 }}
@@ -74,17 +67,16 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                 <MenuItem value="" disabled>
                   <em>Select Sector</em>
                 </MenuItem>
-                {sectors && sectors.map((sector) => (
-                  <MenuItem key={sector.id} value={sector.name}>
-                    {sector.name}
-                  </MenuItem>
-                ))}
+                {sectors &&
+                  sectors.map((sector) => (
+                    <MenuItem key={sector.id} value={sector.name}>
+                      {sector.name}
+                    </MenuItem>
+                  ))}
               </Select>
 
               {error && (
-                <p className="mt-2 text-sm text-red-500">
-                  {error.message}
-                </p>
+                <p className="mt-2 text-sm text-red-500">{error.message}</p>
               )}
             </FormControl>
           )}
@@ -93,7 +85,9 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
 
       {/* Company Type Selector */}
       <div className="min-w-[200px] flex-1">
-        <label className="text-lg font-semibold text-main">Company Type *</label>
+        <label className="text-lg font-semibold text-main">
+          Company Type *
+        </label>
         <Controller
           name="companyTypeName"
           control={control}
@@ -102,9 +96,7 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
             <FormControl error={Boolean(error)} fullWidth>
               <Tooltip
                 title={
-                  selectedCompanySectorId
-                    ? undefined
-                    : "Please select company sector first"
+                  sector ? undefined : "Please select company sector first"
                 }
                 placement="bottom"
               >
@@ -119,16 +111,18 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                     },
                   }}
                   onChange={(e) => {
-                    const selectSector = e.target.value
+                    const selectSector = e.target.value;
                     field.onChange(e.target.value);
                     const type = types.find(
                       (type) => type.name === selectSector,
                     );
-                    setValue("companyTypeId", type?.id)
+                    setValue("companyTypeId", type?.id);
                   }}
                   renderValue={(selected?: string) => {
                     if (!selected) {
-                      return <em className="text-gray-400">Select Company Type</em>;
+                      return (
+                        <em className="text-gray-400">Select Company Type</em>
+                      );
                     }
                     return <span>{selected}</span>;
                   }}
@@ -136,18 +130,17 @@ const SectorSelection: React.FC<SectorSelectionProps> = ({
                   <MenuItem value="" disabled>
                     <em>Select Type</em>
                   </MenuItem>
-                  {types && types.map((type) => (
-                    <MenuItem key={type.id} value={type.name}>
-                      {type.name}
-                    </MenuItem>
-                  ))}
+                  {types &&
+                    types.map((type) => (
+                      <MenuItem key={type.id} value={type.name}>
+                        {type.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </Tooltip>
 
               {error && (
-                <p className="mt-2 text-sm text-red-500">
-                  {error.message}
-                </p>
+                <p className="mt-2 text-sm text-red-500">{error.message}</p>
               )}
             </FormControl>
           )}

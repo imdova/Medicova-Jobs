@@ -7,46 +7,102 @@ import MainInformation from "@/components/pages/companyInfo/Main-Information";
 import LocationSelection from "@/components/pages/companyInfo/LocationSelection";
 import SectorSelection from "@/components/pages/companyInfo/SectorSelection";
 import CompanyOwnership from "@/components/pages/companyInfo/CompanyOwnership";
-import CompanyContactInputs from "@/components/pages/companyInfo/CompanyContacInputs";
 import CompanyImage from "@/components/pages/companyInfo/CompanyImage";
 import { API_UPDATE_COMPANY } from "@/api/employer";
 import useUpdateApi from "@/hooks/useUpdateApi";
-import { useForm } from "react-hook-form";
+import { Path, useForm } from "react-hook-form";
 import { TAGS } from "@/api";
 import useIsLeaving from "@/hooks/useIsLeaving";
 import React from "react";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
+import { getNestedValue } from "@/util/forms";
+
+const defaultKeys: Path<Company>[] = [
+  "avatar",
+  "banner1",
+  "banner2",
+  "banner3",
+  "name",
+  "title",
+  "about",
+  "companySectorId",
+  "companySectorName",
+  "companyTypeId",
+  "companyTypeName",
+  "isPrivate",
+  "isProfitable",
+  "size",
+  "yearFounded",
+  "state.code",
+  "state.name",
+  "country.code",
+  "country.name",
+  "city",
+];
+function getDefaultValues<T>(
+  array: Path<T>[],
+  initialValues?: T,
+  isNullable = false,
+): T {
+  const result = array.reduce((acc, path) => {
+    const parts = String(path).split(".");
+    let current = acc;
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      const part = parts[i];
+      if (!current[part]) {
+        current[part] = {};
+      }
+      current = current[part];
+    }
+
+    const lastPart = parts[parts.length - 1];
+    const value = initialValues
+      ? getNestedValue(initialValues, path) || (isNullable ? null : "")
+      : isNullable
+        ? null
+        : "";
+    current[lastPart] = value;
+
+    return acc;
+  }, {} as any);
+
+  return result as T;
+}
 
 const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
   const { update: updateSession } = useSession();
-  const formMethods = useForm({
-    defaultValues: company,
-  });
+  const {
+    isLoading,
+    error,
+    update,
+    reset: resetApi,
+  } = useUpdateApi<Company>(handleSuccess);
+  const defaultValues = getDefaultValues<Company>(defaultKeys, company);
+  const formMethods = useForm({ defaultValues });
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
     watch,
     setValue,
     reset,
   } = formMethods;
 
+  const handleReset = (values: Company) => {
+    reset(values);
+    resetApi(values);
+  };
+
   const { isLeaving, setLeavingManually, handleUserDecision } = useIsLeaving({
     preventDefault: isDirty,
   });
 
-  const { isLoading, error, update } = useUpdateApi<Company>(handleSuccess);
-
-  const handleUpdate = async (formData: Partial<Company>) => {
-    await update(
-      API_UPDATE_COMPANY,
-      {
-        body: formData,
-      },
-      TAGS.company,
-    );
-    // reset the form
-    reset(formData);
+  const handleUpdate = async (formData: Company) => {
+    const body = getDefaultValues<Company>(defaultKeys, formData, true);
+    body.id = company.id;
+    update(API_UPDATE_COMPANY, { body }, TAGS.company);
   };
 
   async function handleSuccess(updatedCompany: Company) {
@@ -55,6 +111,11 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
       companyEmail: updatedCompany.email,
       companyPhoto: updatedCompany.avatar,
     });
+    const newDefaultValues = getDefaultValues<Company>(
+      defaultKeys,
+      updatedCompany,
+    );
+    handleReset(newDefaultValues);
   }
 
   return (
@@ -82,7 +143,7 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
             </div>
             <div className="rounded-base border-gray-200 bg-white p-3 md:border md:p-5 md:shadow-soft">
               <CompanyOwnership control={control} errors={errors} />
-              <CompanyContactInputs control={control} errors={errors} />
+              {/* <CompanyContactInputs control={control} errors={errors} /> */}
             </div>
           </div>
 
@@ -119,20 +180,22 @@ const CompanyInfoForm: React.FC<{ company: Company }> = ({ company }) => {
             <Button
               type="submit"
               variant="contained"
-              disabled={isLoading || !isValid}
+              disabled={isLoading}
               size="large"
               startIcon={isLoading ? <CircularProgress size={20} /> : null}
             >
               {isLoading ? "Saving..." : "Save Changes"}
             </Button>
-            <Button
-              onClick={() => reset()}
-              variant="text"
-              size="large"
-              className="ml-2"
-            >
-              Reset
-            </Button>
+            {isDirty && (
+              <Button
+                onClick={() => handleReset(defaultValues)}
+                variant="text"
+                size="large"
+                className="ml-2"
+              >
+                Reset
+              </Button>
+            )}
           </div>
         )}
       </form>
