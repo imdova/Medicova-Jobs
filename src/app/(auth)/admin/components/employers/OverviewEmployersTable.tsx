@@ -157,18 +157,54 @@ const OverviewEmployersTable: React.FC = () => {
   const exportHandleClose = () => setExportAnchorEl(null);
 
   return (
-    <div className="space-y-1">
-      <div className="overflow-hidden rounded-base border border-gray-200 bg-white shadow-soft">
+    <div className="grid grid-cols-1 space-y-1">
+      <div className="rounded-base border border-gray-200 bg-white shadow-soft">
         <div>
           <div>
             <div className="flex flex-col justify-between gap-3 md:flex-row">
-              <h5 className="p-3 pb-1 text-xl font-semibold text-main">
+              <h5 className="w-full p-3 pb-1 text-xl font-semibold text-main">
                 All Employers
                 <span className="ml-1 text-xs text-secondary">({total})</span>
               </h5>
+              <div className="flex w-full flex-col items-end gap-2 p-2 sm:flex-row">
+                <TextField
+                  className="w-full"
+                  variant="outlined"
+                  placeholder="Search For Employer"
+                  value={filters.q}
+                  InputProps={{
+                    startAdornment: <Search />,
+                  }}
+                  onChange={(e) =>
+                    setFilters({ ...filters, q: e.target.value })
+                  }
+                />
+                <Button
+                  onClick={exportHandleClick}
+                  variant="outlined"
+                  aria-controls={exportOpen ? "export-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={exportOpen ? "true" : undefined}
+                  className="min-w-[120px] space-x-2 p-3"
+                >
+                  <Download className="inline-block h-5 w-5" />
+                  <p className="inline-block text-sm">Export</p>
+                  <ExpandMore className="inline-block h-5 w-5" />
+                </Button>
+                <Menu
+                  id="export-menu"
+                  anchorEl={exportAnchorEl}
+                  open={exportOpen}
+                  onClose={exportHandleClose}
+                  className="mt-2"
+                >
+                  <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
+                  <MenuItem className="hover:bg-gray-200">Excel (CSV)</MenuItem>
+                </Menu>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <div className="body-container min-w-[200px]">
+            <div className="grid grid-cols-1">
+              <div>
                 <Tabs
                   value={activeTab}
                   onChange={(e, value) => setActiveTab(value)}
@@ -186,41 +222,6 @@ const OverviewEmployersTable: React.FC = () => {
                     />
                   ))}
                 </Tabs>
-              </div>
-              <div className="m-2 flex items-end gap-2">
-                <TextField
-                  variant="outlined"
-                  placeholder="Search For Employer"
-                  value={filters.q}
-                  InputProps={{
-                    startAdornment: <Search />,
-                  }}
-                  onChange={(e) =>
-                    setFilters({ ...filters, q: e.target.value })
-                  }
-                />
-                <Button
-                  onClick={exportHandleClick}
-                  variant="outlined"
-                  aria-controls={exportOpen ? "export-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={exportOpen ? "true" : undefined}
-                  className="space-x-2"
-                >
-                  <Download className="inline-block h-5 w-5" />
-                  <p className="inline-block text-sm">Export</p>
-                  <ExpandMore className="inline-block h-5 w-5" />
-                </Button>
-                <Menu
-                  id="export-menu"
-                  anchorEl={exportAnchorEl}
-                  open={exportOpen}
-                  onClose={exportHandleClose}
-                  className="mt-2"
-                >
-                  <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
-                  <MenuItem className="hover:bg-gray-200">Excel (CSV)</MenuItem>
-                </Menu>
               </div>
             </div>
           </div>

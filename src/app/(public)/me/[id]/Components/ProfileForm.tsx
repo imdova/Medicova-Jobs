@@ -44,9 +44,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
       <h5 className="text-xl font-semibold text-main md:mt-4">
         Your Personal Info
       </h5>
-      <div className="flex w-full gap-4">
+      <div className="flex gap-4 md:w-1/2">
         {/* Phone Number */}
-        <div className="flex-1">
+        <div className="w-full">
           <FormField
             field={{
               label: "Phone Number*",

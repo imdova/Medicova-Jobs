@@ -6,7 +6,6 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import uploadFiles from "@/lib/files/imageUploader";
 import { UseFormReturn } from "react-hook-form";
 import ProfileImage from "@/components/UI/ProfileImage";
-
 const fields: FieldConfig<UserProfile>[] = [
   {
     label: "First Name*",
@@ -16,7 +15,7 @@ const fields: FieldConfig<UserProfile>[] = [
     rules: {
       minLength: { value: 2, message: "First Name must be larger than 2 word" },
     },
-    gridProps: { xs: 6 },
+    gridProps: { xs: 12, sm: 6, md: 3 },
   },
   {
     label: "Last Name*",
@@ -26,7 +25,7 @@ const fields: FieldConfig<UserProfile>[] = [
     rules: {
       minLength: { value: 2, message: "Last Name must be larger than 2 word" },
     },
-    gridProps: { xs: 6 },
+    gridProps: { xs: 12, sm: 6, md: 3 },
   },
 ];
 
@@ -44,7 +43,7 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
   };
 
   return (
-    <div className="rounded-base rounded-t-base shadow-soft flex w-full flex-col items-center gap-8 overflow-hidden border border-gray-200 bg-white p-5 lg:flex-row lg:items-start">
+    <div className="flex w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-white p-5 shadow-soft lg:flex-row lg:items-start">
       <div>
         <ProfileImage
           currentImageUrl={avatar || ""}

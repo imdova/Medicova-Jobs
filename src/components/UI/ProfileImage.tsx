@@ -29,7 +29,7 @@ const SIZE_MAP = {
   small: { width: 32, height: 32 },
   medium: { width: 48, height: 48 },
   large: { width: 78, height: 78 },
-  xLarge: { width: 96, height: 96 },
+  xLarge: { width: 120, height: 120 },
 } as const;
 
 const DEFAULT_IMAGE = "/images/placeholder-avatar.svg";
@@ -108,7 +108,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
           aria-label="Update profile picture"
         >
-          <PhotoCamera className="h-6 w-6 text-white" />
+          <PhotoCamera className="h-7 w-7 text-white" />
         </button>
       </div>
 

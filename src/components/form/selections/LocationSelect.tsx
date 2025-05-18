@@ -41,7 +41,7 @@ function LocationSelect<T extends Partial<LocationItems>>({
           "country.name" as Path<T>,
           (countries.find((c) => c.isoCode === value)?.name || "") as any,
         ),
-      gridProps: { xs: 6, md: 4 },
+      gridProps: { xs: 12, sm: 4, md: 3 },
     },
     {
       name: "state.code" as Path<T>,
@@ -60,7 +60,7 @@ function LocationSelect<T extends Partial<LocationItems>>({
         value: state.isoCode,
         label: state.name,
       })),
-      gridProps: { xs: 6, md: 4 },
+      gridProps: { xs: 12, sm: 4, md: 3 },
     },
     {
       name: "city" as Path<T>,
@@ -69,7 +69,7 @@ function LocationSelect<T extends Partial<LocationItems>>({
       textFieldProps: {
         placeholder: "e.g., Cairo, Giza",
       },
-      gridProps: { xs: 12, md: 4 },
+      gridProps: { xs: 12, sm: 4, md: 3 },
       rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },

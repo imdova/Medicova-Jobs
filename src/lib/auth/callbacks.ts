@@ -88,7 +88,7 @@ export const callbacks = {
     if (account?.provider === "google" || account?.provider === "facebook") {
       return handleSocialLogin(user, account);
     }
-    return false;
+    return true;
   },
 
   // async redirect({ url, baseUrl }: { url: any; baseUrl: any }) {

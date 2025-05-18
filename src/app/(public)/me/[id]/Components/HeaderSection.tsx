@@ -47,26 +47,30 @@ const HeaderSection: React.FC<{
   const nationality = getOptionLabel(nationalitiesOptions, user.nationality);
   const title = getExperienceDetail(user.title || "");
   return (
-    <div className="overflow-hidden rounded-[12px] bg-[url('/images/search-background.jpg')] bg-cover bg-center">
-      <div className="flex h-fit min-h-[160px] w-full flex-col items-center gap-8 bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-5 shadow-soft lg:flex-row">
-        {isMe ? (
-          <ProfileImage
-            currentImageUrl={
-              image ? URL.createObjectURL(image) : user.avatar || ""
-            }
-            alt={user.firstName + " " + user.lastName + " user image"}
-            size="xLarge"
-            onImageUpdate={updateImage}
-            imageClassName="border-4 border-white shadow-md"
-          />
-        ) : (
-          <Avatar
-            src={user.avatar}
-            alt={user.firstName + " " + user.lastName + " user image"}
-            size={100}
-            className="border-4 border-white shadow-md"
-          />
-        )}
+    <div className="mb-12 rounded-lg bg-[url('/images/search-background.jpg')] bg-cover bg-center">
+      <div className="relative flex h-fit min-h-[230px] w-full flex-col items-end gap-8 rounded-lg bg-gradient-to-b from-light-primary-transparent to-primary-transparent p-5 pb-8 shadow-soft lg:flex-row">
+        <div className="min-w-[100px]">
+          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 lg:left-3 lg:-translate-x-0">
+            {isMe ? (
+              <ProfileImage
+                currentImageUrl={
+                  image ? URL.createObjectURL(image) : user.avatar || ""
+                }
+                alt={user.firstName + " " + user.lastName + " user image"}
+                size="xLarge"
+                onImageUpdate={updateImage}
+                imageClassName="border-4 border-white shadow-md"
+              />
+            ) : (
+              <Avatar
+                src={user.avatar}
+                alt={user.firstName + " " + user.lastName + " user image"}
+                size={230}
+                className="border-4 border-white shadow-md"
+              />
+            )}
+          </div>
+        </div>
         <div className="flex w-full">
           <div className="mr-5 flex-1">
             <h5 className="text-xl font-bold text-white">
@@ -96,8 +100,8 @@ const HeaderSection: React.FC<{
                 </div>
               )}
               {user.isPublic && (
-                <p className="font-medium text-white">
-                  <FlagOutlined className="mr-1 font-medium text-white" />
+                <p className="mt-3 text-xs font-medium text-white">
+                  <FlagOutlined className="mr-1 h-4 w-4 font-medium text-white" />
                   Open For Opportunities
                 </p>
               )}

@@ -399,9 +399,47 @@ const OvarviewJobs: React.FC = () => {
         <div className="rounded-xl border bg-white p-4 shadow-soft">
           <div className="space-y-4">
             <div className="flex flex-col justify-between md:flex-row md:items-end">
-              <div>
+              <div className="w-full">
                 <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
-                  <h2 className="text-xl font-semibold">Recent Jobs</h2>
+                  <h2 className="w-full text-xl font-semibold">Recent Jobs</h2>
+                  <div className="flex w-full flex-col items-end gap-2 p-2 md:flex-row">
+                    <TextField
+                      className="w-full"
+                      variant="outlined"
+                      placeholder="Search For Jobs"
+                      value={query}
+                      InputProps={{
+                        startAdornment: <Search />,
+                      }}
+                      onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <div className="w-full md:w-fit">
+                      <Button
+                        onClick={exportHandleClick}
+                        variant="outlined"
+                        aria-controls={exportOpen ? "export-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={exportOpen ? "true" : undefined}
+                        className="w-full min-w-[120px] space-x-2 p-3"
+                      >
+                        <Download className="inline-block h-5 w-5" />
+                        <p className="inline-block text-sm">Export</p>
+                        <ExpandMore className="inline-block h-5 w-5" />
+                      </Button>
+                      <Menu
+                        id="export-menu"
+                        anchorEl={exportAnchorEl}
+                        open={exportOpen}
+                        onClose={exportHandleClose}
+                        className="mt-2"
+                      >
+                        <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
+                        <MenuItem className="hover:bg-gray-200">
+                          Excel (CSV)
+                        </MenuItem>
+                      </Menu>
+                    </div>
+                  </div>
                 </div>
                 <div className="body-container overflow-x-auto">
                   <Tabs
@@ -421,43 +459,6 @@ const OvarviewJobs: React.FC = () => {
                       />
                     ))}
                   </Tabs>
-                </div>
-              </div>
-              <div className="m-2 flex flex-wrap items-end gap-2">
-                <TextField
-                  variant="outlined"
-                  placeholder="Search For Jobs"
-                  value={query}
-                  InputProps={{
-                    startAdornment: <Search />,
-                  }}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                <div>
-                  <Button
-                    onClick={exportHandleClick}
-                    variant="outlined"
-                    aria-controls={exportOpen ? "export-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={exportOpen ? "true" : undefined}
-                    className="space-x-2"
-                  >
-                    <Download className="inline-block h-5 w-5" />
-                    <p className="inline-block text-sm">Export</p>
-                    <ExpandMore className="inline-block h-5 w-5" />
-                  </Button>
-                  <Menu
-                    id="export-menu"
-                    anchorEl={exportAnchorEl}
-                    open={exportOpen}
-                    onClose={exportHandleClose}
-                    className="mt-2"
-                  >
-                    <MenuItem className="hover:bg-gray-200">PDF</MenuItem>
-                    <MenuItem className="hover:bg-gray-200">
-                      Excel (CSV)
-                    </MenuItem>
-                  </Menu>
                 </div>
               </div>
             </div>
