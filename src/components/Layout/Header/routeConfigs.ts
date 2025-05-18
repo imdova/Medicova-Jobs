@@ -20,6 +20,7 @@ export const routeConfigs: RouteConfig[] = [
   // default
   { pattern: "/", headerType: "transparent", linksType: "default" },
   { pattern: "/blog", headerType: "none", linksType: "default" },
+  { pattern: "/auth/verify", headerType: "dark", linksType: "userType" },
   { pattern: "/search", headerType: "transparent", linksType: "userType" },
   { pattern: "/a/[slug]", headerType: "full", linksType: "userType" },
   { pattern: "/me/[id]", headerType: "full", linksType: "userType" },
@@ -74,18 +75,7 @@ export function getNavLinks(user?: User, pathname?: string) {
     const type = matchRoute(pathname)?.linksType;
 
     if (type === "userType" && userType) {
-      // return roleBasedLinks[userType];
-      if (userType === "seeker") {
-        return roleBasedLinks.seeker;
-      } else if (userType === "employer") {
-        if (user?.companyName) {
-          return roleBasedLinks.employer;
-        } else {
-          return roleBasedLinks.unEmployee;
-        }
-      } else if (userType === "admin") {
-        return roleBasedLinks.admin;
-      }
+      return roleBasedLinks[userType] || roleBasedLinks.default;
     }
   }
   return roleBasedLinks.default;

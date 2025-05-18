@@ -7,8 +7,8 @@ export const authOptions: AuthOptions = {
   callbacks,
   pages: {
     signIn: "/auth/signin",
-    error: "/auth/error",
-    verifyRequest: "/auth/verify-request",
+    error: "/auth/signin",
+    verifyRequest: "/auth/verify",
   },
   session: {
     strategy: "jwt",

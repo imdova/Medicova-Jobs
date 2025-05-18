@@ -328,6 +328,16 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       path: "#",
     },
   ],
+  unverified: [
+    {
+      id: 0,
+      label: "Verify Account",
+      icon: MessageOutlined,
+      notifications: 1,
+      path: "/auth/verify",
+      pattern: "/auth/verify",
+    },
+  ],
 };
 
 export const applicantsFilters = {

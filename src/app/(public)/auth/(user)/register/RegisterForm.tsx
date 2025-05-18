@@ -22,6 +22,7 @@ import PhoneNumberInput from "@/components/UI/phoneNumber";
 import { isValidPhoneNumber } from "@/util/forms";
 import { passwordRules } from "@/constants";
 import { API_REGISTER_USER } from "@/api/users";
+import { User } from "next-auth";
 
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -57,16 +58,16 @@ const RegisterForm: React.FC = () => {
             type: userType,
           }),
         });
-        const result = await response.json();
         if (!response.ok) {
           throw new Error(
-            (result as any)?.message || `Update failed: ${response.status}`,
+            (response as any)?.message || `Update failed: ${response.status}`,
           );
         }
-        const signinResult = await signIn("credentials", {
+        const signinResult = await signIn("add-credentials", {
           email: data.email.trim().toLowerCase(),
-          password: data.password,
-          redirect: false,
+          type: "unverified" as User["type"],
+          isVerified: false,
+          callbackUrl: "/me",
         });
         if (signinResult?.error) {
           setError("Sorry we are having a problem try again later");
@@ -159,16 +160,14 @@ const RegisterForm: React.FC = () => {
         <Divider sx={{ flex: 1 }} />
       </Box>
 
-      <form className="w-full" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            mb: 1,
-          }}
-        >
+      <form
+        className="w-full space-y-4"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        <div className="flex gap-2">
           {/* First Name */}
-          <Box sx={{ flex: 1 }}>
+          <div className="flex-1">
             <Controller
               control={control}
               name="firstName"
@@ -193,10 +192,9 @@ const RegisterForm: React.FC = () => {
                 },
               }}
             />
-          </Box>
-
+          </div>
           {/* Last Name */}
-          <Box sx={{ flex: 1 }}>
+          <div className="flex-1">
             <Controller
               control={control}
               name="lastName"
@@ -221,102 +219,69 @@ const RegisterForm: React.FC = () => {
                 },
               }}
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
 
-        <Box sx={{ mb: 1 }}>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <TextField
-                {...field}
-                placeholder="Enter email address"
-                label="Email Address"
-                variant="outlined"
-                id="email"
-                fullWidth
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            )}
-            rules={{
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                message: "Enter a valid email address",
-              },
-            }}
-          />
-        </Box>
-
-        <Box sx={{ mb: 1, position: "relative" }}>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <TextField
-                {...field}
-                placeholder="Enter password"
-                type={showPassword ? "text" : "password"}
-                fullWidth
-                label="Password"
-                variant="outlined"
-                id="password"
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={toggleShowPassword} edge="end">
-                      {showPassword ? (
-                        <VisibilityOffOutlined
-                          sx={{ color: errors.password ? "red" : "gray" }}
-                        />
-                      ) : (
-                        <VisibilityOutlined
-                          sx={{ color: errors.password ? "red" : "gray" }}
-                        />
-                      )}
-                    </IconButton>
-                  ),
-                }}
-              />
-            )}
-            rules={passwordRules}
-          />
-        </Box>
-        <Box sx={{ mb: 1, position: "relative" }}>
-          <Controller
-            name="phone"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: "Phone Number is required",
-              validate: (value) =>
-                isValidPhoneNumber(value || "") ||
-                "Please enter a valid phone number",
-            }}
-            render={({ field }) => (
-              <PhoneNumberInput
-                {...field}
-                placeholder="Enter Phone Number"
-                fullWidth
-                variant="outlined"
-                id="phone"
-                error={!!errors.phone}
-              />
-            )}
-          />
-          {errors.phone && (
-            <p className="mt-2 text-sm text-red-500">{errors.phone.message}</p>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder="Enter email address"
+              label="Email Address"
+              variant="outlined"
+              id="email"
+              fullWidth
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
           )}
-        </Box>
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+              message: "Enter a valid email address",
+            },
+          }}
+        />
 
-        <p className="my-1 text-red-500">{error}</p>
+        <Controller
+          control={control}
+          name="password"
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder="Enter password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              label="Password"
+              variant="outlined"
+              id="password"
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={toggleShowPassword} edge="end">
+                    {showPassword ? (
+                      <VisibilityOffOutlined
+                        sx={{ color: errors.password ? "red" : "gray" }}
+                      />
+                    ) : (
+                      <VisibilityOutlined
+                        sx={{ color: errors.password ? "red" : "gray" }}
+                      />
+                    )}
+                  </IconButton>
+                ),
+              }}
+            />
+          )}
+          rules={passwordRules}
+        />
+        <p className="text-sm text-red-500">{error}</p>
         <Button
           sx={{
-            height: "50px",
-            fontWeight: "700",
             fontSize: "16px",
             textTransform: "capitalize",
           }}

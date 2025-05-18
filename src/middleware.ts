@@ -1,3 +1,4 @@
+import { User } from "next-auth";
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
@@ -10,11 +11,14 @@ export default withAuth(function middleware(req) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
-  let userType = token.type as string;
+  let userType = token.type as User["type"] | "unEmployee";
+
   if (userType === "employer" && !token.companyName) userType = "unEmployee";
   if (path == "/me") {
     if (userType === "seeker") {
       return NextResponse.redirect(new URL(`/me/${token.userName}`, req.url));
+    } else if (userType === "unverified") {
+      return NextResponse.redirect(new URL(`/auth/verify`, req.url));
     } else if (userType === "employer") {
       return NextResponse.redirect(
         new URL(`/co/${token.companyUserName}`, req.url),

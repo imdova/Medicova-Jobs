@@ -18,11 +18,9 @@ export const API_UPDATE_PROFILE = USERS + "/my-profile"; // PATCH
 export const API_ACTIVATE_USER = USERS + "/"; // POST + [userID] + "/activate"
 export const API_DEACTIVATE_USER = USERS + "/"; // POST + [userID] + "/deactivate"
 export const API_REFRESH_TOKEN = USERS + "/refresh-token"; // POST
-export const API_LOGOUT = USERS + "/logout"; // POST
-export const API_REGISTER_USER = USERS + "/"; // POST + [userType]
+export const API_LOGOUT = USERS + "/logout"; // POST 
+export const API_REGISTER_USER = USERS + "/register"; // POST
 
-// new
-export const API_REGISTER_USER_WITH_EMAIL_AND_PASSWORD = USERS + "/register"; // POST
 export const API_REGISTER_COMPANY_USER_WITH_EMAIL_AND_PASSWORD = USERS + "/register/company-user"; // POST
 export const API_LOGIN_WITH_EMAIL_AND_PASSWORD = USERS + "/login"; // POST
 export const API_GOOGLE_REGISTER = USERS + "/google/register"; // POST

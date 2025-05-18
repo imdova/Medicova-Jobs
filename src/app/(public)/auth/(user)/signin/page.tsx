@@ -2,8 +2,11 @@ import login from "@/components/images/login.svg";
 import network from "@/components/images/network.svg";
 import Image from "next/image";
 import LoginForm from "./LoginForm";
+import { getCookies } from "@/lib/cookies";
 
-const Login = () => {
+const Login = async ({ searchParams }: { searchParams: { error: string } }) => {
+  const errorParam = searchParams.error;
+  const error = errorParam ? await getCookies("user-error") : "";
   return (
     <div className="flex min-h-screen w-full items-center justify-center pt-[60px] md:px-5">
       {/* Main Content */}
@@ -45,7 +48,7 @@ const Login = () => {
         </div>
 
         {/* Right Section: Login Form */}
-        <LoginForm />
+        <LoginForm error={error?.replaceAll('"', "")} />
       </div>
     </div>
   );

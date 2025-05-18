@@ -21,6 +21,7 @@ export const routeConfigs: RouteConfig[] = [
   { pattern: "/chat", sideBarType: "minimal", linksType: "userType" },
   { pattern: "/a/[slug]", sideBarType: "minimal", linksType: "userType" },
   { pattern: "/notifications", sideBarType: "full", linksType: "userType" },
+  { pattern: "/auth/verify", sideBarType: "none", linksType: "userType" },
 
   { pattern: "/job/[slug]", sideBarType: "full", linksType: "userType" },
   // auth
@@ -84,12 +85,7 @@ export function getSideBarLinks(user?: User, pathname?: string): NavItem[] {
   if (pathname) {
     const type = matchRoute(pathname)?.linksType;
     if (type === "default") return roleBasedSideBarLinks.default;
-    if (userType === "seeker") return roleBasedSideBarLinks.seeker;
-    if (userType === "employer") {
-      if (user?.companyName) return roleBasedSideBarLinks.employer;
-      return roleBasedSideBarLinks.unEmployee;
-    }
-    if (userType === "admin") return roleBasedSideBarLinks.admin;
+    if (userType) return roleBasedSideBarLinks[userType] || roleBasedSideBarLinks.default;
   }
   return roleBasedSideBarLinks.default;
 }

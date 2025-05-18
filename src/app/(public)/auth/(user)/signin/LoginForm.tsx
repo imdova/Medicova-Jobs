@@ -18,6 +18,7 @@ import GoogleButton from "@/components/auth/googleButton";
 import FacebookButton from "@/components/auth/facebookButton";
 import { signIn } from "next-auth/react";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
+import { deleteCookies } from "@/lib/cookies";
 
 interface FormData {
   email: string;
@@ -25,10 +26,10 @@ interface FormData {
   rememberMe: boolean;
 }
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<{ error?: string }> = ({ error: initialError }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
   const {
     handleSubmit,
     control,
@@ -43,6 +44,7 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
+    await deleteCookies("user-error");
     try {
       const result = await signIn("credentials", {
         email: data.email.trim().toLowerCase(),
@@ -82,7 +84,7 @@ const LoginForm: React.FC = () => {
       <Button
         className="mb-4 h-[42px] w-full"
         variant="outlined"
-        onClick={() => 
+        onClick={() =>
           onSubmit({
             email: "Admin@gmail.com",
             password: "data.password",

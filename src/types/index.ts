@@ -370,7 +370,7 @@ export interface HeaderLink {
 export type CommonLinksType = "home";
 
 export type RoleBasedLinks = {
-  [key in RoleState | "unEmployee" | "default"]: NavItem[];
+  [key in RoleState | "default"]: NavItem[];
 };
 
 export type CommonLinks = {
@@ -440,11 +440,11 @@ export interface FieldConfig<T = any> {
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:
-  | Omit<
-    RegisterOptions<FieldValues, string>,
-    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
-  >
-  | undefined;
+    | Omit<
+        RegisterOptions<FieldValues, string>,
+        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+      >
+    | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;

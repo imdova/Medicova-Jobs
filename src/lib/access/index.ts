@@ -193,11 +193,19 @@ export const googleLogin = async (data: GoogleLoginData): Promise<Result> => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (!response.ok) return errorResult("register");
+    if (!response.ok)
+      return {
+        success: false,
+        message:
+          response.status == 401
+            ? "You need to register your first"
+            : "An error occurred at Login With Google",
+      };
+
     const user: User = await response.json();
     return {
       success: true,
-      message: "login successfully",
+      message: "Login With Google successfully",
       data: user,
     };
   } catch (error: any) {

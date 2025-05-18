@@ -1,4 +1,5 @@
 import { RoleBasedLinks } from "@/types";
+import { MessageOutlined } from "@mui/icons-material";
 
 export const roleBasedLinks: RoleBasedLinks = {
   employer: [
@@ -115,6 +116,16 @@ export const roleBasedLinks: RoleBasedLinks = {
       id: 1,
       label: "Courses",
       path: "#",
+    },
+  ],
+  unverified: [
+    {
+      id: 0,
+      label: "Verify Account",
+      icon: MessageOutlined,
+      notifications: 1,
+      path: "/auth/verify",
+      pattern: "/auth/verify",
     },
   ],
 };

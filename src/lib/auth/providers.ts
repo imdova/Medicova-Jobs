@@ -6,6 +6,7 @@ import {
   authenticateRegister,
   authenticateUser,
   authenticateToken,
+  addSession,
 } from "./utils";
 
 export const providers = [
@@ -49,11 +50,21 @@ export const providers = [
     authorize: authenticateRegister,
   }),
   CredentialsProvider({
-    id: "token-credentials",
-    name: "credentials with token",
+    id: "validate-credentials",
+    name: "validate credentials",
     credentials: {
       token: { type: "text" },
     },
     authorize: authenticateToken,
+  }),
+  CredentialsProvider({
+    id: "add-credentials",
+    name: "add credentials",
+    credentials: {
+      email: { type: "email" },
+      type: { type: "text" },
+      isVerified: { type: "boolean" },
+    },
+    authorize: addSession,
   }),
 ];

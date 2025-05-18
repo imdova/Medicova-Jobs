@@ -6,10 +6,11 @@ import {
   register,
   serverSignIn,
 } from "../access";
-import { API_GET_CURRENT_USER } from "@/api/users";
+import { API_VERIFY_EMAIL } from "@/api/users";
 import { getCookies, setCookies } from "../cookies";
 import { User } from "next-auth";
 import { divideName } from "@/util";
+import { toQueryString } from "@/util/general";
 
 export async function authenticateUser(credentials: any) {
   if (!credentials?.email || !credentials?.password) return null;
@@ -21,6 +22,16 @@ export async function authenticateUser(credentials: any) {
     return null;
   }
 }
+export async function addSession(credentials: any) {
+  if (!credentials?.email) return null;
+  return {
+    id: credentials.email, // or any unique ID
+    email: credentials.email,
+    type: credentials.type,
+    isVerified: credentials.isVerified,
+  } as User;
+}
+
 export async function changePasswordWithOTP(credentials: any) {
   if (!credentials?.email || !credentials?.otp) return null;
   try {
@@ -29,7 +40,6 @@ export async function changePasswordWithOTP(credentials: any) {
       newPassword: credentials.password,
       otp: credentials.otp,
     });
-    console.log("🚀 ~ changePasswordWithOTP ~ response:", response.data);
     return response.success ? response.data : null;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -47,18 +57,19 @@ export async function authenticateRegister(credentials: any) {
   }
 }
 export async function authenticateToken(credentials: any) {
-  const { token, callbackUrl } = credentials;
-  const data = await fetch(API_GET_CURRENT_USER + token, {
+  const { token, email } = credentials;
+  const queryParams = toQueryString({ token, email });
+  const response = await fetch(API_VERIFY_EMAIL + queryParams, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       accept: "application/json",
     },
   });
-  if (!data.ok) {
+  if (!response.ok) {
     return null;
   }
-  const session = await data.json();
+  const session = await response.json();
   return session;
 }
 
@@ -75,6 +86,7 @@ export async function handleSocialLogin(user: any, account: any) {
         accessToken: account?.access_token,
         userType: userType,
       });
+      setCookies("user-error", JSON.stringify(response.message));
       if (!response.success) return false;
       const userData = response.data;
       setCookies("user", JSON.stringify(userData));
@@ -84,6 +96,7 @@ export async function handleSocialLogin(user: any, account: any) {
       email: user.email,
       accessToken: account?.access_token,
     });
+    setCookies("user-error", JSON.stringify(response.message));
     if (!response.success) return false;
     const userData = response.data;
     setCookies("user", JSON.stringify(userData));

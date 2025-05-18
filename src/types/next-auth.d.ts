@@ -1,6 +1,11 @@
 import NextAuth from "next-auth";
 import { Permission } from "./permissions";
-export type RoleState = "seeker" | "admin" | "employer";
+export type RoleState =
+  | "seeker"
+  | "admin"
+  | "employer"
+  | "unEmployee"
+  | "unverified";
 
 declare module "next-auth" {
   interface User {
@@ -10,7 +15,7 @@ declare module "next-auth" {
     lastName: string | null;
     userName: string | null;
     type: RoleState;
-    // isVerified: boolean;
+    isVerified?: boolean;
     photo: string | null;
     phone: string | null;
     companyId?: string | null;
