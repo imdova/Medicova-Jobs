@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { resetReducer } from "./slices/resetSlice";
 import { companyReducer } from "./slices/companySlice";
 import { locationReducer } from "./slices/locationSlice";
 import { modalReducer } from "./slices/modalSlice";
@@ -10,7 +9,6 @@ import { industryReducer } from "./slices/industriesSlice";
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      resetEmail: resetReducer,
       company: companyReducer,
       location: locationReducer,
       industry: industryReducer,

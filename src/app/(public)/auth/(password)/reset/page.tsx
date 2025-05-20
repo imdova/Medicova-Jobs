@@ -1,31 +1,76 @@
 import Image from "next/image";
+import SetForm from "./SetForm";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ResetForm from "./ResetForm";
+import React from "react";
+import VerifyToken from "@/components/UI/verifyToken";
+import { getCookies } from "@/lib/cookies";
+import { Ban } from "lucide-react";
+import { notFound } from "next/navigation";
+const resetPage = async ({
+  searchParams,
+}: {
+  searchParams: { token: string };
+}) => {
+  const token = searchParams.token;
+  const resetEmail = await getCookies("resetEmail");
+  const { email, expiresAt } = JSON.parse(resetEmail || "{}");
+  
+  if (!email || !expiresAt) {
+    return notFound();
+  }
 
-const resetPage = () => {
+  if (expiresAt < Date.now()) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <VerifyToken
+          title="Token expired"
+          description="Please request a new token"
+          Icon={Ban}
+        />
+      </div>
+    );
+  }
+
+  if (email && expiresAt && expiresAt > Date.now() && !token) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <VerifyToken
+          title="Token Send"
+          description="Please check your email for the token"
+        />
+      </div>
+    );
+  }
+
   return (
-    <>
+    <React.Fragment>
       <div className="absolute inset-0 z-[-1] bg-[url('/images/background.png')] bg-cover bg-center opacity-20"></div>
       {/* Main Content */}
       <div className="m-auto flex h-screen flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center rounded-base border border-gray-50 bg-[#f8faff]/80 p-5 shadow-xl">
           {/* Lock Icon */}
           <Image
-            src="/images/reset-password.jpg"
-            width={200}
-            height={170}
-            alt="reset password"
+            src="/images/set-password.jpg"
+            width={150}
+            height={120}
+            alt="set password"
             className="mt-5 object-contain mix-blend-multiply"
           />
 
           {/* Title */}
           <h4 className="mb-1 text-center text-3xl font-semibold text-main">
-            Password Reset
+            Set a new password
           </h4>
           {/* Subtitle */}
+          <p className="mb-4 text-center text-secondary">
+            Must be at least 8 character.
+          </p>
+          {/* Email Input */}
 
-          <ResetForm />
+          {/* Email Input */}
+
+          <SetForm token={token} email={email} />
 
           <Link
             href="/auth/signin"
@@ -40,10 +85,9 @@ const resetPage = () => {
         <div className="mt-5 flex h-1 w-full max-w-[400px] items-center justify-center gap-5 px-10">
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
           <div className="h-full flex-1 rounded bg-light-primary"></div>
-          <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

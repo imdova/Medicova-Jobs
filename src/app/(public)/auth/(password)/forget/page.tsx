@@ -46,7 +46,6 @@ const Forget = () => {
         <div className="mt-5 flex h-1 w-full max-w-[400px] items-center justify-center gap-5 px-10">
           <div className="h-full flex-1 rounded bg-light-primary"></div>
           <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
-          <div className="h-full flex-1 rounded bg-[#CDD3D1]"></div>
         </div>
       </div>
     </React.Fragment>

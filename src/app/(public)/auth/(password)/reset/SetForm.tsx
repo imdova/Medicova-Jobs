@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { signIn } from "next-auth/react";
+import { API_RESET_PASSWORD } from "@/api/users";
+import { deleteCookies } from "@/lib/cookies";
 
-const SetForm: React.FC = () => {
-  const { email, otp } = useAppSelector((state) => state.resetEmail);
-  const dispatch = useAppDispatch();
-
+const SetForm: React.FC<{ token: string; email: string }> = ({
+  token,
+  email,
+}) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -42,28 +42,6 @@ const SetForm: React.FC = () => {
     return true;
   };
 
-  // const onSubmit = async (data: {
-  //   password: string;
-  //   confirmPassword: string;
-  // }) => {
-  //   if (validateForm() && email) {
-  //     setLoading(true);
-  //     const result = await forgetPassword({
-  //       email,
-  //       newPassword: data.password,
-  //       otp,
-  //     });
-  //     dispatch(setEmail({ email: null, otp: null }));
-  //     if (result.success) {
-  //       setLoading(false);
-  //       router.push(`/`);
-  //     } else {
-  //       setLoading(false);
-  //       setError(result.message);
-  //     }
-  //   }
-  // };
-
   const onSubmit = async (data: {
     password: string;
     confirmPassword: string;
@@ -71,23 +49,21 @@ const SetForm: React.FC = () => {
     if (validateForm() && email) {
       setLoading(true);
       try {
-        const result = await signIn("OTP-Credentials", {
-          email: email,
-          otp: otp,
-          password: data.password,
-          redirect: false,
+        const response = await fetch(API_RESET_PASSWORD, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: token,
+            newPassword: data.password,
+          }),
         });
-        if (result?.error) {
-          setError(
-            result.error === "CredentialsSignin"
-              ? "Invalid email or password"
-              : "An error occurred during sign in",
+        if (!response.ok) {
+          throw new Error(
+            (response as any)?.message || `Update failed: ${response.status}`,
           );
-        } else {
-          if (typeof window !== "undefined") {
-            window.location.replace("/me");
-          }
         }
+        deleteCookies("resetEmail");
+        router.push("/auth/signin");
       } catch (error) {
         setError("Failed to sign in");
       } finally {
@@ -95,13 +71,6 @@ const SetForm: React.FC = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (!email) {
-      router.push("/auth/signin");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email]);
 
   return (
     <form
@@ -184,7 +153,7 @@ const SetForm: React.FC = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Loading..." : "Set"}
+          {loading ? "Loading..." : "Set New Password"}
         </Button>
       </Box>
     </form>

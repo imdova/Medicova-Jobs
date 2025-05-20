@@ -3,13 +3,10 @@ import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { sendOTP } from "@/lib/access";
-import { setEmail } from "@/store/slices/resetSlice";
-import { useAppDispatch } from "@/store/hooks";
+import { API_SEND_TOKEN_BY_EMAIL } from "@/api/users";
+import { setCookies } from "@/lib/cookies";
 
 const ForgetForm: React.FC = () => {
-  const dispatch = useAppDispatch();
-
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -43,14 +40,33 @@ const ForgetForm: React.FC = () => {
   const onSubmit = async (data: { email: string }) => {
     if (validateForm()) {
       setLoading(true);
-      const result = await sendOTP(data.email);
-      if (result.success) {
-        setLoading(false);
-        dispatch(setEmail({ email: data.email, otp: null }));
+      try {
+        const response = await fetch(
+          API_SEND_TOKEN_BY_EMAIL + data.email.replace("@", "%40"),
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error(
+            (response as any)?.message || `Update failed: ${response.status}`,
+          );
+        }
+        const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour from now
+        const state = { email: data.email, expiresAt };
+        await setCookies("resetEmail", JSON.stringify(state));
         router.push(`/auth/reset`);
-      } else {
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message); // Safe now!
+        } else {
+          setError("Unknown error : Failed to send token");
+        }
+      } finally {
         setLoading(false);
-        setError(result.message);
       }
     }
   };
