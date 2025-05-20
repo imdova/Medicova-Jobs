@@ -14,7 +14,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   onClose,
   onSubmit,
   onDelete,
-  fields,
+  fields = [],
   title,
   description,
   initialValues = {},
@@ -96,7 +96,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
           error={error}
           handleCancel={handleCancel}
         />
-        <DialogContent className="m-0 p-0">
+        <DialogContent className="m-0 p-0 max-h-[calc(100dvh-200px)] h-full ">
           <FormContent
             fields={fields}
             onSubmit={onSubmit}

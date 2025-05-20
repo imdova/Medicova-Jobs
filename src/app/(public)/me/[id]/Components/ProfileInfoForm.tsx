@@ -10,6 +10,7 @@ import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import { TAGS } from "@/api";
 import React from "react";
 import ProfileForm from "./ProfileForm";
+import { NotificationType } from "@/types";
 
 const getDefaultUserData = (user: UserProfile) => {
   const defaultValues = {
@@ -43,6 +44,9 @@ interface ProfileInfoFormProps {
   user: UserProfile;
 }
 export const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user }) => {
+  const [notification, setNotification] =
+    React.useState<NotificationType | null>(null);
+
   const {
     isLoading,
     error,
@@ -74,7 +78,11 @@ export const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user }) => {
       state: formData.state?.code ? formData.state : null,
     };
     const newProfile = await update(API_UPDATE_SEEKER, { body }, TAGS.profile);
-    // setData(newProfile);
+    setNotification({
+      message: "Profile updated successfully",
+      severity: "success",
+    });
+    reset(getDefaultUserData(newProfile));
     updateSession({
       photo: newProfile.avatar,
       firstName: newProfile.firstName,
@@ -133,6 +141,20 @@ export const ProfileInfoForm: React.FC<ProfileInfoFormProps> = ({ user }) => {
           sx={{ width: "100%" }}
         >
           {error?.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={!!notification}
+        autoHideDuration={3000}
+        onClose={() => setNotification(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setNotification(null)}
+          severity={notification?.severity}
+          sx={{ width: "100%" }}
+        >
+          {notification?.message}
         </Alert>
       </Snackbar>
     </>

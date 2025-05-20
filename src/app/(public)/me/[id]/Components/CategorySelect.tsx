@@ -1,10 +1,5 @@
-import {
-  API_GET_CAREER_LEVELS_BY_CATEGORY,
-  API_GET_CATEGORIES,
-  API_GET_SPECIALITIES_BY_CATEGORY,
-} from "@/api/admin";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
-import useFetch from "@/hooks/useFetch";
+import { useIndustriesData } from "@/hooks/useIndustriesData";
 import { FieldConfig, Industry } from "@/types";
 import { UseFormReturn } from "react-hook-form";
 
@@ -12,32 +7,24 @@ interface LocationSectionProps {
   formMethods: UseFormReturn<Partial<UserProfile>>;
 }
 const CategorySelect: React.FC<LocationSectionProps> = ({ formMethods }) => {
-  const { control, getValues, setValue } = formMethods;
-  const categoryId = getValues("categoryId");
+  const { control, watch, getValues, setValue } = formMethods;
+  const categoryId = watch("categoryId");
 
-  const { data: categoriesData } =
-    useFetch<PaginatedResponse<Industry>>(API_GET_CATEGORIES);
-  const { data: specialitiesData } = useFetch<PaginatedResponse<Industry>>(
-    categoryId ? API_GET_SPECIALITIES_BY_CATEGORY + categoryId : null,
-    {
-      fetchOnce: false,
-      fetchOnUrlChange: true,
+  const {
+    categories: {
+      data: { data: categories },
+      loading: categoriesLoading,
     },
-  );
-  const { data: careerLevelData } = useFetch<PaginatedResponse<Industry>>(
-    categoryId
-      ? `${API_GET_CAREER_LEVELS_BY_CATEGORY}?ids=${categoryId}`
-      : null,
-    {
-      fetchOnce: false,
-      fetchOnUrlChange: true,
+    careerLevels: {
+      data: { data: careerLevels },
     },
-  );
-
-  const categories = categoriesData?.data || [];
-  const specialities = specialitiesData?.data || [];
-  const careerLevels = careerLevelData?.data || [];
-
+    specialities: {
+      data: { data: specialities },
+    },
+  } = useIndustriesData({
+    industryId: "all",
+    categoryId,
+  });
   const resetValues = (fieldNames: (string | number)[]) => {
     fieldNames.forEach((name) => {
       setValue(name as FieldConfig<UserProfile>["name"], "", {

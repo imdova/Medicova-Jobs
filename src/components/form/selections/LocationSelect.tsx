@@ -1,7 +1,6 @@
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { useLocationData } from "@/hooks/useLocationData";
-import { Country, FieldConfig, State } from "@/types";
-import { Grid } from "@mui/material";
+import { FieldConfig } from "@/types";
 import { Path, PathValue, UseFormReturn } from "react-hook-form";
 
 interface LocationItems {
@@ -18,10 +17,9 @@ function LocationSelect<T extends Partial<LocationItems>>({
   formMethods,
 }: LocationSectionProps<T>) {
   const { control, getValues, setValue, watch } = formMethods;
-  const country = getValues(
-    "country" as Path<T>,
-  ) as unknown as LocationItem | null;
-  const { countries, states } = useLocationData(country?.code);
+  const country = watch("country.code" as Path<T>) as string | null;
+
+  const { countries, states } = useLocationData(country || "");
 
   const locationFields: FieldConfig<T>[] = [
     {
@@ -41,7 +39,6 @@ function LocationSelect<T extends Partial<LocationItems>>({
           "country.name" as Path<T>,
           (countries.find((c) => c.isoCode === value)?.name || "") as any,
         ),
-      gridProps: { xs: 6, md: 4 },
     },
     {
       name: "state.code" as Path<T>,
@@ -60,7 +57,6 @@ function LocationSelect<T extends Partial<LocationItems>>({
         value: state.isoCode,
         label: state.name,
       })),
-      gridProps: { xs: 6, md: 4 },
     },
     {
       name: "city" as Path<T>,
@@ -69,7 +65,6 @@ function LocationSelect<T extends Partial<LocationItems>>({
       textFieldProps: {
         placeholder: "e.g., Cairo, Giza",
       },
-      gridProps: { xs: 12, md: 4 },
       rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
@@ -91,19 +86,8 @@ function LocationSelect<T extends Partial<LocationItems>>({
     <div className="w-full">
       <div className="mt-1 grid grid-cols-12 gap-4">
         {locationFields.map((field) => {
-          const gridProps = field.gridProps ?? {};
-          const xs = gridProps.xs ?? 12;
-          const sm = gridProps.sm ?? xs;
-          const md = gridProps.md ?? sm;
-          const classNames = [
-            `col-span-${xs}`,
-            sm !== xs ? `sm:col-span-${sm}` : "",
-            md !== sm ? `md:col-span-${md}` : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
           return (
-            <div className={classNames} key={String(field.name)}>
+            <div className="col-span-6 md:col-span-4" key={String(field.name)}>
               <FormField
                 field={field}
                 control={control}

@@ -20,6 +20,7 @@ import { RadioFieldComponent } from "./RadioField";
 import { TextEditorField } from "./TextEditorField";
 import { getNestedValue } from "@/util/forms";
 import { updateData } from "@/util/general";
+import OTPInput from "@/components/UI/OTP";
 
 interface FormFieldProps {
   field: FieldConfig;
@@ -139,6 +140,14 @@ export const FormField: React.FC<FormFieldProps> = ({
           <RadioFieldComponent
             field={field}
             controllerField={controllerField}
+            error={error}
+          />
+        );
+      case "otp":
+        return (
+          <OTPInput
+            length={6}
+            onChange={controllerField.onChange}
             error={error}
           />
         );

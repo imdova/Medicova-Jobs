@@ -1,6 +1,7 @@
 "use client";
 import UpdateEmail from "@/components/settings/UpdateEmail";
 import UpdatePassword from "@/components/settings/UpdatePassword";
+import UpdatePhone from "@/components/settings/UpdatePhone";
 import { CircularProgress } from "@mui/material";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -22,6 +23,7 @@ const LoginDetailsPage: React.FC = () => {
   return (
     <div>
       <UpdateEmail user={user} />
+      <UpdatePhone user={user} />
       <UpdatePassword user={user} />
     </div>
   );

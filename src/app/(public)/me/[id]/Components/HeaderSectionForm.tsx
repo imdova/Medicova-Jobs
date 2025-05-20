@@ -44,7 +44,7 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
   };
 
   return (
-    <div className="rounded-base rounded-t-base shadow-soft flex w-full flex-col items-center gap-8 overflow-hidden border border-gray-200 bg-white p-5 lg:flex-row lg:items-start">
+    <div className="flex w-full flex-col items-center gap-8 overflow-hidden rounded-base rounded-t-base border border-gray-200 bg-white p-5 shadow-soft lg:flex-row lg:items-start">
       <div>
         <ProfileImage
           currentImageUrl={avatar || ""}
@@ -54,31 +54,43 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({ formMethods }) => {
           imageClassName="border-4 border-white shadow-md"
         />
       </div>
-      <div className="w-full">
-        <Grid className="grid grid-cols-12 gap-4">
-          {fields.map((field) => {
-            const gridProps = field.gridProps ?? {};
-            const xs = gridProps.xs ?? 12;
-            const sm = gridProps.sm ?? xs;
-            const md = gridProps.md ?? sm;
-            const classNames = [
-              `col-span-${xs}`,
-              sm !== xs ? `sm:col-span-${sm}` : "",
-              md !== sm ? `md:col-span-${md}` : "",
-            ]
-              .filter(Boolean)
-              .join(" ");
-            return (
-              <div className={classNames} key={String(field.name)}>
-                <FormField
-                  field={field}
-                  control={control}
-                  formValues={getValues()}
-                />
-              </div>
-            );
-          })}
-        </Grid>
+      <div className="flex w-full gap-3">
+        <div className="flex-1">
+          <FormField
+            field={{
+              label: "First Name*",
+              name: "firstName",
+              type: "text",
+              required: true,
+              rules: {
+                minLength: {
+                  value: 2,
+                  message: "First Name must be larger than 2 word",
+                },
+              },
+            }}
+            control={control}
+            formValues={getValues()}
+          />
+        </div>
+        <div className="flex-1">
+          <FormField
+            field={{
+              label: "Last Name*",
+              name: "lastName",
+              type: "text",
+              required: true,
+              rules: {
+                minLength: {
+                  value: 2,
+                  message: "Last Name must be larger than 2 word",
+                },
+              },
+            }}
+            control={control}
+            formValues={getValues()}
+          />
+        </div>
       </div>
     </div>
   );

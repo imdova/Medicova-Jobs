@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { Box, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
+import { FieldError } from "react-hook-form";
 
 const OTPInput = ({
   length = 6,
@@ -9,7 +10,7 @@ const OTPInput = ({
 }: {
   length?: number;
   onChange?: (otp: string) => void;
-  error?: boolean;
+  error?: FieldError | null;
 }) => {
   const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
   const inputsRef = useRef<HTMLInputElement[]>([]);
@@ -51,35 +52,41 @@ const OTPInput = ({
   };
 
   return (
-    <Box display="flex" gap={1} justifyContent="center">
-      {otp.map((_, index) => (
-        <TextField
-          key={index}
-          inputRef={(el) => (inputsRef.current[index] = el!)}
-          value={otp[index]}
-          onChange={(e) => handleChange(e.target.value, index)}
-          onKeyDown={(e) => handleKeyDown(e, index)}
-          error={error}
-          onPaste={handlePaste}
-          inputProps={{
-            maxLength: 1,
-            className: "text-center font-bold aspect-square flex-1 p-3 md:p-5 md:text-xl",
-            style: {
-              // textAlign: "center",
-              // fontWeight: "bold",
-              // padding:0,
-              // aspectRatio: "1/1",
-              // flex: 1,
-              MozAppearance: "textfield", // Firefox
-            },
-            inputMode: "numeric", // Mobile keyboards
-          }}
-          type="text" // Change to text to remove arrows
-          autoFocus={index === 0}
-          variant="outlined"
-        />
-      ))}
-    </Box>
+    <>
+      <div className="flex justify-center gap-1">
+        {otp.map((_, index) => (
+          <TextField
+            key={index}
+            inputRef={(el) => (inputsRef.current[index] = el!)}
+            value={otp[index]}
+            onChange={(e) => handleChange(e.target.value, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            error={!!error}
+            onPaste={handlePaste}
+            inputProps={{
+              maxLength: 1,
+              className:
+                "text-center font-bold aspect-square flex-1 p-3 md:p-5 md:text-xl",
+              style: {
+                // textAlign: "center",
+                // fontWeight: "bold",
+                // padding:0,
+                // aspectRatio: "1/1",
+                // flex: 1,
+                MozAppearance: "textfield", // Firefox
+              },
+              inputMode: "numeric", // Mobile keyboards
+            }}
+            type="text" // Change to text to remove arrows
+            autoFocus={index === 0}
+            variant="outlined"
+          />
+        ))}
+      </div>
+      {error && (
+        <p className="text-center text-sm text-red-500">{error.message}</p>
+      )}
+    </>
   );
 };
 

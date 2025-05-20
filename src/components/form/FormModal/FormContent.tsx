@@ -68,11 +68,12 @@ export const FormContent: React.FC<FormContentProps> = ({
     const data = getValues();
     onDelete?.(data);
   };
-
+  
+  // col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal bg-background max-h-[calc(100dvh-300px)] overflow-y-auto p-4">
-        <div className="mt-1 grid grid-cols-12 gap-4">
+      <div className="scroll-bar-minimal max-h-[calc(100dvh-254px)] overflow-y-auto bg-background">
+        <div className="mt-1 grid grid-cols-12 gap-4 p-4">
           {fields.map((field) => {
             const gridProps = field.gridProps ?? {};
             const xs = gridProps.xs ?? 12;
@@ -103,8 +104,8 @@ export const FormContent: React.FC<FormContentProps> = ({
             );
           })}
         </div>
+        {children && children}
       </div>
-      {children && children}
       <FormActions
         onDelete={onDelete && handleDelete}
         onCancel={onCancel}

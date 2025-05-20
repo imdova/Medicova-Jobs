@@ -44,6 +44,7 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
     !getNestedValue(formValues, field.dependsOn)
       ? { name: field.dependsOn, ...dependsOnField }
       : null;
+
   const placeholder = field.textFieldProps?.label
     ? String(field.textFieldProps?.label).replace("*", "")
     : field.label
@@ -105,12 +106,13 @@ export const SearchableSelectField: React.FC<SelectFieldProps> = ({
         </div>
       )}
       <Tooltip
+        open={!!dependsOn}
         title={
           dependsOn
             ? `Please select ${
-                String(dependsOn.textFieldProps?.label).replace("*", "") ||
-                dependsOn.label?.replace("*", "") ||
-                dependsOn.name
+                dependsOn.textFieldProps?.label
+                  ? String(dependsOn.textFieldProps?.label).replace("*", "")
+                  : dependsOn.label?.replace("*", "") || dependsOn.name
               } first`
             : undefined
         }

@@ -424,8 +424,8 @@ export type FieldType =
   | "checkbox"
   | "component"
   | "radio"
-  | "file";
-
+  | "file"
+  | "otp";
 export interface Option<T = Record<string, any>> {
   value: keyof T;
   label: string;
@@ -440,11 +440,11 @@ export interface FieldConfig<T = any> {
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:
-    | Omit<
-        RegisterOptions<FieldValues, string>,
-        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
-      >
-    | undefined;
+  | Omit<
+    RegisterOptions<FieldValues, string>,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >
+  | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;
@@ -468,7 +468,7 @@ export interface DynamicModalProps {
   onClose: () => void;
   onSubmit: (data: any) => void;
   onDelete?: (data: any) => void;
-  fields: FieldConfig[];
+  fields?: FieldConfig[];
   title?: string;
   description?: string;
   initialValues?: Record<string, any>;

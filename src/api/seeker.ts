@@ -12,6 +12,9 @@ export const API_FILTER_SEARCH_SEEKERS = PROFILES + "/filters"; // GET
 export const API_UPDATE_SEEKER = PROFILES; // PATCH + [id]
 export const API_DELETE_SEEKER = PROFILES + "/"; // DELETE + [id]
 export const API_RECALCULATE_COMPLETENESS = PROFILES + "/"; // GET + [id]
+export const API_REQUEST_PHONE_CHANGE = PROFILES + "/request-phone-change"; // POST
+export const API_PHONE_CHANGE = PROFILES + "/phone-change"; // POST
+
 
 // User Skills
 export const SKILLS = BASE + "/skills";
