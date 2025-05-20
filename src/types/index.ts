@@ -9,7 +9,6 @@ import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
 import {
-  ControllerRenderProps,
   FieldValues,
   Path,
   RegisterOptions,
@@ -17,6 +16,15 @@ import {
 import { User } from "next-auth";
 import { DatePickerProps } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
+import { VerifyType } from "@/constants/enums/verify-types.enums";
+
+
+
+export type Verify = {
+  newMail: string;
+  type: VerifyType;
+  url: string;
+};
 
 export type Country = {
   name: string;

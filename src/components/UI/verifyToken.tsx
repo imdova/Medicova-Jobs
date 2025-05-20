@@ -2,19 +2,27 @@ import { MousePointerClick } from "lucide-react";
 
 import { CheckCircle, Mail } from "lucide-react";
 import Step from "./step";
+import { cn } from "@/util";
 
 type VerifyTokenProps = {
   title?: string;
   description?: string;
   Icon?: React.ElementType;
+  className?: string;
 };
 const VerifyToken: React.FC<VerifyTokenProps> = ({
   title = "Registration Successful 🎉",
   description = "You&apos;re almost there! Just one more step to get started.",
   Icon = CheckCircle,
+  className,
 }) => {
   return (
-    <div className="w-full max-w-xl space-y-8 rounded-3xl bg-white p-10 text-center shadow-2xl">
+    <div
+      className={cn(
+        "w-full max-w-xl space-y-8 rounded-3xl bg-white p-10 text-center shadow-2xl",
+        className,
+      )}
+    >
       <Icon className="mx-auto h-16 w-16 text-green-500" />
       <h1 className="text-3xl font-bold text-gray-800">{title}</h1>
       <p className="text-lg text-gray-600">{description}</p>

@@ -2,12 +2,16 @@
 import React, { useState, useRef } from "react";
 import { TextField } from "@mui/material";
 import { FieldError } from "react-hook-form";
+import { FieldConfig } from "@/types";
+import { cn } from "@/util";
 
 const OTPInput = ({
+  field,
   length = 6,
   onChange,
   error,
 }: {
+  field?: FieldConfig;
   length?: number;
   onChange?: (otp: string) => void;
   error?: FieldError | null;
@@ -52,7 +56,9 @@ const OTPInput = ({
   };
 
   return (
-    <>
+    <div
+      className={cn("flex flex-col gap-2", field?.textFieldProps?.className)}
+    >
       <div className="flex justify-center gap-1">
         {otp.map((_, index) => (
           <TextField
@@ -66,16 +72,28 @@ const OTPInput = ({
             inputProps={{
               maxLength: 1,
               className:
-                "text-center font-bold aspect-square flex-1 p-3 md:p-5 md:text-xl",
+                "text-center font-bold aspect-square flex-1 p-3 md:p-5 md:text-2xl",
               style: {
-                // textAlign: "center",
-                // fontWeight: "bold",
-                // padding:0,
-                // aspectRatio: "1/1",
-                // flex: 1,
                 MozAppearance: "textfield", // Firefox
               },
               inputMode: "numeric", // Mobile keyboards
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                height: "60px",
+                width: "60px",
+                "& .MuiOutlinedInput-input": {
+                  padding: "9px 14px",
+                  height: "24px",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--light-primary)",
+                },
+                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "red",
+                },
+                borderRadius: "10px",
+              },
             }}
             type="text" // Change to text to remove arrows
             autoFocus={index === 0}
@@ -86,7 +104,7 @@ const OTPInput = ({
       {error && (
         <p className="text-center text-sm text-red-500">{error.message}</p>
       )}
-    </>
+    </div>
   );
 };
 

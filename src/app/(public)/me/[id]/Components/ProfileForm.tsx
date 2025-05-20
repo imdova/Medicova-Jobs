@@ -33,65 +33,31 @@ const genderIcons: Record<keyof typeof Gender, React.ReactNode> = {
 const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
   const { control } = formMethods;
 
-  const [isMyWhatsApp, setIsMyWhatsApp] = useState(true);
-
-  const onCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = event.target.checked;
-    setIsMyWhatsApp(isChecked);
-  };
   return (
     <div className="w-full space-y-3 rounded-base border border-gray-200 bg-white p-5 shadow-soft">
       <h5 className="text-xl font-semibold text-main md:mt-4">
         Your Personal Info
       </h5>
       <div className="flex w-full gap-4">
-        {/* Phone Number */}
-        <div className="flex-1">
+        <div className="md:w-1/2">
           <FormField
-            field={{
-              label: "Phone Number*",
-              name: "phone",
-              type: "phone",
-              rules: {
-                validate: (value) =>
-                  isValidPhoneNumber(value || "") ||
-                  "Please enter a valid phone number",
-              },
-            }}
+            field={
+              {
+                label: "WhatsApp Number",
+                name: "whatsapp",
+                type: "phone",
+                rules: {
+                  validate: (value) =>
+                    isValidPhoneNumber(value || "") ||
+                    "Please enter a valid phone number",
+                },
+              } as FieldConfig<UserProfile>
+            }
             control={control}
           />
         </div>
-        <div className="flex-1">
-          {!isMyWhatsApp && (
-            <FormField
-              field={
-                {
-                  label: "WhatsApp Number",
-                  name: "whatsapp",
-                  type: "phone",
-                  rules: {
-                    validate: (value) =>
-                      isValidPhoneNumber(value || "") ||
-                      "Please enter a valid phone number",
-                  },
-                } as FieldConfig<UserProfile>
-              }
-              control={control}
-            />
-          )}
-        </div>
       </div>
-      <CheckboxField
-        field={{
-          name: "any",
-          label: "My Phone Number is my whats app number",
-          type: "checkbox",
-        }}
-        controllerField={{
-          value: isMyWhatsApp,
-          onChange: onCheckboxChange,
-        }}
-      />
+     
       <div className="md:w-1/2">
         <FormField
           field={

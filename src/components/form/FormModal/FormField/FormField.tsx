@@ -146,6 +146,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       case "otp":
         return (
           <OTPInput
+            field={field}
             length={6}
             onChange={controllerField.onChange}
             error={error}

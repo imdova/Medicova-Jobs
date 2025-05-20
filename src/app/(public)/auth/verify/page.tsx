@@ -1,17 +1,22 @@
 "use client";
+import { API_CHANGE_EMAIL } from "@/api/users";
 import VerifyToken from "@/components/UI/verifyToken";
+import { VerifyType } from "@/constants/enums/verify-types.enums";
+import { deleteCookies, getCookies } from "@/lib/cookies";
+import { Verify } from "@/types";
 import { CircularProgress } from "@mui/material";
 import { User } from "next-auth";
 import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function EmailVerificationPage({
   searchParams,
 }: {
   searchParams: { token: string };
 }) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
+
   const user = session?.user as User;
   const token = searchParams.token;
 
@@ -19,16 +24,58 @@ export default function EmailVerificationPage({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const hasChangedEmail = useRef(false);
+
+  const handleChangeEmail = async () => {
+    if (hasChangedEmail.current) return;
+    hasChangedEmail.current = true;
+    setLoading(true);
+    try {
+      const data = await getCookies("verify");
+      const verify: Verify = data ? JSON.parse(data) : null;
+      if (verify?.type !== VerifyType.EMAIL_VERIFY) {
+        return;
+      }
+      const newMail = verify.newMail;
+      const response = await fetch(API_CHANGE_EMAIL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newMail, token }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change email");
+      }
+      window.location.replace("/job-seeker/setting");
+
+      const updatedUser = await response.json();
+      const newData: Partial<User> = {
+        email: updatedUser.email,
+      };
+      await updateSession(newData);
+      await deleteCookies("verify");
+    } catch (error) {
+      setError("Failed to change email");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onSubmit = async () => {
     setLoading(true);
     try {
+      const data = await getCookies("verify");
+      const verify: Verify = data ? JSON.parse(data) : null;
+      if (verify?.type === VerifyType.EMAIL_VERIFY) {
+        return;
+      }
       const result = await signIn("validate-credentials", {
         email: user.email,
         token: token,
         redirect: false,
       });
-      console.log("🚀 ~ onSubmit ~ result:", result)
       if (result?.error) {
         setError(
           result.error === "CredentialsSignin"
@@ -51,8 +98,16 @@ export default function EmailVerificationPage({
     if (isVerifying) {
       onSubmit();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerifying]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      handleChangeEmail();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   const waitingForVerification = user?.email && !user.isVerified && !token;
 
@@ -81,13 +136,7 @@ export default function EmailVerificationPage({
           </p>
         </div>
       )}
-      {waitingForVerification && (
-        <VerifyToken />
-      )}
+      {waitingForVerification && <VerifyToken />}
     </div>
   );
 }
-
-
-
-

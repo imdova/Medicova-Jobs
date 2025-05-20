@@ -7,6 +7,7 @@ import { User } from "next-auth";
 import UsersTab from "@/components/settings/usersTab";
 import UpdateEmail from "@/components/settings/UpdateEmail";
 import UpdatePassword from "@/components/settings/UpdatePassword";
+import UpdatePhone from "@/components/settings/UpdatePhone";
 
 const SettingsPage = () => {
   const { data: session, status } = useSession();
@@ -42,6 +43,7 @@ const SettingsPage = () => {
       {tabValue === 0 && (
         <div>
           <UpdateEmail user={user} />
+          <UpdatePhone user={user} />
           <UpdatePassword user={user} />
         </div>
       )}
