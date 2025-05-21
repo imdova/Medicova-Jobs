@@ -76,19 +76,19 @@ export interface Block {
   allowNesting?: boolean;
 }
 
-export interface FormType {
+export interface FormItem {
   id: string;
   name: string;
-  title: string;
+  title?: string;
   description?: string;
-  initialValues?: Record<string, any>;
-  onSubmit: {
-    method: string;
-    url: string;
-  };
   fields: FieldConfig[];
-  submitText?: string;
-  cancelText?: string;
+  apiEndpoint?: string;
+  afterSubmit?: string;
+  afterSubmitMessage?: string;
+  onSuccessRedirect?: string;
+  onSuccessMessage?: string;
+  onErrorRedirect?: string;
+  onErrorMessage?: string;
 }
 
 export type BlogSettings = {

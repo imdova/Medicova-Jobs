@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
-import { Block, BlogSettings, FormType } from "@/types/blog";
+import { Block, BlogSettings, FormItem } from "@/types/blog";
 import { findItemById } from "@/util/blog";
 
 import "./styles.css";
@@ -32,119 +32,99 @@ const initialSetting: BlogSettings = {
   author: "1",
 };
 
-const initialForm: FormType = {
-  id: "1",
-  name: "susbscribe form",
-  title: "Subscribe to our channel",
-  submitText: "submit",
-  cancelText: "cancel",
-  description: "any thing",
-  fields: [
-    {
-      name: "name",
-      type: "text",
-    },
-    {
-      name: "email",
-      type: "email",
-    },
-  ],
-  onSubmit: {
-    method: "GET",
-    url: "https://anywhere",
-  },
-};
-
 export default function PageBuilder() {
   // State management
   const [settings, setSettings] = useState<BlogSettings>(initialSetting);
   const [blocks, setBlocks] = useState<Block[]>([]);
-  const [forms, setForms] = useState<FormType[]>([initialForm]);
+  const [forms, setForms] = useState<FormItem[]>(formList);
   const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  console.log("🚀 ~ PageBuilder ~ selectedForm:", selectedForm);
   const activeForm = forms.find((x) => selectedForm === x.id);
+  console.log("🚀 ~ PageBuilder ~ activeForm:", activeForm);
 
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [onPreview, setPreview] = useState(false);
 
   return (
-    <div>
-      <EditorHeader
-        blocks={blocks}
-        onPreview={onPreview}
-        setPreview={setPreview}
-      />
-      <DndProvider backend={HTML5Backend}>
-        <div className="flex bg-background">
-          <main className="max-w-full flex-1 overflow-hidden">
-            <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
-              <ViewModeSelector
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-              />
-            </div>
-            {/* Header Section */}
-
-            {/* Content Area */}
-            <div
-              className={`scrollable-container scroll-bar-minimal !pointer-events-auto relative h-[calc(100vh-132px)] ${activeForm ? "overflow-hidden" : "!overflow-auto"} bg-gray-50 p-4`}
-            >
-              {activeForm && (
-                <FormModal
-                  open={!!activeForm}
-                  error={""}
-                  loading={false}
-                  onClose={() => setSelectedForm(null)}
-                  onSubmit={(data) => console.log(data)}
-                  fields={activeForm.fields}
-                  title={activeForm.title}
-                  description={activeForm.description}
-                  initialValues={activeForm.initialValues}
-                  dialog={Modal}
+    <>
+      <div>
+        <EditorHeader
+          blocks={blocks}
+          onPreview={onPreview}
+          setPreview={setPreview}
+        />
+        <DndProvider backend={HTML5Backend}>
+          <div className="flex bg-background">
+            <main className="max-w-full flex-1 overflow-hidden">
+              <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
+                <ViewModeSelector
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
                 />
-              )}
+              </div>
+              {/* Header Section */}
+
+              {/* Content Area */}
               <div
-                onClick={() => {
-                  setSelectedBlock(null);
-                }}
-                className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+                className={`scrollable-container scroll-bar-minimal !pointer-events-auto relative h-[calc(100vh-132px)] ${activeForm ? "overflow-hidden" : "!overflow-auto"} bg-gray-50 p-4`}
               >
-                {onPreview ? (
-                  <ArticlePreview blocks={blocks} />
-                ) : (
-                  <BlogBuilder
-                    blocks={blocks}
-                    selectedBlock={selectedBlock}
-                    setBlocks={setBlocks}
-                    setSelectedBlock={setSelectedBlock}
+                {activeForm && (
+                  <FormModal
+                    open={!!activeForm}
+                    error={""}
+                    loading={false}
+                    onClose={() => setSelectedForm(null)}
+                    onSubmit={(data) => console.log(data)}
+                    fields={activeForm.fields}
+                    title={activeForm.title}
+                    description={activeForm.description}
+                    dialog={Modal}
                   />
                 )}
+                <div
+                  onClick={() => {
+                    setSelectedBlock(null);
+                  }}
+                  className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+                >
+                  {onPreview ? (
+                    <ArticlePreview blocks={blocks} />
+                  ) : (
+                    <BlogBuilder
+                      blocks={blocks}
+                      selectedBlock={selectedBlock}
+                      setBlocks={setBlocks}
+                      setSelectedBlock={setSelectedBlock}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
 
-          {/* Toolbars and Menus */}
-          {!onPreview && (
-            <ToolBar
-              blocks={blocks}
-              setBlocks={setBlocks}
-              forms={forms}
-              setForms={setForms}
-              selectedForm={selectedForm}
-              setSelectedForm={setSelectedForm}
-              selectedBlock={
-                selectedBlock?.id
-                  ? findItemById(blocks, selectedBlock?.id)
-                  : undefined
-              }
-              settings={settings}
-              updateSettings={setSettings}
-              setSelectedBlock={setSelectedBlock}
-            />
-          )}
-        </div>
-      </DndProvider>
-    </div>
+            {/* Toolbars and Menus */}
+            {!onPreview && (
+              <ToolBar
+                blocks={blocks}
+                setBlocks={setBlocks}
+                forms={forms}
+                setForms={setForms}
+                selectedForm={selectedForm}
+                setSelectedForm={setSelectedForm}
+                selectedBlock={
+                  selectedBlock?.id
+                    ? findItemById(blocks, selectedBlock?.id)
+                    : undefined
+                }
+                settings={settings}
+                updateSettings={setSettings}
+                setSelectedBlock={setSelectedBlock}
+              />
+            )}
+          </div>
+        </DndProvider>
+      </div>
+    </>
   );
 }
 
@@ -153,6 +133,7 @@ import ToolBar from "@/components/page-builder/panels/toolbar";
 import EditorHeader from "@/components/page-builder/EditorHeader";
 import ArticlePreview from "@/components/page-builder/blogReview";
 import BlogBuilder from "@/components/page-builder/BlogBuilder";
+import { formList } from "@/constants/pagebuilder/formFields";
 
 type ModalProps = {
   open: boolean;

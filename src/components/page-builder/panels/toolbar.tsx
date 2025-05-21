@@ -1,17 +1,18 @@
-import { Block, BlogSettings, FormType, ToolBarTabs } from "@/types/blog";
+import { Block, BlogSettings, FormItem, ToolBarTabs } from "@/types/blog";
 import { Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import StylePanel from "@/components/page-builder/panels/stylePanel";
 import BlocksPanel from "@/components/page-builder/panels/blocksPanel";
 import SettingsPanel from "@/components/page-builder/panels/SettingsPanel";
+import { FormBuilder } from "./formBuilder";
 
 interface ToolBarProps {
   settings: BlogSettings;
   updateSettings: (settings: BlogSettings) => void;
   blocks: Block[];
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
-  forms: FormType[];
-  setForms: React.Dispatch<React.SetStateAction<FormType[]>>;
+  forms: FormItem[];
+  setForms: React.Dispatch<React.SetStateAction<FormItem[]>>;
   selectedBlock?: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
   selectedForm?: string | null;
@@ -78,14 +79,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setSelectedTab={setSelectedTab}
             />
           )}
-         {/* {selectedTab === "forms" && (
-            // <FormsPanel
-            //   forms={forms}
-            //   setForms={setForms}
-            //   selectedForm={selectedForm}
-            //   setSelectedForm={setSelectedForm}
-            // />
-          )} */}
+         {selectedTab === "forms" && (
+            <FormBuilder
+              forms={forms}
+              setForms={setForms}
+              selectedForm={selectedForm}
+              setSelectedForm={setSelectedForm}
+            />
+          )}
           {selectedTab === "settings" && (
             <SettingsPanel
               settings={settings}
