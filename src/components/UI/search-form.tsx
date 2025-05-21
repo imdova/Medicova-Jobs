@@ -153,10 +153,10 @@ const SearchForm: React.FC<{
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col gap-2 rounded-[20px] bg-white p-[10px] md:h-[70px] md:flex-row"
+      className="relative flex flex-col gap-3 overflow-hidden rounded-[20px] bg-white p-[10px] md:h-[70px] md:flex-row"
     >
       {isSearch && (
-        <div className="flex flex-1 items-center gap-2 px-2">
+        <div className="flex flex-1 items-center gap-2">
           <Search className="h-8 w-8 text-light-primary" />
           <input
             type="text"
@@ -168,9 +168,9 @@ const SearchForm: React.FC<{
         </div>
       )}
       {isCategory && isCountry && (
-        <div className="flex flex-1 md:gap-2">
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row md:gap-2">
           {isCountry && (
-            <div className="flex flex-1 items-center gap-2 pl-2">
+            <div className="flex flex-1 items-center gap-2">
               <LocationOnOutlined className="h-8 w-8 text-light-primary" />
               <FormControl
                 variant="standard"
@@ -220,7 +220,7 @@ const SearchForm: React.FC<{
             </div>
           )}
           {isCategory && (
-            <div className="flex flex-1 items-center gap-2 pr-2">
+            <div className="flex flex-1 items-center gap-2">
               <GroupOutlined className="h-8 w-8 text-light-primary" />
               <FormControl
                 variant="standard"
@@ -241,7 +241,9 @@ const SearchForm: React.FC<{
                     }
                     return (
                       <span>
-                        {item ? item.name : selected.toString()?.slice(0, 5)}{" "}
+                        {item
+                          ? item.name
+                          : selected.toString()?.slice(0, 5)}{" "}
                       </span>
                     );
                   }}

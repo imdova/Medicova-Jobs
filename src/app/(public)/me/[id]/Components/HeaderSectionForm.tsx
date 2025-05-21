@@ -6,7 +6,6 @@ import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import uploadFiles from "@/lib/files/imageUploader";
 import { UseFormReturn } from "react-hook-form";
 import ProfileImage from "@/components/UI/ProfileImage";
-
 const fields: FieldConfig<UserProfile>[] = [
   {
     label: "First Name*",
@@ -16,7 +15,7 @@ const fields: FieldConfig<UserProfile>[] = [
     rules: {
       minLength: { value: 2, message: "First Name must be larger than 2 word" },
     },
-    gridProps: { xs: 6 },
+    gridProps: { xs: 12, sm: 6, md: 3 },
   },
   {
     label: "Last Name*",
@@ -26,7 +25,7 @@ const fields: FieldConfig<UserProfile>[] = [
     rules: {
       minLength: { value: 2, message: "Last Name must be larger than 2 word" },
     },
-    gridProps: { xs: 6 },
+    gridProps: { xs: 12, sm: 6, md: 3 },
   },
 ];
 

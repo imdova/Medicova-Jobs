@@ -87,7 +87,7 @@ const statusCards: StatusCardType[] = [
     title: "Active Employers",
     value: "1,517",
     icon: (
-      <ShieldCheck className="bg-primary-100 text-primary block h-11 w-11 rounded-full p-2" />
+      <ShieldCheck className="block h-11 w-11 rounded-full bg-primary-100 p-2 text-primary" />
     ),
     trend: {
       value: "20%",
@@ -133,9 +133,11 @@ const DashboardOverView: React.FC = () => {
             ))}
           </div>
           {/* Chart Section */}
-          <div className="shadow-soft relative mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div className="relative mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-soft">
             <GenericChart
               chartTitle="Employers & Job applications Trends"
+              chartDisplayType="bar"
+              showCards={false}
               data={{
                 yearly: {
                   categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -193,11 +195,11 @@ const DashboardOverView: React.FC = () => {
         {/* Right Column */}
         <div className="col-span-1 flex flex-col gap-3 lg:col-span-3">
           {/* Performance Overview */}
-          <div className="rounded-base shadow-soft border border-gray-200 bg-white">
+          <div className="rounded-base border border-gray-200 bg-white shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b border-gray-200 p-1 pb-2">
-              <h5 className="text-main p-2 text-lg font-semibold">
+              <h5 className="p-2 text-lg font-semibold text-main">
                 Performance Overview
-                <span className="text-secondary ml-1 text-xs">(Revenue)</span>
+                <span className="ml-1 text-xs text-secondary">(Revenue)</span>
               </h5>
 
               {/* <DummyActionMenu /> */}
@@ -219,11 +221,11 @@ const DashboardOverView: React.FC = () => {
             )}
           </div>
           {/* Top Countries */}
-          <div className="rounded-base shadow-soft border border-gray-200 bg-white">
+          <div className="rounded-base border border-gray-200 bg-white shadow-soft">
             <div className="mb-2 flex items-center justify-between border-b border-gray-200 p-3 pb-2">
-              <h5 className="text-main text-lg font-semibold">
+              <h5 className="text-lg font-semibold text-main">
                 Top Countries
-                <span className="text-secondary ml-1 text-xs">(Revenue)</span>
+                <span className="ml-1 text-xs text-secondary">(Revenue)</span>
               </h5>
 
               {/* <DummyActionMenu /> */}

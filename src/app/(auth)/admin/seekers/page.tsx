@@ -31,7 +31,7 @@ const SeekersPage: React.FC = () => {
 
   return (
     <div className="w-full space-y-3 px-4 md:px-5">
-      <div className="flex w-full gap-3">
+      <div className="flex w-full flex-col gap-3 md:flex-row">
         <div className="flex flex-1 flex-col items-center justify-between overflow-hidden rounded-base border border-gray-200 shadow-soft sm:flex-row md:items-center">
           <Tabs
             value={activeTab}

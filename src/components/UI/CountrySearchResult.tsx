@@ -84,7 +84,7 @@ const CountrySearchResult: React.FC = () => {
         <h2 className="mb-4 text-center text-xl font-semibold text-main">
           New Job Opportunities
         </h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {combinations.map((item, index) => (
             <Link
               href={item.url}
@@ -101,8 +101,8 @@ const CountrySearchResult: React.FC = () => {
         <h2 className="mb-4 text-center text-xl font-semibold text-main">
           Job Opportunities by countries
         </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {countries.slice(0,20).map((item, index) => (
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {countries.slice(0, 20).map((item, index) => (
             <Link
               href={`/a/Jobs-in-${item.name.replaceAll(" ", "-")}?country=${item.isoCode}`}
               key={index}

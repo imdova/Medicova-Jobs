@@ -2,7 +2,6 @@
 import { Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { LayoutDashboard, LayoutList, Settings } from "lucide-react";
-import SettingPage from "./panels/setting";
 import ApplicationList from "./panels/ApplicationList";
 import OverviewApplications from "./panels/OverviewApplications";
 
@@ -65,7 +64,7 @@ const ApplicationsPage: React.FC = () => {
       </div>
       {activeTab === "over-view" && <OverviewApplications />}
       {activeTab === "application-list" && <ApplicationList />}
-      {activeTab === "setting" && <SettingPage />}
+      {activeTab === "setting" && "settings"}
     </div>
   );
 };

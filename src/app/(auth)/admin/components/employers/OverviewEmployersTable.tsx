@@ -157,55 +157,35 @@ const OverviewEmployersTable: React.FC = () => {
   const exportHandleClose = () => setExportAnchorEl(null);
 
   return (
-    <div className="space-y-1">
-      <div className="rounded-base shadow-soft overflow-hidden border border-gray-200 bg-white">
-        <div className="p-4">
+    <div className="grid grid-cols-1 space-y-1">
+      <div className="rounded-base border border-gray-200 bg-white shadow-soft">
+        <div>
           <div>
             <div className="flex flex-col justify-between gap-3 md:flex-row">
-              <h5 className="text-main pb-1 text-xl font-semibold">
+              <h5 className="w-full p-3 pb-1 text-xl font-semibold text-main">
                 All Employers
-                <span className="text-secondary ml-1 text-xs">({total})</span>
+                <span className="ml-1 text-xs text-secondary">({total})</span>
               </h5>
-              <TextField
-                variant="outlined"
-                placeholder="Search For Employer"
-                value={filters.q}
-                InputProps={{
-                  startAdornment: <Search />,
-                }}
-                onChange={(e) => setFilters({ ...filters, q: e.target.value })}
-              />
-            </div>
-            <div className="mt-2 flex justify-between">
-              <div className="grid grid-cols-1 overflow-x-auto">
-                <div className="body-container min-w-[200px]">
-                  <Tabs
-                    value={activeTab}
-                    onChange={(e, value) => setActiveTab(value)}
-                    aria-label="basic tabs example"
-                    variant="scrollable"
-                    scrollButtons={false}
-                    className="text-base"
-                  >
-                    {tabs.map((tab) => (
-                      <Tab
-                        key={tab.value}
-                        className="text-xs text-nowrap"
-                        label={tab.name}
-                        value={tab.value}
-                      />
-                    ))}
-                  </Tabs>
-                </div>
-              </div>
-              <div>
+              <div className="flex w-full flex-col items-end gap-2 p-2 sm:flex-row">
+                <TextField
+                  className="w-full"
+                  variant="outlined"
+                  placeholder="Search For Employer"
+                  value={filters.q}
+                  InputProps={{
+                    startAdornment: <Search />,
+                  }}
+                  onChange={(e) =>
+                    setFilters({ ...filters, q: e.target.value })
+                  }
+                />
                 <Button
                   onClick={exportHandleClick}
                   variant="outlined"
                   aria-controls={exportOpen ? "export-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={exportOpen ? "true" : undefined}
-                  className="space-x-2"
+                  className="min-w-[120px] space-x-2 p-3"
                 >
                   <Download className="inline-block h-5 w-5" />
                   <p className="inline-block text-sm">Export</p>
@@ -223,10 +203,31 @@ const OverviewEmployersTable: React.FC = () => {
                 </Menu>
               </div>
             </div>
+            <div className="grid grid-cols-1">
+              <div>
+                <Tabs
+                  value={activeTab}
+                  onChange={(e, value) => setActiveTab(value)}
+                  aria-label="basic tabs example"
+                  variant="scrollable"
+                  scrollButtons={false}
+                  className="text-base"
+                >
+                  {tabs.map((tab) => (
+                    <Tab
+                      key={tab.value}
+                      className="text-nowrap text-xs"
+                      label={tab.name}
+                      value={tab.value}
+                    />
+                  ))}
+                </Tabs>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="body-container rounded-base shadow-soft flex flex-wrap gap-2 overflow-hidden overflow-x-auto border border-gray-200 bg-white p-3 md:flex-nowrap">
+      <div className="body-container flex flex-wrap gap-2 overflow-hidden overflow-x-auto rounded-base border border-gray-200 bg-white p-3 shadow-soft md:flex-nowrap">
         {fields.map((field) => (
           <div className="flex-1" key={field.name}>
             <FormField field={field} data={filters} setData={setFilters} />
@@ -242,7 +243,7 @@ const OverviewEmployersTable: React.FC = () => {
         </Button>
         <IconButton
           onClick={() => setIsFilterOpen(true)}
-          className="rounded-base w-12 border border-solid border-zinc-400"
+          className="w-12 rounded-base border border-solid border-zinc-400"
         >
           <Filter className="h-4 w-4" />
         </IconButton>
@@ -272,14 +273,14 @@ const OverviewEmployersTable: React.FC = () => {
                   <Avatar src={item.avatar} />
                   <div>
                     <Link
-                      className="hover:text-primary transition"
+                      className="transition hover:text-primary"
                       href={`/admin/employers/${item.username}`}
                     >
                       <h6 className="line-clamp-1 text-sm">{item.name}</h6>
                     </Link>
                     <Link
                       href={`mailto:${item.email}`}
-                      className="line-clamp-1 text-xs break-all underline hover:no-underline"
+                      className="line-clamp-1 break-all text-xs underline hover:no-underline"
                     >
                       {item.email}
                     </Link>

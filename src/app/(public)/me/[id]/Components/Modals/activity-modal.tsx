@@ -50,7 +50,7 @@ const ActivityModal = ({
       name: "provider",
       type: "text",
       label: "Organizing Institution",
-      gridProps: { xs: 8 },
+      gridProps: { xs: 12, md: 4 },
       textFieldProps: {
         placeholder: "e.g., Red Cross, Local Health Department, Hospital XYZ",
       },
@@ -60,7 +60,7 @@ const ActivityModal = ({
       name: "date",
       type: "date",
       label: "Activity Date",
-      gridProps: { xs: 4 },
+      gridProps: { xs: 12, md: 4 },
       textFieldProps: {
         placeholder: "e.g., 2000-06-18",
       },

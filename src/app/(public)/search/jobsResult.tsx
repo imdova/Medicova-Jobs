@@ -12,7 +12,7 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
 }) => {
   const { data: session } = useSession();
   const user = session?.user;
-  console.log("🚀 ~ user:", user)
+  console.log("🚀 ~ user:", user);
   const [view, setView] = useState("list");
   return (
     <>
@@ -42,13 +42,13 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
             <div className="flex gap-2 border-l px-2">
               <IconButton
                 onClick={() => setView("grid")}
-                className={`${view === "grid" ? "bg-light-primary text-primary-foreground" : "text-secondary"} border-none focus:text-primary focus:outline-primary`}
+                className={`${view === "grid" ? "bg-light-primary text-primary-foreground hover:bg-light-primary" : "text-secondary"} border-none`}
               >
                 <GridViewOutlined />
               </IconButton>
               <IconButton
                 onClick={() => setView("list")}
-                className={`${view === "list" ? "bg-light-primary text-primary-foreground" : "text-secondary"} border-none focus:text-primary focus:outline-primary`}
+                className={`${view === "list" ? "bg-light-primary text-primary-foreground hover:bg-light-primary" : "text-secondary"} border-none`}
               >
                 <List />
               </IconButton>

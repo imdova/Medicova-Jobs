@@ -57,7 +57,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ formMethods }) => {
           />
         </div>
       </div>
-     
+
       <div className="md:w-1/2">
         <FormField
           field={

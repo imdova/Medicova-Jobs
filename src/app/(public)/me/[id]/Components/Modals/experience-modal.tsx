@@ -115,7 +115,7 @@ const ExperienceModal = ({
       name: "startYear",
       type: "search-select",
       label: "Start Year",
-      gridProps: { xs: 6 },
+      gridProps: { xs: 12, md: 3 },
       textFieldProps: { placeholder: "Start Year" },
       options: years.map((year) => ({
         value: year.toString(),
@@ -127,7 +127,7 @@ const ExperienceModal = ({
       name: "startMonth",
       label: "Start Month",
       type: "search-select",
-      gridProps: { xs: 6 },
+      gridProps: { xs: 12, md: 3 },
       textFieldProps: { placeholder: "Start Month" },
       options: months.map((month) => ({
         value: month.number,
@@ -141,7 +141,7 @@ const ExperienceModal = ({
       name: "endYear",
       label: "End Year",
       type: "search-select",
-      gridProps: { xs: 6 },
+      gridProps: { xs: 12, md: 3 },
       textFieldProps: { placeholder: "End Year" },
       options: years.map((year) => ({
         value: year.toString(),
@@ -163,7 +163,7 @@ const ExperienceModal = ({
       name: "endMonth",
       label: "End Month",
       type: "search-select",
-      gridProps: { xs: 6 },
+      gridProps: { xs: 12, md: 3 },
       textFieldProps: { placeholder: "End Month" },
       options: months.map((month) => ({
         value: month.number,
@@ -187,6 +187,7 @@ const ExperienceModal = ({
       type: "checkbox",
       resetFields: ["endYear", "endMonth"],
       hideFieldNames: ["endYear", "endMonth"], // Multiple fields to hide
+      gridProps: { xs: 12, md: 4 },
     },
     {
       name: "country.code",
@@ -202,7 +203,7 @@ const ExperienceModal = ({
         label: country.name,
       })),
       onChange: (value) => setCountryCode(value),
-      gridProps: { xs: 6, md: 4 },
+      gridProps: { xs: 12, md: 4 },
     },
     {
       name: "state.code",
@@ -217,7 +218,7 @@ const ExperienceModal = ({
         value: state.isoCode,
         label: state.name,
       })),
-      gridProps: { xs: 6, md: 4 },
+      gridProps: { xs: 12, md: 3 },
     },
     {
       name: "city",
@@ -227,7 +228,7 @@ const ExperienceModal = ({
       textFieldProps: {
         placeholder: "Enter City",
       },
-      gridProps: { xs: 12, md: 4 },
+      gridProps: { xs: 12, md: 3 },
       rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },

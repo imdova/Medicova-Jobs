@@ -13,7 +13,7 @@ import {
   MenuItem,
   Button,
 } from "@mui/material";
-import { Add, Save, Undo } from "@mui/icons-material";
+import { Add, Refresh, Save } from "@mui/icons-material";
 import {
   API_CREATE_CAREER_LEVEL,
   API_CREATE_CATEGORY,
@@ -66,6 +66,9 @@ const Categories: React.FC = () => {
     levels: {} as { [key: string]: string[] },
   });
 
+  // Track if selections have been initialized
+  const [selectionsInitialized, setSelectionsInitialized] = useState(false);
+
   // Fetch data with retry logic
   const fetchWithRetry = async (url: string, retries = 3): Promise<any> => {
     try {
@@ -82,7 +85,32 @@ const Categories: React.FC = () => {
     }
   };
 
-  // Fetch all data
+  // Initialize selections when data is loaded
+  useEffect(() => {
+    if (
+      specialties.length > 0 &&
+      careerLevels.length > 0 &&
+      !selectionsInitialized
+    ) {
+      // Initialize empty selections for all categories
+      const initialSpecialties: { [key: string]: Specialty[] } = {};
+      const initialLevels: { [key: string]: string[] } = {};
+
+      categories.forEach((category) => {
+        initialSpecialties[category.id] = [];
+        initialLevels[category.id] = [];
+      });
+
+      setCheckedSpecialties(initialSpecialties);
+      setCheckedLevels(initialLevels);
+      setInitialSelections({
+        specialties: JSON.parse(JSON.stringify(initialSpecialties)),
+        levels: JSON.parse(JSON.stringify(initialLevels)),
+      });
+      setSelectionsInitialized(true);
+    }
+  }, [categories, specialties, careerLevels, selectionsInitialized]);
+
   // Fetch initial categories data
   useEffect(() => {
     const fetchCategories = async () => {
@@ -108,7 +136,6 @@ const Categories: React.FC = () => {
       }
     };
     fetchCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch specialties and career levels when category is selected
@@ -133,17 +160,12 @@ const Categories: React.FC = () => {
         setSpecialties(specialtiesData.data);
         setCareerLevels(levelsData.data);
 
-        // Store initial selections when data is loaded
-        setInitialSelections({
-          specialties: { ...checkedSpecialties },
-          levels: { ...checkedLevels },
-        });
-
         // Validate responses
         if (!specialtiesData?.data || !levelsData?.data) {
           throw new Error("Invalid API response structure");
         }
-        // Update categories state with  new data
+
+        // Update categories state with new data
         setCategories((prev) =>
           prev.map((category) =>
             category.id === selectedCategoryId
@@ -176,6 +198,7 @@ const Categories: React.FC = () => {
         setIsLoading((prev) => ({ ...prev, action: false }));
       }
     };
+
     const fetchIndustries = async () => {
       try {
         const response = await fetch(API_GET_INDUSTRIES);
@@ -186,14 +209,15 @@ const Categories: React.FC = () => {
         }
 
         const { data } = await response.json();
-        setIndustries(data); // Assuming API returns: { data: [{ id, name }, ...] }
+        setIndustries(data);
       } catch (err: any) {
         console.error("Error fetching industries:", err);
       }
     };
+
     fetchIndustries();
     fetchCategoryDetails();
-  }, [selectedCategoryId, checkedLevels, checkedSpecialties]);
+  }, [selectedCategoryId]);
 
   const handleAddCategory = async () => {
     const trimmedName = newCategoryName.trim();
@@ -507,17 +531,10 @@ const Categories: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, action: true }));
       setError(null);
 
-      // Here you would typically make API calls to save the changes
-      // For example:
-      // await Promise.all([
-      //   saveCheckedSpecialties(checkedSpecialties),
-      //   saveCheckedLevels(checkedLevels)
-      // ]);
-
-      // For now, we'll just update the initial selections to the current ones
+      // Update initial selections to current selections
       setInitialSelections({
-        specialties: { ...checkedSpecialties },
-        levels: { ...checkedLevels },
+        specialties: JSON.parse(JSON.stringify(checkedSpecialties)),
+        levels: JSON.parse(JSON.stringify(checkedLevels)),
       });
 
       setSuccess("Changes saved successfully");
@@ -530,8 +547,10 @@ const Categories: React.FC = () => {
   };
 
   const handleResetChanges = () => {
-    setCheckedSpecialties({ ...initialSelections.specialties });
-    setCheckedLevels({ ...initialSelections.levels });
+    setCheckedSpecialties(
+      JSON.parse(JSON.stringify(initialSelections.specialties)),
+    );
+    setCheckedLevels(JSON.parse(JSON.stringify(initialSelections.levels)));
     setSuccess("Changes reset successfully");
   };
 
@@ -551,7 +570,7 @@ const Categories: React.FC = () => {
           <Button
             variant="outlined"
             color="secondary"
-            startIcon={<Undo />}
+            startIcon={<Refresh />}
             onClick={handleResetChanges}
             disabled={!hasChanges() || isLoading.action}
           >
@@ -585,7 +604,7 @@ const Categories: React.FC = () => {
           <Alert severity="error">{error}</Alert>
         </Snackbar>
 
-        <div className="shadow-soft col-span-4 rounded-xl border bg-white p-3 lg:col-span-3">
+        <div className="col-span-4 rounded-xl border bg-white p-3 shadow-soft lg:col-span-3">
           <Box sx={{ flex: 1 }}>
             <Box sx={{ mb: 2, width: "100%" }}>
               <FormControl fullWidth size="small">
@@ -620,7 +639,7 @@ const Categories: React.FC = () => {
                 onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
               />
               <IconButton
-                className="bg-primary rounded-lg text-white hover:bg-black"
+                className="rounded-lg bg-primary text-white hover:bg-black"
                 onClick={handleAddCategory}
               >
                 <Add />
@@ -644,7 +663,6 @@ const Categories: React.FC = () => {
                 <div className="lg:col-span-1">
                   <SpecialtiesList
                     categoryId={selectedCategoryId}
-                    specialties={specialties}
                     categoriesData={categories}
                     checkedItems={checkedSpecialties}
                     onCheck={handleCheckSpecialty}

@@ -9,6 +9,7 @@ import { Eye, LayoutList, Settings, Trash } from "lucide-react";
 import { ToggleButton } from "@/components/UI/ToggleButton";
 import CellOptions from "@/components/UI/CellOptions";
 import DynamicTable from "@/components/tables/DTable";
+import DataTable from "@/components/UI/data-table";
 
 type Tab = "employees-list" | "setting";
 
@@ -40,8 +41,8 @@ type Applicant = {
   experience: string;
   avatarUrl: string;
 };
-//applicants dummy data
-const dummyApplicants: Applicant[] = [
+//Employees dummy data
+const dummyEmployees: Applicant[] = [
   {
     id: "1",
     fullName: "said ahmed",
@@ -108,146 +109,21 @@ const dummyApplicants: Applicant[] = [
   },
 ];
 
-//applicants columns
-const columns = [
-  {
-    key: "orderNum",
-    header: "#",
-    render: (_applicant: Applicant, index: number) => <span>{index + 1}</span>,
-  },
-  {
-    key: "name",
-    header: "Name",
-    render: (applicant: Applicant) => (
-      <div className="flex items-center gap-2">
-        <Image
-          className="h-8 w-8 rounded-full object-cover"
-          src={applicant.avatarUrl ?? "/images/avatar-placeholder.png"}
-          width={200}
-          height={200}
-          alt={applicant.fullName}
-        />
-        <div>
-          <span className="text-sm font-medium">{applicant.fullName}</span>
-          <Link
-            href={`mailto:${applicant.email}`}
-            className="block text-xs text-blue-700"
-          >
-            {applicant.email}
-          </Link>
-        </div>
-      </div>
-    ),
-  },
-  {
-    key: "dateApplied",
-    header: "Date Applied",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.dateApplied || "-"}</span>
-    ),
-  },
-  {
-    key: "phone",
-    header: "Phone",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.phone}</span>
-    ),
-  },
-  {
-    key: "address",
-    header: "Address",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.address}</span>
-    ),
-  },
-  {
-    key: "department",
-    header: "Department",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.department}</span>
-    ),
-  },
-  {
-    key: "title",
-    header: "Title",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.title}</span>
-    ),
-  },
-  {
-    key: "role",
-    header: "Role",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.role}</span>
-    ),
-  },
-  {
-    key: "age",
-    header: "Age",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.age}</span>
-    ),
-  },
-  {
-    key: "status",
-    header: "Status",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.status}</span>
-    ),
-  },
-  {
-    key: "degree",
-    header: "Degree",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.degree}</span>
-    ),
-  },
-  {
-    key: "experience",
-    header: "Experience",
-    render: (applicant: Applicant) => (
-      <span className="text-sm">{applicant.experience}</span>
-    ),
-  },
-  {
-    key: "action",
-    header: "Action",
-    render: (applicant: Applicant) => (
-      <div className="flex items-center gap-4">
-        <ToggleButton initialValue={applicant.status === "remote"} />
-        <CellOptions
-          item={applicant}
-          options={[
-            {
-              label: "View",
-              icon: <Eye className="h-4 w-4" />,
-              action: () => console.log("Viewing", applicant),
-            },
-            {
-              label: "Delete",
-              icon: <Trash className="h-4 w-4 text-red-500" />,
-              action: () => console.log("Deleting", applicant),
-            },
-          ]}
-        />
-      </div>
-    ),
-  },
-];
+//Employees columns
 
 const EmployessPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tabs[0].key);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredEmployees = dummyApplicants?.filter((applicant) => {
+  const filteredEmployees = dummyEmployees?.filter((employee) => {
     // Search filter
     const query = searchQuery.toLowerCase();
     const searchMatch =
       !query ||
-      applicant.fullName.toLowerCase().includes(query) ||
-      applicant.email?.toLowerCase().includes(query) ||
-      applicant?.department.toLowerCase().includes(query);
+      employee.fullName.toLowerCase().includes(query) ||
+      employee.email?.toLowerCase().includes(query) ||
+      employee?.department.toLowerCase().includes(query);
 
     return searchMatch;
   });
@@ -309,7 +185,7 @@ const EmployessPage: React.FC = () => {
               <div className="flex items-center justify-between"></div>
               <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-center">
                 <h2 className="text-xl font-semibold">
-                  Total Employees : {dummyApplicants.length}
+                  Total Employees : {dummyEmployees.length}
                 </h2>
                 <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                   {/* Search Input */}
@@ -331,7 +207,7 @@ const EmployessPage: React.FC = () => {
                     </div>
                     <input
                       type="text"
-                      placeholder="Search jobs..."
+                      placeholder="Search For Employees..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-green-500 focus:outline-none focus:ring-green-500"
@@ -342,14 +218,141 @@ const EmployessPage: React.FC = () => {
 
               <div className="space-y-4">
                 {/* Table */}
-                <DynamicTable<Applicant>
-                  columns={columns}
-                  data={filteredEmployees || []}
-                  minWidth={950}
-                  selectable={true}
-                  pagination
-                  headerClassName="bg-green-600 text-white"
-                  cellClassName="text-sm py-3 px-2"
+                <DataTable
+                  data={filteredEmployees}
+                  total={dummyEmployees.length}
+                  cellClassName="p-2 text-xs"
+                  className="border-none shadow-none"
+                  options={[
+                    {
+                      label: "View",
+                      icon: <Eye className="h-4 w-4" />,
+                      action: () => console.log("Viewing", ""),
+                    },
+                    {
+                      label: "Delete",
+                      icon: <Trash className="h-4 w-4 text-red-500" />,
+                      action: () => console.log("Deleting", ""),
+                    },
+                  ]}
+                  columns={[
+                    {
+                      header: "#",
+                      render: (_applicant: Applicant, index: number) => (
+                        <span>{index + 1}</span>
+                      ),
+                    },
+                    {
+                      header: "Name",
+                      render: (applicant: Applicant) => (
+                        <div className="flex items-center gap-2">
+                          <Image
+                            className="h-8 w-8 rounded-full object-cover"
+                            src={
+                              applicant.avatarUrl ??
+                              "/images/avatar-placeholder.png"
+                            }
+                            width={200}
+                            height={200}
+                            alt={applicant.fullName}
+                          />
+                          <div>
+                            <span className="text-sm font-medium">
+                              {applicant.fullName}
+                            </span>
+                            <Link
+                              href={`mailto:${applicant.email}`}
+                              className="block text-xs text-blue-700"
+                            >
+                              {applicant.email}
+                            </Link>
+                          </div>
+                        </div>
+                      ),
+                    },
+                    {
+                      key: "dateApplied",
+                      header: "Date Applied",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">
+                          {applicant.dateApplied || "-"}
+                        </span>
+                      ),
+                    },
+                    {
+                      key: "phone",
+                      header: "Phone",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.phone}</span>
+                      ),
+                    },
+                    {
+                      key: "address",
+                      header: "Address",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.address}</span>
+                      ),
+                    },
+                    {
+                      key: "department",
+                      header: "Department",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.department}</span>
+                      ),
+                    },
+                    {
+                      key: "title",
+                      header: "Title",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.title}</span>
+                      ),
+                    },
+                    {
+                      key: "role",
+                      header: "Role",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.role}</span>
+                      ),
+                    },
+                    {
+                      key: "age",
+                      header: "Age",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.age}</span>
+                      ),
+                    },
+                    {
+                      key: "status",
+                      header: "Status",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.status}</span>
+                      ),
+                    },
+                    {
+                      key: "degree",
+                      header: "Degree",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.degree}</span>
+                      ),
+                    },
+                    {
+                      key: "experience",
+                      header: "Experience",
+                      render: (applicant: Applicant) => (
+                        <span className="text-sm">{applicant.experience}</span>
+                      ),
+                    },
+                    {
+                      header: "Action",
+                      render: (applicant: Applicant) => (
+                        <div className="flex items-center gap-4">
+                          <ToggleButton
+                            initialValue={applicant.status === "remote"}
+                          />
+                        </div>
+                      ),
+                    },
+                  ]}
                 />
               </div>
             </div>

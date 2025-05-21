@@ -48,7 +48,7 @@ const SectionHeader = ({
   <div className="h-[45px]">
     <Divider />
     <p
-      className={`${isMinimal ? "px-1 text-xs" : "px-1 text-xs xl:text-sm"} font-medium text-gray-600 normal-case xl:p-4`}
+      className={`${isMinimal ? "px-1 text-xs" : "px-1 text-xs xl:text-sm"} font-medium normal-case text-gray-600 xl:p-4`}
     >
       {text}
     </p>
@@ -69,7 +69,7 @@ const LinkTab = ({ item, isActive, isMinimal }: TabComponentProps) => {
     >
       <div className="flex w-full flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center gap-4 text-left normal-case">
-          {IconComponent && <IconComponent className="mx-1 h-4 w-4" />}
+          {IconComponent && <IconComponent className="mx-1 h-5 w-5" />}
           <span>{item.label}</span>
         </div>
         {item.notifications && (
@@ -102,12 +102,12 @@ const CollapseTab = ({
   return (
     <div>
       <div
-        className={`text-secondary mx-2 flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-[10px] p-2 text-xs transition-all duration-300 ease-in-out`}
+        className={`mx-2 flex h-[45px] min-h-[40px] cursor-pointer flex-row justify-start rounded-[10px] p-2 text-xs text-secondary transition-all duration-300 ease-in-out`}
         onClick={() => setIsCollapsed(isOpen ? null : item.id)}
       >
         <div className="flex w-full flex-row items-center justify-between gap-2">
           <div className="flex flex-row items-center gap-4 text-left normal-case">
-            {IconComponent && <IconComponent className="mx-1 h-4 w-4" />}
+            {IconComponent && <IconComponent className="mx-1 h-5 w-5" />}
             <span>{item.label}</span>
           </div>
           <KeyboardArrowDown
@@ -167,7 +167,7 @@ const ProfileTab = ({
         <Avatar src={userAvatar!} alt={`${displayName} photo`} size={40} />
         <div>
           <h6 className="text-left text-sm normal-case">{displayName}</h6>
-          <p className="line-clamp-1 max-w-full text-left text-xs break-all normal-case">
+          <p className="line-clamp-1 max-w-full break-all text-left text-xs normal-case">
             {email}
           </p>
         </div>
@@ -199,7 +199,7 @@ export default function VerticalTabs({
       {/* Active indicator */}
       <div
         style={{ top: `${indicatorPosition}px` }}
-        className="indicator bg-light-primary absolute left-0 h-[30px] w-1 rounded-full transition-all duration-700 ease-in-out"
+        className="indicator absolute left-0 h-[30px] w-1 rounded-full bg-light-primary transition-all duration-700 ease-in-out"
       ></div>
 
       {/* Render navigation items */}
