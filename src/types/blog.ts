@@ -1,5 +1,46 @@
 import { FieldConfig } from ".";
 
+export interface StyleState {
+  fontFamily?: string;
+  fontSize?: number;
+  lineHeight?: number;
+  fontWeight?: string;
+  textAlign?: string;
+  color?: string;
+  backgroundColor?: string;
+  backgroundImageUrl?: string;
+  backgroundSize?: string;
+  backgroundRepeat?: string;
+  padding?: number;
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+  margin?: number;
+  marginTop?: number;
+  marginRight?: number;
+  marginBottom?: number;
+  marginLeft?: number;
+  borderRadius?: number;
+  borderColor?: string;
+  borderWidth?: number;
+  borderStyle?: string;
+  boxShadow?: string;
+  opacity?: number;
+  width?: string;
+  height?: string;
+  letterSpacing?: number;
+
+  display?: string;
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
+  flexWrap?: "nowrap" | "wrap" | "wrap-reverse";
+  justifyContent?: string;
+  alignItems?: string;
+  gap?: number;
+}
+
+
 export type BlockType =
   | "h1"
   | "h2"

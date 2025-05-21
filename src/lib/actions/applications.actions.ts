@@ -183,10 +183,6 @@ export const searchSeekers = async (
       },
       credentials: "include",
     });
-    console.log(
-      "🚀 ~ API_GET_SEEKERS + queryParams:",
-      API_SEARCH_SEEKERS + queryParams,
-    );
     if (response.ok) {
       const data = await response.json();
       return {

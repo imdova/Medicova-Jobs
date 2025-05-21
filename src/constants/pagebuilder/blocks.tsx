@@ -1,12 +1,9 @@
-import { blockStyles } from "@/app/(public)/blog/constants/blocks.styles";
 import { FieldConfig } from "@/types";
 import { Block, BlockButton } from "@/types/blog";
-import { generateId } from "@/util";
 import {
   AlignLeft,
   Code,
   Columns,
-  Grid,
   Heading1,
   Heading2,
   Heading3,

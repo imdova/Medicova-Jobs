@@ -4,15 +4,15 @@ import { generateId } from "@/util";
 import { Block } from "@/types/blog";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
 import { addItem, deleteItem, duplicateItem, findItemById } from "@/util/blog";
-import DropZone from "./components/dropzone";
 import {
   insertBlockToPath,
   moveBlockFromPathToPath,
-} from "./components/helper";
+} from "@/components/page-builder/helper";
 import { getBlockProps } from "@/constants/pagebuilder/blocks";
-import { blockStyles } from "./constants/blocks.styles";
+import { blockStyles } from "@/constants/blocks.styles";
 import { BlockForm, blocksForm } from "@/constants/pagebuilder/formFields";
 import FormModal from "@/components/form/FormModal/FormModal";
+import DropZone from "./dropzone";
 
 type DropZoneData = {
   path: string;

@@ -1,9 +1,9 @@
 import { Block, BlogSettings, FormType, ToolBarTabs } from "@/types/blog";
 import { Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import StylePanel from "./stylePanel";
-import BlocksPanel from "./blocksPanel";
-import SettingsPanel from "./SettingsPanel";
+import StylePanel from "@/components/page-builder/panels/stylePanel";
+import BlocksPanel from "@/components/page-builder/panels/blocksPanel";
+import SettingsPanel from "@/components/page-builder/panels/SettingsPanel";
 
 interface ToolBarProps {
   settings: BlogSettings;

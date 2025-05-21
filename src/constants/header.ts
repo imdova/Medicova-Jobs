@@ -115,7 +115,7 @@ export const roleBasedLinks: RoleBasedLinks = {
     {
       id: 1,
       label: "Courses",
-      path: "#",
+      path: "https://courses.medicova.net/",
     },
   ],
   unverified: [

@@ -11,10 +11,10 @@ import { generateId } from "@/util";
 import { addItem } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useRef, useState } from "react";
-import { blockStyles } from "./constants/blocks.styles";
-import templates from "./constants/templates.json";
 import Image from "next/image";
 import { useDrag } from "react-dnd";
+import { blockStyles } from "@/constants/blocks.styles";
+import templates from "@/constants/templates.json";
 
 const BlocksPanel: React.FC<TabProps> = ({
   selectedBlock,

@@ -9,7 +9,7 @@ import YouTubePlayer from "../UI/youtube-video-player";
 import { Info } from "lucide-react";
 import Resize from "../UI/Resize";
 import React from "react";
-import DropZone from "@/app/(public)/blog/components/dropzone";
+import DropZone from "./dropzone";
 
 type DropZoneData = {
   path: string;

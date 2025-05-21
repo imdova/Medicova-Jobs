@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { PRESET_COLORS } from "../constants/blog";
 import { ChevronDown } from "lucide-react";
-import { TextField } from "@mui/material";
+import { PRESET_COLORS } from "@/constants/blog";
 
 const ColorSelector = ({
   value,

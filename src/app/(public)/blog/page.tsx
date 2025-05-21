@@ -1,17 +1,13 @@
 "use client";
 import { useState } from "react";
 import { ViewModeSelector } from "@/components/page-builder/ViewModeSelector";
-import ToolBar from "./toolbar";
 import { Block, BlogSettings, FormType } from "@/types/blog";
-import EditorHeader from "./EditorHeader";
 import { findItemById } from "@/util/blog";
-import ArticlePreview from "./blogReview";
 
 import "./styles.css";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import BlogBuilder from "./BlogBuilder";
 import FormModal from "@/components/form/FormModal/FormModal";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
@@ -111,7 +107,7 @@ export default function PageBuilder() {
                 onClick={() => {
                   setSelectedBlock(null);
                 }}
-                className={`mx-auto flex min-h-full flex-col border p-2 bg-white shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
+                className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
               >
                 {onPreview ? (
                   <ArticlePreview blocks={blocks} />
@@ -153,6 +149,10 @@ export default function PageBuilder() {
 }
 
 import React from "react";
+import ToolBar from "@/components/page-builder/panels/toolbar";
+import EditorHeader from "@/components/page-builder/EditorHeader";
+import ArticlePreview from "@/components/page-builder/blogReview";
+import BlogBuilder from "@/components/page-builder/BlogBuilder";
 
 type ModalProps = {
   open: boolean;

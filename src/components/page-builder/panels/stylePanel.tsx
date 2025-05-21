@@ -16,14 +16,14 @@ import {
   Sun,
   Type,
 } from "lucide-react";
-import { StyleState } from "./types/blog";
+import { StyleState } from "@/types/blog";
 import {
   generateCSSProperties,
   parsePixelValue,
   reverseCSSProperties,
-} from "./util/blog";
-import SectionCollapse from "./components/SectionCollapse";
-import Dropdown from "./components/Dropdown";
+} from "@/util/blog";
+import SectionCollapse from "@/components/page-builder/SectionCollapse";
+import Dropdown from "@/components/page-builder/Dropdown";
 import {
   BACKGROUND_REPEATS,
   BACKGROUND_SIZES,
@@ -32,7 +32,7 @@ import {
   FONT_FAMILIES,
   FONT_WEIGHTS,
   SIZE_OPTIONS,
-} from "./constants/blog";
+} from "@/constants/blog";
 import {
   Divider,
   Grid,
@@ -40,9 +40,9 @@ import {
   TextField,
   TextFieldProps,
 } from "@mui/material";
-import TextAlignSelector from "./components/TextAlignSelector";
-import ColorSelector from "./components/ColorSelector";
-import NumberControl from "./components/NumberControl";
+import TextAlignSelector from "@/components/page-builder/TextAlignSelector";
+import ColorSelector from "@/components/page-builder/ColorSelector";
+import NumberControl from "@/components/page-builder/NumberControl";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { cn } from "@/util";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
