@@ -57,7 +57,7 @@ const CourseModal = ({
       name: "provider",
       type: "text",
       label: "Course Provider",
-      gridProps: { xs: 12, md: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "e.g., American Heart Association, Coursera, WHO",
       },
@@ -67,7 +67,7 @@ const CourseModal = ({
       name: "issueDate",
       type: "date",
       label: "Issue Date",
-      gridProps: { xs: 12, md: 6 },
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "e.g., 2000-06-18",
       },

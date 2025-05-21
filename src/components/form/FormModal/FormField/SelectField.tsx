@@ -93,7 +93,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
       ) : null}
       {isMultiple && (
         <div className="mb-2 flex flex-wrap gap-2">
-          {controllerField?.value.map((item: string, index: number) => (
+          {controllerField?.value?.map((item: string, index: number) => (
             <div
               key={index}
               className="space-x-2 rounded-base border bg-primary-100 py-1 pl-2 pr-1 text-main duration-100"

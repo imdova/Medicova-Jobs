@@ -103,20 +103,20 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       label: "First Name",
       name: "firstName",
       type: "text",
-      gridProps: { xs: 12, sm: 4 },
+      gridProps: { xs: 6 },
       required: true,
     },
     {
       label: "Last Name",
       name: "lastName",
       type: "text",
-      gridProps: { xs: 12, sm: 4 },
+      gridProps: { xs: 6 },
       required: true,
     },
     {
       name: "birthDate",
       type: "date",
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6 },
       label: "Date of Birth",
       textFieldProps: {
         inputProps: {
@@ -131,13 +131,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
       label: "Nationality",
       type: "search-select",
       options: nationalitiesOptions,
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6 },
     },
     {
       name: "title",
       label: "Title",
       type: "text",
-      gridProps: { xs: 12, sm: 3 },
     },
     {
       name: "categoryId",
@@ -150,7 +149,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         value: category.id,
         label: category.name,
       })),
-      gridProps: { xs: 12, sm: 3 },
     },
     {
       name: "specialityId",
@@ -162,7 +160,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         value: speciality.id,
         label: speciality.name,
       })),
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6 },
     },
     {
       name: "careerLevelId",
@@ -174,7 +172,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         value: careerLevel.id,
         label: careerLevel.name,
       })),
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6 },
     },
     {
       name: "country.code",
@@ -186,7 +184,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         label: country.name,
       })),
       onChange: (value) => setCountryCode(value),
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6, md: 4 },
     },
     {
       name: "state.code",
@@ -197,13 +195,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
         value: state.isoCode,
         label: state.name,
       })),
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 6, md: 4 },
     },
     {
       name: "city",
       type: "text",
       label: "City",
-      gridProps: { xs: 12, sm: 3 },
+      gridProps: { xs: 12, md: 4 },
       rules: {
         minLength: { value: 2, message: "City must be at least 2 characters" },
       },
@@ -259,7 +257,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, isMe }) => {
           </IconButton>
         )}
         {/* Share Button */}
-        <ShareMenu className="!text-white" path={`/me/${user.userName}`} />
+        <ShareMenu className="text-white" path={`/me/${user.userName}`} />
       </div>
     </>
   );

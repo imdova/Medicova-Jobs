@@ -75,7 +75,7 @@ const EducationModal = ({
       textFieldProps: {
         placeholder: "e.g., Bachelor's, Master's, PhD",
       },
-      gridProps: { xs: 12, md: 3 },
+      gridProps: { xs: 8 },
       required: true,
       options: educationOptions.map((x) => ({
         label: x.label,
@@ -90,13 +90,13 @@ const EducationModal = ({
       textFieldProps: {
         placeholder: "e.g., 3.8 GPA, First Class Honours, A+",
       },
-      gridProps: { xs: 12, md: 3 },
+      gridProps: { xs: 4 },
     },
     {
       name: "startYear",
       label: "Year of Admission",
       type: "search-select",
-      gridProps: { xs: 12, md: 3 },
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "e.g., 2019",
       },
@@ -110,7 +110,7 @@ const EducationModal = ({
       name: "endYear",
       label: "Year of Graduation",
       type: "search-select",
-      gridProps: { xs: 12, md: 3 },
+      gridProps: { xs: 6 },
       textFieldProps: {
         placeholder: "e.g., 2023",
       },
@@ -133,7 +133,6 @@ const EducationModal = ({
     {
       name: "country.code",
       type: "search-select",
-      gridProps: { xs: 12, md: 4 },
       label: "Country of Institute",
       required: true,
       textFieldProps: {
