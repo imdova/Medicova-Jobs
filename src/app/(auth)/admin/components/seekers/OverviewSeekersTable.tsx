@@ -23,7 +23,7 @@ import { API_GET_SEEKERS, API_UPDATE_SEEKER } from "@/api/seeker";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { TAGS } from "@/api";
 import { API_GET_CATEGORIES, API_GET_SPECIALITIES } from "@/api/admin";
-import { Filter } from "lucide-react";
+import { Eye, Filter, Edit, Trash, MessageSquare, Mail } from "lucide-react";
 import { updateItemInArray } from "@/util/general";
 import { SeekerSearchFilter } from "@/types/jobs";
 import { searchSeekers } from "@/lib/actions/applications.actions";
@@ -320,7 +320,34 @@ const SeekersTable: React.FC = () => {
           setSelected={setSelected}
           searchQuery={apiFilters.q}
           cellClassName="p-2 text-sm"
-          headerClassName="text-sm"
+          headerClassName="py-2 text-sm"
+          options={[
+            {
+              label: "View",
+              icon: <Eye className="h-4 w-4" />,
+              action: () => console.log("Viewing", ""),
+            },
+            {
+              label: "Edit",
+              icon: <Edit className="h-4 w-4" />,
+              action: () => console.log("Editing", ""),
+            },
+            {
+              label: "Delete",
+              icon: <Trash className="h-4 w-4 text-red-500" />,
+              action: () => console.log("Deleting", ""),
+            },
+            {
+              label: "Send Message",
+              icon: <MessageSquare className="h-4 w-4" />,
+              action: () => console.log("Sending Message", ""),
+            },
+            {
+              label: "Send Email",
+              icon: <Mail className="h-4 w-4" />,
+              action: () => console.log("Sending Email", ""),
+            },
+          ]}
           columns={[
             {
               key: "firstName",
@@ -348,7 +375,7 @@ const SeekersTable: React.FC = () => {
             },
             {
               key: "created_at",
-              header: "Reg Date",
+              header: "Applied Day",
               sortable: true,
               render: (item) => formatDate(item.created_at),
             },
@@ -358,39 +385,49 @@ const SeekersTable: React.FC = () => {
               sortable: true,
             },
             {
-              key: "country.name",
-              header: "Country",
+              header: "Location",
+              render: (item) =>
+                [item.city, item.state?.name, item.country?.name]
+                  .filter(Boolean)
+                  .join(", "),
+            },
+            {
+              key: "category",
+              header: "Category",
               sortable: true,
             },
             {
-              header: "plan",
-              render: (item) => (
-                <SelectField
-                  field={{
-                    name: "plan",
-                    type: "select",
-                    textFieldProps: {
-                      className: "bg-transparent ",
-                      sx: {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          padding: 0,
-                          border: "none",
-                        },
-                      },
-                    },
-
-                    options: ["silver", "gold", "diamond"].map((x) => ({
-                      value: x,
-                      label: x,
-                    })),
-                  }}
-                  controllerField={{
-                    value: "silver",
-                    onChange: (e) => console.log(e.target.value),
-                  }}
-                />
-              ),
+              key: "speciality",
+              header: "Specialty",
+              sortable: true,
             },
+            {
+              key: "careerLevel",
+              header: "Career Level",
+              sortable: true,
+            },
+            // {
+            //   header: "Education",
+            //   render: (item) => <p>
+            //     {item.title}
+            //   </p> // Replace with actual education data if different
+            // },
+            {
+              header: "Age",
+              render: (item) => {
+                if (!item.birthDate) return "-";
+                const birthYear = new Date(item.birthDate).getFullYear();
+                const currentYear = new Date().getFullYear();
+                return currentYear - birthYear;
+              },
+            },
+            // {
+            //   header: "Experience",
+            //   render: (item) =>
+            //     item.total_years_experience != null
+            //       ? `${item.total_years_experience} yrs`
+            //       : "-",
+            // },
             // {
             //   key: "status",
             //   header: "Status",
