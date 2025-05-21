@@ -13,7 +13,7 @@ import {
   SettingsOutlined,
   WorkOutline,
 } from "@mui/icons-material";
-import { GraduationCap, UserCog, Users, Users2 } from "lucide-react";
+import { BookMarked, GraduationCap, UserCog, Users } from "lucide-react";
 
 export const roleBasedSideBarLinks: RoleBasedLinks = {
   admin: [
@@ -121,6 +121,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       label: "Chat",
       icon: MessageOutlined,
       path: "/chat",
+      type: "chat",
       notifications: 3,
     },
     {
@@ -128,6 +129,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: NotificationsActiveOutlined,
       label: "Notifications",
       path: "/notifications",
+      type: "notification",
       notifications: 4,
     },
     {
@@ -229,6 +231,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       label: "Chat",
       icon: MessageOutlined,
       path: "/chat",
+      type: "chat",
       notifications: 3,
     },
     {
@@ -236,6 +239,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: NotificationsActiveOutlined,
       label: "Notifications",
       path: "/notifications",
+      type: "notification",
       notifications: 4,
     },
     {
@@ -279,6 +283,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       id: 20,
       icon: MessageOutlined,
       label: "Messages",
+      type: "chat",
       path: "/chat",
       notifications: 3,
     },
@@ -296,6 +301,13 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       pattern: "/a/*",
     },
     {
+      id: 22,
+      icon: BookMarked,
+      label: "Saved Jobs",
+      type: "savedJobs",
+      path: "/job-seeker/saved-jobs",
+    },
+    {
       id: 23,
       icon: BusinessOutlined,
       label: "Browse Companies",
@@ -306,6 +318,7 @@ export const roleBasedSideBarLinks: RoleBasedLinks = {
       icon: NotificationsActiveOutlined,
       label: "Notifications",
       path: "/notifications",
+      type: "notification",
       notifications: 4,
     },
 

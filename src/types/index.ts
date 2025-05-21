@@ -8,17 +8,11 @@ import { SalaryCurrency } from "@/constants/enums/currency.enum";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { CompanySize } from "@/constants/enums/company-size.enum";
 import { AlertColor, SelectProps, TextFieldProps } from "@mui/material";
-import {
-  FieldValues,
-  Path,
-  RegisterOptions,
-} from "react-hook-form";
+import { FieldValues, Path, RegisterOptions } from "react-hook-form";
 import { User } from "next-auth";
 import { DatePickerProps } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { VerifyType } from "@/constants/enums/verify-types.enums";
-
-
 
 export type Verify = {
   newMail: string;
@@ -228,6 +222,11 @@ export interface Industry {
 }
 export type JobsTabs = "all" | "active" | "closed" | "expired" | "draft";
 
+export interface SavedJobType {
+  id: string;
+  jobId: string;
+}
+
 export interface JobData {
   id: string;
   companyId: string | null;
@@ -393,7 +392,15 @@ export type NavItem = {
   pattern?: string;
   notifications?: number;
   section?: string; // Optional section header
-  type?: "divider" | "text" | "collapse" | "supLink" | "profile";
+  type?:
+    | "divider"
+    | "text"
+    | "collapse"
+    | "supLink"
+    | "profile"
+    | "notification"
+    | "chat"
+    | "savedJobs";
   links?: NavItem[];
 };
 export interface ActiveLinkResult {
@@ -448,11 +455,11 @@ export interface FieldConfig<T = any> {
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:
-  | Omit<
-    RegisterOptions<FieldValues, string>,
-    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
-  >
-  | undefined;
+    | Omit<
+        RegisterOptions<FieldValues, string>,
+        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+      >
+    | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;

@@ -51,6 +51,7 @@ const CareerLevelFetcher = ({
   // Initial fetch and retry when categoryId changes
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, retryCount]);
 
   const refresh = () => {

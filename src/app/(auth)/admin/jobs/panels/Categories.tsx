@@ -136,6 +136,8 @@ const Categories: React.FC = () => {
       }
     };
     fetchCategories();
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch specialties and career levels when category is selected

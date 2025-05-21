@@ -143,7 +143,6 @@ export const fetchSpecialities = createAsyncThunk(
       );
       if (response.ok) {
         const data = await response.json();
-        console.log("🚀 ~ data:", data);
         return data;
       }
 

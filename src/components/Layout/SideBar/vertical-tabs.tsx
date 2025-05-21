@@ -9,6 +9,9 @@ import { NavItem } from "@/types";
 import { getSideBarLinks } from "./LayoutRoutConfigs";
 import useActiveTab from "@/hooks/useActiveTab";
 import { User } from "next-auth";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useEffect } from "react";
+import { fetchSavedJobs } from "@/store/slices/savedJobs.slice";
 // ====== TYPES ======
 interface SideBarProps {
   user?: User;
@@ -74,15 +77,58 @@ const LinkTab = ({ item, isActive, isMinimal }: TabComponentProps) => {
         </div>
         {item.notifications && (
           <div
-            className={`aspect-square rounded-full p-1 px-2 text-xs ${
+            className={`items-center justify-center rounded-full  ${
               isActive
                 ? "bg-primary-foreground text-light-primary"
                 : "bg-secondary text-primary-foreground"
             } `}
           >
-            {item.notifications}
+            <p className="h-5 w-5 pt-[2px] text-xs text-center">{item.notifications}</p>
           </div>
         )}
+      </div>
+    </Link>
+  );
+};
+const SavedJobsTab = ({
+  item,
+  isActive,
+  user,
+}: TabComponentProps & { user: User }) => {
+  const IconComponent = item.icon;
+  const disabled = item.path === "#" || item.path === undefined;
+  const seekerId: string | null = user?.type === "seeker" ? user.id : null;
+  const { jobs: savedJobs } = useAppSelector((state) => state.savedJobs);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (seekerId) {
+      dispatch(fetchSavedJobs({ seekerId, filter: { page: 1, limit: 1000 } }));
+    }
+  }, [seekerId, dispatch]);
+
+  return (
+    <Link
+      aria-disabled={disabled}
+      className={`aria-disabled: mx-2 flex h-[45px] min-h-[40px] flex-row justify-start rounded-[10px] p-2 text-xs transition-all duration-300 ease-in-out aria-disabled:pointer-events-none aria-disabled:opacity-40 ${
+        isActive ? "bg-light-primary text-white opacity-100" : "text-secondary"
+      } `}
+      href={item.path || "#"}
+    >
+      <div className="flex w-full flex-row items-center justify-between gap-2">
+        <div className="flex flex-row items-center gap-4 text-left normal-case">
+          {IconComponent && <IconComponent className="mx-1 h-5 w-5" />}
+          <span>{item.label}</span>
+        </div>
+        <div
+          className={`items-center justify-center rounded-full text-xs ${
+            isActive
+              ? "bg-primary-foreground text-light-primary"
+              : "bg-secondary text-primary-foreground"
+          } `}
+        >
+          <p className="h-5 w-5 pt-[2px] text-xs text-center">{savedJobs?.length}</p>
+        </div>
       </div>
     </Link>
   );
@@ -227,7 +273,16 @@ export default function VerticalTabs({
                 isMinimal={isMinimal}
               />
             ) : null;
-
+          case "savedJobs":
+            return user ? (
+              <SavedJobsTab
+                key={item.id}
+                item={item}
+                isActive={activeTab === index + additionalItems}
+                isMinimal={isMinimal}
+                user={user}
+              />
+            ) : null;
           case "text":
             return (
               <SectionHeader

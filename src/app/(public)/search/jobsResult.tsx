@@ -1,19 +1,30 @@
 "use client";
 import { FormControl, IconButton, MenuItem, Select } from "@mui/material";
 import { GridViewOutlined, List } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { JobData } from "@/types";
 import JobCard from "@/components/UI/job-card";
 import MinJobCard from "@/components/UI/job-card-min";
 import { useSession } from "next-auth/react";
-const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
-  jobs,
-  total,
+import { fetchSavedJobs } from "@/store/slices/savedJobs.slice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+const JobsResult: React.FC<{ jobs?: JobData[]; total?: number }> = ({
+  jobs = [],
+  total = 0,
 }) => {
   const { data: session } = useSession();
   const user = session?.user;
-  console.log("🚀 ~ user:", user);
   const [view, setView] = useState("list");
+  const seekerId: string | null = user?.type === "seeker" ? user.id : null;
+  const { jobs: savedJobs } = useAppSelector((state) => state.savedJobs);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (seekerId) {
+      dispatch(fetchSavedJobs({ seekerId, filter: { page: 1, limit: 1000 } }));
+    }
+  }, [seekerId, dispatch]);
+
   return (
     <>
       <div className="min-h-dvh">
@@ -69,7 +80,12 @@ const JobsResult: React.FC<{ jobs: JobData[]; total: number }> = ({
         {view === "list" ? (
           <div className="mb-8 flex flex-col gap-4">
             {jobs.map((job) => (
-              <JobCard key={job.id} job={job} seekerId={user?.id} />
+              <JobCard
+                key={job.id}
+                job={job}
+                seekerId={seekerId}
+                savedJobs={savedJobs}
+              />
             ))}
           </div>
         ) : (

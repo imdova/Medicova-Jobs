@@ -4,6 +4,7 @@ import { JobData } from "@/types";
 import {
   AccessTimeOutlined,
   Bookmark,
+  BookmarkBorder,
   Edit,
   LocationOnOutlined,
   SchoolOutlined,
@@ -16,14 +17,15 @@ import { educationOptions, jobWorkPlaceOptions } from "@/constants/job";
 import { StartDateType } from "@/constants/enums/start-type.enum";
 import JobSwitch from "./JobSwitch";
 import Avatar from "./Avatar";
-import useUpdateApi from "@/hooks/useUpdateApi";
-import { API_CREATE_SAVED_JOB } from "@/api/seeker";
+import { useAppDispatch } from "@/store/hooks";
+import { toggleSaveJobToList } from "@/store/slices/savedJobs.slice";
 
 interface JobCardProps {
   job: JobData;
   seekerId?: string | null;
   isApply?: boolean;
   isEdit?: boolean;
+  savedJobs?: string[];
 }
 
 const JobCard: React.FC<JobCardProps> = ({
@@ -31,20 +33,16 @@ const JobCard: React.FC<JobCardProps> = ({
   isApply,
   isEdit,
   seekerId,
+  savedJobs,
 }) => {
-  console.log("🚀 ~ seekerId:", seekerId)
-  const { isLoading, error, update } = useUpdateApi((e) => console.log(e));
+  const isSaved = savedJobs?.includes(job.id);
+  const dispatch = useAppDispatch();
 
-  const save = () => {
-    update(API_CREATE_SAVED_JOB, {
-      method: "POST",
-      body: { seekerId: seekerId, jobId: job.id },
-    });
+  const handleSave = () => {
+    if (seekerId) {
+      dispatch(toggleSaveJobToList({ seekerId, jobId: job.id, isSaved }));
+    }
   };
-
-  // const isSaved = savedList?.includes(job.id || "");
-  // const toggleSave = () =>
-  //   setSavedList && setSavedList((pv) => toggleId(pv, job.id || ""));
 
   const workPlace =
     jobWorkPlaceOptions.find((x) => x.id === job?.jobWorkPlace)?.label || "";
@@ -244,12 +242,12 @@ const JobCard: React.FC<JobCardProps> = ({
           </div>
         ) : (
           <div className="flex justify-end">
-            <IconButton onClick={save} size="medium">
-              {/* {isSaved ? ( */}
-              <Bookmark color="primary" className="h-8 w-8" />
-              {/* ) : ( */}
-              {/* <BookmarkBorder className="h-8 w-8" /> */}
-              {/* )} */}
+            <IconButton onClick={handleSave} size="medium">
+              {isSaved ? (
+                <Bookmark color="primary" className="h-8 w-8" />
+              ) : (
+                <BookmarkBorder className="h-8 w-8" />
+              )}
             </IconButton>
             <ShareMenu
               link={`https://www.example.com/job/${job.id}`}
