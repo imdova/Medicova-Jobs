@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Download, ExpandMore, Search } from "@mui/icons-material";
-import { useState, useEffect, MouseEvent, SyntheticEvent } from "react";
+import { useState, useEffect, SyntheticEvent } from "react";
 import DataTable from "@/components/UI/data-table";
 import { FieldConfig, JobCategory, Result, SpecialtyItem } from "@/types";
 import Avatar from "@/components/UI/Avatar";
@@ -16,9 +16,7 @@ import Link from "next/link";
 import { formatDate, formatName } from "@/util";
 import useFetch from "@/hooks/useFetch";
 import { useLocationData } from "@/hooks/useLocationData";
-import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
-// import FilterDrawer from "@/components/UI/FilterDrawer";
 import { API_GET_SEEKERS, API_UPDATE_SEEKER } from "@/api/seeker";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { TAGS } from "@/api";

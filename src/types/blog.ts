@@ -70,6 +70,7 @@ export interface Block {
   videoUrl?: string;
   videoThumbnail?: string;
   linkUrl?: string;
+  formId?: string;
   styles: React.CSSProperties | null;
   blocks: Block[];
   level: number;
@@ -106,6 +107,13 @@ export type BlockButton = {
   blockProps?: Partial<Block>;
 };
 
+export type BlockForm = {
+  title?: string;
+  type: BlockType[];
+  description?: string;
+  isModal?: boolean;
+  fields: FieldConfig<Block>[];
+};
 export interface TabProps {
   selectedBlock?: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
@@ -113,4 +121,5 @@ export interface TabProps {
   setSelectedTab: React.Dispatch<
     React.SetStateAction<ToolBarTabs>
   >;
+  forms?: FormItem[];
 }

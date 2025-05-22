@@ -54,10 +54,11 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
     props.onClose?.({} as React.SyntheticEvent);
   };
 
+  const filteredOptions = filterItems(options, searchTerm);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.stopPropagation();
     if (e.key === "Enter") {
-      const filteredOptions = filterItems(options, searchTerm);
       if (filteredOptions.length > 0) {
         const firstOption = filteredOptions[0];
 
@@ -120,9 +121,10 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
           onClick={(e) => e.stopPropagation()}
         />
       </div>
-      {filterItems(options, searchTerm).map((item, i) => (
+      {filteredOptions.map((item, i) => (
         <MenuItem key={item.value + i} value={item.value}>
-          {item.icon}{item.label}
+          {item.icon}
+          {item.label}
         </MenuItem>
       ))}
     </Select>

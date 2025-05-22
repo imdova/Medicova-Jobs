@@ -69,6 +69,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setBlocks={setBlocks}
               setSelectedBlock={setSelectedBlock}
               setSelectedTab={setSelectedTab}
+              forms={forms}
             />
           )}
           {selectedTab === "styles" && (
@@ -77,6 +78,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
               setBlocks={setBlocks}
               setSelectedBlock={setSelectedBlock}
               setSelectedTab={setSelectedTab}
+              forms={forms}
             />
           )}
          {selectedTab === "forms" && (

@@ -18,6 +18,7 @@ interface DraggableBlockProps {
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   handleDrop: (data: DropZoneData, item: DragItem) => void;
   path: string;
+  setSelectedForm: (id: string | null) => void;
 }
 
 export function DraggableBlock({
@@ -27,11 +28,16 @@ export function DraggableBlock({
   setBlocks,
   handleDrop,
   path,
+  setSelectedForm,
 }: DraggableBlockProps) {
   const isSelected = selectedBlock?.id === block.id;
 
-  const dragRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const previewRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const dragRef = useRef<HTMLDivElement>(
+    null,
+  ) as React.RefObject<HTMLDivElement>;
+  const previewRef = useRef<HTMLDivElement>(
+    null,
+  ) as React.RefObject<HTMLDivElement>;
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: block.type,
@@ -84,6 +90,7 @@ export function DraggableBlock({
         handleDrop={handleDrop}
         setBlocks={setBlocks}
         path={path}
+        setSelectedForm={setSelectedForm}
       />
     </div>
   );

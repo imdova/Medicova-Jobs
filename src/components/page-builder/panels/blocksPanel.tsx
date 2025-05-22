@@ -5,10 +5,9 @@ import {
   getBlockProps,
   layoutBlocks,
 } from "@/constants/pagebuilder/blocks";
-import { BlockForm, blocksForm } from "@/constants/pagebuilder/formFields";
-import { Block, BlockButton, TabProps } from "@/types/blog";
+import { Block, BlockButton, TabProps, BlockForm } from "@/types/blog";
 import { generateId } from "@/util";
-import { addItem } from "@/util/blog";
+import { addItem, blocksForm } from "@/util/blog";
 import { Button } from "@mui/material";
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -21,6 +20,7 @@ const BlocksPanel: React.FC<TabProps> = ({
   setBlocks,
   setSelectedBlock,
   setSelectedTab,
+  forms,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [onHoldBlock, setOnHoldBlock] = useState({} as Block);
@@ -53,7 +53,7 @@ const BlocksPanel: React.FC<TabProps> = ({
       styles: blockStyles[type],
       ...blockProps,
     };
-    const blockFormData = blocksForm.find((form) => form.type.includes(type));
+    const blockFormData = blocksForm(type, forms || []);
     if (blockFormData && blockFormData.isModal) {
       open();
       setFormData(blockFormData);

@@ -7,10 +7,8 @@ import {
 } from "react-hook-form";
 import { FieldConfig } from "@/types";
 import { CheckboxField } from "./CheckboxField";
-import { SelectField } from "./SelectField";
 import { ComponentField } from "./ComponentField";
 import { TextFieldComponent } from "./TextFieldComponent";
-import { SearchableSelectField } from "./SearchableSelectField";
 import { PhoneNumberField } from "./phoneNumberField";
 import { IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
@@ -21,6 +19,8 @@ import { TextEditorField } from "./TextEditorField";
 import { getNestedValue } from "@/util/forms";
 import { updateData } from "@/util/general";
 import OTPInput from "@/components/UI/OTP";
+import SelectField from "./SelectField";
+import SearchableSelectField from "./SearchableSelectField";
 
 interface FormFieldProps {
   field: FieldConfig;

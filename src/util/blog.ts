@@ -1,6 +1,7 @@
-import { Block, StyleState } from "@/types/blog";
+import { Block, BlockType, FormItem, BlockForm, StyleState } from "@/types/blog";
 import { generateId } from ".";
 import { boxShadowValues } from "@/constants/blog";
+import { htmlModal, imageModal, normalModal, paragraphData, videoModal } from "@/constants/pagebuilder/formFields";
 
 export function findItemById(blocks: Block[], id: string): Block | null {
   for (const block of blocks) {
@@ -225,4 +226,67 @@ export const reverseCSSProperties = (
   if (css.gap) styleState.gap = parsePixelValue(css.gap);
 
   return styleState;
+};
+
+export const buttonModal = (forms: FormItem[]): BlockForm => ({
+  title: "Add Button",
+  type: ["button"],
+  description: "",
+  isModal: true,
+  fields: [
+    {
+      name: "content",
+      label: "Enter Your Button labe",
+      type: "text",
+      textFieldProps: { placeholder: "button Label" },
+      required: true,
+    },
+    {
+      name: "linkUrl",
+      label: "Enter Your Link Url",
+      type: "text",
+      textFieldProps: { placeholder: "Link Url" },
+      rules: {
+        validate: (value: string, formValues: any) => {
+          if (!value && !formValues.formId) {
+            return "Either Link URL or Form ID is required";
+          }
+          if (value && formValues.formId) {
+            return "Cannot have both Link URL and Form ID";
+          }
+          return true;
+        }
+      }
+    },
+    {
+      name: "formId",
+      label: "Select Form",
+      type: "select",
+      options: forms.map((form) => ({ label: form.name, value: form.id })),
+      rules: {
+        validate: (value: string, formValues: any) => {
+          if (!value && !formValues.linkUrl) {
+            return "Either Link URL or Form ID is required";
+          }
+          if (value && formValues.linkUrl) {
+            return "Cannot have both Link URL and Form ID";
+          }
+          return true;
+        }
+      },
+    },
+  ],
+})
+
+
+export const blocksForm = (type: BlockType, forms: FormItem[]): BlockForm | undefined => {
+  const blockForm = [
+    imageModal,
+    videoModal,
+    buttonModal(forms),
+    htmlModal,
+    normalModal,
+    paragraphData,
+  ]
+  return blockForm.find((form) => form.type.includes(type))
 };

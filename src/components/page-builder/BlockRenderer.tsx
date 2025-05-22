@@ -24,6 +24,7 @@ interface BlockRendererProps {
   onSelect: (block: Block) => void;
   handleDrop: (data: DropZoneData, item: DragItem) => void;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+  setSelectedForm: (id: string | null) => void;
 }
 
 export function BlockRenderer({
@@ -33,6 +34,7 @@ export function BlockRenderer({
   setBlocks,
   handleDrop,
   path,
+  setSelectedForm,
 }: BlockRendererProps) {
   const isSelected = selectedBlock?.id === block.id;
 
@@ -142,11 +144,24 @@ export function BlockRenderer({
       );
 
     case "button":
-      return (
-        <a href={block.linkUrl} style={styles} target="_blank">
-          {block.content}
-        </a>
-      );
+      if (block.linkUrl) {
+        return (
+          <a href={block.linkUrl} className="block w-fit" style={styles} target="_blank">
+            {block.content}
+          </a>
+        );
+      } else if (block.formId) {
+        return (
+          <button
+            onClick={() => {
+              setSelectedForm(block.formId || null);
+            }}
+            style={styles}
+          >
+            {block.content}
+          </button>
+        );
+      }
 
     case "html":
       return (
@@ -198,6 +213,7 @@ export function BlockRenderer({
                   selectedBlock={selectedBlock}
                   onSelect={onSelect}
                   setBlocks={setBlocks}
+                  setSelectedForm={setSelectedForm}
                 />
               </React.Fragment>
             );
@@ -234,6 +250,7 @@ export function BlockRenderer({
                     selectedBlock={selectedBlock}
                     onSelect={onSelect}
                     setBlocks={setBlocks}
+                    setSelectedForm={setSelectedForm}
                   />
                 </div>
               </React.Fragment>

@@ -1,16 +1,15 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { generateId } from "@/util";
-import { Block } from "@/types/blog";
+import { Block, BlockForm, FormItem } from "@/types/blog";
 import { DraggableBlock } from "@/components/page-builder/DraggableBlock";
-import { addItem, deleteItem, duplicateItem, findItemById } from "@/util/blog";
+import { addItem, blocksForm, deleteItem, duplicateItem, findItemById } from "@/util/blog";
 import {
   insertBlockToPath,
   moveBlockFromPathToPath,
 } from "@/components/page-builder/helper";
 import { getBlockProps } from "@/constants/pagebuilder/blocks";
 import { blockStyles } from "@/constants/blocks.styles";
-import { BlockForm, blocksForm } from "@/constants/pagebuilder/formFields";
 import FormModal from "@/components/form/FormModal/FormModal";
 import DropZone from "./dropzone";
 
@@ -28,7 +27,9 @@ const BlogBuilder: React.FC<{
   selectedBlock: Block | null;
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
-}> = ({ blocks, setBlocks, selectedBlock, setSelectedBlock }) => {
+  setSelectedForm: React.Dispatch<React.SetStateAction<string | null>>;
+  forms: FormItem[];
+}> = ({ blocks, setBlocks, selectedBlock, setSelectedBlock, setSelectedForm, forms }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copiedBlock, setCopiedBlock] = useState<Block | null>(null);
 
@@ -85,7 +86,7 @@ const BlogBuilder: React.FC<{
       styles: blockStyles[type],
       ...blockProps,
     };
-    const blockFormData = blocksForm.find((form) => form.type.includes(type));
+    const blockFormData = blocksForm(type, forms || []);
     if (blockFormData && blockFormData.isModal) {
       open();
       setFormData(blockFormData);
@@ -213,6 +214,7 @@ const BlogBuilder: React.FC<{
               }
               onSelect={setSelectedBlock}
               setBlocks={setBlocks}
+              setSelectedForm={setSelectedForm}
             />
           </React.Fragment>
         );

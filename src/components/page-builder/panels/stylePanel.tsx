@@ -1,7 +1,7 @@
 "use client";
 
 import { Block, TabProps } from "@/types/blog";
-import { updateItem } from "@/util/blog";
+import { blocksForm, updateItem } from "@/util/blog";
 import {
   AlignCenter,
   ChevronLeft,
@@ -46,9 +46,12 @@ import NumberControl from "@/components/page-builder/NumberControl";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { cn } from "@/util";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
-import { blocksForm } from "@/constants/pagebuilder/formFields";
 
-export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
+export default function StylePanel({
+  setBlocks,
+  selectedBlock,
+  forms,
+}: TabProps) {
   const styles = selectedBlock?.styles
     ? reverseCSSProperties(selectedBlock?.styles)
     : {};
@@ -72,9 +75,9 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
         return newBlocks;
       });
   };
-  const formFields = blocksForm.find(
-    (form) => selectedBlock?.type && form.type.includes(selectedBlock?.type),
-  )?.fields;
+  const formFields = selectedBlock
+    ? blocksForm(selectedBlock?.type, forms || [])?.fields
+    : [];
 
   const handleStyleChange = (key: keyof StyleState, value: any) => {
     const newStyles = { ...styles, [key]: value };
@@ -106,8 +109,10 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
               <FormField
                 field={field}
                 fieldController={{
-                  onChange: (e) =>
-                    updateBlock({ [field.name]: e.target.value }),
+                  onChange: (e) => {
+                    const value = e && e.target ? e.target.value : e;
+                    updateBlock({ [field.name]: value });
+                  },
                   onBlur: () => {}, // Provide a no-op function or appropriate logic
                   value: selectedBlock?.[field.name as keyof Block] ?? "", // Provide the current value
                   name: String(field.name), // Provide the field name
@@ -122,7 +127,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
           defaultValue={true}
           icon={<Type size={16} className="text-primary" />}
         >
-          <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+          <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
             <div className="space-y-2">
               <Dropdown
                 name="fontFamily"
@@ -194,7 +199,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
             </div>
             <div className="space-y-2">
               <div className="mb-1 flex items-center space-x-2">
-                <AlignCenter size={16} className="text-primary rotate-90" />
+                <AlignCenter size={16} className="rotate-90 text-primary" />
                 <span className="text-xs text-gray-400">
                   letter Spacing {styles?.letterSpacing}
                 </span>
@@ -225,7 +230,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
           defaultValue={true}
           icon={<ImageIcon size={16} className="text-primary" />}
         >
-          <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+          <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
             <div className="space-y-2">
               <ColorSelector
                 value={styles?.backgroundColor || ""}
@@ -274,7 +279,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
 
             <div className="space-y-2 p-2">
               <div className="mb-1 flex items-center space-x-2">
-                <AlignCenter size={16} className="text-primary rotate-90" />
+                <AlignCenter size={16} className="rotate-90 text-primary" />
                 <span className="text-xs text-gray-400">
                   Opacity {Number(styles?.opacity) * 100}%
                 </span>
@@ -300,7 +305,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
             defaultValue={true}
             icon={<Layout size={16} className="text-primary" />}
           >
-            <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+            <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
               {/* Layout Type */}
               <div className="space-y-2">
                 <Dropdown
@@ -433,7 +438,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
           title="Dimensions"
           icon={<Layers size={16} className="text-primary" />}
         >
-          <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+          <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
             <p className="font-semibold">Custom Dimension</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -486,11 +491,11 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
           title="Spacing"
           icon={<Layers size={16} className="text-primary" />}
         >
-          <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+          <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
             {/* Padding Controls */}
             <div className="space-y-2">
               <div className="mb-1 flex items-center">
-                <Maximize2 size={16} className="text-primary mr-2" />
+                <Maximize2 size={16} className="mr-2 text-primary" />
                 <span className="text-xs text-gray-400">Padding</span>
               </div>
 
@@ -532,7 +537,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
             {/* Margin Controls */}
             <div className="space-y-2">
               <div className="mb-1 flex items-center">
-                <Minimize2 size={16} className="text-primary mr-2" />
+                <Minimize2 size={16} className="mr-2 text-primary" />
                 <span className="text-xs text-gray-400">Margin</span>
               </div>
 
@@ -579,7 +584,7 @@ export default function StylePanel({ setBlocks, selectedBlock }: TabProps) {
           title="Border & Effects"
           icon={<Square size={16} className="text-primary" />}
         >
-          <div className="rounded-base my-2 space-y-4 border border-gray-200 p-4">
+          <div className="my-2 space-y-4 rounded-base border border-gray-200 p-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <NumberControl

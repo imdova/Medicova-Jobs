@@ -1,4 +1,4 @@
-import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
+import SelectField from "../form/FormModal/FormField/SelectField";
 
 type Option = {
   value: string;

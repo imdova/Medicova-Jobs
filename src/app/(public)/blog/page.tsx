@@ -38,9 +38,7 @@ export default function PageBuilder() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [forms, setForms] = useState<FormItem[]>(formList);
   const [selectedForm, setSelectedForm] = useState<string | null>(null);
-  console.log("🚀 ~ PageBuilder ~ selectedForm:", selectedForm);
   const activeForm = forms.find((x) => selectedForm === x.id);
-  console.log("🚀 ~ PageBuilder ~ activeForm:", activeForm);
 
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
@@ -56,7 +54,7 @@ export default function PageBuilder() {
         />
         <DndProvider backend={HTML5Backend}>
           <div className="flex bg-background">
-            <main className="max-w-full flex-1 overflow-hidden">
+            <main className="relative max-w-full flex-1 overflow-hidden">
               <div className="flex max-h-[50px] items-center justify-center border-b border-gray-200 p-4">
                 <ViewModeSelector
                   viewMode={viewMode}
@@ -66,22 +64,22 @@ export default function PageBuilder() {
               {/* Header Section */}
 
               {/* Content Area */}
+              {activeForm && (
+                <FormModal
+                  open={!!activeForm}
+                  error={""}
+                  loading={false}
+                  onClose={() => setSelectedForm(null)}
+                  onSubmit={(data) => console.log(data)}
+                  fields={activeForm.fields}
+                  title={activeForm.title}
+                  description={activeForm.description}
+                  dialog={Modal}
+                />
+              )}
               <div
-                className={`scrollable-container scroll-bar-minimal !pointer-events-auto relative h-[calc(100vh-132px)] ${activeForm ? "overflow-hidden" : "!overflow-auto"} bg-gray-50 p-4`}
+                className={`scrollable-container scroll-bar-minimal !pointer-events-auto h-[calc(100vh-132px)] ${activeForm ? "overflow-hidden" : "!overflow-auto"} bg-gray-50 p-4`}
               >
-                {activeForm && (
-                  <FormModal
-                    open={!!activeForm}
-                    error={""}
-                    loading={false}
-                    onClose={() => setSelectedForm(null)}
-                    onSubmit={(data) => console.log(data)}
-                    fields={activeForm.fields}
-                    title={activeForm.title}
-                    description={activeForm.description}
-                    dialog={Modal}
-                  />
-                )}
                 <div
                   onClick={() => {
                     setSelectedBlock(null);
@@ -96,6 +94,8 @@ export default function PageBuilder() {
                       selectedBlock={selectedBlock}
                       setBlocks={setBlocks}
                       setSelectedBlock={setSelectedBlock}
+                      setSelectedForm={setSelectedForm}
+                      forms={forms}
                     />
                   )}
                 </div>

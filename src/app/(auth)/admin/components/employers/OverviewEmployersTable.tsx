@@ -23,13 +23,13 @@ import { API_SEARCH_COMPANIES, API_UPDATE_COMPANY } from "@/api/employer";
 import useUpdateApi from "@/hooks/useUpdateApi";
 import { CompanyStatus } from "@/constants/enums/company-status.enum";
 import { Filter } from "lucide-react";
-import { SelectField } from "@/components/form/FormModal/FormField/SelectField";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
 import { employerFilters } from "@/constants";
 import FilterDrawer from "@/components/UI/FilterDrawer";
 import { toQueryString, updateItemInArray } from "@/util/general";
 import { useSearchParams } from "next/navigation";
 import { useSectorData } from "@/hooks/useSectorData";
+import SelectField from "@/components/form/FormModal/FormField/SelectField";
 
 // Defining tab options as a const array for better type safety and maintainability
 const tabs = [
