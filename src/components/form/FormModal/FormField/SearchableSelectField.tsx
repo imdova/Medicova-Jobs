@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormHelperText } from "@mui/material";
+import { FormControl, FormHelperText, Tooltip } from "@mui/material";
 import { FieldConfig } from "@/types";
 import {
   ControllerRenderProps,
@@ -7,7 +7,6 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { cn } from "@/util";
-import Tooltip from "@/components/UI/Tooltip";
 import {
   FieldLabel,
   getDependsOnField,
@@ -149,22 +148,20 @@ const SearchableSelectField: React.FC<SelectFieldProps> = ({
         />
       )}
 
-      <Tooltip
-        content={dependsOnTooltipText}
-        className="w-full"
-        position="bottom"
-      >
-        <SelectDropdown
-          field={field}
-          controllerField={controllerField}
-          options={options}
-          isMultiple={isMultiple}
-          dependsOn={dependsOn}
-          className={className}
-          placeholder={placeholder}
-          onSelectionChange={handleSelectionChange}
-          onResetFields={handleResetFields}
-        />
+      <Tooltip title={dependsOnTooltipText} placement="bottom" arrow>
+        <div>
+          <SelectDropdown
+            field={field}
+            controllerField={controllerField}
+            options={options}
+            isMultiple={isMultiple}
+            dependsOn={dependsOn}
+            className={className}
+            placeholder={placeholder}
+            onSelectionChange={handleSelectionChange}
+            onResetFields={handleResetFields}
+          />
+        </div>
       </Tooltip>
 
       {error && <FormHelperText error>{error.message}</FormHelperText>}

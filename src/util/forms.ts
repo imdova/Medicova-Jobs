@@ -32,18 +32,6 @@ export const getDefaultValues = (
   ...initialValues,
 });
 
-// function getDefaultValues<T>(array: Path<T>[], initialValues?: T) {
-//   return {
-//     ...array.reduce(
-//       (acc, name) => ({
-//         ...acc,
-//         [name]: initialValues ? getNestedValue(initialValues, name) : "",
-//       }),
-//       {},
-//     ),
-//   };
-// }
-
 export function getNestedValue<T>(formValues: T, path: Path<T>): any {
   const keys = path.split(".") as (keyof T)[];
   const value = keys.reduce((current: any, key: keyof T) => {

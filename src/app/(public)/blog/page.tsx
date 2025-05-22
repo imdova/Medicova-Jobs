@@ -87,7 +87,7 @@ export default function PageBuilder() {
                   className={`mx-auto flex min-h-full flex-col border bg-white p-2 shadow-soft transition-all ${getViewModeWidth(viewMode)}`}
                 >
                   {onPreview ? (
-                    <ArticlePreview blocks={blocks} />
+                    <ArticlePreview blocks={blocks} forms={forms} />
                   ) : (
                     <BlogBuilder
                       blocks={blocks}

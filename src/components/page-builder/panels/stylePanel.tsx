@@ -95,7 +95,7 @@ export default function StylePanel({
   return (
     <div className="w-full max-w-md">
       <div className="space-y-2">
-        <h4 className="text-xl font-semibold">
+        <h4 className="!mb-5 text-xl font-semibold">
           Content Editor ({selectedBlock.type})
         </h4>
         {formFields &&
@@ -121,7 +121,8 @@ export default function StylePanel({
               />
             </div>
           ))}
-
+        <Divider className="!my-5" />
+        <h4 className="text-xl font-semibold">Style Editor</h4>
         <SectionCollapse
           title="Typography"
           defaultValue={true}

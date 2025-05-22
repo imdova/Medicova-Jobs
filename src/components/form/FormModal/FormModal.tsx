@@ -8,6 +8,7 @@ import { getDefaultValues } from "@/util/forms";
 import LeaveConfirmationModal from "@/components/UI/LeaveConfirmationModal";
 import { useFormState } from "./hooks/useFormState";
 import { DynamicModalProps } from "@/types";
+import { cn } from "@/util";
 
 const FormModal: React.FC<DynamicModalProps> = ({
   open,
@@ -96,7 +97,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
           error={error}
           handleCancel={handleCancel}
         />
-        <DialogContent className="m-0 p-0 max-h-[calc(100dvh-200px)] h-full ">
+        <DialogContent className={cn("m-0 p-0  h-full", dialog ? "max-h-[calc(100dvh-300px)]" : "max-h-[calc(100dvh-200px)]")}>
           <FormContent
             fields={fields}
             onSubmit={onSubmit}
@@ -112,6 +113,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
             deleteButtonText={deleteButtonText}
             cancelButtonText={cancelButtonText}
             removeField={removeField}
+            dialog={!!dialog}
           >
             {children}
           </FormContent>

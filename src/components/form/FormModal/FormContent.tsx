@@ -1,10 +1,10 @@
 // components/DynamicFormModal/FormContent.tsx
 import React from "react";
 import { UseFormReturn, SubmitHandler } from "react-hook-form";
-import { Grid } from "@mui/material";
 import { FormActions } from "./FormActions";
 import { FieldConfig } from "@/types";
 import { FormField } from "./FormField/FormField";
+import { cn } from "@/util";
 
 interface FormContentProps {
   fields: FieldConfig[];
@@ -24,6 +24,7 @@ interface FormContentProps {
   deleteButtonText?: string;
   cancelButtonText?: string;
   removeField?: (fieldName: string) => void;
+  dialog?: boolean;
 }
 
 export const FormContent: React.FC<FormContentProps> = ({
@@ -42,6 +43,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   deleteButtonText,
   cancelButtonText,
   removeField,
+  dialog
 }) => {
   const {
     control,
@@ -55,6 +57,7 @@ export const FormContent: React.FC<FormContentProps> = ({
     try {
       if (isDirty) {
         await onSubmit(data);
+        // TODO : RESET ON CONDION
         reset(data);
       } else {
         onCancel();
@@ -68,11 +71,11 @@ export const FormContent: React.FC<FormContentProps> = ({
     const data = getValues();
     onDelete?.(data);
   };
-  
+
   // col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <div className="scroll-bar-minimal max-h-[calc(100dvh-254px)] overflow-y-auto bg-background">
+      <div className={cn("scroll-bar-minimal  overflow-y-auto bg-background", dialog ? "max-h-[calc(100dvh-354px)]" : "max-h-[calc(100dvh-254px)]")}>
         <div className="mt-1 grid grid-cols-12 gap-4 p-4">
           {fields.map((field) => {
             const gridProps = field.gridProps ?? {};

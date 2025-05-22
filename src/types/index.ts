@@ -449,6 +449,7 @@ export interface Option<T = Record<string, any>> {
 
 // Updated FieldConfig to support multiple hidden fields
 export interface FieldConfig<T = any> {
+  id?: string;
   name: Path<T>;
   label?: string;
   type?: FieldType;

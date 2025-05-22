@@ -7,6 +7,7 @@ export const formList: FormItem[] = [
     description: "A form to collect user contact information.",
     fields: [
       {
+        id: "fullName",
         name: "fullName",
         label: "Full Name",
         type: "text",
@@ -22,6 +23,7 @@ export const formList: FormItem[] = [
         textFieldProps: { variant: "outlined" },
       },
       {
+        id: "email",
         name: "email",
         label: "Email Address",
         type: "email",
@@ -36,6 +38,7 @@ export const formList: FormItem[] = [
         textFieldProps: { variant: "outlined" },
       },
       {
+        id: "message",
         name: "message",
         label: "Message",
         type: "text",
@@ -58,78 +61,62 @@ export const formList: FormItem[] = [
     onSuccessMessage: "Thank you for your submission!",
     onErrorMessage: "Failed to submit the form. Please try again.",
   },
-  // {
-  //   id: "form2",
-  //   name: "Event Registration",
-  //   description: "Register for an upcoming event.",
-  //   fields: [
-  //     {
-  //       name: "event",
-  //       label: "Select Event",
-  //       type: "select",
-  //       required: true,
-  //       options: [
-  //         { label: "Tech Conference 2025", value: "tech-conf-2025" },
-  //         { label: "AI Workshop", value: "ai-workshop" },
-  //         { label: "Webinar Series", value: "webinar-series" },
-  //       ],
-  //       gridProps: { xs: 12 },
-  //       selectProps: { native: true },
-  //     },
-  //     {
-  //       name: "attendanceType",
-  //       label: "Attendance Type",
-  //       type: "radio",
-  //       required: true,
-  //       options: [
-  //         { label: "In-Person", value: "in-person" },
-  //         { label: "Virtual", value: "virtual" },
-  //       ],
-  //       gridProps: { xs: 12 },
-  //       dependsOn: "event",
-  //     },
-  //     {
-  //       name: "dietary",
-  //       label: "Dietary Preferences",
-  //       type: "select",
-  //       multiple: true,
-  //       options: [
-  //         { label: "Vegetarian", value: "vegetarian" },
-  //         { label: "Vegan", value: "vegan" },
-  //         { label: "Gluten-Free", value: "gluten-free" },
-  //       ],
-  //       gridProps: { xs: 12 },
-  //       selectProps: { multiple: true },
-  //       hideFieldNames: ["event"],
-  //       dependsOn: "attendanceType",
-  //       rules: {
-  //         required: {
-  //           value: true,
-  //           message: "Please select at least one dietary preference",
-  //         },
-  //       },
-  //     },
-  //   ],
-  //   apiEndpoint: "/api/event-registration",
-  //   onSuccessRedirect: "/thank-you",
-  //   onErrorRedirect: "/error",
-  // },
+  {
+    id: "form2",
+    name: "Event Registration",
+    description: "Register for an upcoming event.",
+    fields: [
+      {
+        id: "event",
+        name: "event",
+        label: "Select Event",
+        type: "select",
+        required: true,
+        options: [
+          { label: "Tech Conference 2025", value: "tech-conf-2025" },
+          { label: "AI Workshop", value: "ai-workshop" },
+          { label: "Webinar Series", value: "webinar-series" },
+        ],
+      },
+      {
+        id: "attendanceType",
+        name: "attendanceType",
+        label: "Attendance Type",
+        type: "radio",
+        required: true,
+        options: [
+          { label: "In-Person", value: "in-person" },
+          { label: "Virtual", value: "virtual" },
+        ],
+        dependsOn: "event",
+      },
+      {
+        id: "dietary",
+        name: "dietary",
+        label: "Dietary Preferences",
+        type: "select",
+        multiple: true,
+        options: [
+          { label: "Vegetarian", value: "vegetarian" },
+          { label: "Vegan", value: "vegan" },
+          { label: "Gluten-Free", value: "gluten-free" },
+        ],
+        hideFieldNames: ["event"],
+        dependsOn: "attendanceType",
+        required: true,
+      },
+    ],
+    apiEndpoint: "/api/event-registration",
+    onSuccessRedirect: "/thank-you",
+    onErrorRedirect: "/error",
+  },
   {
     id: "form3",
     name: "User Profile",
     fields: [
+
       {
-        name: "emailPreferences",
-        label: "Email Frequency",
-        type: "select",
-        options: [
-          { label: "Daily", value: "daily" },
-          { label: "Weekly", value: "weekly" },
-          { label: "Monthly", value: "monthly" },
-        ],
-        dependsOn: "newsletter",
-      },
-      {
+        id: "username",
         name: "username",
         label: "Username",
         type: "text",
@@ -149,6 +136,7 @@ export const formList: FormItem[] = [
         textFieldProps: { variant: "filled" },
       },
       {
+        id: "birthdate",
         name: "birthdate",
         label: "Date of Birth",
         type: "date",
@@ -160,11 +148,24 @@ export const formList: FormItem[] = [
         },
       },
       {
+        id: "newsletter",
         name: "newsletter",
         label: "Subscribe to Newsletter",
         type: "checkbox",
         gridProps: { xs: 12 },
         resetFields: ["emailPreferences"],
+      },
+      {
+        id: "emailPreferences",
+        name: "emailPreferences",
+        label: "Email Frequency",
+        type: "select",
+        options: [
+          { label: "Daily", value: "daily" },
+          { label: "Weekly", value: "weekly" },
+          { label: "Monthly", value: "monthly" },
+        ],
+        dependsOn: "newsletter",
       },
     ],
     apiEndpoint: "/api/user-profile",
@@ -176,32 +177,43 @@ export const formList: FormItem[] = [
     description: "Provide feedback on our services.",
     fields: [
       {
+        id: "rating",
         name: "rating",
         label: "Rating",
         type: "select",
         required: true,
         options: [
-          { label: "1 Star", value: "1" },
-          { label: "2 Stars", value: "2" },
-          { label: "3 Stars", value: "3" },
-          { label: "4 Stars", value: "4" },
-          { label: "5 Stars", value: "5" },
+          { label: "1 Star", value: "1-star" },
+          { label: "2 Stars", value: "2-stars" },
+          { label: "3 Stars", value: "3-stars" },
+          { label: "4 Stars", value: "4-stars" },
+          { label: "5 Stars", value: "5-stars" },
         ],
-        gridProps: { xs: 12, sm: 6 },
-        selectProps: { native: true },
       },
       {
+        id: "comments",
         name: "comments",
         label: "Comments",
         type: "text",
-        gridProps: { xs: 12 },
-        textFieldProps: { multiline: true, rows: 5, variant: "outlined" },
+        textFieldProps: {
+          placeholder: "Enter your company description",
+          sx: {
+            "& .MuiOutlinedInput-root": {
+              p: 0,
+              borderRadius: "10px",
+              height: "auto",
+            },
+          },
+          multiline: true,
+          minRows: 4,
+          maxRows: 14,
+        },
       },
       {
+        id: "recommend",
         name: "recommend",
         label: "Would you recommend us?",
         type: "checkbox",
-        gridProps: { xs: 12 },
       },
     ],
     apiEndpoint: "/api/feedback",
@@ -218,6 +230,7 @@ export const imageModal: BlockForm = {
   isModal: true,
   fields: [
     {
+      id: "imageUrl",
       name: "imageUrl",
       label: "Enter Your Image Url",
       type: "text",
@@ -233,6 +246,7 @@ export const videoModal: BlockForm = {
   isModal: true,
   fields: [
     {
+      id: "videoUrl",
       name: "videoUrl",
       label: "Enter Your Video Url",
       type: "text",
@@ -240,6 +254,7 @@ export const videoModal: BlockForm = {
       required: true,
     },
     {
+      id: "videoThumbnail",
       name: "videoThumbnail",
       label: "Enter Your Thumbnail Url",
       type: "text",
@@ -255,6 +270,7 @@ export const htmlModal: BlockForm = {
   isModal: true,
   fields: [
     {
+      id: "content",
       name: "content",
       label: "Enter Your Html Code",
       type: "text",
@@ -272,6 +288,7 @@ export const normalModal: BlockForm = {
   type: ["h1", "h2", "h3", "code", "quote", "text"],
   fields: [
     {
+      id: "content",
       name: "content",
       label: "Enter Your Content",
       type: "text",
@@ -283,6 +300,7 @@ export const paragraphData: BlockForm = {
   isModal: false,
   fields: [
     {
+      id: "content",
       name: "content",
       type: "textEditor",
     },

@@ -9,7 +9,7 @@ export const useFormState = (
   fields: FieldConfig[],
   initialValues: Record<string, any>,
   mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined,
-): UseFormReturn<Record<string, any>> => {
+): UseFormReturn<any> => {
   const formMethods = useForm({
     mode,
     defaultValues: getDefaultValues(fields, initialValues),

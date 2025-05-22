@@ -1,30 +1,50 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Block } from "@/types/blog";
+import { Block, FormItem } from "@/types/blog";
 import { Divider } from "@mui/material";
 import { Info } from "lucide-react";
 import YouTubePlayer from "@/components/UI/youtube-video-player";
+import { useState } from "react";
+import FormModal from "../form/FormModal/FormModal";
 
-export default function ArticlePreview({ blocks }: { blocks: Block[] }) {
+export default function ArticlePreview({ blocks, forms }: { blocks: Block[], forms: FormItem[] }) {
+  const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  const activeForm = forms.find((x) => selectedForm === x.id);
+
   return (
-    <div>
-      {blocks.map((block) => (
-        <div
-          key={block.id}
-          className="full relative w-full rounded-base border border-transparent p-2"
-        >
-          <BlockItem block={block} />
-        </div>
-      ))}
-    </div>
+    <>
+      {activeForm && (
+        <FormModal
+          open={!!activeForm}
+          error={""}
+          loading={false}
+          onClose={() => setSelectedForm(null)}
+          onSubmit={() => setSelectedForm(null)}
+          fields={activeForm.fields}
+          title={activeForm.title}
+          description={activeForm.description}
+        />
+      )}
+      <div>
+        {blocks.map((block) => (
+          <div
+            key={block.id}
+            className="full relative w-full rounded-base border border-transparent p-2"
+          >
+            <BlockItem block={block} setSelectedForm={setSelectedForm} />
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
 interface BlockRendererProps {
   block: Block;
+  setSelectedForm: (formId: string | null) => void;
 }
 
-export function BlockItem({ block }: BlockRendererProps) {
+export function BlockItem({ block, setSelectedForm }: BlockRendererProps) {
   const styles = block.styles || {
     width: "auto",
     height: "auto",
@@ -73,11 +93,24 @@ export function BlockItem({ block }: BlockRendererProps) {
       );
 
     case "button":
-      return (
-        <a href={block.linkUrl} style={styles} target="_blank">
-          {block.content}
-        </a>
-      );
+      if (block.linkUrl) {
+        return (
+          <a href={block.linkUrl} style={styles} target="_blank">
+            {block.content}
+          </a>
+        );
+      } else if (block.formId) {
+        return (
+          <button
+            onClick={() => {
+              setSelectedForm(block.formId || null);
+            }}
+            style={styles}
+          >
+            {block.content}
+          </button>
+        );
+      }
 
     case "html":
       return (
@@ -98,7 +131,7 @@ export function BlockItem({ block }: BlockRendererProps) {
               key={block.id}
               className="w-full border border-transparent p-2"
             >
-              <BlockItem key={block.id} block={block} />
+              <BlockItem key={block.id} block={block} setSelectedForm={setSelectedForm} />
             </div>
           ))}
         </div>
@@ -114,7 +147,7 @@ export function BlockItem({ block }: BlockRendererProps) {
               key={block.id}
               className="h-full w-full flex-1 border border-transparent p-2"
             >
-              <BlockItem key={block.id} block={block} />
+              <BlockItem key={block.id} block={block} setSelectedForm={setSelectedForm} />
             </div>
           ))}
         </div>

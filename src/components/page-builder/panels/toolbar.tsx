@@ -1,5 +1,5 @@
+"use client";
 import { Block, BlogSettings, FormItem, ToolBarTabs } from "@/types/blog";
-import { Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import StylePanel from "@/components/page-builder/panels/stylePanel";
 import BlocksPanel from "@/components/page-builder/panels/blocksPanel";
@@ -46,22 +46,20 @@ const ToolBar: React.FC<ToolBarProps> = ({
   return (
     <aside className="bg-muted/30 w-96 border-l">
       <div>
-        <Tabs
-          value={selectedTab}
-          onChange={(event, newValue) => setSelectedTab(newValue)}
-          aria-label="block and style tabs"
-          className="border-b border-gray-200"
-          variant="fullWidth"
-        >
+        <div className="flex h-[50px] min-w-3 items-center border-b  justify-center gap-2 p-0 text-xs">
           {tabs.map((tab) => (
-            <Tab
+            <button
               key={tab}
-              label={tab}
-              className="h-[50px] p-0 text-xs min-w-3"
-              value={tab}
-            />
+              onClick={() => setSelectedTab(tab)}
+              className={`h-[50px] flex items-center justify-center capitalize text-sm flex-1 min-w-3 p-0 ${
+                selectedTab === tab ? "bg-primary text-white" : ""
+              }`}
+            >
+              {tab}
+            </button>
           ))}
-        </Tabs>
+        </div>
+
         <div className="scroll-bar-minimal max-h-[calc(100vh-146px)] space-y-6 overflow-y-auto p-4">
           {selectedTab === "blocks" && (
             <BlocksPanel
@@ -81,7 +79,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
               forms={forms}
             />
           )}
-         {selectedTab === "forms" && (
+          {selectedTab === "forms" && (
             <FormBuilder
               forms={forms}
               setForms={setForms}
