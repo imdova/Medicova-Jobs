@@ -6,6 +6,8 @@ import { companyJobsReducer } from "./slices/jobSlice";
 import { jobApplicationsReducer } from "./slices/applications.slice";
 import { industryReducer } from "./slices/industriesSlice";
 import { savedJobsReducer } from "./slices/savedJobs.slice";
+import { permissionsReducer } from "./slices/permissions";
+import { rolesReducer } from "./slices/roles";
 
 export const makeStore = () => {
   return configureStore({
@@ -17,6 +19,8 @@ export const makeStore = () => {
       companyJobs: companyJobsReducer,
       jobApplications: jobApplicationsReducer,
       savedJobs: savedJobsReducer,
+      permissions: permissionsReducer,
+      roles: rolesReducer,
     },
   });
 };

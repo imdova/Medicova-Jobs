@@ -8,13 +8,21 @@ import UsersTab from "@/components/settings/usersTab";
 import UpdateEmail from "@/components/settings/UpdateEmail";
 import UpdatePassword from "@/components/settings/UpdatePassword";
 import UpdatePhone from "@/components/settings/UpdatePhone";
+import { usePermissions } from "@/hooks/usePermissions";
+import RolesTab from "@/components/settings/RolesTab";
+
+type TabValue = "login-details" | "users" | "roles";
+const tabs: TabValue[] = ["login-details", "users", "roles"];
 
 const SettingsPage = () => {
   const { data: session, status } = useSession();
-  const user = session?.user as User;
-  const [tabValue, setTabValue] = useState(0);
+  const user = session?.user
+  const [tabValue, setTabValue] = useState<TabValue>("login-details");
+  const { permissions, roles } = usePermissions(user?.type, user?.companyId || "");
+  console.log("permissions ==> ", permissions);
+  console.log("roles ==> ", roles);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     setTabValue(newValue);
   };
 
@@ -29,25 +37,27 @@ const SettingsPage = () => {
   if (status === "unauthenticated") return notFound();
 
   return (
-    <div className="px-2 md:px-5">
+    <div className="px-2 space-y-2 md:px-5">
       <Tabs
-        className="mb-2 rounded-base border border-gray-200 bg-white px-4 shadow-soft"
+        className="rounded-base border border-gray-200 bg-white px-4 shadow-soft"
         value={tabValue}
         onChange={handleTabChange}
       >
-        <Tab label="Login Details" />
-        <Tab label="Users" />
+        {tabs.map((tab) => (
+          <Tab key={tab} value={tab} label={tab} />
+        ))}
       </Tabs>
 
       {/* Tab Panels */}
-      {tabValue === 0 && (
+      {tabValue === "login-details" && (
         <div>
           <UpdateEmail user={user} />
           <UpdatePhone user={user} />
           <UpdatePassword user={user} />
         </div>
       )}
-      {tabValue === 1 && <UsersTab user={user} />}
+      {tabValue === "users" && <UsersTab user={user} roles={roles} permissions={permissions} />}
+      {tabValue === "roles" && <RolesTab user={user}roles={roles} permissions={permissions} />}
     </div>
   );
 };

@@ -19,7 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import VerifyToken from "../UI/verifyToken";
 import FormModal from "../form/FormModal/FormModal";
 
-const UpdateEmail: React.FC<{ user: User }> = ({ user }) => {
+const UpdateEmail: React.FC<{ user?: User }> = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const openVerify = () => setIsOpen(true);
   const closeVerify = () => setIsOpen(false);
@@ -31,17 +31,18 @@ const UpdateEmail: React.FC<{ user: User }> = ({ user }) => {
     reset,
   } = useForm({
     mode: "onChange",
-    defaultValues: { newMail: user.email },
+    defaultValues: { newMail: user?.email || "" },
   });
 
   const { isLoading, error, update } = useUpdateApi<User>();
 
   const handleUpdate = async (data: { newMail: string | null }) => {
+    if (!user?.id) return;
     await update(
       API_REQUEST_CHANGE_EMAIL,
       {
         method: "POST",
-        body: { ...data, id: user.id },
+        body: { ...data, id: user?.id },
       },
       TAGS.profile,
     );

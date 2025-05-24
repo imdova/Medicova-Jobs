@@ -13,6 +13,11 @@ export const providers = [
   GoogleProvider({
     clientId: process.env.GOOGLE_CLIENT_ID ?? "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    authorization: {
+      params: {
+        prompt: "select_account", // to force google to ask for account each time he tries login
+      },
+    },
   }),
   FacebookProvider({
     clientId: process.env.FACEBOOK_CLIENT_ID ?? "",

@@ -12,6 +12,7 @@ export const API_GET_COMPANY_BY_ID = COMPANIES + "/"; // GET + [companyID]
 export const API_UPDATE_COMPANY_USER_NAME = COMPANIES + "/username"; // PATCH
 export const API_UPDATE_COMPANY = COMPANIES + "/"; // PATCH + [companyID]
 // export const API_DELETE_COMPANY = COMPANIES + "/"; // DELETE + [companyID]
+export const API_GET_COMPANY_USERS = COMPANIES + "/users"; // GET
 
 // Jobs
 export const JOBS = API_EMPLOYER_BASE + "/jobs";
@@ -40,3 +41,9 @@ export const API_UNLOCK_SEEKER = UNLOCKED_SEEKERS; // POST "{companyId , seekerI
 export const API_GET_UNLOCKED_SEEKERS = UNLOCKED_SEEKERS; // GET ?id={id}
 export const API_CHECK_UNLOCKED_SEEKER = UNLOCKED_SEEKERS + "/company/"; // GET + {companyId}/seeker/{seekerId}
 export const API_DELETE_UNLOCKED_SEEKER = UNLOCKED_SEEKERS + "/company/"; // DELETE + {companyId}/seeker/{seekerId}
+
+
+// Employees
+export const EMPLOYEES = API_EMPLOYER_BASE + "/employees";
+export const API_GET_COMPANY_EMPLOYEES = EMPLOYEES + "/company/"; // GET + [companyId]
+export const API_UPDATE_EMPLOYEE = EMPLOYEES; // PATCH

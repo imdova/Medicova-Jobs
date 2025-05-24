@@ -1,6 +1,6 @@
 // components/DynamicFormModal/FormContent.tsx
 import React from "react";
-import { UseFormReturn, SubmitHandler } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { FormActions } from "./FormActions";
 import { FieldConfig } from "@/types";
 import { FormField } from "./FormField/FormField";
@@ -8,7 +8,7 @@ import { cn } from "@/util";
 
 interface FormContentProps {
   fields: FieldConfig[];
-  onSubmit?: SubmitHandler<any>;
+  onSubmit?: (data: any) => Promise<{ error?: boolean } | void> | void;
   formMethods: UseFormReturn<Record<string, any>>;
   hiddenFields: string[];
   onDelete?: (data: any) => void;
@@ -18,6 +18,7 @@ interface FormContentProps {
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   children?: React.ReactNode;
   loading?: boolean;
+  error?: string;
   deleteLoading?: boolean;
   onCancel: () => void;
   submitButtonText?: string;
@@ -36,6 +37,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   onCheckboxChange,
   children,
   loading,
+  error,
   deleteLoading,
   resetValues,
   onDelete,
@@ -58,9 +60,10 @@ export const FormContent: React.FC<FormContentProps> = ({
   const submitHandler = async (data: any) => {
     try {
       if (isDirty) {
-        await onSubmit?.(data);
-        // TODO : RESET ON CONDION
-        reset(data);
+        const result = await onSubmit?.(data);
+        if (!result?.error) {
+          reset(data);
+        }
       } else {
         onCancel();
       }
@@ -75,6 +78,8 @@ export const FormContent: React.FC<FormContentProps> = ({
   };
 
   // col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12
+  // sm:col-span-1 sm:col-span-2 sm:col-span-3 sm:col-span-4 sm:col-span-5 sm:col-span-6 sm:col-span-7 sm:col-span-8 sm:col-span-9 sm:col-span-10 sm:col-span-11 sm:col-span-12
+  // md:col-span-1 md:col-span-2 sm:col-span-3 sm:col-span-4 sm:col-span-5 sm:col-span-6 sm:col-span-7 sm:col-span-8 sm:col-span-9 sm:col-span-10 sm:col-span-11 sm:col-span-12
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <div className={cn("scroll-bar-minimal  overflow-y-auto bg-background", dialog ? "max-h-[calc(100dvh-354px)]" : "max-h-[calc(100dvh-254px)]")}>

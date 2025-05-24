@@ -102,6 +102,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
           <FormContent
             fields={fields}
             onSubmit={onSubmit}
+            error={error}
             formMethods={formMethods}
             hiddenFields={hiddenFields}
             onCheckboxChange={handleCheckboxChange}

@@ -18,7 +18,7 @@ const formatTime = (seconds: number): string => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
+const UpdatePhone: React.FC<{ user?: User }> = ({ user }) => {
   const { update: updateSession } = useSession();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +47,7 @@ const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
     reset,
   } = useForm({
     mode: "onChange",
-    defaultValues: { phone: user.phone },
+    defaultValues: { phone: user?.phone || "" },
   });
 
   const { isLoading, error, update } = useUpdateApi<User>();
@@ -58,7 +58,8 @@ const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
   } = useUpdateApi<User>();
 
   const handleUpdate = async (body: Partial<User>) => {
-    body.id = user.id;
+    body.id = user?.id;
+    if (!user?.id) return;
     await update(
       API_REQUEST_PHONE_CHANGE,
       {
@@ -92,7 +93,8 @@ const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
   ];
 
   const handleOtpSubmit = async (body: { otp: string; id: string | null }) => {
-    body.id = user.id;
+    if (!user?.id) return;
+    body.id = user?.id
     const updatedUser = await updateOtp(
       API_PHONE_CHANGE,
       {
@@ -111,11 +113,12 @@ const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
       message: "Phone number updated successfully",
       severity: "success",
     });
-    reset({ phone: updatedUser.phone });
+    reset({ phone: updatedUser.phone || "" });
   };
 
   const handleResend = async () => {
     if (countdown > 0) return;
+    if (!user?.phone) return;
     await handleUpdate({ phone: user.phone });
     setCountdown(90);
   };
@@ -155,9 +158,8 @@ const UpdatePhone: React.FC<{ user: User }> = ({ user }) => {
             <button
               onClick={handleResend}
               disabled={countdown > 0}
-              className={`ml-1 inline text-nowrap text-sm font-bold enabled:cursor-pointer ${
-                countdown > 0 ? "text-gray-400" : "text-main hover:underline"
-              }`}
+              className={`ml-1 inline text-nowrap text-sm font-bold enabled:cursor-pointer ${countdown > 0 ? "text-gray-400" : "text-main hover:underline"
+                }`}
             >
               {" "}
               {countdown > 0

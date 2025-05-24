@@ -1,7 +1,6 @@
 import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { educationOptions } from "@/constants/job";
-import { JobData, Role } from "@/types";
-import { Permission } from "@/types/permissions";
+import { JobData } from "@/types";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 import { clsx } from "clsx";
@@ -184,13 +183,6 @@ export function divideName(fullName?: string) {
   // The last name is the last part of the name
   const lastName = nameParts[nameParts.length - 1];
   return { firstName, lastName };
-}
-
-export function getPermissionNames(roles: Role[]): Permission[] {
-  const permissionNames = roles
-    .flatMap((role) => role.permissions)
-    .map((permission) => permission.name);
-  return Array.from(new Set(permissionNames));
 }
 
 export const hasDataChanged = <T>(originalData: T, currentData: T): boolean => {

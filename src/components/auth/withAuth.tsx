@@ -1,11 +1,11 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { Permission } from '@/types/permissions';
+import { Permission_Keys } from '@/types/permissions';
 
 const withAuth = <P extends Record<string, unknown>>(
   Component: React.ComponentType<P>,
-  requiredPermissions: Permission[] = [] // Accept required permissions as an argument
+  requiredPermissions: Permission_Keys[] = [] // Accept required permissions as an argument
 ): React.FC<P> => {
   const Auth: React.FC<P> = (props) => {
     const router = useRouter();
@@ -22,7 +22,7 @@ const withAuth = <P extends Record<string, unknown>>(
     }
 
     // Extract user permissions from the session
-    const userPermissions: Permission[] = session?.user?.permissions || []; // Ensure permissions are available
+    const userPermissions: Permission_Keys[] = session?.user?.permissions || []; // Ensure permissions are available
 
     // Check if the user has all required permissions
     const hasRequiredPermissions = requiredPermissions.every((perm) =>

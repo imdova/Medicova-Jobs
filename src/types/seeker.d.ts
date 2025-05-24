@@ -76,7 +76,8 @@ type UserProfile = {
   total_years_experience: number | null;
   _version: number;
 
-  /// TODO: need to add
+  permissions: string[];
+  /// TODO: need to add these fields
   // isVerified: boolean;
 
   // isEmailVerified: boolean;

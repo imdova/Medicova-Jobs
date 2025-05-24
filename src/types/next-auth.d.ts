@@ -7,6 +7,26 @@ export type RoleState =
   | "unEmployee"
   | "unverified";
 
+export type Role = {
+  id: string;
+  name: string;
+  description: string;
+  forUserType: RoleState;
+  companyId: string | null;
+  permissions: Permission[];
+
+  // TODO: add users
+  users: number;
+};
+
+export type Permission = {
+  id: string;
+  name: string;
+  key: string;
+  description: string;
+  forUserType: RoleState;
+};
+
 declare module "next-auth" {
   interface User {
     id: string | null;

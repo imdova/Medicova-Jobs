@@ -39,7 +39,7 @@ const getCurrentValues = (value: any): string[] => {
 const SelectDropdown: React.FC<{
   field: FieldConfig;
   controllerField?: Partial<ControllerRenderProps<FieldValues, string>>;
-  options: any[];
+  options: FieldConfig["options"];
   isMultiple: boolean;
   dependsOn: any;
   className: string;
@@ -57,52 +57,52 @@ const SelectDropdown: React.FC<{
   onSelectionChange,
   onResetFields,
 }) => {
-  const handleChange = (e: any) => {
-    const value = e && e.target ? e.target.value : e;
-    field.onChange?.(value);
-    onSelectionChange(value);
-    if (field.resetFields) {
-      onResetFields?.();
-    }
-  };
+    const handleChange = (e: any) => {
+      const value = e && e.target ? e.target.value : e;
+      field.onChange?.(value);
+      onSelectionChange(value);
+      if (field.resetFields) {
+        onResetFields?.();
+      }
+    };
 
-  const renderValue = (value: any) => {
-    const selected = options.find((opt) => opt.value == value)?.label;
-    return selected ? (
-      selected
-    ) : (
-      <span className="text-neutral-400">
-        {field.textFieldProps?.placeholder || placeholder || "Select"}
-      </span>
+    const renderValue = (value: any) => {
+      const selected = options?.find((opt) => opt.value == value)?.label;
+      return selected ? (
+        selected
+      ) : (
+        <span className="text-neutral-400">
+          {field.textFieldProps?.placeholder || placeholder || "Select"}
+        </span>
+      );
+    };
+
+    return (
+      <Select
+        className={cn("w-full bg-white", className)}
+        sx={field.textFieldProps?.sx}
+        {...controllerField}
+        labelId={String(field.name) + "Label"}
+        id={String(field.name)}
+        value={isMultiple ? "" : controllerField?.value}
+        displayEmpty
+        disabled={!!dependsOn}
+        MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+        onChange={handleChange}
+        renderValue={renderValue}
+        {...field.selectProps}
+      >
+        <MenuItem value="" disabled>
+          <em>{field.textFieldProps?.placeholder || placeholder || "Select"}</em>
+        </MenuItem>
+        {options?.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.icon ? <span className="mr-2">{option.icon}</span> : null} {option.label}
+          </MenuItem>
+        ))}
+      </Select>
     );
   };
-
-  return (
-    <Select
-      className={cn("w-full bg-white", className)}
-      sx={field.textFieldProps?.sx}
-      {...controllerField}
-      labelId={String(field.name) + "Label"}
-      id={String(field.name)}
-      value={isMultiple ? "" : controllerField?.value}
-      displayEmpty
-      disabled={!!dependsOn}
-      MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
-      onChange={handleChange}
-      renderValue={renderValue}
-      {...field.selectProps}
-    >
-      <MenuItem value="" disabled>
-        <em>{field.textFieldProps?.placeholder || placeholder || "Select"}</em>
-      </MenuItem>
-      {options.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </Select>
-  );
-};
 
 // Main component
 const SelectField: React.FC<SelectFieldProps> = ({

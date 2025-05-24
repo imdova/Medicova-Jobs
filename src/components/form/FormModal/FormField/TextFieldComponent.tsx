@@ -15,6 +15,22 @@ interface TextFieldProps {
   error?: FieldError | null;
 }
 
+
+const TEXTAREA = {
+  placeholder:
+    "Briefly describe what the course covered, e.g., emergency procedures, patient care, healthcare technology.",
+  sx: {
+    "& .MuiOutlinedInput-root": {
+      p: 0,
+      borderRadius: "10px",
+      height: "auto",
+    },
+  },
+  multiline: true,
+  minRows: 4,
+  maxRows: 14,
+}
+
 export const TextFieldComponent: React.FC<TextFieldProps> = ({
   field,
   controllerField,
@@ -58,6 +74,7 @@ export const TextFieldComponent: React.FC<TextFieldProps> = ({
       )}
       <TextField
         {...controllerField}
+        {...(field.type === "textArea" ? TEXTAREA : {})}
         {...field.textFieldProps}
         placeholder={field.textFieldProps?.placeholder || placeholder || ""}
         fullWidth

@@ -75,21 +75,7 @@ const EditorForm = ({
           field={{
             name: "description",
             label: "Description",
-            type: "text",
-            textFieldProps: {
-              placeholder:
-                "Briefly describe what the form is for, e.g., contact form, booking form, etc.",
-              sx: {
-                "& .MuiOutlinedInput-root": {
-                  p: 0,
-                  borderRadius: "10px",
-                  height: "auto",
-                },
-              },
-              multiline: true,
-              minRows: 4,
-              maxRows: 14,
-            },
+            type: "textArea",
           }}
           fieldController={{
             onChange: (e) => {

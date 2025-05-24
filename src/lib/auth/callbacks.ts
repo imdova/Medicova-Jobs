@@ -1,10 +1,10 @@
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 import { divideName } from "@/util";
-import { Permission } from "@/types/permissions";
 import { RoleState } from "@/types/next-auth";
 import { handleSocialLogin } from "./utils";
 import { cookies } from "next/headers";
+import { Permission_Keys } from "@/types/permissions";
 
 export const callbacks = {
   jwt: async ({
@@ -78,7 +78,7 @@ export const callbacks = {
       session.user.companyUserName = token.companyUserName as string | null;
       session.user.companyPhoto = token.companyPhoto as string | null;
       session.user.companyEmail = token.companyEmail as string | null;
-      session.user.permissions = token.permissions as Permission[];
+      session.user.permissions = token.permissions as Permission_Keys[];
       session.user.type = token.type as RoleState;
     }
     return session;

@@ -21,7 +21,7 @@ export const API_REFRESH_TOKEN = USERS + "/refresh-token"; // POST
 export const API_LOGOUT = USERS + "/logout"; // POST 
 export const API_REGISTER_USER = USERS + "/register"; // POST
 
-export const API_REGISTER_COMPANY_USER_WITH_EMAIL_AND_PASSWORD = USERS + "/register/company-user"; // POST
+export const API_CREATE_COMPANY_USER = USERS + "/register/company-user"; // POST
 export const API_LOGIN_WITH_EMAIL_AND_PASSWORD = USERS + "/login"; // POST
 export const API_GOOGLE_REGISTER = USERS + "/google/register"; // POST
 export const API_GOOGLE_LOGIN = USERS + "/google/login"; // POST
@@ -35,18 +35,18 @@ export const API_GET_CURRENT_USER = USERS + "/me"; // GET
 export const API_DELETE_USER_BY_EMAIL = USERS + "/"; // DELETE + [email]
 
 
-// Roles
-export const ROLES = API_USERS_BASE + "/roles";
-export const API_CREATE_ROLE = ROLES + "/userType/"; // POST + [userType]
-export const API_GET_ROLES = ROLES + "/userType/"; // GET + [userType]
-export const API_GET_ROLE_BY_ID = ROLES + "/"; // GET + [roleID]
-export const API_UPDATE_ROLE = ROLES + "/"; // PATCH + [roleID]
-export const API_DELETE_ROLE = ROLES + "/"; // DELETE + [roleID]
+// users/access/roles
+
+export const ROLES = API_USERS_BASE + "/users/access/roles";
+export const API_CREATE_ROLE = ROLES; // POST
+export const API_UPDATE_ROLE = ROLES; // PATCH
+export const API_GET_ROLES_BY_USER_TYPE = ROLES + "/user/type"; // GET
+export const API_GET_ROLES_BY_COMPANY = ROLES + "/company/"; // GET + [companyId] + pagination
+export const API_GET_ROLE_BY_ID = ROLES + "/"; // GET + [roleId]
 
 // Permissions
-export const PERMISSIONS = API_USERS_BASE + "/permissions";
-export const API_CREATE_PERMISSION = PERMISSIONS + "/userType/"; // POST + [userType]
-export const API_GET_PERMISSIONS_BY_TYPE = PERMISSIONS + "/userType/"; // GET + [userType]
+export const PERMISSIONS = API_USERS_BASE + "/users/access/permissions";
 export const API_GET_PERMISSION_BY_ID = PERMISSIONS + "/"; // GET + [permissionID]
 export const API_UPDATE_PERMISSION = PERMISSIONS + "/"; // PATCH + [permissionID]
 export const API_DELETE_PERMISSION = PERMISSIONS + "/"; // DELETE + [permissionID]
+export const API_GET_PERMISSIONS_BY_USER_TYPE = PERMISSIONS + "/user?type="; // GET + [userType]

@@ -29,7 +29,7 @@ const SIZE_MAP = {
   small: { width: 32, height: 32 },
   medium: { width: 48, height: 48 },
   large: { width: 78, height: 78 },
-  xLarge: { width: 120, height: 120 },
+  xLarge: { width: 96, height: 96 },
 } as const;
 
 const DEFAULT_IMAGE = "/images/placeholder-avatar.svg";

@@ -62,7 +62,7 @@ const BlogBuilder: React.FC<{
     [blocks],
   );
 
-  const handleSubmit = (data: Partial<Block>) => {
+  const handleSubmit = async (data: Partial<Block>) => {
     const newBlock = { ...onHoldBlock, ...data };
     const clonedBlocks = structuredClone(blocks);
     const inserted = insertBlockToPath(
@@ -70,7 +70,7 @@ const BlogBuilder: React.FC<{
       onHoldBlock.path,
       newBlock,
     );
-    if (!inserted) return null;
+    if (!inserted) return;
     setBlocks(clonedBlocks);
     close();
   };

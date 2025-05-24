@@ -75,21 +75,11 @@ const CourseModal = ({
     },
     {
       name: "description",
-      type: "text",
+      type: "textArea",
       label: "Course Description",
       textFieldProps: {
         placeholder:
           "Briefly describe what the course covered, e.g., emergency procedures, patient care, healthcare technology.",
-        sx: {
-          "& .MuiOutlinedInput-root": {
-            p: 0,
-            borderRadius: "10px",
-            height: "auto",
-          },
-        },
-        multiline: true,
-        minRows: 4,
-        maxRows: 14,
       },
     },
   ];

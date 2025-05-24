@@ -1,3 +1,5 @@
+import { Role } from "./next-auth";
+
 export interface HeaderData {
   title: string | null;
   subtitle: string | null;
@@ -48,3 +50,12 @@ export type CompanyType = {
   companySectorName: string;
   companyTypeName: string;
 };
+
+
+export interface CompanyUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  roles: Role[];
+}

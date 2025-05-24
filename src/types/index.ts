@@ -1,6 +1,5 @@
 import { JobWorkPlace } from "@/constants/enums/work-place.enum";
 import { RoleState } from "./next-auth";
-import { Permission } from "./permissions";
 import { Gender } from "@/constants/enums/gender.enum";
 import { EducationLevel } from "@/constants/enums/education-level.enum";
 import { StartDateType } from "@/constants/enums/start-type.enum";
@@ -393,23 +392,20 @@ export type NavItem = {
   notifications?: number;
   section?: string; // Optional section header
   type?:
-    | "divider"
-    | "text"
-    | "collapse"
-    | "supLink"
-    | "profile"
-    | "notification"
-    | "chat"
-    | "savedJobs";
+  | "divider"
+  | "text"
+  | "collapse"
+  | "supLink"
+  | "profile"
+  | "notification"
+  | "chat"
+  | "savedJobs";
   links?: NavItem[];
 };
 export interface ActiveLinkResult {
   activeIndex: number;
   parentId: number | null;
 }
-export type Role = {
-  permissions: { name: Permission }[];
-};
 
 export type ModalActionType = "STAY" | "LEAVE" | "CUSTOM";
 
@@ -440,7 +436,10 @@ export type FieldType =
   | "component"
   | "radio"
   | "file"
+  | "textArea"
   | "otp";
+
+
 export interface Option<T = Record<string, any>> {
   value: keyof T;
   label: string;
@@ -456,11 +455,11 @@ export interface FieldConfig<T = any> {
   required?: boolean;
   dependsOn?: Path<T>; // Field this depends on
   rules?:
-    | Omit<
-        RegisterOptions<FieldValues, string>,
-        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
-      >
-    | undefined;
+  | Omit<
+    RegisterOptions<FieldValues, string>,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >
+  | undefined;
   gridProps?: {
     xs?: number;
     sm?: number;
@@ -484,7 +483,7 @@ export interface DynamicModalProps {
   open: boolean;
   onClose?: () => void;
   onChange?: (fieldName: string, value: string) => void;
-  onSubmit?: (data: any) => void;
+  onSubmit?: (data: any) => Promise<{ error?: boolean } | void> | void;
   onDelete?: (data: any) => void;
   fields?: FieldConfig[];
   title?: string;
