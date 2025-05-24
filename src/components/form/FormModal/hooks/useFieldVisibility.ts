@@ -13,14 +13,31 @@ export const useFieldVisibility = (
   const initializeHiddenFields = (values: Record<string, any>) => {
     const newHiddenFields: string[] = [];
     fields.forEach((field) => {
-      if (field.type === "checkbox" && field.hideFieldNames?.length) {
+      if (field.type === "checkbox") {
         const isChecked = values[String(field.name)] ?? false;
         if (isChecked) {
-          field.hideFieldNames.forEach((name) => {
-            if (!newHiddenFields.includes(String(name))) {
-              newHiddenFields.push(String(name));
-            }
-          });
+          if (field.hideFieldNames?.length) {
+            field.hideFieldNames.forEach((name) => {
+              if (!newHiddenFields.includes(String(name))) {
+                newHiddenFields.push(String(name));
+              }
+            });
+          }
+          if (field.unHideFieldNames?.length) {
+            field.unHideFieldNames.forEach((name) => {
+              if (newHiddenFields.includes(String(name))) {
+                newHiddenFields.splice(newHiddenFields.indexOf(String(name)), 1);
+              }
+            });
+          }
+        } else {
+          if (field.unHideFieldNames?.length) {
+            field.unHideFieldNames.forEach((name) => {
+              if (!newHiddenFields.includes(String(name))) {
+                newHiddenFields.push(String(name));
+              }
+            });
+          }
         }
       }
     });
@@ -47,12 +64,24 @@ export const useFieldVisibility = (
                 newHiddenFields.push(String(fieldName));
               }
             });
+            field.unHideFieldNames!.forEach((name) => {
+              if (prev.includes(String(name))) {
+                newHiddenFields.splice(newHiddenFields.indexOf(String(name)), 1);
+              }
+            });
             return newHiddenFields;
           } else {
             // Remove hidden fields when checkbox is unchecked
-            return prev.filter(
+            const newHiddenFields = [...prev].filter(
               (name) => !field.hideFieldNames!.includes(String(name)),
             );
+            field.unHideFieldNames!.forEach((fieldName) => {
+              if (!prev.includes(String(fieldName))) {
+                newHiddenFields.push(String(fieldName));
+              }
+            });
+
+            return newHiddenFields
           }
         });
       }

@@ -15,6 +15,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
   onClose,
   onSubmit,
   onDelete,
+  onChange,
   fields = [],
   title,
   description,
@@ -60,7 +61,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
     isDirty ? setLeavingManually(true) : handleCancel();
   const handleCancel = () => {
     reset(getDefaultValues(fields, initialValues));
-    onClose();
+    onClose?.();
   };
 
   const Modal = dialog ? dialog : Dialog;
@@ -91,12 +92,12 @@ const FormModal: React.FC<DynamicModalProps> = ({
           },
         }}
       >
-        <ModalHeader
+        {onClose && <ModalHeader
           title={title}
           description={description}
           error={error}
           handleCancel={handleCancel}
-        />
+        />}
         <DialogContent className={cn("m-0 p-0  h-full", dialog ? "max-h-[calc(100dvh-300px)]" : "max-h-[calc(100dvh-200px)]")}>
           <FormContent
             fields={fields}
@@ -109,6 +110,7 @@ const FormModal: React.FC<DynamicModalProps> = ({
             onDelete={onDelete}
             resetValues={resetValues}
             onCancel={handleCancel}
+            onChange={onChange}
             submitButtonText={submitButtonText}
             deleteButtonText={deleteButtonText}
             cancelButtonText={cancelButtonText}

@@ -46,6 +46,8 @@ import NumberControl from "@/components/page-builder/NumberControl";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { cn } from "@/util";
 import { FormField } from "@/components/form/FormModal/FormField/FormField";
+import { BasicWrapper } from "@/components/form/FormModal/formWraper";
+import FormModal from "@/components/form/FormModal/FormModal";
 
 export default function StylePanel({
   setBlocks,
@@ -85,6 +87,10 @@ export default function StylePanel({
     updateBlockStyles(cssProperties);
   };
 
+
+  const handleChange = (fieldName: string, value: string) => {
+    updateBlock({ [fieldName]: value });
+  };
   if (!selectedBlock) {
     return (
       <div className="text-muted-foreground p-4 text-center">
@@ -96,8 +102,15 @@ export default function StylePanel({
     <div className="w-full max-w-md">
       <div className="space-y-2">
         <h4 className="!mb-5 text-xl font-semibold">
-          Content Editor ({selectedBlock.type})
+          Content Editor (${selectedBlock.type})
         </h4>
+        {/* <FormModal
+          open={true}
+          onChange={handleChange}
+          fields={formFields}
+          dialog={BasicWrapper}
+          initialValues={selectedBlock}
+        /> */}
         {formFields &&
           formFields.map((field) => (
             <div
@@ -673,3 +686,5 @@ const LazyTextField: React.FC<TextFieldProps> = ({
     />
   );
 };
+
+

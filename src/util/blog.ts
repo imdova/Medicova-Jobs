@@ -241,6 +241,15 @@ export const buttonModal = (forms: FormItem[]): BlockForm => ({
       textFieldProps: { placeholder: "button Label" },
       required: true,
     },
+    // add check box for using link url or form 
+    {
+      name: "isForm",
+      label: "Use Form",
+      hideFieldNames: ["linkUrl"],
+      unHideFieldNames: ["formId"],
+      resetFields: ["linkUrl", "formId"],
+      type: "checkbox",
+    },
     {
       name: "linkUrl",
       label: "Enter Your Link Url",

@@ -8,7 +8,7 @@ import { cn } from "@/util";
 
 interface FormContentProps {
   fields: FieldConfig[];
-  onSubmit: SubmitHandler<any>;
+  onSubmit?: SubmitHandler<any>;
   formMethods: UseFormReturn<Record<string, any>>;
   hiddenFields: string[];
   onDelete?: (data: any) => void;
@@ -23,6 +23,7 @@ interface FormContentProps {
   submitButtonText?: string;
   deleteButtonText?: string;
   cancelButtonText?: string;
+  onChange?: (fieldName: string, value: string) => void;
   removeField?: (fieldName: string) => void;
   dialog?: boolean;
 }
@@ -43,6 +44,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   deleteButtonText,
   cancelButtonText,
   removeField,
+  onChange,
   dialog
 }) => {
   const {
@@ -56,7 +58,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   const submitHandler = async (data: any) => {
     try {
       if (isDirty) {
-        await onSubmit(data);
+        await onSubmit?.(data);
         // TODO : RESET ON CONDION
         reset(data);
       } else {
@@ -76,7 +78,7 @@ export const FormContent: React.FC<FormContentProps> = ({
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <div className={cn("scroll-bar-minimal  overflow-y-auto bg-background", dialog ? "max-h-[calc(100dvh-354px)]" : "max-h-[calc(100dvh-254px)]")}>
-        <div className="mt-1 grid grid-cols-12 gap-4 p-4">
+        <div className={cn("mt-1 grid grid-cols-12 gap-4", dialog ? "p-0" : "p-4")}>
           {fields.map((field) => {
             const gridProps = field.gridProps ?? {};
             const xs = gridProps.xs ?? 12;
@@ -89,16 +91,18 @@ export const FormContent: React.FC<FormContentProps> = ({
             ]
               .filter(Boolean)
               .join(" ");
+            const hidden = hiddenFields.includes(String(field.name))
+            if (hidden) return null
             return (
               <div className={classNames} key={String(field.name)}>
                 <FormField
                   field={field}
                   control={control}
-                  hidden={hiddenFields.includes(String(field.name))}
                   onCheckboxChange={onCheckboxChange(field)}
                   dependsOnField={fields.find(
                     (f) => f.name === field.dependsOn,
                   )}
+                  onChange={onChange}
                   removeField={removeField}
                   formValues={getValues()}
                   resetValues={resetValues}
@@ -109,7 +113,7 @@ export const FormContent: React.FC<FormContentProps> = ({
         </div>
         {children && children}
       </div>
-      <FormActions
+      {onSubmit && <FormActions
         onDelete={onDelete && handleDelete}
         onCancel={onCancel}
         loading={loading}
@@ -117,7 +121,7 @@ export const FormContent: React.FC<FormContentProps> = ({
         submitButtonText={submitButtonText}
         deleteButtonText={deleteButtonText}
         cancelButtonText={cancelButtonText}
-      />
+      />}
     </form>
   );
 };

@@ -477,12 +477,14 @@ export interface FieldConfig<T = any> {
   // options?: { label: string; value: string | number }[];
   options?: Option[]; // Updated to support dynamic options
   hideFieldNames?: FieldConfig<T>["name"][];
+  unHideFieldNames?: FieldConfig<T>["name"][];
   onChange?: (value: any) => void; // Updated to include formMethods
 }
 export interface DynamicModalProps {
   open: boolean;
-  onClose: () => void;
-  onSubmit: (data: any) => void;
+  onClose?: () => void;
+  onChange?: (fieldName: string, value: string) => void;
+  onSubmit?: (data: any) => void;
   onDelete?: (data: any) => void;
   fields?: FieldConfig[];
   title?: string;

@@ -69,6 +69,7 @@ export interface Block {
   imageUrl?: string;
   videoUrl?: string;
   videoThumbnail?: string;
+  isForm?: boolean;
   linkUrl?: string;
   formId?: string;
   styles: React.CSSProperties | null;

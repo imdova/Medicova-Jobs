@@ -26,7 +26,6 @@ interface FormFieldProps {
   field: FieldConfig;
   control?: any;
   fieldController?: Partial<ControllerRenderProps<FieldValues, string>>;
-  hidden?: boolean;
   dependsOnField?: FieldConfig;
   onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   formValues?: Record<string, any>;
@@ -34,12 +33,12 @@ interface FormFieldProps {
   removeField?: (fieldName: string) => void;
   data?: any;
   setData?: React.Dispatch<React.SetStateAction<any>>;
+  onChange?: (fieldName: string, value: string) => void;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
   field,
   control,
-  hidden,
   onCheckboxChange,
   formValues: initialFormValue,
   resetValues,
@@ -48,8 +47,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   removeField,
   data,
   setData,
+  onChange
 }) => {
-  if (hidden) return null;
   const formValues = initialFormValue || data;
 
   const renderField = ({
@@ -60,12 +59,25 @@ export const FormField: React.FC<FormFieldProps> = ({
     fieldState?: ControllerFieldState;
   }): React.ReactElement => {
     const error = fieldState?.error || null;
+    const handleChange = (e: any) => {
+      if (field.onChange) {
+        field.onChange(e);
+      }
+      if (controllerField.onChange) {
+        controllerField.onChange(e);
+      }
+      if (onChange) {
+        const value = e && e.target ? e.target.value : e;
+        onChange(field.name as string, value);
+      }
+    };
+    const newControllerField = { ...controllerField, onChange: handleChange }
     switch (field.type) {
       case "checkbox":
         return (
           <CheckboxField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             resetValues={resetValues}
             onCheckboxChange={onCheckboxChange}
           />
@@ -74,7 +86,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <SelectField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
             formValues={formValues}
             resetValues={resetValues}
@@ -85,7 +97,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <SearchableSelectField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
             resetValues={resetValues}
             formValues={formValues}
@@ -97,7 +109,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           return (
             <ComponentField
               field={field}
-              controllerField={controllerField}
+              controllerField={newControllerField}
               error={error}
             />
           );
@@ -107,7 +119,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <FileField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -115,7 +127,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <TextEditorField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -123,7 +135,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <PhoneNumberField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -131,7 +143,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <DatePickerField
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -139,7 +151,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <RadioFieldComponent
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -156,7 +168,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         return (
           <TextFieldComponent
             field={field}
-            controllerField={controllerField}
+            controllerField={newControllerField}
             error={error}
           />
         );
@@ -165,7 +177,7 @@ export const FormField: React.FC<FormFieldProps> = ({
     return (
       <TextFieldComponent
         field={field}
-        controllerField={controllerField}
+        controllerField={newControllerField}
         error={error}
       />
     );
